@@ -14,10 +14,14 @@
 - `02_markdown/` 內每條文 / 每函釋 / 每題一份 MD
 - `03_index/` 自動產生的 JSON 索引
 - `04_web/` 可直接開啟的 HTML 介面(從專案根目錄跑 `python -m http.server`)
+- 線上版:<https://ntnick-web.github.io/gov-expense-kb/>(密碼 `1234`,僅客戶端遮罩,非真實認證)
 
-**目前資料範圍**:235 節點(國內旅費 27 + 國外旅費 208),全部已校對。
-- 國內旅費:13 條條文 + 1 函釋 + 13 份 Q&A,**全部人工校對**
-- 國外旅費:22 條要點 + 2 份標準表 + 184 份解釋彙編,**自動初校**(摘要由 `_batch_autoreview.py` 抽首段;尾部標 `_(自動初校,待人工潤飾)_`,可挑重要逐份精校)
+**目前資料範圍**:630 節點(國內旅費 322 + 國外旅費 208 + 支出憑證與結報 100),全部已校對。
+- 國內旅費:13 條條文 + 1 函釋 + 13 份 Q&A + 295 份解釋彙編 + 1 份附表標準表
+- 國外旅費:22 條要點 + 2 份標準表 + 184 份解釋彙編
+- 支出憑證與結報:23 條政府支出憑證處理要點 + 77 份經費結報常見疑義問答集
+
+**校對狀態**:全部 630 份已標 `reviewed`(其中前 27 份國內旅費為人工精校;其餘為 `_batch_autoreview.py` 抽首段的自動初校,尾部標 `_(自動初校,待人工潤飾)_`,可挑重要逐份精校)。
 
 ---
 
@@ -30,7 +34,7 @@
 | DOCX | `python-docx` | 含表格抽取 |
 | 結構化 | Python + `PyYAML` + 規則式 regex | 中文數字 ↔ 阿拉伯轉換 |
 | 索引 | 純 JSON | 前端載入後即用 |
-| 前端搜尋 | 純 vanilla JS substring + 高亮 | 中文無需分詞;對 < 200 節點完全夠 |
+| 前端搜尋 | 純 vanilla JS substring + 高亮 | 中文無需分詞;630 節點仍流暢,>1000 再評估 FlexSearch |
 | 前端 | 純 HTML/CSS/JS,**無框架無 CDN** | 自包含 |
 | 視覺化 | 純 SVG + Math 三角函數(泡泡圖) + 自寫力模擬(關聯圖) | 不引 D3 |
 | 版控 | Git | 從第一天開始 |
@@ -69,10 +73,12 @@ gov-expense-kb/
 格式:`{類別}-{母題}-{三位序號}`
 
 - 類別:`A`=核心法規 / `B`=支出標準 / `C`=解釋函令 / `D`=問答集 / `N`=分類節點
-- 母題:國內旅費 / 國外旅費 / 講座鐘點費 / 酬勞費 / 國外專家 / 其他 / 教育部專章 / 國科會專章 / 支出憑證
+- 母題:國內旅費 / 國外旅費 / 講座鐘點費 / 酬勞費 / 國外專家 / 其他 / 教育部專章 / 國科會專章 / **支出憑證與結報**
 - 序號:`001` 起遞增,刪除不重用
 
-範例:`A-國內旅費-005` = 國內旅費第五條
+範例:`A-國內旅費-005` = 國內旅費第五條;`A-支出憑證與結報-004` = 政府支出憑證處理要點第四條
+
+> **改母題名稱的工具**:`05_scripts/_rename_parent.py` — 一次性更新 02_markdown / 01_extracted 的資料夾名 + 各 MD 的 `parent`/`id` 欄位 + meta.json,改完跑 `03_build_index.py` 重建索引。例:`python 05_scripts/_rename_parent.py 支出憑證 支出憑證與結報`。
 
 ---
 
@@ -127,12 +133,13 @@ version: 2024-01-15
                  交通費/生活費/         問答集/
                  程序總則/...)          支出標準)
 ```
-- 「支出類別」中間層由 `EXPENSE_LAYER` 常數依 tags 推斷;國內旅費/國外旅費已定義,新增母題在 [04_web/assets/app.js](04_web/assets/app.js) 補表
+- 「支出類別」中間層由 `EXPENSE_LAYER` 常數依 tags 推斷;**已定義**:國內旅費(交通/住宿/雜費/程序總則)、國外旅費(大陸港澳/出國進修/交通/生活/手續/保險/行政/禮品/程序總則)、支出憑證與結報(收據與發票/採購結報/系統化結報/補助與分攤/差旅費結報/酬勞與會議/程序總則)。新增母題在 [04_web/assets/app.js](04_web/assets/app.js) 補表
 - **「程序總則」設計**:命中泛 tag(結報核銷/總則/法源依據等)無具體費用 tag 者落入,屬綜合性條文
 - **鎖定母題模式**:從泡泡圖點某母題進條文庫時,樹根直接顯示為該母題、隱藏其他母題、支出類別預設展開、底部「↩ ← 全部母題」按鈕
 
 **關聯圖(P2)**
 - **靜態 layout**:打開時跑 320 次同步 packing iteration 收斂後一次 paint(無 RAF 動畫);拖曳節點直接 paint,釋放後保留新位置
+- **動態邊界 `computeGraphBounds()`**:packing 與拖曳都尊重「右側過濾面板」「左上 scope banner」「標籤左右各 70px / 上下 24px 預留」推算的 inner box;當面板把可用寬度擠到不足面板 1.4× 時自動放棄避讓(避免擠成一條線)。SVG 尺寸與上次 packing 差異 >15% 時自動重新分布
 - **Scope 過濾**:依 `state.filter.parent` 自動 scope,左上 banner「目前範圍:XX [顯示全部]」,可顯示該母題節點 + 跨母題鄰居
 - **邊類型**:
   - 人工邊:`cites/explains/answers`(從 `related` 推導)
@@ -210,7 +217,8 @@ version: 2024-01-15
 
 ```bash
 # 從專案根目錄
-python 05_scripts/01_extract.py             # 00_source → 01_extracted
+python 05_scripts/_compute_skip_list.py     # (新增來源批次後)識別重複/雜訊檔,寫 00_source/_skip.txt
+python 05_scripts/01_extract.py             # 00_source → 01_extracted(自動跳過 _skip.txt 列出者)
 python 05_scripts/02_parse.py               # 01_extracted → 02_markdown 草稿
 python 05_scripts/_batch_autoreview.py      # (可選)批次自動初校:抽首段為摘要 + reviewed
 # ... 人工精校重要節點(補 related、潤飾摘要、加備註) ...
@@ -225,7 +233,19 @@ python -m http.server 8765                  # 啟動 server
 各腳本退出碼:`0` 成功 / `1` 環境錯誤 / `2` 有錯誤 / `3` `--strict` 且有警告。
 所有主管線腳本支援 `--help`、`--dry-run`(若適用)、`-v`。
 
-**`_batch_autoreview.py` 一次性工具**:對所有 `02_markdown/` 內無 `reviewed:` 的草稿,抽 ## H2 區塊首段作為「重點摘要」、加 `reviewed: 今日`、`version=TODO → 2024-01-01` placeholder、摘要尾標 `_(自動初校,待人工潤飾)_`。新增來源後跑這個能快速讓草稿進入「可瀏覽」狀態,然後人工挑重要節點精校。
+**輔助工具**(`05_scripts/_*.py`,非標準管線一部分,僅在特定情境使用):
+- `_compute_skip_list.py` — 對 `00_source/` 找重複/雜訊檔(同 Q 號多檔取最小;政府支出憑證處理要點「人工指定 keep」),寫 `_skip.txt` 供 `01_extract.py` 跳過。EXTRA_SKIP 也可手動加(如已存在 .md 對應的重複 PDF)
+- `_batch_autoreview.py` — 對所有 `02_markdown/` 內無 `reviewed:` 的草稿,抽 ## H2 區塊首段作為「重點摘要」、加 `reviewed: 今日`、`version=TODO → 2024-01-01` placeholder、摘要尾標 `_(自動初校,待人工潤飾)_`
+- `_rename_parent.py` — 重新命名母題(改資料夾 + MD 內 `parent`/`id` + meta.json),改完跑 `03_build_index.py`
+
+**00_source/ 的「準輸入」配置檔**(以 `_` 開頭,不算「修改原檔」):
+- `_manifest.csv` — 對推斷不到類別/母題的檔案(如未含關鍵字的 .docx)指派 `category, parent, agency, version, doc_no`
+- `_skip.txt` — 列出要排除的檔名(每行一個),供 01_extract.py 過濾
+
+**01_extract.py 的母題推斷規則**(`PARENT_KEYWORDS`):
+- **特定法規/問答集名稱優先**(如「經費結報常見疑義問答集」「政府支出憑證處理要點」),再排「母題本名」,最後才是泛費目詞
+- 不要把「支出憑證」「鐘點費」這類**常被其他母題條文提及的費目名**單獨當關鍵字,會誤判
+- 來源 MD 開頭若夾 `\f`(form feed,PDF→MD 轉檔殘留),會破壞 H1 + metadata 解析;`strip_md_header` 會在解析前移除
 
 新增來源檔的 SOP 見 [docs/05_workflow.md](docs/05_workflow.md)。
 
@@ -265,8 +285,9 @@ python -m http.server 8765                  # 啟動 server
 - 函釋編號規則不清
 - 既有 MD 結構需要破壞性變更
 - 引入新依賴或新工具
-- 新母題的「支出類別」中間層該怎麼分(目前只有國內旅費已定)
+- 新母題的「支出類別」中間層該怎麼分(目前已定:國內旅費、國外旅費、支出憑證與結報)
 - 推斷邊偵測規則需擴充(例:跨母題引用、附表編號)
+- 母題重新命名(會動到所有 ID,雖然 `_rename_parent.py` 能批次改,但需人類確認影響面)
 
 ---
 
@@ -274,9 +295,23 @@ python -m http.server 8765                  # 啟動 server
 
 | 項目 | 何時需要 |
 |------|---------|
-| 新增其他母題(國外旅費、酬勞費...) | 補來源 MD/PDF + 在 `EXPENSE_LAYER` 加新母題的支出類別表 |
+| 新增其他母題(講座鐘點費、酬勞費、教育部專章...) | 補來源 MD/PDF + 在 `PARENT_KEYWORDS` 加識別字串 + 在 `EXPENSE_LAYER` 加新母題的支出類別表 |
 | 推斷邊跨母題 | 目前 `build_inferred_edges` 限同 parent;若新增「主辦機關引用其他機關規定」情境,需放寬 |
 | `_common.py` 共用模組 | 第 5 個腳本要用同樣工具時(目前 4 個腳本各自局部複製) |
 | 並排比較模式 | 條文庫卡片右鍵 → 加入比較;抽屜變寬左右並排 |
-| FlexSearch 中文分詞 | 節點數 > 500 或開始有同義詞需求時 |
+| FlexSearch 中文分詞 | 節點數 > 1000 或開始有同義詞需求時(目前 630,vanilla substring 仍流暢) |
 | 編輯介面 | drawer 加「+ 新增關聯」按鈕,從候選清單中(來自推斷邊)加入 related |
+| 真伺服器端認證 | 若日後要放敏感資料,需移出 GitHub Pages → Cloudflare Workers / Vercel Functions / 自架 |
+
+---
+
+## 15. 線上部署(GitHub Pages)
+
+- **線上版**:<https://ntnick-web.github.io/gov-expense-kb/> · 密碼 `1234`
+- **repo**:<https://github.com/ntnick-web/gov-expense-kb>(public,branch=main,Pages source=`/`)
+- **根目錄 [index.html](index.html)** 是 meta-refresh 重定向到 `/04_web/`,讓網址不用帶 `/04_web/` 後綴
+- **密碼閘**:`04_web/index.html` 內嵌 IIFE,過後存 `sessionStorage('gate-ok-v1')`。改密碼:找 `EXPECTED = '1234'` 改字串
+- **這層密碼是 UI 遮罩,不是真認證** — 任何人 F12 看 source 或 `curl https://.../03_index/nodes.json` 都能拿資料。內容是政府公開法規可公開,**請勿在此 repo 放任何敏感資訊**
+- **更新流程**:本地改 → `python 05_scripts/03_build_index.py` → `git add . && git commit -m "..." && git push` → Pages 約 1–2 分鐘自動部署
+- **不進 git 的檔**(`.gitignore`):`00_source/`(原檔避免版權與肥 repo)、`01_extracted/`(可由 02_markdown 重建)、`.claude/`(本機設定)
+- **CDN 邊緣快取**約 10 分鐘,push 後若看到舊版本請強制重整(Ctrl+Shift+R)
