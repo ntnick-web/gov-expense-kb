@@ -4,9 +4,9 @@
 
 **目前資料規模**:630 節點(國內旅費 322 + 國外旅費 208 + 支出憑證與結報 100),全部已校對。
 
-線上版:<https://ntnick.github.io/gov-expense-kb/> · 存取密碼 `1234`
+線上版:<https://ntnick-web.github.io/gov-expense-kb/> · 存取密碼 `1234`
 
-> **安全聲明**:存取密碼僅為客戶端 UI 遮罩,並非真正的伺服器端認證 — 任何人開瀏覽器 DevTools 或直接 `curl https://ntnick.github.io/gov-expense-kb/03_index/nodes.json` 都能取得資料。本專案內容皆為政府公開法規,可公開傳布;密碼僅用於擋掉非預期訪客。請勿在此處放置任何機密資訊。
+> **安全聲明**:存取密碼僅為客戶端 UI 遮罩,並非真正的伺服器端認證 — 任何人開瀏覽器 DevTools 或直接 `curl https://ntnick-web.github.io/gov-expense-kb/03_index/nodes.json` 都能取得資料。本專案內容皆為政府公開法規,可公開傳布;密碼僅用於擋掉非預期訪客。請勿在此處放置任何機密資訊。
 
 ---
 
