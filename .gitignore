@@ -12,8 +12,9 @@ venv/
 *.swp
 .DS_Store
 
-# Claude Code 本機設定
+# Claude Code 本機設定 / AI 助手指引(僅供本機開發,不對外公開)
 .claude/
+CLAUDE.md
 
 # 來源原檔(政府公開法規 PDF/MD)— 為精簡 repo 與避免版權疑慮,不納入 GitHub
 00_source/
