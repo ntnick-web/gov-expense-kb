@@ -1125,7 +1125,9 @@ async function openDrawer(id) {
   const $body = document.getElementById('drawer-body');
   $body.innerHTML = '<p style="color:var(--text-muted)">載入中…</p>';
   try {
-    const text = await fetch(MD_BASE + node.file_path).then(r => r.text());
+    const r = await fetch(MD_BASE + node.file_path);
+    if (!r.ok) throw new Error(`HTTP ${r.status} ${node.file_path}`);
+    const text = await r.text();
     const body = stripFrontMatter(text);
     $body.innerHTML = renderMarkdown(body);
     appendRelatedSection($body, node);
