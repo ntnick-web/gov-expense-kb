@@ -1,0 +1,41 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+venv/
+.env
+
+# IDE
+.vscode/
+.idea/
+*.swp
+.DS_Store
+
+# Claude Code 本機設定
+.claude/
+
+# 來源原檔(政府公開法規 PDF/MD)— 為精簡 repo 與避免版權疑慮,不納入 GitHub
+00_source/
+
+# 中繼抽取產物(可由 02_markdown 重建,但 03_index 是前端載入需要的)
+01_extracted/
+
+# OCR 模型快取
+.paddleocr/
+
+# 系統檔
+Thumbs.db
+desktop.ini
+
+# 打包檔
+files.zip
+*.zip
+
+# 暫存
+*.tmp
+*.bak
+*~
+
+# Node(若日後加 Node 工具鏈)
+node_modules/

@@ -1,0 +1,690 @@
+"""03_build_index.py — 把 02_markdown/*.md 建立成 03_index/ 的 JSON 索引。
+
+職責
+----
+產出四份 JSON 供前端三視圖載入:
+
+- ``nodes.json`` — 所有節點清單(類別、母題、標題、tags、版本、summary)
+- ``edges.json`` — 節點關聯(由 front-matter ``related`` 推導,relation 類型由
+  類別組合決定)
+- ``tags.json`` — 母標籤(來自 ``docs/06_tags_taxonomy.md``)+ 自由標籤統計
+- ``search_index.json`` — FlexSearch corpus(documents 陣列,前端建索引)
+
+**索引是衍生產物**:每次重建。SSOT 是 ``02_markdown/``,本腳本不修改它。
+
+使用範例
+--------
+    python 05_scripts/03_build_index.py
+    python 05_scripts/03_build_index.py --validate    # 僅驗證,不寫檔
+    python 05_scripts/03_build_index.py -v
+
+退出代碼
+--------
+0  全部成功
+1  啟動環境錯誤
+2  ID 衝突或解析失敗(阻擋寫檔)
+3  --strict 且有警告
+"""
+
+from __future__ import annotations
+
+import argparse
+import json
+import logging
+import re
+import sys
+from dataclasses import dataclass, field
+from pathlib import Path
+from typing import Optional
+
+try:
+    import yaml
+except ImportError:  # pragma: no cover
+    sys.stderr.write("缺少 PyYAML,請執行 pip install PyYAML\n")
+    sys.exit(1)
+
+
+# ─────────────────────────────────────────────
+# 路徑
+# ─────────────────────────────────────────────
+
+ROOT = Path(__file__).resolve().parent.parent
+MARKDOWN_DIR = ROOT / "02_markdown"
+INDEX_DIR = ROOT / "03_index"
+TAXONOMY_PATH = ROOT / "docs" / "06_tags_taxonomy.md"
+
+SUMMARY_LIMIT = 100  # 字
+SEARCH_BODY_LIMIT = 2000  # 字(避免 search corpus 過肥)
+
+PLACEHOLDER_MARKERS = ("(待人工補)", "TODO", "待補")
+
+
+# ─────────────────────────────────────────────
+# 結構
+# ─────────────────────────────────────────────
+
+
+@dataclass
+class Node:
+    id: str
+    type: str
+    parent: str
+    title: str
+    tags: list[str]
+    related: list[str]
+    file_path: str
+    version: str
+    summary: str = ""
+    agency: Optional[str] = None
+    doc_no: Optional[str] = None
+    reviewed: Optional[str] = None
+    body_plain: str = field(default="", repr=False)
+
+
+@dataclass
+class BuildResult:
+    nodes: list[Node]
+    warnings: list[str] = field(default_factory=list)
+    errors: list[str] = field(default_factory=list)
+
+    @property
+    def ok(self) -> bool:
+        return not self.errors
+
+
+# ─────────────────────────────────────────────
+# 母標籤解析(從 docs/06_tags_taxonomy.md)
+# ─────────────────────────────────────────────
+
+
+def parse_taxonomy(path: Path) -> dict[str, list[str]]:
+    """解析 06_tags_taxonomy.md ``## 2. 母標籤體系`` 區塊。
+
+    回傳 {parent: [母標籤,...]}。只認 §2.X(母標籤),不抓 §4.X(常用自由標籤)。
+    """
+    if not path.exists():
+        return {}
+    text = path.read_text(encoding="utf-8")
+    # 只取 "## 2." 區塊
+    section_m = re.search(
+        r"(?ms)^##\s+2\.\s+.+?(?=^##\s+\d+\.\s|\Z)", text
+    )
+    if not section_m:
+        return {}
+    result: dict[str, list[str]] = {}
+    current_parent: Optional[str] = None
+    in_table = False
+    for line in section_m.group(0).splitlines():
+        s = line.strip()
+        sub = re.match(r"^###\s+\d+\.\d+\s+(.+)$", s)
+        if sub:
+            current_parent = sub.group(1).strip()
+            result[current_parent] = []
+            in_table = False
+            continue
+        if current_parent is None:
+            continue
+        if re.match(r"^\|[\s\-:|]+\|\s*$", s):
+            in_table = True
+            continue
+        if in_table:
+            row = re.match(r"^\|\s*(.+?)\s*\|", s)
+            if row:
+                tag = row.group(1).strip()
+                if tag and tag != "母標籤":
+                    result[current_parent].append(tag)
+            else:
+                in_table = False
+    return {k: v for k, v in result.items() if v}
+
+
+# ─────────────────────────────────────────────
+# Front-matter / 內文解析
+# ─────────────────────────────────────────────
+
+
+def split_front_matter(text: str) -> tuple[Optional[dict], str]:
+    """切出 (front-matter dict, body 字串)。"""
+    if not text.startswith("---"):
+        return None, text
+    end = text.find("\n---", 3)
+    if end < 0:
+        return None, text
+    raw = text[3:end]
+    try:
+        fm = yaml.safe_load(raw)
+    except yaml.YAMLError:
+        return None, text
+    if not isinstance(fm, dict):
+        return None, text
+    body = text[end + 4:].lstrip("\n")
+    return fm, body
+
+
+def extract_section(body: str, heading: str) -> str:
+    """抽出 ## {heading} 區塊內容(下一個 ## 之前)。"""
+    pattern = rf"(?ms)^##\s*{re.escape(heading)}\s*\n(.+?)(?=^##\s|\Z)"
+    m = re.search(pattern, body)
+    return m.group(1).strip() if m else ""
+
+
+def extract_summary(body: str, limit: int = SUMMARY_LIMIT) -> tuple[str, list[str]]:
+    """從 ## 重點摘要 抽前 N 字。placeholder 則回空字串 + 警告。"""
+    section = extract_section(body, "重點摘要")
+    if not section:
+        return "", ["summary_section_missing"]
+    if any(mark in section for mark in PLACEHOLDER_MARKERS):
+        return "", ["summary_placeholder"]
+    flat = re.sub(r"\s+", "", section)
+    if len(flat) <= limit:
+        return section, []
+    return flat[:limit] + "…", []
+
+
+def md_body_to_plain(body: str) -> str:
+    """把 markdown body 轉純文字(供 search corpus)。
+
+    切成 ## H2 區塊,跳過內容含 placeholder marker 者,其餘合併並去 markdown 語法。
+    """
+    parts = re.split(r"(?m)^##\s+(.+?)\s*$", body)
+    # parts: [前言, h2_1_title, h2_1_body, h2_2_title, h2_2_body, ...]
+    kept: list[str] = [parts[0]] if parts and parts[0].strip() else []
+    for i in range(1, len(parts), 2):
+        content = parts[i + 1] if i + 1 < len(parts) else ""
+        if any(m in content for m in PLACEHOLDER_MARKERS):
+            continue
+        kept.append(content)
+    text = "\n".join(kept)
+    # 移除 markdown link [text](url) → text
+    text = re.sub(r"\[([^\]]+)\]\([^)]*\)", r"\1", text)
+    # 移除列表記號
+    text = re.sub(r"(?m)^\s*[-*+]\s+", "", text)
+    # 壓縮空白
+    text = re.sub(r"\s+", " ", text)
+    return text.strip()
+
+
+# ─────────────────────────────────────────────
+# 載入所有節點
+# ─────────────────────────────────────────────
+
+
+def load_nodes(
+    md_dir: Path, log: logging.Logger
+) -> tuple[list[Node], list[str], list[str]]:
+    """掃 02_markdown/*.md 載入節點。回傳 (nodes, warnings, errors)。"""
+    warnings: list[str] = []
+    errors: list[str] = []
+    nodes: list[Node] = []
+    seen_ids: dict[str, Path] = {}
+
+    if not md_dir.exists():
+        errors.append(f"找不到 {md_dir}")
+        return [], warnings, errors
+
+    for md in sorted(md_dir.rglob("*.md")):
+        rel = md.relative_to(ROOT).as_posix()
+        try:
+            text = md.read_text(encoding="utf-8")
+        except OSError as e:
+            errors.append(f"{rel}: 讀檔失敗 {e}")
+            continue
+
+        fm, body = split_front_matter(text)
+        if fm is None:
+            errors.append(f"{rel}: front-matter 缺失或格式錯誤")
+            continue
+
+        # 必填欄位檢查
+        missing = [k for k in ("id", "type", "parent", "title") if not fm.get(k)]
+        if missing:
+            errors.append(f"{rel}: 缺必填欄位 {missing}")
+            continue
+
+        node_id = str(fm["id"])
+        if node_id in seen_ids:
+            errors.append(
+                f"ID 衝突:{node_id} 同時出現於 "
+                f"{seen_ids[node_id].relative_to(ROOT).as_posix()} 與 {rel}"
+            )
+            continue
+        seen_ids[node_id] = md
+
+        # tags
+        tags = fm.get("tags") or []
+        if not isinstance(tags, list):
+            warnings.append(f"{rel}: tags 非 list,視為空")
+            tags = []
+        tags = [str(t) for t in tags]
+        if not tags:
+            warnings.append(f"{rel}: tags 為空")
+
+        # related
+        related = fm.get("related") or []
+        if not isinstance(related, list):
+            warnings.append(f"{rel}: related 非 list,視為空")
+            related = []
+        related = [str(r) for r in related]
+
+        # version
+        version = fm.get("version", "")
+        if version is None:
+            version = ""
+        version = str(version)
+        if not version or version == "TODO":
+            warnings.append(f"{rel}: version 未填(TODO)")
+
+        # summary
+        summary, summary_warns = extract_summary(body)
+        for w in summary_warns:
+            warnings.append(f"{rel}: {w}")
+
+        # body plain
+        body_plain = md_body_to_plain(body)
+        if len(body_plain) > SEARCH_BODY_LIMIT:
+            body_plain = body_plain[:SEARCH_BODY_LIMIT]
+
+        node = Node(
+            id=node_id,
+            type=str(fm.get("type", "")),
+            parent=str(fm.get("parent", "")),
+            title=str(fm.get("title", "")),
+            tags=tags,
+            related=related,
+            file_path=rel,
+            version=version,
+            summary=summary,
+            agency=str(fm["agency"]) if fm.get("agency") else None,
+            doc_no=str(fm["doc_no"]) if fm.get("doc_no") else None,
+            reviewed=str(fm["reviewed"]) if fm.get("reviewed") else None,
+            body_plain=body_plain,
+        )
+        nodes.append(node)
+
+    return nodes, warnings, errors
+
+
+# ─────────────────────────────────────────────
+# 各 JSON 建構
+# ─────────────────────────────────────────────
+
+
+def build_nodes_json(nodes: list[Node]) -> list[dict]:
+    out: list[dict] = []
+    for n in nodes:
+        d: dict = {
+            "id": n.id,
+            "type": n.type,
+            "parent": n.parent,
+            "title": n.title,
+            "tags": n.tags,
+            "file_path": n.file_path,
+            "version": n.version,
+            "summary": n.summary,
+        }
+        if n.agency:
+            d["agency"] = n.agency
+        if n.doc_no:
+            d["doc_no"] = n.doc_no
+        if n.reviewed:
+            d["reviewed"] = n.reviewed
+        out.append(d)
+    return out
+
+
+# 類別組合 → relation 推斷
+def infer_relation(from_cat: str, to_cat: str) -> str:
+    """依類別代碼推斷 relation。
+
+    - C → A:explains(函釋說明條文)
+    - D → A/B/C:answers(問答對應)
+    - 任何 → N:belongs_to
+    - 同類:cites
+    - 預設:cites
+    """
+    if to_cat == "N" or from_cat == "N":
+        return "belongs_to"
+    if from_cat == "C" and to_cat == "A":
+        return "explains"
+    if from_cat == "A" and to_cat == "C":
+        return "explains"  # 雙向同名,前端可去重
+    if from_cat == "D":
+        return "answers"
+    if to_cat == "D":
+        return "answers"
+    return "cites"
+
+
+def category_of(node_id: str) -> str:
+    """從 ID 抽類別代碼(首字母)。"""
+    return node_id.split("-", 1)[0] if "-" in node_id else "?"
+
+
+def build_edges_json(
+    nodes: list[Node], log: logging.Logger
+) -> tuple[list[dict], list[str]]:
+    warnings: list[str] = []
+    node_ids = {n.id for n in nodes}
+    seen: set[tuple[str, str, str]] = set()
+    edges: list[dict] = []
+    for n in nodes:
+        for rel_id in n.related:
+            if rel_id not in node_ids:
+                warnings.append(
+                    f"{n.id}.related → {rel_id} 不存在於 nodes(可能尚未建立或拼寫錯)"
+                )
+                continue
+            relation = infer_relation(category_of(n.id), category_of(rel_id))
+            key = (n.id, rel_id, relation)
+            if key in seen:
+                continue
+            seen.add(key)
+            edges.append({
+                "from": n.id, "to": rel_id, "relation": relation,
+                "inferred": False,
+            })
+    return edges, warnings
+
+
+# ─────────────────────────────────────────────
+# 正文引用偵測(自動推斷邊)
+# ─────────────────────────────────────────────
+
+# 中文數字 → 阿拉伯
+_CN_DIGITS: dict[str, int] = {
+    "零": 0, "〇": 0, "○": 0,
+    "一": 1, "二": 2, "三": 3, "四": 4, "五": 5,
+    "六": 6, "七": 7, "八": 8, "九": 9, "十": 10,
+}
+
+
+def _cn2int(s: str) -> Optional[int]:
+    """涵蓋 1~99 的中文數字轉阿拉伯,失敗回 None。"""
+    if not s:
+        return None
+    if s.isdigit():
+        return int(s)
+    chars = list(s)
+    if not all(c in _CN_DIGITS for c in chars):
+        return None
+    if len(chars) == 1:
+        return _CN_DIGITS[chars[0]]
+    if "十" not in chars:
+        return None
+    idx = chars.index("十")
+    if idx == 0:
+        tens, ones = 1, _CN_DIGITS[chars[1]] if len(chars) > 1 else 0
+    elif idx == len(chars) - 1:
+        tens, ones = _CN_DIGITS[chars[0]], 0
+    else:
+        tens, ones = _CN_DIGITS[chars[0]], _CN_DIGITS[chars[idx + 1]]
+    return tens * 10 + ones
+
+
+# 引用 pattern:抓出「第 N 條/點/項」的數字部分
+_REF_PATTERNS: list[re.Pattern[str]] = [
+    re.compile(r"第\s*([零〇○一二三四五六七八九十百]+|\d+)\s*[條點]"),
+]
+_QA_PATTERNS: list[re.Pattern[str]] = [
+    re.compile(r"\bQ\s*(\d+)\b", flags=re.IGNORECASE),
+]
+
+
+def build_inferred_edges(
+    nodes: list[Node], existing_edges: list[dict]
+) -> tuple[list[dict], list[str]]:
+    """掃 body_plain 找「第 N 點/條」「QN」引用,加自動推斷邊。
+
+    規則:
+    - 同 parent 內查 ID(避免跨母題誤連)
+    - A 類條文引用 → cites_inferred(指向 A 類)
+    - 任意類引用 Q → answers_inferred(指向 D 類)
+    - 自指(本節點引用自己)跳過
+    - 已存在於人工 edges 的 (from, to) 跳過
+    """
+    warnings: list[str] = []
+    by_parent_serial: dict[tuple[str, str, int], str] = {}
+    for n in nodes:
+        m = re.match(r"^([ABCD])-([^-]+)-(\d{3})$", n.id)
+        if m:
+            cat, parent, serial = m.group(1), m.group(2), int(m.group(3))
+            by_parent_serial[(cat, parent, serial)] = n.id
+
+    existing_pairs = {(e["from"], e["to"]) for e in existing_edges}
+    inferred: list[dict] = []
+    seen: set[tuple[str, str]] = set()
+
+    for n in nodes:
+        if not n.body_plain:
+            continue
+        body = n.body_plain
+
+        # 條文/點 引用 → A 類
+        for pat in _REF_PATTERNS:
+            for m in pat.finditer(body):
+                serial = _cn2int(m.group(1))
+                if serial is None or serial < 1 or serial > 99:
+                    continue
+                target = by_parent_serial.get(("A", n.parent, serial))
+                if not target or target == n.id:
+                    continue
+                if (n.id, target) in existing_pairs or (n.id, target) in seen:
+                    continue
+                seen.add((n.id, target))
+                inferred.append({
+                    "from": n.id, "to": target,
+                    "relation": "cites_inferred",
+                    "inferred": True,
+                    "matched": m.group(0),
+                })
+
+        # QN 引用 → D 類
+        for pat in _QA_PATTERNS:
+            for m in pat.finditer(body):
+                serial = int(m.group(1))
+                if serial < 1 or serial > 999:
+                    continue
+                target = by_parent_serial.get(("D", n.parent, serial))
+                if not target or target == n.id:
+                    continue
+                if (n.id, target) in existing_pairs or (n.id, target) in seen:
+                    continue
+                seen.add((n.id, target))
+                inferred.append({
+                    "from": n.id, "to": target,
+                    "relation": "answers_inferred",
+                    "inferred": True,
+                    "matched": m.group(0),
+                })
+
+    if inferred:
+        warnings.append(f"自動推斷 {len(inferred)} 條邊(relation 含 _inferred 後綴)")
+    return inferred, warnings
+
+
+def build_tags_json(
+    nodes: list[Node], taxonomy: dict[str, list[str]]
+) -> dict:
+    free_tags: dict[str, dict] = {}
+    for n in nodes:
+        for tag in n.tags:
+            entry = free_tags.setdefault(tag, {"count": 0, "node_ids": []})
+            entry["count"] += 1
+            entry["node_ids"].append(n.id)
+    # 排序:依出現次數降序
+    free_tags_sorted = dict(
+        sorted(free_tags.items(), key=lambda kv: (-kv[1]["count"], kv[0]))
+    )
+    return {
+        "母標籤": taxonomy,
+        "自由標籤": free_tags_sorted,
+    }
+
+
+def build_search_corpus(nodes: list[Node]) -> dict:
+    return {
+        "version": 1,
+        "documents": [
+            {
+                "id": n.id,
+                "type": n.type,
+                "parent": n.parent,
+                "title": n.title,
+                "tags": n.tags,
+                "summary": n.summary,
+                "body": n.body_plain,
+            }
+            for n in nodes
+        ],
+    }
+
+
+# ─────────────────────────────────────────────
+# 寫檔
+# ─────────────────────────────────────────────
+
+
+def write_json(path: Path, data, *, dry_run: bool, log: logging.Logger) -> None:
+    if dry_run:
+        log.info(f"[validate-only] 不寫 {path.relative_to(ROOT)}")
+        return
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_text(
+        json.dumps(data, ensure_ascii=False, indent=2),
+        encoding="utf-8",
+        newline="\n",
+    )
+    size = path.stat().st_size
+    log.info(f"寫入 {path.relative_to(ROOT)} ({size:,} bytes)")
+
+
+# ─────────────────────────────────────────────
+# 彙整表
+# ─────────────────────────────────────────────
+
+
+def print_summary(
+    nodes: list[Node],
+    edges: list[dict],
+    tags_json: dict,
+    warnings: list[str],
+    errors: list[str],
+    validate_only: bool,
+) -> None:
+    print()
+    print("=" * 60)
+    print("索引建構彙整")
+    print("-" * 60)
+    by_type: dict[str, int] = {}
+    by_parent: dict[str, int] = {}
+    reviewed = 0
+    for n in nodes:
+        by_type[n.type] = by_type.get(n.type, 0) + 1
+        by_parent[n.parent] = by_parent.get(n.parent, 0) + 1
+        if n.reviewed:
+            reviewed += 1
+    print(f"節點總數:{len(nodes)}(已校對 {reviewed})")
+    print(f"  依類別:{', '.join(f'{k}={v}' for k, v in sorted(by_type.items()))}")
+    print(f"  依母題:{', '.join(f'{k}={v}' for k, v in sorted(by_parent.items()))}")
+    relation_counts: dict[str, int] = {}
+    for e in edges:
+        relation_counts[e["relation"]] = relation_counts.get(e["relation"], 0) + 1
+    print(
+        f"邊數:{len(edges)} "
+        f"({', '.join(f'{k}={v}' for k, v in sorted(relation_counts.items())) or '-'})"
+    )
+    free_tags = tags_json.get("自由標籤", {})
+    print(f"自由標籤:{len(free_tags)} 個")
+    if free_tags:
+        top = list(free_tags.items())[:8]
+        print("  前 8 高頻:")
+        for tag, info in top:
+            print(f"    - {tag} ({info['count']})")
+    parent_tags = tags_json.get("母標籤", {})
+    print(f"母標籤分類:{len(parent_tags)} 個母題")
+
+    if errors:
+        print(f"\n錯誤({len(errors)}):")
+        for e in errors:
+            print(f"  ✗ {e}")
+    if warnings:
+        print(f"\n警告({len(warnings)}):")
+        for w in warnings:
+            print(f"  ⚠ {w}")
+
+    print("-" * 60)
+    if validate_only:
+        print("(--validate 模式,未寫檔)")
+    else:
+        print(f"輸出至:{INDEX_DIR.relative_to(ROOT)}/")
+
+
+# ─────────────────────────────────────────────
+# main
+# ─────────────────────────────────────────────
+
+
+def main(argv: Optional[list[str]] = None) -> int:
+    parser = argparse.ArgumentParser(
+        description="把 02_markdown/*.md 建立為 03_index/ 的 JSON 索引"
+    )
+    parser.add_argument(
+        "--validate", action="store_true", help="僅驗證,不寫檔"
+    )
+    parser.add_argument("--strict", action="store_true", help="任一警告即 exit 3")
+    parser.add_argument("-v", "--verbose", action="store_true")
+    args = parser.parse_args(argv)
+
+    logging.basicConfig(
+        level=logging.DEBUG if args.verbose else logging.INFO,
+        format="%(levelname)s %(message)s",
+    )
+    log = logging.getLogger("build-index")
+
+    if not MARKDOWN_DIR.exists():
+        log.error(f"找不到 {MARKDOWN_DIR}")
+        return 1
+
+    taxonomy = parse_taxonomy(TAXONOMY_PATH)
+    if not taxonomy:
+        log.warning(f"未能解析 {TAXONOMY_PATH.name},母標籤將為空")
+
+    nodes, warnings, errors = load_nodes(MARKDOWN_DIR, log)
+    if errors:
+        for e in errors:
+            log.error(e)
+        print_summary(nodes, [], {}, warnings, errors, args.validate)
+        return 2
+
+    if not nodes:
+        log.warning("沒有可處理的節點")
+        return 0
+
+    edges, edge_warns = build_edges_json(nodes, log)
+    warnings.extend(edge_warns)
+
+    inferred_edges, inferred_warns = build_inferred_edges(nodes, edges)
+    warnings.extend(inferred_warns)
+    edges.extend(inferred_edges)
+
+    tags_json = build_tags_json(nodes, taxonomy)
+    nodes_json = build_nodes_json(nodes)
+    search_corpus = build_search_corpus(nodes)
+
+    write_json(INDEX_DIR / "nodes.json", nodes_json, dry_run=args.validate, log=log)
+    write_json(INDEX_DIR / "edges.json", edges, dry_run=args.validate, log=log)
+    write_json(INDEX_DIR / "tags.json", tags_json, dry_run=args.validate, log=log)
+    write_json(
+        INDEX_DIR / "search_index.json", search_corpus,
+        dry_run=args.validate, log=log,
+    )
+
+    print_summary(nodes, edges, tags_json, warnings, errors, args.validate)
+
+    if args.strict and warnings:
+        return 3
+    return 0
+
+
+if __name__ == "__main__":
+    sys.exit(main())

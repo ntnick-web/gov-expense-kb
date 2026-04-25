@@ -1,0 +1,3260 @@
+[
+  {
+    "from": "A-國內旅費-001",
+    "to": "A-國內旅費-016",
+    "relation": "cites",
+    "inferred": false
+  },
+  {
+    "from": "A-國內旅費-002",
+    "to": "A-國內旅費-005",
+    "relation": "cites",
+    "inferred": false
+  },
+  {
+    "from": "A-國內旅費-003",
+    "to": "A-國內旅費-004",
+    "relation": "cites",
+    "inferred": false
+  },
+  {
+    "from": "A-國內旅費-003",
+    "to": "A-國內旅費-005",
+    "relation": "cites",
+    "inferred": false
+  },
+  {
+    "from": "A-國內旅費-004",
+    "to": "A-國內旅費-003",
+    "relation": "cites",
+    "inferred": false
+  },
+  {
+    "from": "A-國內旅費-004",
+    "to": "A-國內旅費-002",
+    "relation": "cites",
+    "inferred": false
+  },
+  {
+    "from": "A-國內旅費-005",
+    "to": "A-國內旅費-002",
+    "relation": "cites",
+    "inferred": false
+  },
+  {
+    "from": "A-國內旅費-005",
+    "to": "C-國內旅費-002",
+    "relation": "explains",
+    "inferred": false
+  },
+  {
+    "from": "A-國內旅費-005",
+    "to": "D-國內旅費-001",
+    "relation": "answers",
+    "inferred": false
+  },
+  {
+    "from": "A-國內旅費-005",
+    "to": "D-國內旅費-002",
+    "relation": "answers",
+    "inferred": false
+  },
+  {
+    "from": "A-國內旅費-006",
+    "to": "A-國內旅費-005",
+    "relation": "cites",
+    "inferred": false
+  },
+  {
+    "from": "A-國內旅費-007",
+    "to": "A-國內旅費-005",
+    "relation": "cites",
+    "inferred": false
+  },
+  {
+    "from": "A-國內旅費-009",
+    "to": "A-國內旅費-002",
+    "relation": "cites",
+    "inferred": false
+  },
+  {
+    "from": "A-國內旅費-009",
+    "to": "A-國內旅費-011",
+    "relation": "cites",
+    "inferred": false
+  },
+  {
+    "from": "A-國內旅費-009",
+    "to": "D-國內旅費-012",
+    "relation": "answers",
+    "inferred": false
+  },
+  {
+    "from": "A-國內旅費-011",
+    "to": "A-國內旅費-009",
+    "relation": "cites",
+    "inferred": false
+  },
+  {
+    "from": "A-國內旅費-011",
+    "to": "A-國內旅費-015",
+    "relation": "cites",
+    "inferred": false
+  },
+  {
+    "from": "A-國內旅費-013",
+    "to": "A-國內旅費-014",
+    "relation": "cites",
+    "inferred": false
+  },
+  {
+    "from": "A-國內旅費-014",
+    "to": "A-國內旅費-013",
+    "relation": "cites",
+    "inferred": false
+  },
+  {
+    "from": "A-國內旅費-015",
+    "to": "A-國內旅費-011",
+    "relation": "cites",
+    "inferred": false
+  },
+  {
+    "from": "A-國內旅費-015",
+    "to": "A-國內旅費-009",
+    "relation": "cites",
+    "inferred": false
+  },
+  {
+    "from": "A-國內旅費-015",
+    "to": "D-國內旅費-012",
+    "relation": "answers",
+    "inferred": false
+  },
+  {
+    "from": "A-國內旅費-015",
+    "to": "D-國內旅費-013",
+    "relation": "answers",
+    "inferred": false
+  },
+  {
+    "from": "A-國內旅費-016",
+    "to": "A-國內旅費-001",
+    "relation": "cites",
+    "inferred": false
+  },
+  {
+    "from": "C-國內旅費-002",
+    "to": "A-國內旅費-005",
+    "relation": "explains",
+    "inferred": false
+  },
+  {
+    "from": "C-國內旅費-002",
+    "to": "A-國內旅費-002",
+    "relation": "explains",
+    "inferred": false
+  },
+  {
+    "from": "D-國內旅費-001",
+    "to": "A-國內旅費-005",
+    "relation": "answers",
+    "inferred": false
+  },
+  {
+    "from": "D-國內旅費-002",
+    "to": "A-國內旅費-005",
+    "relation": "answers",
+    "inferred": false
+  },
+  {
+    "from": "D-國內旅費-003",
+    "to": "A-國內旅費-005",
+    "relation": "answers",
+    "inferred": false
+  },
+  {
+    "from": "D-國內旅費-003",
+    "to": "A-國內旅費-003",
+    "relation": "answers",
+    "inferred": false
+  },
+  {
+    "from": "D-國內旅費-004",
+    "to": "A-國內旅費-005",
+    "relation": "answers",
+    "inferred": false
+  },
+  {
+    "from": "D-國內旅費-005",
+    "to": "A-國內旅費-005",
+    "relation": "answers",
+    "inferred": false
+  },
+  {
+    "from": "D-國內旅費-006",
+    "to": "A-國內旅費-005",
+    "relation": "answers",
+    "inferred": false
+  },
+  {
+    "from": "D-國內旅費-006",
+    "to": "A-國內旅費-003",
+    "relation": "answers",
+    "inferred": false
+  },
+  {
+    "from": "D-國內旅費-007",
+    "to": "A-國內旅費-005",
+    "relation": "answers",
+    "inferred": false
+  },
+  {
+    "from": "D-國內旅費-007",
+    "to": "A-國內旅費-003",
+    "relation": "answers",
+    "inferred": false
+  },
+  {
+    "from": "D-國內旅費-008",
+    "to": "A-國內旅費-005",
+    "relation": "answers",
+    "inferred": false
+  },
+  {
+    "from": "D-國內旅費-009",
+    "to": "A-國內旅費-005",
+    "relation": "answers",
+    "inferred": false
+  },
+  {
+    "from": "D-國內旅費-009",
+    "to": "D-國內旅費-010",
+    "relation": "answers",
+    "inferred": false
+  },
+  {
+    "from": "D-國內旅費-010",
+    "to": "A-國內旅費-005",
+    "relation": "answers",
+    "inferred": false
+  },
+  {
+    "from": "D-國內旅費-011",
+    "to": "A-國內旅費-005",
+    "relation": "answers",
+    "inferred": false
+  },
+  {
+    "from": "D-國內旅費-011",
+    "to": "D-國內旅費-010",
+    "relation": "answers",
+    "inferred": false
+  },
+  {
+    "from": "D-國內旅費-012",
+    "to": "A-國內旅費-009",
+    "relation": "answers",
+    "inferred": false
+  },
+  {
+    "from": "D-國內旅費-012",
+    "to": "A-國內旅費-015",
+    "relation": "answers",
+    "inferred": false
+  },
+  {
+    "from": "D-國內旅費-013",
+    "to": "A-國內旅費-002",
+    "relation": "answers",
+    "inferred": false
+  },
+  {
+    "from": "D-國內旅費-013",
+    "to": "A-國內旅費-015",
+    "relation": "answers",
+    "inferred": false
+  },
+  {
+    "from": "A-國外旅費-009",
+    "to": "A-國外旅費-008",
+    "relation": "cites_inferred",
+    "inferred": true,
+    "matched": "第八點"
+  },
+  {
+    "from": "A-國外旅費-010",
+    "to": "A-國外旅費-008",
+    "relation": "cites_inferred",
+    "inferred": true,
+    "matched": "第八點"
+  },
+  {
+    "from": "A-國外旅費-016",
+    "to": "A-國外旅費-002",
+    "relation": "cites_inferred",
+    "inferred": true,
+    "matched": "第二點"
+  },
+  {
+    "from": "A-支出憑證與結報-007",
+    "to": "A-支出憑證與結報-004",
+    "relation": "cites_inferred",
+    "inferred": true,
+    "matched": "第四點"
+  },
+  {
+    "from": "A-支出憑證與結報-011",
+    "to": "A-支出憑證與結報-004",
+    "relation": "cites_inferred",
+    "inferred": true,
+    "matched": "第四點"
+  },
+  {
+    "from": "A-支出憑證與結報-011",
+    "to": "A-支出憑證與結報-005",
+    "relation": "cites_inferred",
+    "inferred": true,
+    "matched": "第五點"
+  },
+  {
+    "from": "A-支出憑證與結報-011",
+    "to": "A-支出憑證與結報-010",
+    "relation": "cites_inferred",
+    "inferred": true,
+    "matched": "第十點"
+  },
+  {
+    "from": "A-支出憑證與結報-017",
+    "to": "A-支出憑證與結報-004",
+    "relation": "cites_inferred",
+    "inferred": true,
+    "matched": "第四點"
+  },
+  {
+    "from": "A-支出憑證與結報-017",
+    "to": "A-支出憑證與結報-006",
+    "relation": "cites_inferred",
+    "inferred": true,
+    "matched": "第六點"
+  },
+  {
+    "from": "A-支出憑證與結報-022",
+    "to": "A-支出憑證與結報-007",
+    "relation": "cites_inferred",
+    "inferred": true,
+    "matched": "第七點"
+  },
+  {
+    "from": "B-國外旅費-001",
+    "to": "A-國外旅費-007",
+    "relation": "cites_inferred",
+    "inferred": true,
+    "matched": "第七點"
+  },
+  {
+    "from": "B-國外旅費-001",
+    "to": "A-國外旅費-015",
+    "relation": "cites_inferred",
+    "inferred": true,
+    "matched": "第十五點"
+  },
+  {
+    "from": "B-國外旅費-001",
+    "to": "A-國外旅費-016",
+    "relation": "cites_inferred",
+    "inferred": true,
+    "matched": "第十六點"
+  },
+  {
+    "from": "B-國外旅費-001",
+    "to": "A-國外旅費-017",
+    "relation": "cites_inferred",
+    "inferred": true,
+    "matched": "第十七點"
+  },
+  {
+    "from": "B-國外旅費-001",
+    "to": "A-國外旅費-013",
+    "relation": "cites_inferred",
+    "inferred": true,
+    "matched": "第十三點"
+  },
+  {
+    "from": "C-國內旅費-021",
+    "to": "A-國內旅費-003",
+    "relation": "cites_inferred",
+    "inferred": true,
+    "matched": "第三點"
+  },
+  {
+    "from": "C-國內旅費-021",
+    "to": "A-國內旅費-004",
+    "relation": "cites_inferred",
+    "inferred": true,
+    "matched": "第四點"
+  },
+  {
+    "from": "C-國內旅費-048",
+    "to": "A-國內旅費-003",
+    "relation": "cites_inferred",
+    "inferred": true,
+    "matched": "第 3 點"
+  },
+  {
+    "from": "C-國內旅費-051",
+    "to": "A-國內旅費-002",
+    "relation": "cites_inferred",
+    "inferred": true,
+    "matched": "第 2 點"
+  },
+  {
+    "from": "C-國內旅費-052",
+    "to": "A-國內旅費-003",
+    "relation": "cites_inferred",
+    "inferred": true,
+    "matched": "第 3 點"
+  },
+  {
+    "from": "C-國內旅費-055",
+    "to": "A-國內旅費-002",
+    "relation": "cites_inferred",
+    "inferred": true,
+    "matched": "第 2 點"
+  },
+  {
+    "from": "C-國內旅費-055",
+    "to": "A-國內旅費-005",
+    "relation": "cites_inferred",
+    "inferred": true,
+    "matched": "第 5 點"
+  },
+  {
+    "from": "C-國內旅費-055",
+    "to": "D-國內旅費-013",
+    "relation": "answers_inferred",
+    "inferred": true,
+    "matched": "Q13"
+  },
+  {
+    "from": "C-國內旅費-056",
+    "to": "A-國內旅費-003",
+    "relation": "cites_inferred",
+    "inferred": true,
+    "matched": "第 3 點"
+  },
+  {
+    "from": "C-國內旅費-056",
+    "to": "A-國內旅費-006",
+    "relation": "cites_inferred",
+    "inferred": true,
+    "matched": "第 6 點"
+  },
+  {
+    "from": "C-國內旅費-059",
+    "to": "A-國內旅費-002",
+    "relation": "cites_inferred",
+    "inferred": true,
+    "matched": "第 2 點"
+  },
+  {
+    "from": "C-國內旅費-060",
+    "to": "A-國內旅費-003",
+    "relation": "cites_inferred",
+    "inferred": true,
+    "matched": "第 3 點"
+  },
+  {
+    "from": "C-國內旅費-060",
+    "to": "A-國內旅費-002",
+    "relation": "cites_inferred",
+    "inferred": true,
+    "matched": "第 2 點"
+  },
+  {
+    "from": "C-國內旅費-060",
+    "to": "A-國內旅費-005",
+    "relation": "cites_inferred",
+    "inferred": true,
+    "matched": "第 5 點"
+  },
+  {
+    "from": "C-國內旅費-064",
+    "to": "A-國內旅費-003",
+    "relation": "cites_inferred",
+    "inferred": true,
+    "matched": "第 3 點"
+  },
+  {
+    "from": "C-國內旅費-064",
+    "to": "A-國內旅費-006",
+    "relation": "cites_inferred",
+    "inferred": true,
+    "matched": "第 6 點"
+  },
+  {
+    "from": "C-國內旅費-068",
+    "to": "A-國內旅費-002",
+    "relation": "cites_inferred",
+    "inferred": true,
+    "matched": "第 2 點"
+  },
+  {
+    "from": "C-國內旅費-068",
+    "to": "A-國內旅費-003",
+    "relation": "cites_inferred",
+    "inferred": true,
+    "matched": "第 3 點"
+  },
+  {
+    "from": "C-國內旅費-070",
+    "to": "A-國內旅費-015",
+    "relation": "cites_inferred",
+    "inferred": true,
+    "matched": "第 15 點"
+  },
+  {
+    "from": "C-國內旅費-071",
+    "to": "A-國內旅費-002",
+    "relation": "cites_inferred",
+    "inferred": true,
+    "matched": "第 2 點"
+  },
+  {
+    "from": "C-國內旅費-071",
+    "to": "A-國內旅費-003",
+    "relation": "cites_inferred",
+    "inferred": true,
+    "matched": "第 3 點"
+  },
+  {
+    "from": "C-國內旅費-071",
+    "to": "A-國內旅費-006",
+    "relation": "cites_inferred",
+    "inferred": true,
+    "matched": "第 6 點"
+  },
+  {
+    "from": "C-國內旅費-073",
+    "to": "A-國內旅費-015",
+    "relation": "cites_inferred",
+    "inferred": true,
+    "matched": "第 15 點"
+  },
+  {
+    "from": "C-國內旅費-078",
+    "to": "A-國內旅費-009",
+    "relation": "cites_inferred",
+    "inferred": true,
+    "matched": "第 9 點"
+  },
+  {
+    "from": "C-國內旅費-085",
+    "to": "D-國內旅費-013",
+    "relation": "answers_inferred",
+    "inferred": true,
+    "matched": "Q13"
+  },
+  {
+    "from": "C-國內旅費-086",
+    "to": "A-國內旅費-003",
+    "relation": "cites_inferred",
+    "inferred": true,
+    "matched": "第 3 點"
+  },
+  {
+    "from": "C-國內旅費-089",
+    "to": "A-國內旅費-003",
+    "relation": "cites_inferred",
+    "inferred": true,
+    "matched": "第 3 點"
+  },
+  {
+    "from": "C-國內旅費-093",
+    "to": "A-國內旅費-002",
+    "relation": "cites_inferred",
+    "inferred": true,
+    "matched": "第 2 點"
+  },
+  {
+    "from": "C-國內旅費-093",
+    "to": "A-國內旅費-004",
+    "relation": "cites_inferred",
+    "inferred": true,
+    "matched": "第 4 點"
+  },
+  {
+    "from": "C-國內旅費-093",
+    "to": "A-國內旅費-005",
+    "relation": "cites_inferred",
+    "inferred": true,
+    "matched": "第 5 點"
+  },
+  {
+    "from": "C-國內旅費-098",
+    "to": "A-國內旅費-002",
+    "relation": "cites_inferred",
+    "inferred": true,
+    "matched": "第二點"
+  },
+  {
+    "from": "C-國內旅費-099",
+    "to": "A-國內旅費-003",
+    "relation": "cites_inferred",
+    "inferred": true,
+    "matched": "第 3 點"
+  },
+  {
+    "from": "C-國內旅費-099",
+    "to": "A-國內旅費-006",
+    "relation": "cites_inferred",
+    "inferred": true,
+    "matched": "第 6 點"
+  },
+  {
+    "from": "C-國內旅費-101",
+    "to": "A-國內旅費-004",
+    "relation": "cites_inferred",
+    "inferred": true,
+    "matched": "第 4 條"
+  },
+  {
+    "from": "C-國內旅費-104",
+    "to": "A-國內旅費-003",
+    "relation": "cites_inferred",
+    "inferred": true,
+    "matched": "第 3 點"
+  },
+  {
+    "from": "C-國內旅費-106",
+    "to": "A-國內旅費-004",
+    "relation": "cites_inferred",
+    "inferred": true,
+    "matched": "第 4 條"
+  },
+  {
+    "from": "C-國內旅費-112",
+    "to": "A-國內旅費-001",
+    "relation": "cites_inferred",
+    "inferred": true,
+    "matched": "第 1 點"
+  },
+  {
+    "from": "C-國內旅費-113",
+    "to": "A-國內旅費-002",
+    "relation": "cites_inferred",
+    "inferred": true,
+    "matched": "第 2 條"
+  },
+  {
+    "from": "C-國內旅費-113",
+    "to": "A-國內旅費-006",
+    "relation": "cites_inferred",
+    "inferred": true,
+    "matched": "第 6 條"
+  },
+  {
+    "from": "C-國內旅費-116",
+    "to": "A-國內旅費-003",
+    "relation": "cites_inferred",
+    "inferred": true,
+    "matched": "第 3 點"
+  },
+  {
+    "from": "C-國內旅費-117",
+    "to": "A-國內旅費-003",
+    "relation": "cites_inferred",
+    "inferred": true,
+    "matched": "第 3 點"
+  },
+  {
+    "from": "C-國內旅費-119",
+    "to": "A-國內旅費-003",
+    "relation": "cites_inferred",
+    "inferred": true,
+    "matched": "第 3 點"
+  },
+  {
+    "from": "C-國內旅費-121",
+    "to": "A-國內旅費-003",
+    "relation": "cites_inferred",
+    "inferred": true,
+    "matched": "第 3 點"
+  },
+  {
+    "from": "C-國內旅費-121",
+    "to": "A-國內旅費-009",
+    "relation": "cites_inferred",
+    "inferred": true,
+    "matched": "第 9 點"
+  },
+  {
+    "from": "C-國內旅費-121",
+    "to": "A-國內旅費-016",
+    "relation": "cites_inferred",
+    "inferred": true,
+    "matched": "第 16 點"
+  },
+  {
+    "from": "C-國內旅費-122",
+    "to": "A-國內旅費-003",
+    "relation": "cites_inferred",
+    "inferred": true,
+    "matched": "第 3 點"
+  },
+  {
+    "from": "C-國內旅費-122",
+    "to": "A-國內旅費-007",
+    "relation": "cites_inferred",
+    "inferred": true,
+    "matched": "第 7 條"
+  },
+  {
+    "from": "C-國內旅費-123",
+    "to": "A-國內旅費-004",
+    "relation": "cites_inferred",
+    "inferred": true,
+    "matched": "第 4 點"
+  },
+  {
+    "from": "C-國內旅費-123",
+    "to": "A-國內旅費-016",
+    "relation": "cites_inferred",
+    "inferred": true,
+    "matched": "第 16 點"
+  },
+  {
+    "from": "C-國內旅費-126",
+    "to": "A-國內旅費-001",
+    "relation": "cites_inferred",
+    "inferred": true,
+    "matched": "第 1 點"
+  },
+  {
+    "from": "C-國內旅費-126",
+    "to": "A-國內旅費-007",
+    "relation": "cites_inferred",
+    "inferred": true,
+    "matched": "第 7 點"
+  },
+  {
+    "from": "C-國內旅費-126",
+    "to": "A-國內旅費-003",
+    "relation": "cites_inferred",
+    "inferred": true,
+    "matched": "第 3 點"
+  },
+  {
+    "from": "C-國內旅費-129",
+    "to": "A-國內旅費-004",
+    "relation": "cites_inferred",
+    "inferred": true,
+    "matched": "第 4 點"
+  },
+  {
+    "from": "C-國內旅費-130",
+    "to": "A-國內旅費-005",
+    "relation": "cites_inferred",
+    "inferred": true,
+    "matched": "第 5 點"
+  },
+  {
+    "from": "C-國內旅費-130",
+    "to": "A-國內旅費-015",
+    "relation": "cites_inferred",
+    "inferred": true,
+    "matched": "第 15 點"
+  },
+  {
+    "from": "C-國內旅費-130",
+    "to": "D-國內旅費-001",
+    "relation": "answers_inferred",
+    "inferred": true,
+    "matched": "Q1"
+  },
+  {
+    "from": "C-國內旅費-130",
+    "to": "D-國內旅費-002",
+    "relation": "answers_inferred",
+    "inferred": true,
+    "matched": "Q2"
+  },
+  {
+    "from": "C-國內旅費-130",
+    "to": "D-國內旅費-003",
+    "relation": "answers_inferred",
+    "inferred": true,
+    "matched": "Q3"
+  },
+  {
+    "from": "C-國內旅費-130",
+    "to": "D-國內旅費-004",
+    "relation": "answers_inferred",
+    "inferred": true,
+    "matched": "Q4"
+  },
+  {
+    "from": "C-國內旅費-130",
+    "to": "D-國內旅費-005",
+    "relation": "answers_inferred",
+    "inferred": true,
+    "matched": "Q5"
+  },
+  {
+    "from": "C-國內旅費-130",
+    "to": "D-國內旅費-006",
+    "relation": "answers_inferred",
+    "inferred": true,
+    "matched": "Q6"
+  },
+  {
+    "from": "C-國內旅費-130",
+    "to": "D-國內旅費-007",
+    "relation": "answers_inferred",
+    "inferred": true,
+    "matched": "Q7"
+  },
+  {
+    "from": "C-國內旅費-130",
+    "to": "D-國內旅費-008",
+    "relation": "answers_inferred",
+    "inferred": true,
+    "matched": "Q8"
+  },
+  {
+    "from": "C-國內旅費-130",
+    "to": "D-國內旅費-009",
+    "relation": "answers_inferred",
+    "inferred": true,
+    "matched": "Q9"
+  },
+  {
+    "from": "C-國內旅費-131",
+    "to": "A-國內旅費-002",
+    "relation": "cites_inferred",
+    "inferred": true,
+    "matched": "第 2 點"
+  },
+  {
+    "from": "C-國內旅費-131",
+    "to": "A-國內旅費-003",
+    "relation": "cites_inferred",
+    "inferred": true,
+    "matched": "第 3 點"
+  },
+  {
+    "from": "C-國內旅費-131",
+    "to": "A-國內旅費-005",
+    "relation": "cites_inferred",
+    "inferred": true,
+    "matched": "第 5 點"
+  },
+  {
+    "from": "C-國內旅費-131",
+    "to": "A-國內旅費-016",
+    "relation": "cites_inferred",
+    "inferred": true,
+    "matched": "第 16 點"
+  },
+  {
+    "from": "C-國內旅費-132",
+    "to": "A-國內旅費-005",
+    "relation": "cites_inferred",
+    "inferred": true,
+    "matched": "第 5 點"
+  },
+  {
+    "from": "C-國內旅費-134",
+    "to": "A-國內旅費-005",
+    "relation": "cites_inferred",
+    "inferred": true,
+    "matched": "第 5 點"
+  },
+  {
+    "from": "C-國內旅費-135",
+    "to": "A-國內旅費-003",
+    "relation": "cites_inferred",
+    "inferred": true,
+    "matched": "第 3 點"
+  },
+  {
+    "from": "C-國內旅費-135",
+    "to": "A-國內旅費-005",
+    "relation": "cites_inferred",
+    "inferred": true,
+    "matched": "第 5 點"
+  },
+  {
+    "from": "C-國內旅費-136",
+    "to": "A-國內旅費-005",
+    "relation": "cites_inferred",
+    "inferred": true,
+    "matched": "第 5 點"
+  },
+  {
+    "from": "C-國內旅費-137",
+    "to": "A-國內旅費-005",
+    "relation": "cites_inferred",
+    "inferred": true,
+    "matched": "第 5 點"
+  },
+  {
+    "from": "C-國內旅費-140",
+    "to": "A-國內旅費-001",
+    "relation": "cites_inferred",
+    "inferred": true,
+    "matched": "第 1 點"
+  },
+  {
+    "from": "C-國內旅費-141",
+    "to": "A-國內旅費-002",
+    "relation": "cites_inferred",
+    "inferred": true,
+    "matched": "第 2 點"
+  },
+  {
+    "from": "C-國內旅費-142",
+    "to": "A-國內旅費-005",
+    "relation": "cites_inferred",
+    "inferred": true,
+    "matched": "第 5 點"
+  },
+  {
+    "from": "C-國內旅費-143",
+    "to": "A-國內旅費-005",
+    "relation": "cites_inferred",
+    "inferred": true,
+    "matched": "第 5 點"
+  },
+  {
+    "from": "C-國內旅費-144",
+    "to": "A-國內旅費-005",
+    "relation": "cites_inferred",
+    "inferred": true,
+    "matched": "第 5 點"
+  },
+  {
+    "from": "C-國內旅費-145",
+    "to": "A-國內旅費-005",
+    "relation": "cites_inferred",
+    "inferred": true,
+    "matched": "第 5 點"
+  },
+  {
+    "from": "C-國內旅費-146",
+    "to": "A-國內旅費-005",
+    "relation": "cites_inferred",
+    "inferred": true,
+    "matched": "第 5 點"
+  },
+  {
+    "from": "C-國內旅費-147",
+    "to": "A-國內旅費-005",
+    "relation": "cites_inferred",
+    "inferred": true,
+    "matched": "第 5 點"
+  },
+  {
+    "from": "C-國內旅費-149",
+    "to": "A-國內旅費-005",
+    "relation": "cites_inferred",
+    "inferred": true,
+    "matched": "第 5 點"
+  },
+  {
+    "from": "C-國內旅費-151",
+    "to": "A-國內旅費-005",
+    "relation": "cites_inferred",
+    "inferred": true,
+    "matched": "第 5 點"
+  },
+  {
+    "from": "C-國內旅費-151",
+    "to": "A-國內旅費-015",
+    "relation": "cites_inferred",
+    "inferred": true,
+    "matched": "第 15 點"
+  },
+  {
+    "from": "C-國內旅費-154",
+    "to": "A-國內旅費-001",
+    "relation": "cites_inferred",
+    "inferred": true,
+    "matched": "第 1 點"
+  },
+  {
+    "from": "C-國內旅費-155",
+    "to": "A-國內旅費-002",
+    "relation": "cites_inferred",
+    "inferred": true,
+    "matched": "第 2 點"
+  },
+  {
+    "from": "C-國內旅費-155",
+    "to": "A-國內旅費-003",
+    "relation": "cites_inferred",
+    "inferred": true,
+    "matched": "第 3 點"
+  },
+  {
+    "from": "C-國內旅費-155",
+    "to": "A-國內旅費-004",
+    "relation": "cites_inferred",
+    "inferred": true,
+    "matched": "第 4 點"
+  },
+  {
+    "from": "C-國內旅費-155",
+    "to": "A-國內旅費-006",
+    "relation": "cites_inferred",
+    "inferred": true,
+    "matched": "第 6 點"
+  },
+  {
+    "from": "C-國內旅費-159",
+    "to": "A-國內旅費-005",
+    "relation": "cites_inferred",
+    "inferred": true,
+    "matched": "第 5 點"
+  },
+  {
+    "from": "C-國內旅費-167",
+    "to": "A-國內旅費-002",
+    "relation": "cites_inferred",
+    "inferred": true,
+    "matched": "第二點"
+  },
+  {
+    "from": "C-國內旅費-170",
+    "to": "A-國內旅費-002",
+    "relation": "cites_inferred",
+    "inferred": true,
+    "matched": "第 2 點"
+  },
+  {
+    "from": "C-國內旅費-173",
+    "to": "A-國內旅費-007",
+    "relation": "cites_inferred",
+    "inferred": true,
+    "matched": "第 7 點"
+  },
+  {
+    "from": "C-國內旅費-175",
+    "to": "A-國內旅費-007",
+    "relation": "cites_inferred",
+    "inferred": true,
+    "matched": "第 7 點"
+  },
+  {
+    "from": "C-國內旅費-175",
+    "to": "A-國內旅費-002",
+    "relation": "cites_inferred",
+    "inferred": true,
+    "matched": "第 2 點"
+  },
+  {
+    "from": "C-國內旅費-175",
+    "to": "A-國內旅費-009",
+    "relation": "cites_inferred",
+    "inferred": true,
+    "matched": "第 9 點"
+  },
+  {
+    "from": "C-國內旅費-177",
+    "to": "A-國內旅費-002",
+    "relation": "cites_inferred",
+    "inferred": true,
+    "matched": "第 2 點"
+  },
+  {
+    "from": "C-國內旅費-177",
+    "to": "A-國內旅費-005",
+    "relation": "cites_inferred",
+    "inferred": true,
+    "matched": "第 5 點"
+  },
+  {
+    "from": "C-國內旅費-177",
+    "to": "A-國內旅費-007",
+    "relation": "cites_inferred",
+    "inferred": true,
+    "matched": "第 7 點"
+  },
+  {
+    "from": "C-國內旅費-177",
+    "to": "A-國內旅費-009",
+    "relation": "cites_inferred",
+    "inferred": true,
+    "matched": "第 9 點"
+  },
+  {
+    "from": "C-國內旅費-177",
+    "to": "A-國內旅費-015",
+    "relation": "cites_inferred",
+    "inferred": true,
+    "matched": "第 15 點"
+  },
+  {
+    "from": "C-國內旅費-177",
+    "to": "A-國內旅費-016",
+    "relation": "cites_inferred",
+    "inferred": true,
+    "matched": "第 16 點"
+  },
+  {
+    "from": "C-國內旅費-179",
+    "to": "A-國內旅費-007",
+    "relation": "cites_inferred",
+    "inferred": true,
+    "matched": "第 7 點"
+  },
+  {
+    "from": "C-國內旅費-181",
+    "to": "A-國內旅費-001",
+    "relation": "cites_inferred",
+    "inferred": true,
+    "matched": "第 1 點"
+  },
+  {
+    "from": "C-國內旅費-181",
+    "to": "A-國內旅費-007",
+    "relation": "cites_inferred",
+    "inferred": true,
+    "matched": "第 7 點"
+  },
+  {
+    "from": "C-國內旅費-240",
+    "to": "A-國內旅費-003",
+    "relation": "cites_inferred",
+    "inferred": true,
+    "matched": "第 3 條"
+  },
+  {
+    "from": "C-國內旅費-240",
+    "to": "A-國內旅費-004",
+    "relation": "cites_inferred",
+    "inferred": true,
+    "matched": "第 4 條"
+  },
+  {
+    "from": "C-國內旅費-246",
+    "to": "A-國內旅費-005",
+    "relation": "cites_inferred",
+    "inferred": true,
+    "matched": "第 5 點"
+  },
+  {
+    "from": "C-國內旅費-246",
+    "to": "A-國內旅費-003",
+    "relation": "cites_inferred",
+    "inferred": true,
+    "matched": "第 3 點"
+  },
+  {
+    "from": "C-國內旅費-246",
+    "to": "A-國內旅費-004",
+    "relation": "cites_inferred",
+    "inferred": true,
+    "matched": "第 4 點"
+  },
+  {
+    "from": "C-國內旅費-247",
+    "to": "A-國內旅費-003",
+    "relation": "cites_inferred",
+    "inferred": true,
+    "matched": "第 3 點"
+  },
+  {
+    "from": "C-國內旅費-248",
+    "to": "A-國內旅費-003",
+    "relation": "cites_inferred",
+    "inferred": true,
+    "matched": "第 3 點"
+  },
+  {
+    "from": "C-國內旅費-248",
+    "to": "A-國內旅費-005",
+    "relation": "cites_inferred",
+    "inferred": true,
+    "matched": "第 5 點"
+  },
+  {
+    "from": "C-國內旅費-248",
+    "to": "A-國內旅費-004",
+    "relation": "cites_inferred",
+    "inferred": true,
+    "matched": "第 4 點"
+  },
+  {
+    "from": "C-國內旅費-249",
+    "to": "A-國內旅費-005",
+    "relation": "cites_inferred",
+    "inferred": true,
+    "matched": "第 5 點"
+  },
+  {
+    "from": "C-國內旅費-250",
+    "to": "A-國內旅費-005",
+    "relation": "cites_inferred",
+    "inferred": true,
+    "matched": "第 5 點"
+  },
+  {
+    "from": "C-國內旅費-250",
+    "to": "A-國內旅費-003",
+    "relation": "cites_inferred",
+    "inferred": true,
+    "matched": "第 3 點"
+  },
+  {
+    "from": "C-國內旅費-250",
+    "to": "A-國內旅費-004",
+    "relation": "cites_inferred",
+    "inferred": true,
+    "matched": "第 4 點"
+  },
+  {
+    "from": "C-國內旅費-252",
+    "to": "A-國內旅費-002",
+    "relation": "cites_inferred",
+    "inferred": true,
+    "matched": "第 2 點"
+  },
+  {
+    "from": "C-國內旅費-252",
+    "to": "A-國內旅費-005",
+    "relation": "cites_inferred",
+    "inferred": true,
+    "matched": "第 5 點"
+  },
+  {
+    "from": "C-國內旅費-252",
+    "to": "A-國內旅費-015",
+    "relation": "cites_inferred",
+    "inferred": true,
+    "matched": "第 15 點"
+  },
+  {
+    "from": "C-國內旅費-253",
+    "to": "A-國內旅費-003",
+    "relation": "cites_inferred",
+    "inferred": true,
+    "matched": "第 3 點"
+  },
+  {
+    "from": "C-國內旅費-253",
+    "to": "A-國內旅費-009",
+    "relation": "cites_inferred",
+    "inferred": true,
+    "matched": "第 9 點"
+  },
+  {
+    "from": "C-國內旅費-254",
+    "to": "A-國內旅費-003",
+    "relation": "cites_inferred",
+    "inferred": true,
+    "matched": "第 3 點"
+  },
+  {
+    "from": "C-國內旅費-254",
+    "to": "A-國內旅費-009",
+    "relation": "cites_inferred",
+    "inferred": true,
+    "matched": "第 9 點"
+  },
+  {
+    "from": "C-國內旅費-255",
+    "to": "A-國內旅費-009",
+    "relation": "cites_inferred",
+    "inferred": true,
+    "matched": "第 9 點"
+  },
+  {
+    "from": "C-國內旅費-256",
+    "to": "A-國內旅費-009",
+    "relation": "cites_inferred",
+    "inferred": true,
+    "matched": "第 9 點"
+  },
+  {
+    "from": "C-國內旅費-256",
+    "to": "A-國內旅費-016",
+    "relation": "cites_inferred",
+    "inferred": true,
+    "matched": "第 16 點"
+  },
+  {
+    "from": "C-國內旅費-257",
+    "to": "A-國內旅費-003",
+    "relation": "cites_inferred",
+    "inferred": true,
+    "matched": "第 3 點"
+  },
+  {
+    "from": "C-國內旅費-257",
+    "to": "A-國內旅費-009",
+    "relation": "cites_inferred",
+    "inferred": true,
+    "matched": "第 9 點"
+  },
+  {
+    "from": "C-國內旅費-258",
+    "to": "A-國內旅費-003",
+    "relation": "cites_inferred",
+    "inferred": true,
+    "matched": "第 3 點"
+  },
+  {
+    "from": "C-國內旅費-258",
+    "to": "A-國內旅費-005",
+    "relation": "cites_inferred",
+    "inferred": true,
+    "matched": "第 5 點"
+  },
+  {
+    "from": "C-國內旅費-258",
+    "to": "A-國內旅費-009",
+    "relation": "cites_inferred",
+    "inferred": true,
+    "matched": "第 9 點"
+  },
+  {
+    "from": "C-國內旅費-261",
+    "to": "A-國內旅費-002",
+    "relation": "cites_inferred",
+    "inferred": true,
+    "matched": "第 2 點"
+  },
+  {
+    "from": "C-國內旅費-261",
+    "to": "A-國內旅費-009",
+    "relation": "cites_inferred",
+    "inferred": true,
+    "matched": "第 9 點"
+  },
+  {
+    "from": "C-國內旅費-261",
+    "to": "A-國內旅費-015",
+    "relation": "cites_inferred",
+    "inferred": true,
+    "matched": "第 15 點"
+  },
+  {
+    "from": "C-國內旅費-262",
+    "to": "A-國內旅費-015",
+    "relation": "cites_inferred",
+    "inferred": true,
+    "matched": "第 15 點"
+  },
+  {
+    "from": "C-國內旅費-262",
+    "to": "D-國內旅費-012",
+    "relation": "answers_inferred",
+    "inferred": true,
+    "matched": "Q12"
+  },
+  {
+    "from": "C-國內旅費-263",
+    "to": "A-國內旅費-006",
+    "relation": "cites_inferred",
+    "inferred": true,
+    "matched": "第 6 點"
+  },
+  {
+    "from": "C-國內旅費-264",
+    "to": "A-國內旅費-003",
+    "relation": "cites_inferred",
+    "inferred": true,
+    "matched": "第 3 條"
+  },
+  {
+    "from": "C-國內旅費-264",
+    "to": "A-國內旅費-004",
+    "relation": "cites_inferred",
+    "inferred": true,
+    "matched": "第 4 條"
+  },
+  {
+    "from": "C-國內旅費-276",
+    "to": "A-國內旅費-013",
+    "relation": "cites_inferred",
+    "inferred": true,
+    "matched": "第 13 點"
+  },
+  {
+    "from": "C-國內旅費-277",
+    "to": "A-國內旅費-013",
+    "relation": "cites_inferred",
+    "inferred": true,
+    "matched": "第 13 點"
+  },
+  {
+    "from": "C-國內旅費-278",
+    "to": "A-國內旅費-014",
+    "relation": "cites_inferred",
+    "inferred": true,
+    "matched": "第 14 點"
+  },
+  {
+    "from": "C-國內旅費-278",
+    "to": "A-國內旅費-013",
+    "relation": "cites_inferred",
+    "inferred": true,
+    "matched": "第 13 點"
+  },
+  {
+    "from": "C-國內旅費-279",
+    "to": "A-國內旅費-014",
+    "relation": "cites_inferred",
+    "inferred": true,
+    "matched": "第 14 點"
+  },
+  {
+    "from": "C-國內旅費-279",
+    "to": "A-國內旅費-013",
+    "relation": "cites_inferred",
+    "inferred": true,
+    "matched": "第 13 點"
+  },
+  {
+    "from": "C-國內旅費-279",
+    "to": "A-國內旅費-016",
+    "relation": "cites_inferred",
+    "inferred": true,
+    "matched": "第 16 點"
+  },
+  {
+    "from": "C-國內旅費-281",
+    "to": "A-國內旅費-002",
+    "relation": "cites_inferred",
+    "inferred": true,
+    "matched": "第 2 點"
+  },
+  {
+    "from": "C-國內旅費-281",
+    "to": "A-國內旅費-003",
+    "relation": "cites_inferred",
+    "inferred": true,
+    "matched": "第 3 點"
+  },
+  {
+    "from": "C-國內旅費-281",
+    "to": "A-國內旅費-013",
+    "relation": "cites_inferred",
+    "inferred": true,
+    "matched": "第 13 點"
+  },
+  {
+    "from": "C-國內旅費-281",
+    "to": "A-國內旅費-015",
+    "relation": "cites_inferred",
+    "inferred": true,
+    "matched": "第 15 點"
+  },
+  {
+    "from": "C-國內旅費-282",
+    "to": "A-國內旅費-001",
+    "relation": "cites_inferred",
+    "inferred": true,
+    "matched": "第 1 點"
+  },
+  {
+    "from": "C-國內旅費-282",
+    "to": "A-國內旅費-016",
+    "relation": "cites_inferred",
+    "inferred": true,
+    "matched": "第 16 點"
+  },
+  {
+    "from": "C-國內旅費-284",
+    "to": "A-國內旅費-001",
+    "relation": "cites_inferred",
+    "inferred": true,
+    "matched": "第 1 點"
+  },
+  {
+    "from": "C-國內旅費-284",
+    "to": "A-國內旅費-016",
+    "relation": "cites_inferred",
+    "inferred": true,
+    "matched": "第 16 點"
+  },
+  {
+    "from": "C-國內旅費-286",
+    "to": "A-國內旅費-016",
+    "relation": "cites_inferred",
+    "inferred": true,
+    "matched": "第 16 點"
+  },
+  {
+    "from": "C-國內旅費-286",
+    "to": "A-國內旅費-002",
+    "relation": "cites_inferred",
+    "inferred": true,
+    "matched": "第 2 點"
+  },
+  {
+    "from": "C-國內旅費-288",
+    "to": "A-國內旅費-015",
+    "relation": "cites_inferred",
+    "inferred": true,
+    "matched": "第 15 點"
+  },
+  {
+    "from": "C-國內旅費-289",
+    "to": "A-國內旅費-015",
+    "relation": "cites_inferred",
+    "inferred": true,
+    "matched": "第 15 點"
+  },
+  {
+    "from": "C-國內旅費-290",
+    "to": "A-國內旅費-016",
+    "relation": "cites_inferred",
+    "inferred": true,
+    "matched": "第 16 點"
+  },
+  {
+    "from": "C-國內旅費-290",
+    "to": "A-國內旅費-015",
+    "relation": "cites_inferred",
+    "inferred": true,
+    "matched": "第 15 點"
+  },
+  {
+    "from": "C-國內旅費-290",
+    "to": "A-國內旅費-001",
+    "relation": "cites_inferred",
+    "inferred": true,
+    "matched": "第 1 點"
+  },
+  {
+    "from": "C-國內旅費-290",
+    "to": "A-國內旅費-007",
+    "relation": "cites_inferred",
+    "inferred": true,
+    "matched": "第 7 點"
+  },
+  {
+    "from": "C-國內旅費-292",
+    "to": "A-國內旅費-016",
+    "relation": "cites_inferred",
+    "inferred": true,
+    "matched": "第 16 點"
+  },
+  {
+    "from": "C-國內旅費-292",
+    "to": "A-國內旅費-015",
+    "relation": "cites_inferred",
+    "inferred": true,
+    "matched": "第 15 點"
+  },
+  {
+    "from": "C-國內旅費-292",
+    "to": "A-國內旅費-003",
+    "relation": "cites_inferred",
+    "inferred": true,
+    "matched": "第 3 條"
+  },
+  {
+    "from": "C-國內旅費-294",
+    "to": "A-國內旅費-016",
+    "relation": "cites_inferred",
+    "inferred": true,
+    "matched": "第 16 點"
+  },
+  {
+    "from": "C-國內旅費-294",
+    "to": "A-國內旅費-015",
+    "relation": "cites_inferred",
+    "inferred": true,
+    "matched": "第 15 點"
+  },
+  {
+    "from": "C-國外旅費-001",
+    "to": "A-國外旅費-013",
+    "relation": "cites_inferred",
+    "inferred": true,
+    "matched": "第13點"
+  },
+  {
+    "from": "C-國外旅費-004",
+    "to": "A-國外旅費-013",
+    "relation": "cites_inferred",
+    "inferred": true,
+    "matched": "第十三點"
+  },
+  {
+    "from": "C-國外旅費-019",
+    "to": "A-國外旅費-007",
+    "relation": "cites_inferred",
+    "inferred": true,
+    "matched": "第 7 點"
+  },
+  {
+    "from": "C-國外旅費-019",
+    "to": "A-國外旅費-009",
+    "relation": "cites_inferred",
+    "inferred": true,
+    "matched": "第 9 點"
+  },
+  {
+    "from": "C-國外旅費-025",
+    "to": "A-國外旅費-007",
+    "relation": "cites_inferred",
+    "inferred": true,
+    "matched": "第 7 點"
+  },
+  {
+    "from": "C-國外旅費-032",
+    "to": "A-國外旅費-018",
+    "relation": "cites_inferred",
+    "inferred": true,
+    "matched": "第 18 點"
+  },
+  {
+    "from": "C-國外旅費-032",
+    "to": "A-國外旅費-019",
+    "relation": "cites_inferred",
+    "inferred": true,
+    "matched": "第 19 點"
+  },
+  {
+    "from": "C-國外旅費-035",
+    "to": "A-國外旅費-003",
+    "relation": "cites_inferred",
+    "inferred": true,
+    "matched": "第 3 點"
+  },
+  {
+    "from": "C-國外旅費-035",
+    "to": "A-國外旅費-019",
+    "relation": "cites_inferred",
+    "inferred": true,
+    "matched": "第 19 條"
+  },
+  {
+    "from": "C-國外旅費-038",
+    "to": "A-國外旅費-012",
+    "relation": "cites_inferred",
+    "inferred": true,
+    "matched": "第 12 點"
+  },
+  {
+    "from": "C-國外旅費-040",
+    "to": "A-國外旅費-015",
+    "relation": "cites_inferred",
+    "inferred": true,
+    "matched": "第十五點"
+  },
+  {
+    "from": "C-國外旅費-040",
+    "to": "A-國外旅費-016",
+    "relation": "cites_inferred",
+    "inferred": true,
+    "matched": "第十六點"
+  },
+  {
+    "from": "C-國外旅費-040",
+    "to": "A-國外旅費-017",
+    "relation": "cites_inferred",
+    "inferred": true,
+    "matched": "第十七點"
+  },
+  {
+    "from": "C-國外旅費-065",
+    "to": "A-國外旅費-009",
+    "relation": "cites_inferred",
+    "inferred": true,
+    "matched": "第九點"
+  },
+  {
+    "from": "C-國外旅費-065",
+    "to": "A-國外旅費-007",
+    "relation": "cites_inferred",
+    "inferred": true,
+    "matched": "第七點"
+  },
+  {
+    "from": "C-國外旅費-070",
+    "to": "A-國外旅費-001",
+    "relation": "cites_inferred",
+    "inferred": true,
+    "matched": "第 1 點"
+  },
+  {
+    "from": "C-國外旅費-070",
+    "to": "A-國外旅費-003",
+    "relation": "cites_inferred",
+    "inferred": true,
+    "matched": "第 3 點"
+  },
+  {
+    "from": "C-國外旅費-072",
+    "to": "A-國外旅費-008",
+    "relation": "cites_inferred",
+    "inferred": true,
+    "matched": "第 8 點"
+  },
+  {
+    "from": "C-國外旅費-072",
+    "to": "A-國外旅費-007",
+    "relation": "cites_inferred",
+    "inferred": true,
+    "matched": "第 7 點"
+  },
+  {
+    "from": "C-國外旅費-072",
+    "to": "A-國外旅費-009",
+    "relation": "cites_inferred",
+    "inferred": true,
+    "matched": "第 9 點"
+  },
+  {
+    "from": "C-國外旅費-074",
+    "to": "A-國外旅費-004",
+    "relation": "cites_inferred",
+    "inferred": true,
+    "matched": "第 4 點"
+  },
+  {
+    "from": "C-國外旅費-074",
+    "to": "A-國外旅費-007",
+    "relation": "cites_inferred",
+    "inferred": true,
+    "matched": "第 7 點"
+  },
+  {
+    "from": "C-國外旅費-075",
+    "to": "A-國外旅費-004",
+    "relation": "cites_inferred",
+    "inferred": true,
+    "matched": "第 4 點"
+  },
+  {
+    "from": "C-國外旅費-075",
+    "to": "A-國外旅費-007",
+    "relation": "cites_inferred",
+    "inferred": true,
+    "matched": "第 7 點"
+  },
+  {
+    "from": "C-國外旅費-080",
+    "to": "A-國外旅費-003",
+    "relation": "cites_inferred",
+    "inferred": true,
+    "matched": "第 3 點"
+  },
+  {
+    "from": "C-國外旅費-080",
+    "to": "A-國外旅費-012",
+    "relation": "cites_inferred",
+    "inferred": true,
+    "matched": "第 12 點"
+  },
+  {
+    "from": "C-國外旅費-081",
+    "to": "A-國外旅費-003",
+    "relation": "cites_inferred",
+    "inferred": true,
+    "matched": "第 3 點"
+  },
+  {
+    "from": "C-國外旅費-081",
+    "to": "A-國外旅費-009",
+    "relation": "cites_inferred",
+    "inferred": true,
+    "matched": "第 9 點"
+  },
+  {
+    "from": "C-國外旅費-081",
+    "to": "A-國外旅費-018",
+    "relation": "cites_inferred",
+    "inferred": true,
+    "matched": "第 18 點"
+  },
+  {
+    "from": "C-國外旅費-081",
+    "to": "A-國外旅費-019",
+    "relation": "cites_inferred",
+    "inferred": true,
+    "matched": "第 19 點"
+  },
+  {
+    "from": "C-國外旅費-082",
+    "to": "A-國外旅費-003",
+    "relation": "cites_inferred",
+    "inferred": true,
+    "matched": "第 3 點"
+  },
+  {
+    "from": "C-國外旅費-082",
+    "to": "A-國外旅費-005",
+    "relation": "cites_inferred",
+    "inferred": true,
+    "matched": "第 5 點"
+  },
+  {
+    "from": "C-國外旅費-086",
+    "to": "A-國外旅費-008",
+    "relation": "cites_inferred",
+    "inferred": true,
+    "matched": "第八點"
+  },
+  {
+    "from": "C-國外旅費-087",
+    "to": "A-國外旅費-018",
+    "relation": "cites_inferred",
+    "inferred": true,
+    "matched": "第 18 點"
+  },
+  {
+    "from": "C-國外旅費-087",
+    "to": "A-國外旅費-019",
+    "relation": "cites_inferred",
+    "inferred": true,
+    "matched": "第 19 點"
+  },
+  {
+    "from": "C-國外旅費-087",
+    "to": "A-國外旅費-009",
+    "relation": "cites_inferred",
+    "inferred": true,
+    "matched": "第 9 點"
+  },
+  {
+    "from": "C-國外旅費-088",
+    "to": "A-國外旅費-009",
+    "relation": "cites_inferred",
+    "inferred": true,
+    "matched": "第 9 點"
+  },
+  {
+    "from": "C-國外旅費-089",
+    "to": "A-國外旅費-009",
+    "relation": "cites_inferred",
+    "inferred": true,
+    "matched": "第 9 點"
+  },
+  {
+    "from": "C-國外旅費-097",
+    "to": "A-國外旅費-009",
+    "relation": "cites_inferred",
+    "inferred": true,
+    "matched": "第 9 條"
+  },
+  {
+    "from": "C-國外旅費-099",
+    "to": "A-國外旅費-004",
+    "relation": "cites_inferred",
+    "inferred": true,
+    "matched": "第 4 點"
+  },
+  {
+    "from": "C-國外旅費-101",
+    "to": "A-國外旅費-005",
+    "relation": "cites_inferred",
+    "inferred": true,
+    "matched": "第 5 點"
+  },
+  {
+    "from": "C-國外旅費-107",
+    "to": "A-國外旅費-005",
+    "relation": "cites_inferred",
+    "inferred": true,
+    "matched": "第 5 條"
+  },
+  {
+    "from": "C-國外旅費-110",
+    "to": "A-國外旅費-019",
+    "relation": "cites_inferred",
+    "inferred": true,
+    "matched": "第 19 點"
+  },
+  {
+    "from": "C-國外旅費-110",
+    "to": "A-國外旅費-005",
+    "relation": "cites_inferred",
+    "inferred": true,
+    "matched": "第 5 點"
+  },
+  {
+    "from": "C-國外旅費-112",
+    "to": "A-國外旅費-006",
+    "relation": "cites_inferred",
+    "inferred": true,
+    "matched": "第 6 點"
+  },
+  {
+    "from": "C-國外旅費-115",
+    "to": "A-國外旅費-018",
+    "relation": "cites_inferred",
+    "inferred": true,
+    "matched": "第 18 點"
+  },
+  {
+    "from": "C-國外旅費-115",
+    "to": "A-國外旅費-019",
+    "relation": "cites_inferred",
+    "inferred": true,
+    "matched": "第 19 點"
+  },
+  {
+    "from": "C-國外旅費-116",
+    "to": "A-國外旅費-006",
+    "relation": "cites_inferred",
+    "inferred": true,
+    "matched": "第 6 點"
+  },
+  {
+    "from": "C-國外旅費-117",
+    "to": "A-國外旅費-006",
+    "relation": "cites_inferred",
+    "inferred": true,
+    "matched": "第 6 點"
+  },
+  {
+    "from": "C-國外旅費-118",
+    "to": "A-國外旅費-003",
+    "relation": "cites_inferred",
+    "inferred": true,
+    "matched": "第 3 點"
+  },
+  {
+    "from": "C-國外旅費-119",
+    "to": "A-國外旅費-004",
+    "relation": "cites_inferred",
+    "inferred": true,
+    "matched": "第 4 點"
+  },
+  {
+    "from": "C-國外旅費-125",
+    "to": "A-國外旅費-005",
+    "relation": "cites_inferred",
+    "inferred": true,
+    "matched": "第 5 點"
+  },
+  {
+    "from": "C-國外旅費-128",
+    "to": "A-國外旅費-005",
+    "relation": "cites_inferred",
+    "inferred": true,
+    "matched": "第 5 點"
+  },
+  {
+    "from": "C-國外旅費-130",
+    "to": "A-國外旅費-005",
+    "relation": "cites_inferred",
+    "inferred": true,
+    "matched": "第 5 點"
+  },
+  {
+    "from": "C-國外旅費-130",
+    "to": "A-國外旅費-004",
+    "relation": "cites_inferred",
+    "inferred": true,
+    "matched": "第 4 條"
+  },
+  {
+    "from": "C-國外旅費-131",
+    "to": "A-國外旅費-007",
+    "relation": "cites_inferred",
+    "inferred": true,
+    "matched": "第 7 條"
+  },
+  {
+    "from": "C-國外旅費-131",
+    "to": "A-國外旅費-008",
+    "relation": "cites_inferred",
+    "inferred": true,
+    "matched": "第 8 點"
+  },
+  {
+    "from": "C-國外旅費-133",
+    "to": "A-國外旅費-008",
+    "relation": "cites_inferred",
+    "inferred": true,
+    "matched": "第 8 點"
+  },
+  {
+    "from": "C-國外旅費-139",
+    "to": "A-國外旅費-008",
+    "relation": "cites_inferred",
+    "inferred": true,
+    "matched": "第八點"
+  },
+  {
+    "from": "C-國外旅費-142",
+    "to": "A-國外旅費-011",
+    "relation": "cites_inferred",
+    "inferred": true,
+    "matched": "第 11 點"
+  },
+  {
+    "from": "C-國外旅費-143",
+    "to": "A-國外旅費-011",
+    "relation": "cites_inferred",
+    "inferred": true,
+    "matched": "第 11 點"
+  },
+  {
+    "from": "C-國外旅費-144",
+    "to": "A-國外旅費-011",
+    "relation": "cites_inferred",
+    "inferred": true,
+    "matched": "第 11 點"
+  },
+  {
+    "from": "C-國外旅費-145",
+    "to": "A-國外旅費-011",
+    "relation": "cites_inferred",
+    "inferred": true,
+    "matched": "第 11 點"
+  },
+  {
+    "from": "C-國外旅費-146",
+    "to": "A-國外旅費-004",
+    "relation": "cites_inferred",
+    "inferred": true,
+    "matched": "第 4 點"
+  },
+  {
+    "from": "C-國外旅費-146",
+    "to": "A-國外旅費-007",
+    "relation": "cites_inferred",
+    "inferred": true,
+    "matched": "第 7 點"
+  },
+  {
+    "from": "C-國外旅費-148",
+    "to": "A-國外旅費-013",
+    "relation": "cites_inferred",
+    "inferred": true,
+    "matched": "第 13 點"
+  },
+  {
+    "from": "C-國外旅費-149",
+    "to": "A-國外旅費-022",
+    "relation": "cites_inferred",
+    "inferred": true,
+    "matched": "第 22 條"
+  },
+  {
+    "from": "C-國外旅費-149",
+    "to": "A-國外旅費-013",
+    "relation": "cites_inferred",
+    "inferred": true,
+    "matched": "第 13 點"
+  },
+  {
+    "from": "C-國外旅費-149",
+    "to": "A-國外旅費-014",
+    "relation": "cites_inferred",
+    "inferred": true,
+    "matched": "第 14 條"
+  },
+  {
+    "from": "C-國外旅費-149",
+    "to": "A-國外旅費-011",
+    "relation": "cites_inferred",
+    "inferred": true,
+    "matched": "第 11 條"
+  },
+  {
+    "from": "C-國外旅費-150",
+    "to": "A-國外旅費-022",
+    "relation": "cites_inferred",
+    "inferred": true,
+    "matched": "第 22 條"
+  },
+  {
+    "from": "C-國外旅費-150",
+    "to": "A-國外旅費-013",
+    "relation": "cites_inferred",
+    "inferred": true,
+    "matched": "第 13 點"
+  },
+  {
+    "from": "C-國外旅費-150",
+    "to": "A-國外旅費-014",
+    "relation": "cites_inferred",
+    "inferred": true,
+    "matched": "第 14 條"
+  },
+  {
+    "from": "C-國外旅費-150",
+    "to": "A-國外旅費-011",
+    "relation": "cites_inferred",
+    "inferred": true,
+    "matched": "第 11 條"
+  },
+  {
+    "from": "C-國外旅費-151",
+    "to": "A-國外旅費-005",
+    "relation": "cites_inferred",
+    "inferred": true,
+    "matched": "第 5 點"
+  },
+  {
+    "from": "C-國外旅費-152",
+    "to": "A-國外旅費-018",
+    "relation": "cites_inferred",
+    "inferred": true,
+    "matched": "第 18 點"
+  },
+  {
+    "from": "C-國外旅費-152",
+    "to": "A-國外旅費-019",
+    "relation": "cites_inferred",
+    "inferred": true,
+    "matched": "第 19 點"
+  },
+  {
+    "from": "C-國外旅費-152",
+    "to": "A-國外旅費-005",
+    "relation": "cites_inferred",
+    "inferred": true,
+    "matched": "第 5 點"
+  },
+  {
+    "from": "C-國外旅費-152",
+    "to": "A-國外旅費-006",
+    "relation": "cites_inferred",
+    "inferred": true,
+    "matched": "第 6 點"
+  },
+  {
+    "from": "C-國外旅費-153",
+    "to": "A-國外旅費-018",
+    "relation": "cites_inferred",
+    "inferred": true,
+    "matched": "第 18 點"
+  },
+  {
+    "from": "C-國外旅費-153",
+    "to": "A-國外旅費-019",
+    "relation": "cites_inferred",
+    "inferred": true,
+    "matched": "第 19 點"
+  },
+  {
+    "from": "C-國外旅費-154",
+    "to": "A-國外旅費-018",
+    "relation": "cites_inferred",
+    "inferred": true,
+    "matched": "第 18 點"
+  },
+  {
+    "from": "C-國外旅費-154",
+    "to": "A-國外旅費-019",
+    "relation": "cites_inferred",
+    "inferred": true,
+    "matched": "第 19 點"
+  },
+  {
+    "from": "C-國外旅費-155",
+    "to": "A-國外旅費-003",
+    "relation": "cites_inferred",
+    "inferred": true,
+    "matched": "第 3 點"
+  },
+  {
+    "from": "C-國外旅費-157",
+    "to": "A-國外旅費-004",
+    "relation": "cites_inferred",
+    "inferred": true,
+    "matched": "第 4 條"
+  },
+  {
+    "from": "C-國外旅費-158",
+    "to": "A-國外旅費-003",
+    "relation": "cites_inferred",
+    "inferred": true,
+    "matched": "第 3 點"
+  },
+  {
+    "from": "C-國外旅費-160",
+    "to": "A-國外旅費-016",
+    "relation": "cites_inferred",
+    "inferred": true,
+    "matched": "第 16 點"
+  },
+  {
+    "from": "C-國外旅費-160",
+    "to": "A-國外旅費-017",
+    "relation": "cites_inferred",
+    "inferred": true,
+    "matched": "第 17 點"
+  },
+  {
+    "from": "C-國外旅費-160",
+    "to": "A-國外旅費-020",
+    "relation": "cites_inferred",
+    "inferred": true,
+    "matched": "第 20 點"
+  },
+  {
+    "from": "C-國外旅費-161",
+    "to": "A-國外旅費-016",
+    "relation": "cites_inferred",
+    "inferred": true,
+    "matched": "第 16 點"
+  },
+  {
+    "from": "C-國外旅費-161",
+    "to": "A-國外旅費-017",
+    "relation": "cites_inferred",
+    "inferred": true,
+    "matched": "第 17 點"
+  },
+  {
+    "from": "C-國外旅費-161",
+    "to": "A-國外旅費-015",
+    "relation": "cites_inferred",
+    "inferred": true,
+    "matched": "第 15 點"
+  },
+  {
+    "from": "C-國外旅費-163",
+    "to": "A-國外旅費-016",
+    "relation": "cites_inferred",
+    "inferred": true,
+    "matched": "第 16 點"
+  },
+  {
+    "from": "C-國外旅費-163",
+    "to": "A-國外旅費-017",
+    "relation": "cites_inferred",
+    "inferred": true,
+    "matched": "第 17 點"
+  },
+  {
+    "from": "C-國外旅費-164",
+    "to": "A-國外旅費-016",
+    "relation": "cites_inferred",
+    "inferred": true,
+    "matched": "第 16 點"
+  },
+  {
+    "from": "C-國外旅費-164",
+    "to": "A-國外旅費-017",
+    "relation": "cites_inferred",
+    "inferred": true,
+    "matched": "第 17 點"
+  },
+  {
+    "from": "C-國外旅費-166",
+    "to": "A-國外旅費-002",
+    "relation": "cites_inferred",
+    "inferred": true,
+    "matched": "第二點"
+  },
+  {
+    "from": "C-國外旅費-167",
+    "to": "A-國外旅費-015",
+    "relation": "cites_inferred",
+    "inferred": true,
+    "matched": "第 15 點"
+  },
+  {
+    "from": "C-國外旅費-167",
+    "to": "A-國外旅費-016",
+    "relation": "cites_inferred",
+    "inferred": true,
+    "matched": "第 16 點"
+  },
+  {
+    "from": "C-國外旅費-168",
+    "to": "A-國外旅費-015",
+    "relation": "cites_inferred",
+    "inferred": true,
+    "matched": "第 15 點"
+  },
+  {
+    "from": "C-國外旅費-168",
+    "to": "A-國外旅費-016",
+    "relation": "cites_inferred",
+    "inferred": true,
+    "matched": "第 16 點"
+  },
+  {
+    "from": "C-國外旅費-171",
+    "to": "A-國外旅費-020",
+    "relation": "cites_inferred",
+    "inferred": true,
+    "matched": "第 20 點"
+  },
+  {
+    "from": "C-國外旅費-172",
+    "to": "A-國外旅費-016",
+    "relation": "cites_inferred",
+    "inferred": true,
+    "matched": "第 16 點"
+  },
+  {
+    "from": "C-國外旅費-175",
+    "to": "A-國外旅費-002",
+    "relation": "cites_inferred",
+    "inferred": true,
+    "matched": "第二點"
+  },
+  {
+    "from": "C-國外旅費-176",
+    "to": "A-國外旅費-003",
+    "relation": "cites_inferred",
+    "inferred": true,
+    "matched": "第 3 條"
+  },
+  {
+    "from": "C-國外旅費-176",
+    "to": "A-國外旅費-004",
+    "relation": "cites_inferred",
+    "inferred": true,
+    "matched": "第 4 條"
+  },
+  {
+    "from": "C-國外旅費-177",
+    "to": "A-國外旅費-014",
+    "relation": "cites_inferred",
+    "inferred": true,
+    "matched": "第 14 點"
+  },
+  {
+    "from": "C-國外旅費-183",
+    "to": "A-國外旅費-005",
+    "relation": "cites_inferred",
+    "inferred": true,
+    "matched": "第 5 點"
+  },
+  {
+    "from": "C-國外旅費-183",
+    "to": "A-國外旅費-016",
+    "relation": "cites_inferred",
+    "inferred": true,
+    "matched": "第 16 點"
+  },
+  {
+    "from": "C-國外旅費-183",
+    "to": "A-國外旅費-017",
+    "relation": "cites_inferred",
+    "inferred": true,
+    "matched": "第 17 點"
+  },
+  {
+    "from": "C-國外旅費-184",
+    "to": "A-國外旅費-006",
+    "relation": "cites_inferred",
+    "inferred": true,
+    "matched": "第 6 點"
+  },
+  {
+    "from": "C-國外旅費-184",
+    "to": "A-國外旅費-004",
+    "relation": "cites_inferred",
+    "inferred": true,
+    "matched": "第 4 點"
+  },
+  {
+    "from": "D-支出憑證與結報-001",
+    "to": "A-支出憑證與結報-004",
+    "relation": "cites_inferred",
+    "inferred": true,
+    "matched": "第 4 點"
+  },
+  {
+    "from": "D-支出憑證與結報-002",
+    "to": "A-支出憑證與結報-004",
+    "relation": "cites_inferred",
+    "inferred": true,
+    "matched": "第 4 點"
+  },
+  {
+    "from": "D-支出憑證與結報-003",
+    "to": "A-支出憑證與結報-004",
+    "relation": "cites_inferred",
+    "inferred": true,
+    "matched": "第 4 點"
+  },
+  {
+    "from": "D-支出憑證與結報-004",
+    "to": "A-支出憑證與結報-004",
+    "relation": "cites_inferred",
+    "inferred": true,
+    "matched": "第 4 點"
+  },
+  {
+    "from": "D-支出憑證與結報-005",
+    "to": "A-支出憑證與結報-003",
+    "relation": "cites_inferred",
+    "inferred": true,
+    "matched": "第 3 點"
+  },
+  {
+    "from": "D-支出憑證與結報-005",
+    "to": "A-支出憑證與結報-004",
+    "relation": "cites_inferred",
+    "inferred": true,
+    "matched": "第 4 點"
+  },
+  {
+    "from": "D-支出憑證與結報-006",
+    "to": "A-支出憑證與結報-008",
+    "relation": "cites_inferred",
+    "inferred": true,
+    "matched": "第 8 條"
+  },
+  {
+    "from": "D-支出憑證與結報-006",
+    "to": "A-支出憑證與結報-004",
+    "relation": "cites_inferred",
+    "inferred": true,
+    "matched": "第 4 條"
+  },
+  {
+    "from": "D-支出憑證與結報-006",
+    "to": "A-支出憑證與結報-005",
+    "relation": "cites_inferred",
+    "inferred": true,
+    "matched": "第 5 點"
+  },
+  {
+    "from": "D-支出憑證與結報-007",
+    "to": "A-支出憑證與結報-007",
+    "relation": "cites_inferred",
+    "inferred": true,
+    "matched": "第 7 條"
+  },
+  {
+    "from": "D-支出憑證與結報-007",
+    "to": "A-支出憑證與結報-002",
+    "relation": "cites_inferred",
+    "inferred": true,
+    "matched": "第 2 點"
+  },
+  {
+    "from": "D-支出憑證與結報-008",
+    "to": "A-支出憑證與結報-002",
+    "relation": "cites_inferred",
+    "inferred": true,
+    "matched": "第 2 點"
+  },
+  {
+    "from": "D-支出憑證與結報-010",
+    "to": "A-支出憑證與結報-002",
+    "relation": "cites_inferred",
+    "inferred": true,
+    "matched": "第 2 點"
+  },
+  {
+    "from": "D-支出憑證與結報-010",
+    "to": "A-支出憑證與結報-005",
+    "relation": "cites_inferred",
+    "inferred": true,
+    "matched": "第 5 點"
+  },
+  {
+    "from": "D-支出憑證與結報-011",
+    "to": "A-支出憑證與結報-005",
+    "relation": "cites_inferred",
+    "inferred": true,
+    "matched": "第 5 點"
+  },
+  {
+    "from": "D-支出憑證與結報-012",
+    "to": "A-支出憑證與結報-005",
+    "relation": "cites_inferred",
+    "inferred": true,
+    "matched": "第 5 點"
+  },
+  {
+    "from": "D-支出憑證與結報-012",
+    "to": "A-支出憑證與結報-002",
+    "relation": "cites_inferred",
+    "inferred": true,
+    "matched": "第 2 點"
+  },
+  {
+    "from": "D-支出憑證與結報-013",
+    "to": "A-支出憑證與結報-005",
+    "relation": "cites_inferred",
+    "inferred": true,
+    "matched": "第 5 點"
+  },
+  {
+    "from": "D-支出憑證與結報-015",
+    "to": "A-支出憑證與結報-005",
+    "relation": "cites_inferred",
+    "inferred": true,
+    "matched": "第 5 點"
+  },
+  {
+    "from": "D-支出憑證與結報-015",
+    "to": "A-支出憑證與結報-012",
+    "relation": "cites_inferred",
+    "inferred": true,
+    "matched": "第 12 點"
+  },
+  {
+    "from": "D-支出憑證與結報-016",
+    "to": "A-支出憑證與結報-005",
+    "relation": "cites_inferred",
+    "inferred": true,
+    "matched": "第 5 點"
+  },
+  {
+    "from": "D-支出憑證與結報-016",
+    "to": "A-支出憑證與結報-011",
+    "relation": "cites_inferred",
+    "inferred": true,
+    "matched": "第 11 點"
+  },
+  {
+    "from": "D-支出憑證與結報-017",
+    "to": "A-支出憑證與結報-005",
+    "relation": "cites_inferred",
+    "inferred": true,
+    "matched": "第 5 點"
+  },
+  {
+    "from": "D-支出憑證與結報-017",
+    "to": "A-支出憑證與結報-007",
+    "relation": "cites_inferred",
+    "inferred": true,
+    "matched": "第 7 條"
+  },
+  {
+    "from": "D-支出憑證與結報-018",
+    "to": "A-支出憑證與結報-002",
+    "relation": "cites_inferred",
+    "inferred": true,
+    "matched": "第 2 點"
+  },
+  {
+    "from": "D-支出憑證與結報-018",
+    "to": "A-支出憑證與結報-005",
+    "relation": "cites_inferred",
+    "inferred": true,
+    "matched": "第 5 點"
+  },
+  {
+    "from": "D-支出憑證與結報-019",
+    "to": "A-支出憑證與結報-005",
+    "relation": "cites_inferred",
+    "inferred": true,
+    "matched": "第 5 點"
+  },
+  {
+    "from": "D-支出憑證與結報-020",
+    "to": "A-支出憑證與結報-022",
+    "relation": "cites_inferred",
+    "inferred": true,
+    "matched": "第 22 點"
+  },
+  {
+    "from": "D-支出憑證與結報-020",
+    "to": "A-支出憑證與結報-007",
+    "relation": "cites_inferred",
+    "inferred": true,
+    "matched": "第 7 點"
+  },
+  {
+    "from": "D-支出憑證與結報-021",
+    "to": "A-支出憑證與結報-007",
+    "relation": "cites_inferred",
+    "inferred": true,
+    "matched": "第 7 點"
+  },
+  {
+    "from": "D-支出憑證與結報-022",
+    "to": "A-支出憑證與結報-007",
+    "relation": "cites_inferred",
+    "inferred": true,
+    "matched": "第 7 點"
+  },
+  {
+    "from": "D-支出憑證與結報-023",
+    "to": "A-支出憑證與結報-002",
+    "relation": "cites_inferred",
+    "inferred": true,
+    "matched": "第 2 點"
+  },
+  {
+    "from": "D-支出憑證與結報-023",
+    "to": "A-支出憑證與結報-007",
+    "relation": "cites_inferred",
+    "inferred": true,
+    "matched": "第 7 點"
+  },
+  {
+    "from": "D-支出憑證與結報-024",
+    "to": "A-支出憑證與結報-008",
+    "relation": "cites_inferred",
+    "inferred": true,
+    "matched": "第 8 點"
+  },
+  {
+    "from": "D-支出憑證與結報-025",
+    "to": "A-支出憑證與結報-010",
+    "relation": "cites_inferred",
+    "inferred": true,
+    "matched": "第 10 點"
+  },
+  {
+    "from": "D-支出憑證與結報-026",
+    "to": "A-支出憑證與結報-011",
+    "relation": "cites_inferred",
+    "inferred": true,
+    "matched": "第 11 點"
+  },
+  {
+    "from": "D-支出憑證與結報-026",
+    "to": "A-支出憑證與結報-004",
+    "relation": "cites_inferred",
+    "inferred": true,
+    "matched": "第 4 點"
+  },
+  {
+    "from": "D-支出憑證與結報-026",
+    "to": "A-支出憑證與結報-005",
+    "relation": "cites_inferred",
+    "inferred": true,
+    "matched": "第 5 點"
+  },
+  {
+    "from": "D-支出憑證與結報-026",
+    "to": "A-支出憑證與結報-010",
+    "relation": "cites_inferred",
+    "inferred": true,
+    "matched": "第 10 點"
+  },
+  {
+    "from": "D-支出憑證與結報-028",
+    "to": "A-支出憑證與結報-020",
+    "relation": "cites_inferred",
+    "inferred": true,
+    "matched": "第 20 條"
+  },
+  {
+    "from": "D-支出憑證與結報-028",
+    "to": "A-支出憑證與結報-006",
+    "relation": "cites_inferred",
+    "inferred": true,
+    "matched": "第 6 點"
+  },
+  {
+    "from": "D-支出憑證與結報-029",
+    "to": "A-支出憑證與結報-002",
+    "relation": "cites_inferred",
+    "inferred": true,
+    "matched": "第 2 點"
+  },
+  {
+    "from": "D-支出憑證與結報-029",
+    "to": "A-支出憑證與結報-012",
+    "relation": "cites_inferred",
+    "inferred": true,
+    "matched": "第 12 點"
+  },
+  {
+    "from": "D-支出憑證與結報-031",
+    "to": "A-支出憑證與結報-021",
+    "relation": "cites_inferred",
+    "inferred": true,
+    "matched": "第 21 點"
+  },
+  {
+    "from": "D-支出憑證與結報-032",
+    "to": "A-支出憑證與結報-021",
+    "relation": "cites_inferred",
+    "inferred": true,
+    "matched": "第 21 點"
+  },
+  {
+    "from": "D-支出憑證與結報-032",
+    "to": "D-支出憑證與結報-033",
+    "relation": "answers_inferred",
+    "inferred": true,
+    "matched": "Q33"
+  },
+  {
+    "from": "D-支出憑證與結報-033",
+    "to": "D-支出憑證與結報-034",
+    "relation": "answers_inferred",
+    "inferred": true,
+    "matched": "Q34"
+  },
+  {
+    "from": "D-支出憑證與結報-033",
+    "to": "D-支出憑證與結報-035",
+    "relation": "answers_inferred",
+    "inferred": true,
+    "matched": "Q35"
+  },
+  {
+    "from": "D-支出憑證與結報-033",
+    "to": "D-支出憑證與結報-036",
+    "relation": "answers_inferred",
+    "inferred": true,
+    "matched": "Q36"
+  },
+  {
+    "from": "D-支出憑證與結報-033",
+    "to": "D-支出憑證與結報-037",
+    "relation": "answers_inferred",
+    "inferred": true,
+    "matched": "Q37"
+  },
+  {
+    "from": "D-支出憑證與結報-033",
+    "to": "D-支出憑證與結報-038",
+    "relation": "answers_inferred",
+    "inferred": true,
+    "matched": "Q38"
+  },
+  {
+    "from": "D-支出憑證與結報-033",
+    "to": "D-支出憑證與結報-039",
+    "relation": "answers_inferred",
+    "inferred": true,
+    "matched": "Q39"
+  },
+  {
+    "from": "D-支出憑證與結報-033",
+    "to": "D-支出憑證與結報-040",
+    "relation": "answers_inferred",
+    "inferred": true,
+    "matched": "Q40"
+  },
+  {
+    "from": "D-支出憑證與結報-033",
+    "to": "D-支出憑證與結報-041",
+    "relation": "answers_inferred",
+    "inferred": true,
+    "matched": "Q41"
+  },
+  {
+    "from": "D-支出憑證與結報-033",
+    "to": "D-支出憑證與結報-042",
+    "relation": "answers_inferred",
+    "inferred": true,
+    "matched": "Q42"
+  },
+  {
+    "from": "D-支出憑證與結報-033",
+    "to": "D-支出憑證與結報-043",
+    "relation": "answers_inferred",
+    "inferred": true,
+    "matched": "Q43"
+  },
+  {
+    "from": "D-支出憑證與結報-033",
+    "to": "D-支出憑證與結報-044",
+    "relation": "answers_inferred",
+    "inferred": true,
+    "matched": "Q44"
+  },
+  {
+    "from": "D-支出憑證與結報-033",
+    "to": "D-支出憑證與結報-045",
+    "relation": "answers_inferred",
+    "inferred": true,
+    "matched": "Q45"
+  },
+  {
+    "from": "D-支出憑證與結報-033",
+    "to": "D-支出憑證與結報-046",
+    "relation": "answers_inferred",
+    "inferred": true,
+    "matched": "Q46"
+  },
+  {
+    "from": "D-支出憑證與結報-033",
+    "to": "D-支出憑證與結報-047",
+    "relation": "answers_inferred",
+    "inferred": true,
+    "matched": "Q47"
+  },
+  {
+    "from": "D-支出憑證與結報-033",
+    "to": "D-支出憑證與結報-048",
+    "relation": "answers_inferred",
+    "inferred": true,
+    "matched": "Q48"
+  },
+  {
+    "from": "D-支出憑證與結報-033",
+    "to": "D-支出憑證與結報-049",
+    "relation": "answers_inferred",
+    "inferred": true,
+    "matched": "Q49"
+  },
+  {
+    "from": "D-支出憑證與結報-033",
+    "to": "D-支出憑證與結報-050",
+    "relation": "answers_inferred",
+    "inferred": true,
+    "matched": "Q50"
+  },
+  {
+    "from": "D-支出憑證與結報-033",
+    "to": "D-支出憑證與結報-051",
+    "relation": "answers_inferred",
+    "inferred": true,
+    "matched": "Q51"
+  },
+  {
+    "from": "D-支出憑證與結報-033",
+    "to": "D-支出憑證與結報-053",
+    "relation": "answers_inferred",
+    "inferred": true,
+    "matched": "Q53"
+  },
+  {
+    "from": "D-支出憑證與結報-033",
+    "to": "D-支出憑證與結報-054",
+    "relation": "answers_inferred",
+    "inferred": true,
+    "matched": "Q54"
+  },
+  {
+    "from": "D-支出憑證與結報-033",
+    "to": "D-支出憑證與結報-055",
+    "relation": "answers_inferred",
+    "inferred": true,
+    "matched": "Q55"
+  },
+  {
+    "from": "D-支出憑證與結報-033",
+    "to": "D-支出憑證與結報-056",
+    "relation": "answers_inferred",
+    "inferred": true,
+    "matched": "Q56"
+  },
+  {
+    "from": "D-支出憑證與結報-033",
+    "to": "D-支出憑證與結報-057",
+    "relation": "answers_inferred",
+    "inferred": true,
+    "matched": "Q57"
+  },
+  {
+    "from": "D-支出憑證與結報-033",
+    "to": "D-支出憑證與結報-058",
+    "relation": "answers_inferred",
+    "inferred": true,
+    "matched": "Q58"
+  },
+  {
+    "from": "D-支出憑證與結報-033",
+    "to": "D-支出憑證與結報-059",
+    "relation": "answers_inferred",
+    "inferred": true,
+    "matched": "Q59"
+  },
+  {
+    "from": "D-支出憑證與結報-033",
+    "to": "D-支出憑證與結報-060",
+    "relation": "answers_inferred",
+    "inferred": true,
+    "matched": "Q60"
+  },
+  {
+    "from": "D-支出憑證與結報-033",
+    "to": "D-支出憑證與結報-061",
+    "relation": "answers_inferred",
+    "inferred": true,
+    "matched": "Q61"
+  },
+  {
+    "from": "D-支出憑證與結報-033",
+    "to": "D-支出憑證與結報-062",
+    "relation": "answers_inferred",
+    "inferred": true,
+    "matched": "Q62"
+  },
+  {
+    "from": "D-支出憑證與結報-033",
+    "to": "D-支出憑證與結報-063",
+    "relation": "answers_inferred",
+    "inferred": true,
+    "matched": "Q63"
+  },
+  {
+    "from": "D-支出憑證與結報-033",
+    "to": "D-支出憑證與結報-064",
+    "relation": "answers_inferred",
+    "inferred": true,
+    "matched": "Q64"
+  },
+  {
+    "from": "D-支出憑證與結報-033",
+    "to": "D-支出憑證與結報-065",
+    "relation": "answers_inferred",
+    "inferred": true,
+    "matched": "Q65"
+  },
+  {
+    "from": "D-支出憑證與結報-033",
+    "to": "D-支出憑證與結報-066",
+    "relation": "answers_inferred",
+    "inferred": true,
+    "matched": "Q66"
+  },
+  {
+    "from": "D-支出憑證與結報-033",
+    "to": "D-支出憑證與結報-067",
+    "relation": "answers_inferred",
+    "inferred": true,
+    "matched": "Q67"
+  },
+  {
+    "from": "D-支出憑證與結報-033",
+    "to": "D-支出憑證與結報-068",
+    "relation": "answers_inferred",
+    "inferred": true,
+    "matched": "Q68"
+  },
+  {
+    "from": "D-支出憑證與結報-033",
+    "to": "D-支出憑證與結報-069",
+    "relation": "answers_inferred",
+    "inferred": true,
+    "matched": "Q69"
+  },
+  {
+    "from": "D-支出憑證與結報-033",
+    "to": "D-支出憑證與結報-070",
+    "relation": "answers_inferred",
+    "inferred": true,
+    "matched": "Q70"
+  },
+  {
+    "from": "D-支出憑證與結報-033",
+    "to": "D-支出憑證與結報-071",
+    "relation": "answers_inferred",
+    "inferred": true,
+    "matched": "Q71"
+  },
+  {
+    "from": "D-支出憑證與結報-033",
+    "to": "D-支出憑證與結報-072",
+    "relation": "answers_inferred",
+    "inferred": true,
+    "matched": "Q72"
+  },
+  {
+    "from": "D-支出憑證與結報-033",
+    "to": "D-支出憑證與結報-073",
+    "relation": "answers_inferred",
+    "inferred": true,
+    "matched": "Q73"
+  },
+  {
+    "from": "D-支出憑證與結報-033",
+    "to": "D-支出憑證與結報-074",
+    "relation": "answers_inferred",
+    "inferred": true,
+    "matched": "Q74"
+  },
+  {
+    "from": "D-支出憑證與結報-033",
+    "to": "D-支出憑證與結報-075",
+    "relation": "answers_inferred",
+    "inferred": true,
+    "matched": "Q75"
+  },
+  {
+    "from": "D-支出憑證與結報-033",
+    "to": "D-支出憑證與結報-076",
+    "relation": "answers_inferred",
+    "inferred": true,
+    "matched": "Q76"
+  },
+  {
+    "from": "D-支出憑證與結報-033",
+    "to": "D-支出憑證與結報-077",
+    "relation": "answers_inferred",
+    "inferred": true,
+    "matched": "Q77"
+  },
+  {
+    "from": "D-支出憑證與結報-033",
+    "to": "D-支出憑證與結報-078",
+    "relation": "answers_inferred",
+    "inferred": true,
+    "matched": "Q78"
+  },
+  {
+    "from": "D-支出憑證與結報-037",
+    "to": "A-支出憑證與結報-002",
+    "relation": "cites_inferred",
+    "inferred": true,
+    "matched": "第 2 點"
+  },
+  {
+    "from": "D-支出憑證與結報-037",
+    "to": "A-支出憑證與結報-016",
+    "relation": "cites_inferred",
+    "inferred": true,
+    "matched": "第 16 點"
+  },
+  {
+    "from": "D-支出憑證與結報-038",
+    "to": "A-支出憑證與結報-002",
+    "relation": "cites_inferred",
+    "inferred": true,
+    "matched": "第 2 點"
+  },
+  {
+    "from": "D-支出憑證與結報-038",
+    "to": "A-支出憑證與結報-007",
+    "relation": "cites_inferred",
+    "inferred": true,
+    "matched": "第 7 點"
+  },
+  {
+    "from": "D-支出憑證與結報-039",
+    "to": "A-支出憑證與結報-016",
+    "relation": "cites_inferred",
+    "inferred": true,
+    "matched": "第 16 點"
+  },
+  {
+    "from": "D-支出憑證與結報-040",
+    "to": "A-支出憑證與結報-016",
+    "relation": "cites_inferred",
+    "inferred": true,
+    "matched": "第 16 條"
+  },
+  {
+    "from": "D-支出憑證與結報-041",
+    "to": "A-支出憑證與結報-016",
+    "relation": "cites_inferred",
+    "inferred": true,
+    "matched": "第 16 點"
+  },
+  {
+    "from": "D-支出憑證與結報-042",
+    "to": "D-支出憑證與結報-043",
+    "relation": "answers_inferred",
+    "inferred": true,
+    "matched": "Q43"
+  },
+  {
+    "from": "D-支出憑證與結報-043",
+    "to": "A-支出憑證與結報-006",
+    "relation": "cites_inferred",
+    "inferred": true,
+    "matched": "第 6 點"
+  },
+  {
+    "from": "D-支出憑證與結報-053",
+    "to": "A-支出憑證與結報-004",
+    "relation": "cites_inferred",
+    "inferred": true,
+    "matched": "第 4 點"
+  },
+  {
+    "from": "D-支出憑證與結報-054",
+    "to": "A-支出憑證與結報-004",
+    "relation": "cites_inferred",
+    "inferred": true,
+    "matched": "第 4 點"
+  },
+  {
+    "from": "D-支出憑證與結報-055",
+    "to": "A-支出憑證與結報-004",
+    "relation": "cites_inferred",
+    "inferred": true,
+    "matched": "第 4 點"
+  },
+  {
+    "from": "D-支出憑證與結報-057",
+    "to": "A-支出憑證與結報-005",
+    "relation": "cites_inferred",
+    "inferred": true,
+    "matched": "第 5 點"
+  },
+  {
+    "from": "D-支出憑證與結報-057",
+    "to": "A-支出憑證與結報-004",
+    "relation": "cites_inferred",
+    "inferred": true,
+    "matched": "第 4 點"
+  },
+  {
+    "from": "D-支出憑證與結報-066",
+    "to": "D-支出憑證與結報-068",
+    "relation": "answers_inferred",
+    "inferred": true,
+    "matched": "Q68"
+  },
+  {
+    "from": "D-支出憑證與結報-066",
+    "to": "D-支出憑證與結報-071",
+    "relation": "answers_inferred",
+    "inferred": true,
+    "matched": "Q71"
+  },
+  {
+    "from": "D-支出憑證與結報-067",
+    "to": "A-支出憑證與結報-002",
+    "relation": "cites_inferred",
+    "inferred": true,
+    "matched": "第 2 點"
+  },
+  {
+    "from": "D-支出憑證與結報-067",
+    "to": "A-支出憑證與結報-004",
+    "relation": "cites_inferred",
+    "inferred": true,
+    "matched": "第 4 點"
+  },
+  {
+    "from": "D-支出憑證與結報-067",
+    "to": "A-支出憑證與結報-005",
+    "relation": "cites_inferred",
+    "inferred": true,
+    "matched": "第 5 點"
+  },
+  {
+    "from": "D-支出憑證與結報-069",
+    "to": "A-支出憑證與結報-003",
+    "relation": "cites_inferred",
+    "inferred": true,
+    "matched": "第 3 點"
+  },
+  {
+    "from": "D-支出憑證與結報-071",
+    "to": "A-支出憑證與結報-009",
+    "relation": "cites_inferred",
+    "inferred": true,
+    "matched": "第 9 點"
+  },
+  {
+    "from": "D-支出憑證與結報-071",
+    "to": "A-支出憑證與結報-010",
+    "relation": "cites_inferred",
+    "inferred": true,
+    "matched": "第 10 點"
+  },
+  {
+    "from": "D-支出憑證與結報-072",
+    "to": "D-支出憑證與結報-075",
+    "relation": "answers_inferred",
+    "inferred": true,
+    "matched": "Q75"
+  },
+  {
+    "from": "D-支出憑證與結報-072",
+    "to": "D-支出憑證與結報-076",
+    "relation": "answers_inferred",
+    "inferred": true,
+    "matched": "Q76"
+  },
+  {
+    "from": "D-支出憑證與結報-072",
+    "to": "D-支出憑證與結報-073",
+    "relation": "answers_inferred",
+    "inferred": true,
+    "matched": "Q73"
+  },
+  {
+    "from": "D-支出憑證與結報-072",
+    "to": "D-支出憑證與結報-074",
+    "relation": "answers_inferred",
+    "inferred": true,
+    "matched": "Q74"
+  },
+  {
+    "from": "D-支出憑證與結報-072",
+    "to": "D-支出憑證與結報-077",
+    "relation": "answers_inferred",
+    "inferred": true,
+    "matched": "Q77"
+  },
+  {
+    "from": "D-支出憑證與結報-073",
+    "to": "A-支出憑證與結報-005",
+    "relation": "cites_inferred",
+    "inferred": true,
+    "matched": "第 5 條"
+  },
+  {
+    "from": "D-支出憑證與結報-073",
+    "to": "A-支出憑證與結報-004",
+    "relation": "cites_inferred",
+    "inferred": true,
+    "matched": "第 4 點"
+  },
+  {
+    "from": "D-支出憑證與結報-074",
+    "to": "A-支出憑證與結報-002",
+    "relation": "cites_inferred",
+    "inferred": true,
+    "matched": "第 2 點"
+  },
+  {
+    "from": "D-支出憑證與結報-074",
+    "to": "A-支出憑證與結報-003",
+    "relation": "cites_inferred",
+    "inferred": true,
+    "matched": "第 3 點"
+  },
+  {
+    "from": "D-支出憑證與結報-074",
+    "to": "A-支出憑證與結報-005",
+    "relation": "cites_inferred",
+    "inferred": true,
+    "matched": "第 5 點"
+  },
+  {
+    "from": "D-支出憑證與結報-075",
+    "to": "A-支出憑證與結報-003",
+    "relation": "cites_inferred",
+    "inferred": true,
+    "matched": "第 3 點"
+  },
+  {
+    "from": "D-支出憑證與結報-075",
+    "to": "A-支出憑證與結報-007",
+    "relation": "cites_inferred",
+    "inferred": true,
+    "matched": "第 7 點"
+  },
+  {
+    "from": "D-支出憑證與結報-076",
+    "to": "A-支出憑證與結報-007",
+    "relation": "cites_inferred",
+    "inferred": true,
+    "matched": "第 7 點"
+  },
+  {
+    "from": "D-支出憑證與結報-077",
+    "to": "A-支出憑證與結報-002",
+    "relation": "cites_inferred",
+    "inferred": true,
+    "matched": "第 2 點"
+  },
+  {
+    "from": "D-支出憑證與結報-077",
+    "to": "A-支出憑證與結報-003",
+    "relation": "cites_inferred",
+    "inferred": true,
+    "matched": "第 3 點"
+  },
+  {
+    "from": "D-支出憑證與結報-077",
+    "to": "A-支出憑證與結報-004",
+    "relation": "cites_inferred",
+    "inferred": true,
+    "matched": "第 4 點"
+  },
+  {
+    "from": "D-支出憑證與結報-077",
+    "to": "A-支出憑證與結報-005",
+    "relation": "cites_inferred",
+    "inferred": true,
+    "matched": "第 5 點"
+  }
+]
