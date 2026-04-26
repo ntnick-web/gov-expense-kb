@@ -11,7 +11,7 @@
 ```
 MIT License
 
-Copyright (c) 2026 ntnick (政府支出法規知識庫)
+Copyright (c) 2026 NtN
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -50,12 +50,12 @@ SOFTWARE.
 
 **建議引用格式**:
 
-> 政府支出法規知識庫 (2026)。摘自 <https://ntnick-web.github.io/gov-expense-kb/>,授權條款 CC BY 4.0。
+> NtN (2026)。政府支出法規知識庫。摘自 <https://ntnick-web.github.io/gov-expense-kb/>,授權條款 CC BY 4.0。
 
 或在學術引文中:
 
 ```
-ntnick (2026). 政府支出法規知識庫 [Online database].
+NtN (2026). 政府支出法規知識庫 [Online database].
 Retrieved from https://ntnick-web.github.io/gov-expense-kb/
 Licensed under CC BY 4.0.
 ```

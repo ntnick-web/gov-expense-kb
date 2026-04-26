@@ -125,7 +125,7 @@ gov-expense-kb/
 歡迎自由使用、改作、商業引用,僅需姓名標示(歸屬本知識庫)。
 
 **引用範本**:
-> 政府支出法規知識庫 (2026)。摘自 https://ntnick-web.github.io/gov-expense-kb/,授權 CC BY 4.0。
+> NtN (2026)。政府支出法規知識庫。摘自 https://ntnick-web.github.io/gov-expense-kb/,授權 CC BY 4.0。
 
 **重要聲明**:
 - 本工具僅供**查詢輔助**使用,正式引用、報支、決策請以**主管機關公告之最新版本**為準
