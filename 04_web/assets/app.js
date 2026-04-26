@@ -1,7 +1,7 @@
 // 政府支出法規知識庫 — 前端主程式
 // 純 ES6,無框架。從 03_index/*.json 載入資料,渲染條文庫主介面。
 
-const DATA_VERSION = '2026-04-27c';
+const DATA_VERSION = '2026-04-27d';
 const DATA_BASE = '../03_index/';
 const MD_BASE = '../';
 const DATA_QS = '?v=' + DATA_VERSION;
@@ -1719,11 +1719,83 @@ async function init() {
   renderTree();
   renderCards();
   bindEvents();
+  bindInfoModal();
   // 啟動時若預設視圖非 library,主動觸發其渲染
   const v = document.body.dataset.view;
   if (v === 'overview') renderOverview();
   else if (v === 'graph') renderGraph();
   else if (v === 'scenarios') renderScenariosView();
+}
+
+// ─────────────────────────────────────────────
+// Info modal — 顯示 about / terms / privacy / LICENSE 的 markdown
+// ─────────────────────────────────────────────
+
+const INFO_TITLES = {
+  'docs/about.md':   '關於本站',
+  'docs/terms.md':   '使用條款',
+  'docs/privacy.md': '隱私聲明',
+  'LICENSE.md':      '授權聲明',
+};
+const INFO_MD_CACHE = new Map();
+const REPO_BLOB_BASE = 'https://github.com/ntnick-web/gov-expense-kb/blob/main/';
+
+async function openInfoModal(path) {
+  const $modal = document.getElementById('info-modal');
+  const $title = document.getElementById('info-modal-title');
+  const $body = document.getElementById('info-modal-body');
+  const $src = document.getElementById('info-modal-source');
+  if (!$modal || !$body) return;
+
+  $title.textContent = INFO_TITLES[path] || path;
+  $src.href = REPO_BLOB_BASE + path;
+  $modal.hidden = false;
+  $body.innerHTML = '<p>載入中…</p>';
+  document.body.classList.add('modal-open');
+
+  try {
+    let md = INFO_MD_CACHE.get(path);
+    if (!md) {
+      const r = await fetch('../' + path + '?v=' + DATA_VERSION);
+      if (!r.ok) throw new Error(`HTTP ${r.status}`);
+      md = await r.text();
+      INFO_MD_CACHE.set(path, md);
+    }
+    // 移除 markdown 內的 H1(modal 已有自己的標題列),其餘交給 renderMarkdown
+    const stripped = md.replace(/^#\s+.+\n+/, '');
+    $body.innerHTML = renderMarkdown(stripped);
+    $body.scrollTop = 0;
+  } catch (e) {
+    $body.innerHTML = `<p style="color:#c00">載入失敗:${esc(e.message)}</p>
+      <p>您可以<a href="${REPO_BLOB_BASE + path}" target="_blank" rel="noopener">直接於 GitHub 檢視</a>。</p>`;
+  }
+}
+
+function closeInfoModal() {
+  const $modal = document.getElementById('info-modal');
+  if ($modal) $modal.hidden = true;
+  document.body.classList.remove('modal-open');
+}
+
+function bindInfoModal() {
+  // footer / 任何 [data-info="path"] 的連結 → 開 modal
+  document.addEventListener('click', (e) => {
+    const link = e.target.closest('[data-info]');
+    if (link) {
+      e.preventDefault();
+      openInfoModal(link.dataset.info);
+      return;
+    }
+    if (e.target.closest('[data-info-close]')) {
+      closeInfoModal();
+    }
+  });
+  // ESC 關閉
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && !document.getElementById('info-modal')?.hidden) {
+      closeInfoModal();
+    }
+  });
 }
 
 init();

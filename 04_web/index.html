@@ -4,10 +4,10 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>政府支出法規知識庫</title>
-<link rel="stylesheet" href="assets/style.css?v=2026-04-27c">
-<link rel="preload" href="../03_index/nodes.json?v=2026-04-27c" as="fetch" crossorigin>
-<link rel="preload" href="../03_index/edges.json?v=2026-04-27c" as="fetch" crossorigin>
-<link rel="preload" href="../03_index/tags.json?v=2026-04-27c" as="fetch" crossorigin>
+<link rel="stylesheet" href="assets/style.css?v=2026-04-27d">
+<link rel="preload" href="../03_index/nodes.json?v=2026-04-27d" as="fetch" crossorigin>
+<link rel="preload" href="../03_index/edges.json?v=2026-04-27d" as="fetch" crossorigin>
+<link rel="preload" href="../03_index/tags.json?v=2026-04-27d" as="fetch" crossorigin>
 </head>
 <body data-theme="light" data-view="overview">
 
@@ -143,6 +143,59 @@
 
 <div id="toast" class="toast" hidden></div>
 
-<script type="module" src="assets/app.js?v=2026-04-27c"></script>
+<!-- ────────────────────────────────────────────────
+     Info modal — 顯示 about / terms / privacy / license MD
+     ──────────────────────────────────────────────── -->
+<div id="info-modal" class="info-modal" hidden role="dialog" aria-modal="true" aria-labelledby="info-modal-title">
+  <div class="info-modal-backdrop" data-info-close></div>
+  <div class="info-modal-panel">
+    <header class="info-modal-header">
+      <h2 id="info-modal-title">關於</h2>
+      <button class="icon-btn" data-info-close aria-label="關閉">✕</button>
+    </header>
+    <article id="info-modal-body" class="info-modal-body markdown-body"></article>
+    <footer class="info-modal-footer">
+      <a id="info-modal-source" target="_blank" rel="noopener" class="link-btn">📄 在 GitHub 檢視原始檔</a>
+    </footer>
+  </div>
+</div>
+
+<!-- ────────────────────────────────────────────────
+     全站頁尾 — 版權、授權、條款連結
+     ──────────────────────────────────────────────── -->
+<footer class="site-footer" role="contentinfo">
+  <div class="footer-row footer-meta">
+    <span>© 2026 政府支出法規知識庫</span>
+    <span class="footer-sep">·</span>
+    <span>程式 <a href="LICENSE.md" data-info="LICENSE.md">MIT</a></span>
+    <span class="footer-sep">·</span>
+    <span>內容 <a href="LICENSE.md" data-info="LICENSE.md">CC BY 4.0</a></span>
+    <span class="footer-sep">·</span>
+    <span>法規原文 屬政府公開資訊</span>
+  </div>
+  <div class="footer-row footer-links">
+    <a href="docs/about.md" data-info="docs/about.md">關於本站</a>
+    <a href="docs/terms.md" data-info="docs/terms.md">使用條款</a>
+    <a href="docs/privacy.md" data-info="docs/privacy.md">隱私聲明</a>
+    <a href="https://github.com/ntnick-web/gov-expense-kb" target="_blank" rel="noopener">GitHub</a>
+    <a href="https://github.com/ntnick-web/gov-expense-kb/issues" target="_blank" rel="noopener">問題回報</a>
+  </div>
+  <div class="footer-row footer-disclaimer">
+    本站僅供查詢輔助使用,正式引用請以主管機關公告版本為準。
+  </div>
+</footer>
+
+<!-- ────────────────────────────────────────────────
+     Cloudflare Web Analytics(無 cookie、無 PII、GDPR 友善)
+     部署 SOP:
+     1) 至 https://dash.cloudflare.com/?to=/:account/web-analytics 註冊新站
+     2) 取得 token 後,將下方 ___PUT_CF_BEACON_TOKEN_HERE___ 替換為實際 token
+     3) commit + push,GitHub Pages 部署完成後 ~5 分鐘後 dashboard 會出現首批數據
+     詳見 docs/privacy.md(隱私說明)
+     ──────────────────────────────────────────────── -->
+<script defer src="https://static.cloudflareinsights.com/beacon.min.js"
+        data-cf-beacon='{"token": "___PUT_CF_BEACON_TOKEN_HERE___"}'></script>
+
+<script type="module" src="assets/app.js?v=2026-04-27d"></script>
 </body>
 </html>
