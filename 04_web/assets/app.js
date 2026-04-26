@@ -1,7 +1,7 @@
 // 政府支出法規知識庫 — 前端主程式
 // 純 ES6,無框架。從 03_index/*.json 載入資料,渲染條文庫主介面。
 
-const DATA_VERSION = '2026-04-27a';
+const DATA_VERSION = '2026-04-27b';
 const DATA_BASE = '../03_index/';
 const MD_BASE = '../';
 const DATA_QS = '?v=' + DATA_VERSION;
