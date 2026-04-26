@@ -11,50 +11,6 @@
 </head>
 <body data-theme="light" data-view="overview">
 
-<!-- 客戶端密碼遮罩(僅遮蔽 UI,非真正認證;見 README) -->
-<div id="password-gate" class="password-gate" role="dialog" aria-modal="true" aria-labelledby="gate-title">
-  <form id="password-form" class="password-card" autocomplete="off">
-    <h1 id="gate-title">政府支出法規知識庫</h1>
-    <p>請輸入存取密碼</p>
-    <input id="password-input" type="password" inputmode="numeric" autocomplete="off" autofocus aria-label="密碼">
-    <button type="submit">進入</button>
-    <p id="password-error" class="password-error" hidden>密碼錯誤,請再試一次</p>
-  </form>
-</div>
-<script>
-  // 客戶端密碼閘:單純隱藏 UI,本身不是安全機制(原始碼可見)。
-  // 通過後存 sessionStorage,同視窗下次刷新免重輸。
-  (function () {
-    var KEY = 'gate-ok-v1';
-    var EXPECTED = '1234';
-    var gate = document.getElementById('password-gate');
-    var form = document.getElementById('password-form');
-    var input = document.getElementById('password-input');
-    var err = document.getElementById('password-error');
-    function unlock() {
-      gate.remove();
-      document.body.classList.remove('is-gated');
-      document.dispatchEvent(new Event('app:gate-open'));
-    }
-    if (sessionStorage.getItem(KEY) === '1') {
-      unlock();
-    } else {
-      document.body.classList.add('is-gated');
-      form.addEventListener('submit', function (ev) {
-        ev.preventDefault();
-        if (input.value === EXPECTED) {
-          sessionStorage.setItem(KEY, '1');
-          unlock();
-        } else {
-          err.hidden = false;
-          input.value = '';
-          input.focus();
-        }
-      });
-    }
-  })();
-</script>
-
 <header class="topbar" role="banner">
   <nav class="view-tabs" aria-label="視圖切換">
     <button class="view-tab is-active" data-view="overview" aria-current="page" title="泡泡概覽圖">🫧 概覽</button>
