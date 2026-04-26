@@ -23,6 +23,9 @@
 | `reviewed` | date | ✗ | 校對日期。**有此欄位 = 已校對**(自動或人工);用於 `02_parse.py` 的安全網,`--force` 不蓋,需 `--force-reviewed` | `2026-04-25` |
 | `agency` | string | ✗ | 發布機關(函釋必填) | `行政院主計總處` |
 | `doc_no` | string | ✗ | 發文字號(函釋必填) | `主會字第1090051074B號` |
+| `status` | enum | ✗ | 法規狀態,預設 `現行`。允許值:`現行` / `部分修正` / `已廢止` | `現行` |
+| `source_url` | url | ✗ | 原始法規/函釋的官方網頁/PDF 連結,前端卡片會顯示為「原始出處」按鈕 | `https://www.dgbas.gov.tw/...` |
+| `summary_pending` | bool | ✗ | 由 `_cleanup_*` 腳本自動加上,代表摘要尚為占位符 | `true` |
 
 **`reviewed` 安全網**
 - `02_parse.py` 不寫入 `reviewed`(留給人工 / `_batch_autoreview.py` 補)
@@ -101,7 +104,10 @@ front-matter 之後,內文採固定區塊:
     "tags": ["交通費", "報支上限"],
     "file_path": "02_markdown/A_核心法規/國內旅費/第05條_交通費上限.md",
     "version": "2024-01-15",
-    "summary": "(自重點摘要區塊抽出,前 100 字)"
+    "summary": "(自重點摘要區塊抽出,前 100 字)",
+    "status": "現行",
+    "source_url": "https://...(若 front-matter 提供)",
+    "summary_pending": true
   }
 ]
 ```

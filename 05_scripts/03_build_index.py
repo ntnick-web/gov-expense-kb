@@ -78,6 +78,9 @@ class Node:
     agency: Optional[str] = None
     doc_no: Optional[str] = None
     reviewed: Optional[str] = None
+    status: str = "現行"          # 現行 / 部分修正 / 已廢止
+    source_url: Optional[str] = None
+    summary_pending: bool = False
     body_plain: str = field(default="", repr=False)
 
 
@@ -284,6 +287,11 @@ def load_nodes(
         if len(body_plain) > SEARCH_BODY_LIMIT:
             body_plain = body_plain[:SEARCH_BODY_LIMIT]
 
+        status_val = str(fm.get("status") or "現行")
+        if status_val not in ("現行", "部分修正", "已廢止"):
+            warnings.append(f"{rel}: status='{status_val}' 不在允許值內,視為「現行」")
+            status_val = "現行"
+
         node = Node(
             id=node_id,
             type=str(fm.get("type", "")),
@@ -297,6 +305,9 @@ def load_nodes(
             agency=str(fm["agency"]) if fm.get("agency") else None,
             doc_no=str(fm["doc_no"]) if fm.get("doc_no") else None,
             reviewed=str(fm["reviewed"]) if fm.get("reviewed") else None,
+            status=status_val,
+            source_url=str(fm["source_url"]) if fm.get("source_url") else None,
+            summary_pending=bool(fm.get("summary_pending")),
             body_plain=body_plain,
         )
         nodes.append(node)
@@ -321,6 +332,7 @@ def build_nodes_json(nodes: list[Node]) -> list[dict]:
             "file_path": n.file_path,
             "version": n.version,
             "summary": n.summary,
+            "status": n.status,
         }
         if n.agency:
             d["agency"] = n.agency
@@ -328,6 +340,10 @@ def build_nodes_json(nodes: list[Node]) -> list[dict]:
             d["doc_no"] = n.doc_no
         if n.reviewed:
             d["reviewed"] = n.reviewed
+        if n.source_url:
+            d["source_url"] = n.source_url
+        if n.summary_pending:
+            d["summary_pending"] = True
         out.append(d)
     return out
 
