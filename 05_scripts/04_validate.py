@@ -56,6 +56,13 @@ from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Optional
 
+# Windows console 預設 cp950 無法輸出 emoji,強制 UTF-8
+try:
+    sys.stdout.reconfigure(encoding="utf-8")  # type: ignore[attr-defined]
+    sys.stderr.reconfigure(encoding="utf-8")  # type: ignore[attr-defined]
+except Exception:
+    pass
+
 try:
     import yaml
 except ImportError:  # pragma: no cover

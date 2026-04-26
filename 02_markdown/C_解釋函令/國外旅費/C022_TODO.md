@@ -2,9 +2,10 @@
 id: C-國外旅費-022
 type: 解釋函令
 parent: 國外旅費
-title: TODO
+title: 出國、返國一律搭乘經濟(標準)座(艙)位
 tags:
-- 結報核銷
+- 覈實報支
+- 雜費
 related: []
 source: 行政院主計總處_國外出差旅費報支要點解釋彙編
 version: '2024-01-01'

@@ -43,6 +43,13 @@ except ImportError:  # pragma: no cover
     sys.stderr.write("缺少 PyYAML,請執行 pip install PyYAML\n")
     sys.exit(1)
 
+# Windows console 預設 cp950 無法輸出 unicode emoji,強制 UTF-8
+try:
+    sys.stdout.reconfigure(encoding="utf-8")  # type: ignore[attr-defined]
+    sys.stderr.reconfigure(encoding="utf-8")  # type: ignore[attr-defined]
+except Exception:
+    pass
+
 
 # ─────────────────────────────────────────────
 # 路徑
@@ -446,13 +453,30 @@ _QA_PATTERNS: list[re.Pattern[str]] = [
 ]
 
 
+def _resolve_target_parents(
+    body: str, match_start: int, default_parent: str, all_parents: list[str]
+) -> list[str]:
+    """根據引用前的上下文決定目標母題。
+
+    預設用本節點所屬母題;若引用前 40 字內出現其他母題名,改連到該母題。
+    例:國外旅費 C 函釋寫「依國內旅費報支要點第 5 點」→ 跨母題連到 A-國內旅費-005。
+    """
+    start = max(0, match_start - 40)
+    context = body[start:match_start]
+    for p in all_parents:
+        if p != default_parent and p in context:
+            return [p]
+    return [default_parent]
+
+
 def build_inferred_edges(
     nodes: list[Node], existing_edges: list[dict]
 ) -> tuple[list[dict], list[str]]:
     """掃 body_plain 找「第 N 點/條」「QN」引用,加自動推斷邊。
 
     規則:
-    - 同 parent 內查 ID(避免跨母題誤連)
+    - 預設同 parent 內查 ID
+    - 上下文若提到其他母題名(如國外 C 寫「依國內旅費報支要點第 5 點」)→ 跨母題連結
     - A 類條文引用 → cites_inferred(指向 A 類)
     - 任意類引用 Q → answers_inferred(指向 D 類)
     - 自指(本節點引用自己)跳過
@@ -466,9 +490,11 @@ def build_inferred_edges(
             cat, parent, serial = m.group(1), m.group(2), int(m.group(3))
             by_parent_serial[(cat, parent, serial)] = n.id
 
+    all_parents = sorted({n.parent for n in nodes})
     existing_pairs = {(e["from"], e["to"]) for e in existing_edges}
     inferred: list[dict] = []
     seen: set[tuple[str, str]] = set()
+    cross_parent_count = 0
 
     for n in nodes:
         if not n.body_plain:
@@ -481,18 +507,25 @@ def build_inferred_edges(
                 serial = _cn2int(m.group(1))
                 if serial is None or serial < 1 or serial > 99:
                     continue
-                target = by_parent_serial.get(("A", n.parent, serial))
-                if not target or target == n.id:
-                    continue
-                if (n.id, target) in existing_pairs or (n.id, target) in seen:
-                    continue
-                seen.add((n.id, target))
-                inferred.append({
-                    "from": n.id, "to": target,
-                    "relation": "cites_inferred",
-                    "inferred": True,
-                    "matched": m.group(0),
-                })
+                target_parents = _resolve_target_parents(
+                    body, m.start(), n.parent, all_parents
+                )
+                for tp in target_parents:
+                    target = by_parent_serial.get(("A", tp, serial))
+                    if not target or target == n.id:
+                        continue
+                    if (n.id, target) in existing_pairs or (n.id, target) in seen:
+                        continue
+                    seen.add((n.id, target))
+                    if tp != n.parent:
+                        cross_parent_count += 1
+                    inferred.append({
+                        "from": n.id, "to": target,
+                        "relation": "cites_inferred",
+                        "inferred": True,
+                        "matched": m.group(0),
+                        "cross_parent": tp != n.parent,
+                    })
 
         # QN 引用 → D 類
         for pat in _QA_PATTERNS:
@@ -500,21 +533,31 @@ def build_inferred_edges(
                 serial = int(m.group(1))
                 if serial < 1 or serial > 999:
                     continue
-                target = by_parent_serial.get(("D", n.parent, serial))
-                if not target or target == n.id:
-                    continue
-                if (n.id, target) in existing_pairs or (n.id, target) in seen:
-                    continue
-                seen.add((n.id, target))
-                inferred.append({
-                    "from": n.id, "to": target,
-                    "relation": "answers_inferred",
-                    "inferred": True,
-                    "matched": m.group(0),
-                })
+                target_parents = _resolve_target_parents(
+                    body, m.start(), n.parent, all_parents
+                )
+                for tp in target_parents:
+                    target = by_parent_serial.get(("D", tp, serial))
+                    if not target or target == n.id:
+                        continue
+                    if (n.id, target) in existing_pairs or (n.id, target) in seen:
+                        continue
+                    seen.add((n.id, target))
+                    if tp != n.parent:
+                        cross_parent_count += 1
+                    inferred.append({
+                        "from": n.id, "to": target,
+                        "relation": "answers_inferred",
+                        "inferred": True,
+                        "matched": m.group(0),
+                        "cross_parent": tp != n.parent,
+                    })
 
     if inferred:
-        warnings.append(f"自動推斷 {len(inferred)} 條邊(relation 含 _inferred 後綴)")
+        msg = f"自動推斷 {len(inferred)} 條邊(relation 含 _inferred 後綴)"
+        if cross_parent_count:
+            msg += f"(含 {cross_parent_count} 條跨母題)"
+        warnings.append(msg)
     return inferred, warnings
 
 
