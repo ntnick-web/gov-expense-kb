@@ -510,6 +510,72 @@ body {
 .card.is-reviewed .card-flag { display: none; }
 .card:not(.is-reviewed) .card-title { color: var(--text-secondary); }
 
+/* 狀態徽章 (現行 / 部分修正 / 已廢止) */
+.status-badge {
+  display: inline-block;
+  font-size: 10px;
+  line-height: 1.4;
+  padding: 1px 6px;
+  border-radius: 10px;
+  font-weight: 500;
+  vertical-align: middle;
+  margin-left: 6px;
+  white-space: nowrap;
+}
+.status-badge[data-status="現行"] {
+  background: rgba(46, 160, 67, 0.12);
+  color: #2ea043;
+  border: 1px solid rgba(46, 160, 67, 0.3);
+}
+.status-badge[data-status="部分修正"] {
+  background: rgba(245, 166, 35, 0.12);
+  color: #d18a00;
+  border: 1px solid rgba(245, 166, 35, 0.35);
+}
+.status-badge[data-status="已廢止"] {
+  background: var(--bg-secondary);
+  color: var(--text-muted);
+  border: 1px solid var(--border-strong);
+  text-decoration: line-through;
+}
+.card[data-status="已廢止"] {
+  opacity: 0.65;
+}
+.card[data-status="已廢止"] .card-title {
+  text-decoration: line-through;
+  text-decoration-color: var(--text-muted);
+}
+
+/* 卡片底部:校對日 + 原始出處 */
+.card-footer {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 8px;
+  padding-top: 8px;
+  border-top: 1px dashed var(--border);
+  font-size: 11px;
+  color: var(--text-muted);
+  flex-wrap: wrap;
+}
+.card-footer .reviewed-date {
+  font-weight: 500;
+  color: var(--text-secondary);
+}
+.card-footer .source-link {
+  margin-left: auto;
+  color: var(--color-A);
+  text-decoration: none;
+  border-bottom: 1px dashed currentColor;
+}
+.card-footer .source-link:hover { border-bottom-style: solid; }
+.card-footer .draft-flag {
+  color: #b07300;
+  background: rgba(245, 166, 35, 0.12);
+  padding: 0 6px;
+  border-radius: 8px;
+}
+
 .empty-msg {
   text-align: center;
   color: var(--text-muted);
@@ -877,3 +943,184 @@ body {
   }
 }
 
+/* ─── 核銷情境視圖 ─── */
+
+.scenarios-view {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+  background: var(--bg-secondary);
+  padding: 32px 24px 48px;
+}
+.scenarios-view[hidden] { display: none; }
+.scenarios-header {
+  max-width: 1100px;
+  margin: 0 auto 24px;
+  text-align: center;
+}
+.scenarios-header h1 {
+  font-size: 24px;
+  margin: 0 0 8px;
+  color: var(--text-primary);
+}
+.scenarios-subtitle {
+  font-size: 14px;
+  color: var(--text-secondary);
+  margin: 0;
+  line-height: 1.7;
+}
+.scenarios-subtitle strong { color: var(--color-A); }
+
+.scenarios-toolbar {
+  display: flex;
+  gap: 14px;
+  align-items: center;
+  justify-content: center;
+  margin-top: 12px;
+  flex-wrap: wrap;
+  font-size: 13px;
+}
+.scenarios-toolbar .scenarios-scope-label {
+  background: rgba(74, 144, 226, 0.10);
+  border: 1px solid rgba(74, 144, 226, 0.4);
+  color: var(--color-A);
+  padding: 3px 10px;
+  border-radius: 12px;
+  font-weight: 500;
+}
+.scenarios-empty {
+  max-width: 600px;
+  margin: 32px auto;
+  padding: 28px;
+  background: var(--bg-primary);
+  border: 1px dashed var(--border-strong);
+  border-radius: var(--radius);
+  text-align: center;
+  color: var(--text-secondary);
+  line-height: 1.7;
+}
+.scenarios-empty strong { color: var(--text-primary); }
+.scenarios-empty .link-btn { margin-top: 8px; font-size: 14px; }
+
+.scenarios-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 14px;
+  max-width: 1100px;
+  width: 100%;
+  margin: 0 auto;
+}
+.scenario-card {
+  background: var(--bg-primary);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 18px 18px 16px;
+  cursor: pointer;
+  transition: box-shadow 0.15s, transform 0.05s, border-color 0.15s;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  position: relative;
+}
+.scenario-card:hover {
+  border-color: var(--color-A);
+  box-shadow: var(--shadow);
+  transform: translateY(-1px);
+}
+.scenario-card:active { transform: translateY(0); }
+.scenario-icon {
+  font-size: 28px;
+  line-height: 1;
+}
+.scenario-title {
+  font-size: 16px;
+  font-weight: 600;
+  margin: 0;
+  color: var(--text-primary);
+}
+.scenario-subtitle {
+  font-size: 13px;
+  color: var(--text-secondary);
+  margin: 0;
+  line-height: 1.5;
+}
+.scenario-meta {
+  margin-top: auto;
+  padding-top: 8px;
+  font-size: 11px;
+  color: var(--text-muted);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.scenario-meta .scenario-count {
+  background: var(--bg-secondary);
+  padding: 2px 8px;
+  border-radius: 10px;
+}
+.scenario-meta .scenario-arrow {
+  color: var(--color-A);
+  font-weight: 600;
+}
+
+/* ─── Beta banner / 情境 banner ─── */
+
+.beta-banner,
+.scenario-banner {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 14px;
+  border-radius: var(--radius);
+  margin: 0 0 12px;
+  font-size: 13px;
+}
+.beta-banner {
+  background: rgba(245, 166, 35, 0.10);
+  border-left: 3px solid #d18a00;
+  color: var(--text-secondary);
+}
+.beta-banner[hidden],
+.scenario-banner[hidden] { display: none; }
+.beta-tag {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  background: #d18a00;
+  color: #fff;
+  padding: 2px 7px;
+  border-radius: 4px;
+  flex-shrink: 0;
+}
+.scenario-banner {
+  background: rgba(74, 144, 226, 0.10);
+  border-left: 3px solid var(--color-A);
+}
+.scenario-banner-icon { font-size: 22px; flex-shrink: 0; }
+.scenario-banner-text { flex: 1; line-height: 1.4; }
+.scenario-banner-text strong { color: var(--text-primary); display: block; }
+.scenario-banner-text span { color: var(--text-secondary); font-size: 12px; }
+
+/* ─── Beta tag 在母題泡泡與分類樹 ─── */
+
+.parent-beta-tag {
+  display: inline-block;
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.8px;
+  background: #d18a00;
+  color: #fff;
+  padding: 0 5px;
+  border-radius: 3px;
+  margin-left: 6px;
+  vertical-align: middle;
+}
+
+/* 概覽圖內 SVG 標示 */
+.bubble-beta-mark {
+  font-size: 11px;
+  font-weight: 700;
+  fill: #fff;
+  text-anchor: middle;
+}

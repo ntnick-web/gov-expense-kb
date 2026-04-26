@@ -1158,13 +1158,6 @@
     "matched": "第 4 點"
   },
   {
-    "from": "C-國內旅費-247",
-    "to": "A-國內旅費-003",
-    "relation": "cites_inferred",
-    "inferred": true,
-    "matched": "第 3 點"
-  },
-  {
     "from": "C-國內旅費-248",
     "to": "A-國內旅費-003",
     "relation": "cites_inferred",
@@ -1257,13 +1250,6 @@
   },
   {
     "from": "C-國內旅費-254",
-    "to": "A-國內旅費-009",
-    "relation": "cites_inferred",
-    "inferred": true,
-    "matched": "第 9 點"
-  },
-  {
-    "from": "C-國內旅費-255",
     "to": "A-國內旅費-009",
     "relation": "cites_inferred",
     "inferred": true,
@@ -1373,13 +1359,6 @@
     "relation": "cites_inferred",
     "inferred": true,
     "matched": "第 4 條"
-  },
-  {
-    "from": "C-國內旅費-276",
-    "to": "A-國內旅費-013",
-    "relation": "cites_inferred",
-    "inferred": true,
-    "matched": "第 13 點"
   },
   {
     "from": "C-國內旅費-277",
@@ -1495,13 +1474,6 @@
   },
   {
     "from": "C-國內旅費-288",
-    "to": "A-國內旅費-015",
-    "relation": "cites_inferred",
-    "inferred": true,
-    "matched": "第 15 點"
-  },
-  {
-    "from": "C-國內旅費-289",
     "to": "A-國內旅費-015",
     "relation": "cites_inferred",
     "inferred": true,

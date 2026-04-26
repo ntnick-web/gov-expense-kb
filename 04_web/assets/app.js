@@ -1,8 +1,10 @@
 // 政府支出法規知識庫 — 前端主程式
 // 純 ES6,無框架。從 03_index/*.json 載入資料,渲染條文庫主介面。
 
+const DATA_VERSION = '2026-04-27a';
 const DATA_BASE = '../03_index/';
 const MD_BASE = '../';
+const DATA_QS = '?v=' + DATA_VERSION;
 
 const CATEGORY_LABEL = {
   A: '核心法規', B: '支出標準', C: '解釋函令', D: '問答集', N: '分類節點'
@@ -10,11 +12,12 @@ const CATEGORY_LABEL = {
 const CATEGORY_ORDER = ['A', 'B', 'C', 'D', 'N'];
 const PLACEHOLDER_RE = /\(待人工補\)|TODO|待補/;
 
-// 泡泡圖:9 個母題(原雙環設計已合併,中心「政府支出」移除)
+// 泡泡圖:目前僅顯示有資料的母題(0 筆者隱藏)
 const PARENTS_ALL = [
-  '國內旅費', '國外旅費', '講座鐘點費', '酬勞費', '國外專家',
-  '其他', '支出憑證與結報', '教育部專章', '國科會專章',
+  '國內旅費', '國外旅費', '支出憑證與結報',
 ];
+// beta 母題(尚在校對中,UI 上加 BETA 標)
+const BETA_PARENTS = new Set(['國外旅費', '支出憑證與結報']);
 const PARENT_COLOR = {
   '國內旅費':       '#4A90E2',
   '國外旅費':       '#F8C471',  // 淺橘色
@@ -92,9 +95,11 @@ const state = {
   edges: [],
   tags: { 母標籤: {}, 自由標籤: {} },
   searchCorpus: [],
+  scenarios: [],                    // 從 data/scenarios.json 載入
+  scenariosById: new Map(),
   nodeById: new Map(),
   incomingEdges: new Map(),  // to → [edges]
-  filter: { parent: null, expense: null, category: null, tag: null, query: '' },
+  filter: { parent: null, expense: null, category: null, tag: null, scenario: null, query: '' },
   activeId: null,
   treeOpen: new Set(),
   searchFocusIdx: -1,
@@ -105,16 +110,19 @@ const state = {
 // ─────────────────────────────────────────────
 
 async function loadData() {
-  const [nodes, edges, tags, search] = await Promise.all([
-    fetch(DATA_BASE + 'nodes.json').then(r => r.json()),
-    fetch(DATA_BASE + 'edges.json').then(r => r.json()),
-    fetch(DATA_BASE + 'tags.json').then(r => r.json()),
-    fetch(DATA_BASE + 'search_index.json').then(r => r.json()),
+  const [nodes, edges, tags, search, scenarios] = await Promise.all([
+    fetch(DATA_BASE + 'nodes.json' + DATA_QS).then(r => r.json()),
+    fetch(DATA_BASE + 'edges.json' + DATA_QS).then(r => r.json()),
+    fetch(DATA_BASE + 'tags.json' + DATA_QS).then(r => r.json()),
+    fetch(DATA_BASE + 'search_index.json' + DATA_QS).then(r => r.json()),
+    fetch('data/scenarios.json' + DATA_QS).then(r => r.json()).catch(() => ({ scenarios: [] })),
   ]);
   state.nodes = nodes;
   state.edges = edges;
   state.tags = tags;
   state.searchCorpus = search.documents || [];
+  state.scenarios = scenarios.scenarios || [];
+  state.scenariosById = new Map(state.scenarios.map(s => [s.id, s]));
   state.nodeById = new Map(nodes.map(n => [n.id, n]));
   state.incomingEdges = new Map();
   for (const e of edges) {
@@ -177,10 +185,10 @@ function renderAllParentsTree($tree, tree) {
     const totalParent = [...byExp.values()].reduce(
       (s, byCat) => s + [...byCat.values()].reduce((s2, arr) => s2 + arr.length, 0), 0);
     const $parent = el('div', { class: 'tree-item' });
-    $parent.innerHTML = `<span class="twirl">▶</span>${esc(parent)}<span class="count">${totalParent}</span>`;
+    const betaTag = BETA_PARENTS.has(parent) ? '<span class="parent-beta-tag">BETA</span>' : '';
+    $parent.innerHTML = `<span class="twirl">▶</span>${esc(parent)}${betaTag}<span class="count">${totalParent}</span>`;
     $parent.onclick = (ev) => {
       ev.stopPropagation();
-      // 進入該母題的鎖定模式
       setFilter({ parent, expense: null, category: null, tag: null });
     };
     $tree.appendChild($parent);
@@ -264,12 +272,21 @@ function renderScopedTree($tree, tree, parent) {
 // ─────────────────────────────────────────────
 
 function filteredNodes() {
+  const sc = state.filter.scenario ? state.scenariosById.get(state.filter.scenario) : null;
+  const scenarioPrimary = sc ? new Set(sc.primary_ids || []) : null;
+  const scenarioTags = sc ? new Set(sc.tags || []) : null;
   return state.nodes.filter(n => {
     if (state.filter.parent && n.parent !== state.filter.parent) return false;
     if (state.filter.expense && nodeExpenseLayer(n) !== state.filter.expense) return false;
     const cat = n.id.split('-')[0];
     if (state.filter.category && cat !== state.filter.category) return false;
     if (state.filter.tag && !(n.tags || []).includes(state.filter.tag)) return false;
+    if (sc) {
+      // 情境過濾:在 primary_ids ∪ tag 命中
+      const inPrimary = scenarioPrimary.has(n.id);
+      const tagHit = (n.tags || []).some(t => scenarioTags.has(t));
+      if (!inPrimary && !tagHit) return false;
+    }
     return true;
   });
 }
@@ -312,7 +329,31 @@ function renderCards() {
       if (target?.filter) setFilter(target.filter);
     };
   });
-  $treeClear.hidden = !(state.filter.parent || state.filter.expense || state.filter.category || state.filter.tag);
+  $treeClear.hidden = !(state.filter.parent || state.filter.expense || state.filter.category || state.filter.tag || state.filter.scenario);
+
+  // 情境 banner
+  const $scBanner = document.getElementById('scenario-banner');
+  if ($scBanner) {
+    if (state.filter.scenario) {
+      const sc = state.scenariosById.get(state.filter.scenario);
+      if (sc) {
+        document.getElementById('scenario-banner-icon').textContent = sc.icon || '📌';
+        document.getElementById('scenario-banner-title').textContent = `情境:${sc.title}`;
+        document.getElementById('scenario-banner-subtitle').textContent = sc.subtitle || '';
+        $scBanner.hidden = false;
+      } else {
+        $scBanner.hidden = true;
+      }
+    } else {
+      $scBanner.hidden = true;
+    }
+  }
+
+  // Beta banner(視當前 parent 是否為 beta 母題)
+  const $betaBanner = document.getElementById('beta-banner');
+  if ($betaBanner) {
+    $betaBanner.hidden = !(state.filter.parent && BETA_PARENTS.has(state.filter.parent));
+  }
 
   // 依類別群組顯示
   const byCat = new Map();
@@ -337,11 +378,13 @@ function renderCards() {
 function renderCard(n) {
   const cat = n.id.split('-')[0];
   const isReviewed = !!n.reviewed;
+  const status = n.status || '現行';
   const $c = el('div', {
     class: 'card' + (isReviewed ? ' is-reviewed' : '') + (state.activeId === n.id ? ' is-active' : ''),
     role: 'listitem',
     'data-cat': cat,
     'data-id': n.id,
+    'data-status': status,
   });
   const summaryHTML = n.summary
     ? esc(n.summary)
@@ -350,14 +393,30 @@ function renderCard(n) {
     `<span class="card-tag">${esc(t)}</span>`
   ).join('');
   const flag = isReviewed ? '' : '<span class="card-flag">草稿</span>';
+  const statusBadge = `<span class="status-badge" data-status="${esc(status)}">${esc(status)}</span>`;
+  // 卡片底部:校對日 + 原始出處(若有)
+  const reviewedHtml = n.reviewed
+    ? `<span class="reviewed-date">📅 ${esc(n.reviewed)} 校對</span>`
+    : `<span class="draft-flag">⚠ 尚未校對</span>`;
+  const sourceHtml = n.source_url
+    ? `<a class="source-link" href="${esc(n.source_url)}" target="_blank" rel="noopener" title="開啟原始出處">🔗 原始出處</a>`
+    : '';
   $c.innerHTML = `
     ${flag}
     <div class="card-id">${esc(n.id)}</div>
-    <h3 class="card-title">${esc(n.title)}</h3>
+    <h3 class="card-title">${esc(n.title)}${statusBadge}</h3>
     <div class="card-summary">${summaryHTML}</div>
     <div class="card-tags">${tagsHTML}</div>
+    <div class="card-footer">
+      ${reviewedHtml}
+      ${sourceHtml}
+    </div>
   `;
-  $c.onclick = () => openDrawer(n.id);
+  // 阻止 source-link 觸發 openDrawer
+  $c.onclick = (ev) => {
+    if (ev.target.closest('.source-link')) return;
+    openDrawer(n.id);
+  };
   return $c;
 }
 
@@ -399,12 +458,13 @@ function renderOverview() {
   svg.setAttribute('viewBox', `0 0 ${W} ${H}`);
   const cx = W / 2, cy = H / 2;
 
-  // 統計每個母題的節點數
+  // 統計每個母題的節點數,過濾 0 筆母題
   const counts = new Map();
   for (const n of state.nodes) {
     counts.set(n.parent, (counts.get(n.parent) || 0) + 1);
   }
-  const maxCount = Math.max(1, ...PARENTS_ALL.map(p => counts.get(p) || 0));
+  const visibleParents = PARENTS_ALL.filter(p => (counts.get(p) || 0) > 0);
+  const maxCount = Math.max(1, ...visibleParents.map(p => counts.get(p)));
 
   // 主泡泡尺寸依容器較短邊縮放
   const baseDim = Math.min(W, H);
@@ -412,13 +472,12 @@ function renderOverview() {
   const MAIN_MAX_R = baseDim * 0.13;
 
   const bubbles = [];
-  PARENTS_ALL.forEach((parent, i) => {
+  visibleParents.forEach((parent, i) => {
     const c = counts.get(parent) || 0;
     const ratio = c / maxCount;
     const r = MAIN_MIN_R + ratio * (MAIN_MAX_R - MAIN_MIN_R);
-    // 0 筆 → 灰色;> 0 筆 → 母題色彩
-    const color = c > 0 ? PARENT_COLOR[parent] : '#95A5A6';
-    const angle = (i / PARENTS_ALL.length) * Math.PI * 2;
+    const color = PARENT_COLOR[parent] || '#95A5A6';
+    const angle = (i / visibleParents.length) * Math.PI * 2;
     const initR = baseDim * 0.28;
     bubbles.push({
       kind: 'main',
@@ -426,7 +485,6 @@ function renderOverview() {
       label: parent,
       count: c,
       color,
-      isEmpty: c === 0,
       r,
       x: cx + initR * Math.cos(angle),
       y: cy + initR * Math.sin(angle),
@@ -552,22 +610,35 @@ function makeBubble({ kind, x, y, r, label, color, parent, delay = 0 }) {
     labelText.textContent = label;
     g.appendChild(labelText);
 
+    // beta 母題加 BETA 標記(右下方)
+    if (parent && BETA_PARENTS.has(parent)) {
+      const beta = document.createElementNS(SVG_NS, 'text');
+      beta.setAttribute('class', 'bubble-beta-mark');
+      beta.setAttribute('y', (r * 0.7).toFixed(1));
+      beta.setAttribute('x', '0');
+      beta.setAttribute('font-size', Math.max(9, r * 0.16).toFixed(1));
+      beta.textContent = 'BETA';
+      g.appendChild(beta);
+    }
+
     const title = document.createElementNS(SVG_NS, 'title');
-    title.textContent = parent ? `${parent}(點擊進入)` : label;
+    const betaSuffix = parent && BETA_PARENTS.has(parent) ? ' [BETA — 校對中]' : '';
+    title.textContent = parent ? `${parent}${betaSuffix}(點擊進入)` : label;
     g.appendChild(title);
 
     if (parent) {
       g.setAttribute('role', 'button');
       g.setAttribute('tabindex', '0');
-      g.addEventListener('click', () => {
-        switchView('library');
-        setFilter({ parent, expense: null, category: null, tag: null });
-      });
+      const enterScenario = () => {
+        // 點泡泡進入該母題的「情境」視圖(取代原本直接跳條文庫)
+        setFilter({ parent, expense: null, category: null, tag: null, scenario: null });
+        switchView('scenarios');
+      };
+      g.addEventListener('click', enterScenario);
       g.addEventListener('keydown', (ev) => {
         if (ev.key === 'Enter' || ev.key === ' ') {
           ev.preventDefault();
-          switchView('library');
-          setFilter({ parent, expense: null, category: null, tag: null });
+          enterScenario();
         }
       });
     }
@@ -581,12 +652,135 @@ function switchView(name) {
   document.querySelectorAll('.view-tab').forEach(b =>
     b.classList.toggle('is-active', b.dataset.view === name)
   );
-  ['library', 'overview', 'graph'].forEach(v => {
-    document.getElementById('view-' + v).hidden = v !== name;
+  ['library', 'overview', 'graph', 'scenarios'].forEach(v => {
+    const $v = document.getElementById('view-' + v);
+    if ($v) $v.hidden = v !== name;
   });
+  if (name === 'scenarios') renderScenariosView();
   if (name === 'overview') renderOverview();
   if (name === 'graph') renderGraph();
   else stopGraphSimulation();
+}
+
+// ─────────────────────────────────────────────
+// 核銷情境視圖
+// ─────────────────────────────────────────────
+
+function renderScenariosView() {
+  const $grid = document.getElementById('scenarios-grid');
+  const $empty = document.getElementById('scenarios-empty');
+  const $title = document.getElementById('scenarios-title');
+  const $subtitle = document.getElementById('scenarios-subtitle');
+  const $scopeLabel = document.getElementById('scenarios-scope-label');
+  const $scopeClear = document.getElementById('scenarios-scope-clear');
+  if (!$grid) return;
+
+  const scope = state.filter.parent;
+  const visible = scope
+    ? state.scenarios.filter(sc => sc.parent === scope)
+    : state.scenarios;
+
+  // 標題與 scope toolbar
+  if (scope) {
+    $title.textContent = `${scope} · 常見核銷情境`;
+    $subtitle.textContent = '點選下方卡片直接帶到對應的條文與 Q&A;或回上一層瀏覽其他母題。';
+    $scopeLabel.textContent = `範圍:${scope}${BETA_PARENTS.has(scope) ? ' (BETA)' : ''}`;
+    $scopeLabel.hidden = false;
+    $scopeClear.hidden = false;
+  } else {
+    $title.textContent = '常見核銷情境';
+    $subtitle.textContent = '用使用者語言列出實務常見問題,點選後直接帶到對應的條文與 Q&A。';
+    $scopeLabel.hidden = true;
+    $scopeClear.hidden = true;
+  }
+
+  $grid.innerHTML = '';
+  if (visible.length === 0) {
+    // 空狀態:該母題還沒建立情境,引導去條文庫
+    $grid.hidden = true;
+    $empty.hidden = false;
+    const isBeta = scope && BETA_PARENTS.has(scope);
+    $empty.innerHTML = `
+      <p><strong>${esc(scope || '此母題')}</strong> 尚未建立情境卡。</p>
+      ${isBeta ? '<p style="font-size:13px">(本類別仍在校對中)</p>' : ''}
+      <p>你可以:</p>
+      <p>
+        <button class="link-btn" id="empty-go-library">📑 直接前往條文庫瀏覽</button>
+        ${scope ? '&nbsp; · &nbsp; <button class="link-btn" id="empty-show-all">🎯 看全部母題的情境</button>' : ''}
+      </p>
+    `;
+    document.getElementById('empty-go-library')?.addEventListener('click', () => {
+      switchView('library');
+    });
+    document.getElementById('empty-show-all')?.addEventListener('click', () => {
+      setFilter({ parent: null, expense: null, category: null, tag: null });
+      renderScenariosView();
+    });
+    return;
+  }
+  $grid.hidden = false;
+  $empty.hidden = true;
+
+  for (const sc of visible) {
+    const matchedCount = countScenarioMatches(sc);
+    const $c = el('div', { class: 'scenario-card', role: 'listitem', 'data-id': sc.id });
+    const parentTag = !scope && sc.parent
+      ? `<span class="card-tag" style="margin-left:auto">${esc(sc.parent)}</span>`
+      : '';
+    $c.innerHTML = `
+      <div class="scenario-icon">${esc(sc.icon || '📌')}</div>
+      <h3 class="scenario-title">${esc(sc.title)}</h3>
+      <p class="scenario-subtitle">${esc(sc.subtitle || '')}</p>
+      <div class="scenario-meta">
+        <span class="scenario-count">${matchedCount} 張相關卡</span>
+        ${parentTag}
+        <span class="scenario-arrow">查看 →</span>
+      </div>
+    `;
+    $c.onclick = () => applyScenario(sc.id);
+    $c.tabIndex = 0;
+    $c.addEventListener('keydown', (ev) => {
+      if (ev.key === 'Enter' || ev.key === ' ') {
+        ev.preventDefault();
+        applyScenario(sc.id);
+      }
+    });
+    $grid.appendChild($c);
+  }
+}
+
+function countScenarioMatches(sc) {
+  const primary = new Set(sc.primary_ids || []);
+  const tags = new Set(sc.tags || []);
+  let n = 0;
+  for (const node of state.nodes) {
+    if (sc.parent && node.parent !== sc.parent) continue;
+    if (primary.has(node.id)) { n++; continue; }
+    if ((node.tags || []).some(t => tags.has(t))) n++;
+  }
+  return n;
+}
+
+function applyScenario(scenarioId) {
+  const sc = state.scenariosById.get(scenarioId);
+  if (!sc) return;
+  switchView('library');
+  setFilter({
+    parent: sc.parent || null,
+    expense: null,
+    category: null,
+    tag: null,
+    scenario: scenarioId,
+  });
+  // 寫進 hash 方便分享
+  history.replaceState(null, '', '#scenario=' + encodeURIComponent(scenarioId));
+}
+
+function clearScenario() {
+  setFilter({ scenario: null });
+  if (location.hash.startsWith('#scenario=')) {
+    history.replaceState(null, '', location.pathname);
+  }
 }
 
 // ─────────────────────────────────────────────
@@ -1109,17 +1303,23 @@ async function openDrawer(id) {
   document.getElementById('drawer-title').textContent = node.title;
 
   // metadata 行
+  const status = node.status || '現行';
   const meta = [
     ['類別', CATEGORY_LABEL[id.split('-')[0]]],
     ['母題', node.parent],
     node.agency && ['機關', node.agency],
     ['版本', node.version],
     node.doc_no && ['發文字號', node.doc_no],
-    node.reviewed ? ['校對', node.reviewed] : ['狀態', '草稿'],
+    node.reviewed ? ['校對', node.reviewed] : ['校對', '尚未校對'],
   ].filter(Boolean);
-  document.getElementById('drawer-meta').innerHTML = meta.map(([k, v]) =>
+  let metaHtml = meta.map(([k, v]) =>
     `<span><strong>${esc(k)}:</strong>${esc(String(v))}</span>`
   ).join('');
+  metaHtml += `<span><strong>狀態:</strong><span class="status-badge" data-status="${esc(status)}">${esc(status)}</span></span>`;
+  if (node.source_url) {
+    metaHtml += `<span><a class="source-link" href="${esc(node.source_url)}" target="_blank" rel="noopener">🔗 原始出處</a></span>`;
+  }
+  document.getElementById('drawer-meta').innerHTML = metaHtml;
 
   // body
   const $body = document.getElementById('drawer-body');
@@ -1411,8 +1611,26 @@ function bindEvents() {
 
   // 分類樹清除
   document.getElementById('tree-clear').onclick = () => {
-    setFilter({ parent: null, expense: null, category: null, tag: null });
+    setFilter({ parent: null, expense: null, category: null, tag: null, scenario: null });
+    if (location.hash.startsWith('#scenario=')) {
+      history.replaceState(null, '', location.pathname);
+    }
   };
+
+  // 情境 banner 清除
+  const $scClear = document.getElementById('scenario-banner-clear');
+  if ($scClear) $scClear.onclick = clearScenario;
+
+  // 情境視圖:↩ 顯示全部母題
+  const $sScopeClear = document.getElementById('scenarios-scope-clear');
+  if ($sScopeClear) $sScopeClear.onclick = () => {
+    setFilter({ parent: null, expense: null, category: null, tag: null });
+    renderScenariosView();
+  };
+
+  // 情境視圖:← 回母題泡泡圖
+  const $sBack = document.getElementById('scenarios-back-overview');
+  if ($sBack) $sBack.onclick = () => switchView('overview');
 
   // 主題
   document.getElementById('theme-toggle').onclick = () => {
@@ -1457,13 +1675,19 @@ function bindEvents() {
     }
   });
 
-  // hash 直接打開節點
+  // hash 直接打開節點 / 套用情境
   if (location.hash) {
-    const id = decodeURIComponent(location.hash.slice(1));
-    if (state.nodeById.has(id)) {
-      const node = state.nodeById.get(id);
-      setFilter({ parent: node.parent, category: id.split('-')[0], tag: null });
-      openDrawer(id);
+    const raw = decodeURIComponent(location.hash.slice(1));
+    if (raw.startsWith('scenario=')) {
+      const sid = raw.slice('scenario='.length);
+      if (state.scenariosById.has(sid)) {
+        applyScenario(sid);
+      }
+    } else if (state.nodeById.has(raw)) {
+      const node = state.nodeById.get(raw);
+      setFilter({ parent: node.parent, category: raw.split('-')[0], tag: null });
+      switchView('library');
+      openDrawer(raw);
     }
   }
 }
@@ -1489,8 +1713,10 @@ async function init() {
   renderCards();
   bindEvents();
   // 啟動時若預設視圖非 library,主動觸發其渲染
-  if (document.body.dataset.view === 'overview') renderOverview();
-  else if (document.body.dataset.view === 'graph') renderGraph();
+  const v = document.body.dataset.view;
+  if (v === 'overview') renderOverview();
+  else if (v === 'graph') renderGraph();
+  else if (v === 'scenarios') renderScenariosView();
 }
 
 init();
