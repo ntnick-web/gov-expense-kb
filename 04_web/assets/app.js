@@ -1,7 +1,7 @@
 // 政府支出法規知識庫 — 前端主程式
 // 純 ES6,無框架。從 03_index/*.json 載入資料,渲染條文庫主介面。
 
-const DATA_VERSION = '2026-04-27b';
+const DATA_VERSION = '2026-04-27c';
 const DATA_BASE = '../03_index/';
 const MD_BASE = '../';
 const DATA_QS = '?v=' + DATA_VERSION;
@@ -17,7 +17,10 @@ const PARENTS_ALL = [
   '國內旅費', '國外旅費', '支出憑證與結報',
 ];
 // beta 母題(尚在校對中,UI 上加 BETA 標)
-const BETA_PARENTS = new Set(['國外旅費', '支出憑證與結報']);
+const BETA_PARENTS = new Set(['國內旅費', '國外旅費', '支出憑證與結報']);
+// 已廢止節點是否從卡片網格 / 分類樹 / 母題泡泡中隱藏(關聯圖與搜尋仍會顯示)
+const HIDE_OBSOLETE = true;
+function isVisible(n) { return HIDE_OBSOLETE ? n.status !== '已廢止' : true; }
 const PARENT_COLOR = {
   '國內旅費':       '#4A90E2',
   '國外旅費':       '#F8C471',  // 淺橘色
@@ -140,6 +143,7 @@ function buildTreeData() {
   // 若 parent 無 EXPENSE_LAYER,expense 層用 sentinel '_' 跳過顯示
   const tree = new Map();
   for (const n of state.nodes) {
+    if (!isVisible(n)) continue;
     const cat = n.id.split('-')[0];
     const expKey = nodeExpenseLayer(n) || '_';
     if (!tree.has(n.parent)) tree.set(n.parent, new Map());
@@ -177,7 +181,8 @@ function renderTree() {
 
 function renderAllParentsTree($tree, tree) {
   const $allItem = el('div', { class: 'tree-item' + (state.filter.parent === null ? ' is-active' : '') });
-  $allItem.innerHTML = `<span class="twirl"></span>全部<span class="count">${state.nodes.length}</span>`;
+  const visibleTotal = state.nodes.filter(isVisible).length;
+  $allItem.innerHTML = `<span class="twirl"></span>全部<span class="count">${visibleTotal}</span>`;
   $allItem.onclick = () => { setFilter({ parent: null, expense: null, category: null, tag: null }); };
   $tree.appendChild($allItem);
 
@@ -276,6 +281,7 @@ function filteredNodes() {
   const scenarioPrimary = sc ? new Set(sc.primary_ids || []) : null;
   const scenarioTags = sc ? new Set(sc.tags || []) : null;
   return state.nodes.filter(n => {
+    if (!isVisible(n)) return false;
     if (state.filter.parent && n.parent !== state.filter.parent) return false;
     if (state.filter.expense && nodeExpenseLayer(n) !== state.filter.expense) return false;
     const cat = n.id.split('-')[0];
@@ -458,9 +464,10 @@ function renderOverview() {
   svg.setAttribute('viewBox', `0 0 ${W} ${H}`);
   const cx = W / 2, cy = H / 2;
 
-  // 統計每個母題的節點數,過濾 0 筆母題
+  // 統計每個母題的節點數,過濾 0 筆母題(已廢止節點不算入泡泡尺寸)
   const counts = new Map();
   for (const n of state.nodes) {
+    if (!isVisible(n)) continue;
     counts.set(n.parent, (counts.get(n.parent) || 0) + 1);
   }
   const visibleParents = PARENTS_ALL.filter(p => (counts.get(p) || 0) > 0);
