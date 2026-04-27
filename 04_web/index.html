@@ -4,10 +4,10 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>政府支出法規知識庫</title>
-<link rel="stylesheet" href="assets/style.css?v=2026-04-28h">
-<link rel="preload" href="../03_index/nodes.json?v=2026-04-28h" as="fetch" crossorigin>
-<link rel="preload" href="../03_index/edges.json?v=2026-04-28h" as="fetch" crossorigin>
-<link rel="preload" href="../03_index/tags.json?v=2026-04-28h" as="fetch" crossorigin>
+<link rel="stylesheet" href="assets/style.css?v=2026-04-28k">
+<link rel="preload" href="../03_index/nodes.json?v=2026-04-28k" as="fetch" crossorigin>
+<link rel="preload" href="../03_index/edges.json?v=2026-04-28k" as="fetch" crossorigin>
+<link rel="preload" href="../03_index/tags.json?v=2026-04-28k" as="fetch" crossorigin>
 </head>
 <body data-theme="light" data-view="overview">
 
@@ -84,9 +84,13 @@
       <button id="scenarios-scope-clear" class="link-btn" type="button" hidden>↩ 顯示全部母題</button>
       <button id="scenarios-back-overview" class="link-btn" type="button">🫧 ← 回母題泡泡圖</button>
     </div>
+    <!-- 橫式快捷查詢條 + 類別下拉選單 (並排) -->
+    <div id="scenarios-quick-strip" class="scenarios-quick-strip" hidden></div>
   </header>
-  <div id="scenarios-grid" class="scenarios-grid" role="list"></div>
-  <div id="scenarios-empty" class="scenarios-empty" hidden></div>
+  <div class="scenarios-body">
+    <div id="scenarios-grid" class="scenarios-grid" role="list"></div>
+    <div id="scenarios-empty" class="scenarios-empty" hidden></div>
+  </div>
 </section>
 
 <section id="view-overview" class="view overview-view" aria-label="泡泡概覽圖">
@@ -191,6 +195,6 @@
 <script defer src="https://static.cloudflareinsights.com/beacon.min.js"
         data-cf-beacon='{"token": "fd2a519ea4a348eda9d77bcfa08727f8"}'></script>
 
-<script type="module" src="assets/app.js?v=2026-04-28h"></script>
+<script type="module" src="assets/app.js?v=2026-04-28k"></script>
 </body>
 </html>

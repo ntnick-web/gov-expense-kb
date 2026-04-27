@@ -1227,13 +1227,12 @@ body {
 .scenarios-empty strong { color: var(--text-primary); }
 .scenarios-empty .link-btn { margin-top: 8px; font-size: 14px; }
 
+/* sections 垂直堆疊;每個 section 內部才是卡片 grid */
 .scenarios-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
-  gap: 14px;
-  max-width: 1100px;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
   width: 100%;
-  margin: 0 auto;
 }
 .scenario-card {
   background: var(--bg-primary);
@@ -1628,11 +1627,11 @@ body.modal-open { overflow: hidden; }
   .drawer-body { padding: 14px 18px; }
   .drawer-footer { padding: 8px 14px; flex-wrap: wrap; }
 
-  /* 情境卡網格:單欄 */
-  .scenarios-grid {
+  /* 情境卡網格:行動版每組內單欄 */
+  .scenarios-grid { gap: 14px; padding: 12px; }
+  .scenarios-group-grid {
     grid-template-columns: 1fr !important;
     gap: 10px;
-    padding: 12px;
   }
   .scenarios-header { padding: 12px 14px 8px; }
   .scenarios-header h1 { font-size: 18px; }
@@ -1682,91 +1681,107 @@ body.modal-open { overflow: hidden; }
 }
 /* 深淺色模式統一使用淺藍底:全域搜尋框不套 dark mode override */
 
-/* 情境視圖快捷按鈕 — 白底 + 藍色強調 */
-.scenarios-quick-actions {
+/* ─── 橫式快捷查詢條(取代舊垂直 quick-actions 面板) ─── */
+.scenarios-quick-strip {
   max-width: 1100px;
   width: 100%;
-  margin: 0 auto 20px;
+  margin: 12px auto 0;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 12px;
   background: #ffffff;
   border: 1px solid #1976d2;
-  border-radius: 10px;
-  padding: 14px 16px;
-  box-shadow: 0 1px 3px rgba(25, 118, 210, 0.08);
+  border-radius: 8px;
 }
-.scenarios-quick-title {
-  font-size: 13px;
+.qstrip-label {
+  font-size: 12px;
   font-weight: 700;
   color: #1565c0;
-  margin-bottom: 10px;
+  margin-right: 4px;
 }
-.scenarios-quick-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-  gap: 10px;
-}
-.quick-action-btn {
-  display: flex;
+.qstrip-btn {
+  display: inline-flex;
   align-items: center;
-  gap: 12px;
+  gap: 6px;
+  padding: 5px 10px;
   background: #ffffff;
   border: 1px solid #90caf9;
-  border-radius: 8px;
-  padding: 10px 14px;
+  border-radius: 6px;
   cursor: pointer;
-  text-align: left;
-  transition: background 0.15s, border-color 0.15s, transform 0.05s, box-shadow 0.15s;
+  font-size: 13px;
   font-family: inherit;
-  color: #212121;
+  color: #1565c0;
+  transition: background 0.15s, border-color 0.15s;
 }
-.quick-action-btn:hover {
+.qstrip-btn:hover {
   background: #e3f2fd;
   border-color: #1976d2;
-  box-shadow: 0 2px 6px rgba(25, 118, 210, 0.2);
-  transform: translateY(-1px);
 }
-.quick-action-btn:active { transform: translateY(0); }
-.qa-icon {
-  font-size: 24px;
-  line-height: 1;
-  flex-shrink: 0;
-}
-.qa-text {
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
-  min-width: 0;
-}
-.qa-title {
-  font-size: 14px;
-  font-weight: 600;
-  color: #1565c0;
-  line-height: 1.3;
-}
-.qa-sub {
-  font-size: 11px;
-  color: #616161;
-  line-height: 1.3;
-}
+.qstrip-icon { font-size: 16px; line-height: 1; }
+.qstrip-text { font-weight: 500; }
 
-/* 快捷面板 dark mode:深藍底配淺藍框,呼應整體深色調 */
-[data-theme="dark"] .scenarios-quick-actions {
+[data-theme="dark"] .scenarios-quick-strip {
   background: #1c2733;
   border-color: #1976d2;
-  box-shadow: 0 1px 3px rgba(25, 118, 210, 0.25);
 }
-[data-theme="dark"] .scenarios-quick-title { color: #64b5f6; }
-[data-theme="dark"] .quick-action-btn {
+[data-theme="dark"] .qstrip-label { color: #64b5f6; }
+[data-theme="dark"] .qstrip-btn {
   background: #2c3a4a;
   border-color: #1565c0;
-  color: var(--text-primary);
+  color: #90caf9;
 }
-[data-theme="dark"] .quick-action-btn:hover {
+[data-theme="dark"] .qstrip-btn:hover {
   background: #34465a;
   border-color: #42a5f5;
-  box-shadow: 0 2px 6px rgba(66, 165, 245, 0.25);
 }
-[data-theme="dark"] .qa-title { color: #90caf9; }
-[data-theme="dark"] .qa-sub { color: #b0bec5; }
+
+/* ─── 情境視圖全寬卡片區(無側邊欄) ─── */
+.scenarios-body {
+  max-width: 1400px;
+  width: 100%;
+  margin: 16px auto 0;
+  padding: 0 12px;
+}
+
+/* 快捷條內的類別下拉選單 */
+.qstrip-divider {
+  color: var(--border-strong);
+  margin: 0 4px;
+  user-select: none;
+}
+.qstrip-filter-label {
+  font-size: 12px;
+  font-weight: 700;
+  color: #1565c0;
+}
+.qstrip-filter-select {
+  padding: 5px 10px;
+  background: #ffffff;
+  border: 1px solid #90caf9;
+  border-radius: 6px;
+  font-size: 13px;
+  font-family: inherit;
+  color: #1565c0;
+  cursor: pointer;
+  transition: border-color 0.15s;
+  max-width: 220px;
+}
+.qstrip-filter-select:hover { border-color: #1976d2; }
+.qstrip-filter-select:focus {
+  outline: none;
+  border-color: #1976d2;
+  box-shadow: 0 0 0 2px rgba(25, 118, 210, 0.2);
+}
+
+[data-theme="dark"] .qstrip-filter-label { color: #64b5f6; }
+[data-theme="dark"] .qstrip-filter-select {
+  background: #2c3a4a;
+  border-color: #1565c0;
+  color: #90caf9;
+}
+[data-theme="dark"] .qstrip-filter-select:hover { border-color: #42a5f5; }
 
 /* 全域跨地區搜尋框 dark mode */
 [data-theme="dark"] .rate-search-wrap.is-global {
@@ -1820,9 +1835,8 @@ body.modal-open { overflow: hidden; }
 
 /* 情境分組 (依 expense 類別) */
 .scenarios-group {
-  max-width: 1100px;
   width: 100%;
-  margin: 0 auto 24px;
+  margin: 0;
 }
 .scenarios-group-title {
   font-size: 14px;
@@ -1848,8 +1862,8 @@ body.modal-open { overflow: hidden; }
 }
 .scenarios-group-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
-  gap: 14px;
+  grid-template-columns: repeat(auto-fill, minmax(210px, 1fr));
+  gap: 12px;
 }
 
 /* 有條件問答 (flow) 的情境卡 — 紅色蠟筆粗框效果 */

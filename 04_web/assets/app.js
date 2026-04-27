@@ -1,7 +1,7 @@
 // 政府支出法規知識庫 — 前端主程式
 // 純 ES6,無框架。從 03_index/*.json 載入資料,渲染條文庫主介面。
 
-const DATA_VERSION = '2026-04-28h';
+const DATA_VERSION = '2026-04-28k';
 const DATA_BASE = '../03_index/';
 const MD_BASE = '../';
 const DATA_QS = '?v=' + DATA_VERSION;
@@ -761,12 +761,26 @@ function renderScenariosView() {
   const $subtitle = document.getElementById('scenarios-subtitle');
   const $scopeLabel = document.getElementById('scenarios-scope-label');
   const $scopeClear = document.getElementById('scenarios-scope-clear');
+  const $quickStrip = document.getElementById('scenarios-quick-strip');
   if (!$grid) return;
 
   const scope = state.filter.parent;
-  const visible = scope
+  const expenseFilterRaw = state.filter.expense;
+  // expense filter 可能含母題後綴:「交通費__國內旅費」格式 → 同時過濾 expense + parent
+  let expenseFilterName = null;
+  let expenseFilterParent = null;
+  if (expenseFilterRaw) {
+    const parts = expenseFilterRaw.split('__');
+    expenseFilterName = parts[0];
+    expenseFilterParent = parts[1] || null;
+  }
+  const inScope = scope
     ? state.scenarios.filter(sc => sc.parent === scope)
     : state.scenarios;
+  const visible = expenseFilterName
+    ? inScope.filter(sc => (sc.expense || '其他') === expenseFilterName
+        && (!expenseFilterParent || sc.parent === expenseFilterParent))
+    : inScope;
 
   // 標題與 scope toolbar
   if (scope) {
@@ -782,44 +796,75 @@ function renderScenariosView() {
     $scopeClear.hidden = true;
   }
 
-  $grid.innerHTML = '';
+  // 計算可見 scenario 的 expense 分布 (供下拉選單計數)
+  // 統計每個 expense 在每個 parent 下的數量,用以判斷哪些跨母題需拆分
+  const expenseParentCount = new Map(); // key: expense → Map(parent → count)
+  const expenseTotalCount = new Map();  // key: expense → total
+  for (const sc of inScope) {
+    const e = sc.expense || '其他';
+    if (!expenseParentCount.has(e)) expenseParentCount.set(e, new Map());
+    const pmap = expenseParentCount.get(e);
+    pmap.set(sc.parent, (pmap.get(sc.parent) || 0) + 1);
+    expenseTotalCount.set(e, (expenseTotalCount.get(e) || 0) + 1);
+  }
+  const expenseOrderForFilter = scope && EXPENSE_LAYER[scope]
+    ? EXPENSE_LAYER[scope].map(c => c.name)
+    : ['交通費','住宿費','雜費','大陸港澳','出國進修','生活費','手續費','保險費','行政費','禮品交際及雜費','收據與發票','採購結報','系統化結報','補助與分攤','差旅費結報','酬勞與會議','通則與其他','其他'];
+  const sortedExpenses = [...expenseParentCount.keys()].sort((a, b) => {
+    const ai = expenseOrderForFilter.indexOf(a);
+    const bi = expenseOrderForFilter.indexOf(b);
+    return (ai < 0 ? 999 : ai) - (bi < 0 ? 999 : bi);
+  });
+  // 母題簡稱(用於 dropdown 後綴):國內旅費 → 國內 / 國外旅費 → 國外 / 支出憑證與結報 → 支出
+  const parentShort = { '國內旅費': '國內', '國外旅費': '國外', '支出憑證與結報': '支出' };
+  const parentOrder = ['國內旅費','國外旅費','支出憑證與結報'];
+  const dropdownOptions = [`<option value="">📑 全部 (${inScope.length})</option>`];
+  for (const e of sortedExpenses) {
+    const pmap = expenseParentCount.get(e);
+    // 無 scope 時且該 expense 跨多個母題 → 拆分為多個選項
+    if (!scope && pmap.size > 1) {
+      const parents = [...pmap.keys()].sort((x, y) => parentOrder.indexOf(x) - parentOrder.indexOf(y));
+      for (const p of parents) {
+        const val = `${e}__${p}`;
+        const sel = expenseFilterRaw === val ? ' selected' : '';
+        const short = parentShort[p] || p;
+        dropdownOptions.push(`<option value="${esc(val)}"${sel}>${esc(e)}(${esc(short)}) (${pmap.get(p)})</option>`);
+      }
+    } else {
+      // 單一母題 (或有 scope 時) → 單一選項
+      const sel = expenseFilterRaw === e ? ' selected' : '';
+      dropdownOptions.push(`<option value="${esc(e)}"${sel}>${esc(e)} (${expenseTotalCount.get(e)})</option>`);
+    }
+  }
+  const dropdownHtml = `
+    <span class="qstrip-divider" aria-hidden="true">|</span>
+    <label class="qstrip-filter-label" for="scenarios-filter-select">📂 類別</label>
+    <select id="scenarios-filter-select" class="qstrip-filter-select" aria-label="依類別過濾">
+      ${dropdownOptions.join('')}
+    </select>
+  `;
 
-  // 快捷按鈕:全部 / 國外旅費 scope 才顯示;一鍵跳到最新標準表抽屜
-  if (!scope || scope === '國外旅費') {
-    const $quick = el('section', { class: 'scenarios-quick-actions' });
-    $quick.innerHTML = `
-      <div class="scenarios-quick-title">🚀 快捷查詢 · 最新標準表</div>
-      <div class="scenarios-quick-grid">
-        <button class="quick-action-btn" data-jump="B-國外旅費-003" type="button">
-          <span class="qa-icon">💰</span>
-          <span class="qa-text">
-            <span class="qa-title">日支生活費表(全球·最新)</span>
-            <span class="qa-sub">B-國外-003 · 6 區域 524 城市 · 含搜尋</span>
-          </span>
-        </button>
-        <button class="quick-action-btn" data-jump="B-國外旅費-002" type="button">
-          <span class="qa-icon">🇨🇳</span>
-          <span class="qa-text">
-            <span class="qa-title">大陸港澳日支表(最新)</span>
-            <span class="qa-sub">B-國外-002 · 19 城市 · 含香港澳門</span>
-          </span>
-        </button>
-        <button class="quick-action-btn" data-jump="B-國外旅費-006" type="button">
-          <span class="qa-icon">🛡️</span>
-          <span class="qa-text">
-            <span class="qa-title">外交部出差綜合保險表(最新)</span>
-            <span class="qa-sub">B-國外-006 · 一般險/申根險試算</span>
-          </span>
-        </button>
-      </div>
-    `;
-    $grid.appendChild($quick);
-    for (const btn of $quick.querySelectorAll('.quick-action-btn')) {
+  // 橫式快捷查詢條 + 類別下拉:全部/國外scope 含 3 按鈕,其他 scope 只有下拉
+  if ($quickStrip) {
+    $quickStrip.hidden = false;
+    const showButtons = !scope || scope === '國外旅費';
+    const buttonsHtml = showButtons ? `
+      <span class="qstrip-label">🚀 最新標準表:</span>
+      <button class="qstrip-btn" data-jump="B-國外旅費-003" type="button" title="6 區域 524 城市,含跨地區搜尋">
+        <span class="qstrip-icon">💰</span><span class="qstrip-text">日支生活費(全球)</span>
+      </button>
+      <button class="qstrip-btn" data-jump="B-國外旅費-002" type="button" title="19 城市,含香港澳門">
+        <span class="qstrip-icon">🇨🇳</span><span class="qstrip-text">大陸港澳日支</span>
+      </button>
+      <button class="qstrip-btn" data-jump="B-國外旅費-006" type="button" title="一般險 / 申根險試算">
+        <span class="qstrip-icon">🛡️</span><span class="qstrip-text">外交部保險表</span>
+      </button>
+    ` : '';
+    $quickStrip.innerHTML = buttonsHtml + dropdownHtml;
+    for (const btn of $quickStrip.querySelectorAll('.qstrip-btn')) {
       btn.addEventListener('click', () => {
         const id = btn.dataset.jump;
         if (!id) return;
-        // 先切到條文庫(否則抽屜在 hidden 的 view 內看不到),
-        // 並設 parent=國外旅費 scope + 取消任何情境/標籤過濾,讓背景顯示該母題卡片
         const node = state.nodeById?.get(id);
         switchView('library');
         setFilter({
@@ -832,22 +877,38 @@ function renderScenariosView() {
         openDrawer(id);
       });
     }
+    const $select = document.getElementById('scenarios-filter-select');
+    $select?.addEventListener('change', () => {
+      setFilter({ expense: $select.value || null });
+      renderScenariosView();
+    });
   }
 
+  $grid.innerHTML = '';
+
   if (visible.length === 0) {
-    // 空狀態:該母題還沒建立情境,引導去條文庫
+    // 空狀態:該母題/類別還沒建立情境,引導去條文庫
     $grid.hidden = true;
     $empty.hidden = false;
     const isBeta = scope && BETA_PARENTS.has(scope);
+    const labelExpense = expenseFilterName
+      ? `「${expenseFilterName}${expenseFilterParent ? '(' + (parentShort[expenseFilterParent] || expenseFilterParent) + ')' : ''}」類別`
+      : '';
+    const where = labelExpense || (scope || '此母題');
     $empty.innerHTML = `
-      <p><strong>${esc(scope || '此母題')}</strong> 尚未建立情境卡。</p>
+      <p><strong>${esc(where)}</strong> 尚未建立情境卡。</p>
       ${isBeta ? '<p style="font-size:13px">(本類別仍在校對中)</p>' : ''}
       <p>你可以:</p>
       <p>
+        ${expenseFilterName ? '<button class="link-btn" id="empty-clear-expense">↩ 看「全部」類別</button> &nbsp; · &nbsp; ' : ''}
         <button class="link-btn" id="empty-go-library">📑 直接前往條文庫瀏覽</button>
         ${scope ? '&nbsp; · &nbsp; <button class="link-btn" id="empty-show-all">🎯 看全部母題的情境</button>' : ''}
       </p>
     `;
+    document.getElementById('empty-clear-expense')?.addEventListener('click', () => {
+      setFilter({ expense: null });
+      renderScenariosView();
+    });
     document.getElementById('empty-go-library')?.addEventListener('click', () => {
       switchView('library');
     });
@@ -860,8 +921,9 @@ function renderScenariosView() {
   $grid.hidden = false;
   $empty.hidden = true;
 
-  // 分組:有 scope 時依 expense 類別、無 scope 時依母題 + expense 類別兩層
-  const groups = new Map(); // key: scope ? expense : `${parent}|${expense}` → []
+  // 分組:依 expense 類別(scope 內) 或 母題 + expense (跨母題)
+  // expense 已選定時只剩一個分組,但仍保留 group header 顯示類別說明
+  const groups = new Map();
   for (const sc of visible) {
     const expense = sc.expense || '其他';
     const key = scope ? expense : `${sc.parent}|${expense}`;
