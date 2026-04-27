@@ -1,7 +1,7 @@
 // 政府支出法規知識庫 — 前端主程式
 // 純 ES6,無框架。從 03_index/*.json 載入資料,渲染條文庫主介面。
 
-const DATA_VERSION = '2026-04-28k';
+const DATA_VERSION = '2026-04-28m';
 const DATA_BASE = '../03_index/';
 const MD_BASE = '../';
 const DATA_QS = '?v=' + DATA_VERSION;
@@ -807,9 +807,10 @@ function renderScenariosView() {
     pmap.set(sc.parent, (pmap.get(sc.parent) || 0) + 1);
     expenseTotalCount.set(e, (expenseTotalCount.get(e) || 0) + 1);
   }
-  const expenseOrderForFilter = scope && EXPENSE_LAYER[scope]
-    ? EXPENSE_LAYER[scope].map(c => c.name)
-    : ['交通費','住宿費','雜費','大陸港澳','出國進修','生活費','手續費','保險費','行政費','禮品交際及雜費','收據與發票','採購結報','系統化結報','補助與分攤','差旅費結報','酬勞與會議','通則與其他','其他'];
+  // 情境視圖專屬類別排序(具體費用 → 一般行政 → 通則 → 特殊地區 → 其他)。
+  // 不沿用 EXPENSE_LAYER 順序(後者把 大陸港澳 放最前作為條文庫過濾優先級),
+  // 情境視圖以「使用者瀏覽常見度」排序更直覺,大陸港澳屬特殊情境放後段。
+  const expenseOrderForFilter = ['交通費','住宿費','雜費','出國進修','生活費','手續費','保險費','行政費','禮品交際及雜費','收據與發票','採購結報','系統化結報','補助與分攤','差旅費結報','酬勞與會議','通則與其他','大陸港澳','其他'];
   const sortedExpenses = [...expenseParentCount.keys()].sort((a, b) => {
     const ai = expenseOrderForFilter.indexOf(a);
     const bi = expenseOrderForFilter.indexOf(b);
@@ -931,10 +932,8 @@ function renderScenariosView() {
     groups.get(key).push(sc);
   }
 
-  // 排序:依 EXPENSE_LAYER 順序
-  const expenseOrder = scope && EXPENSE_LAYER[scope]
-    ? EXPENSE_LAYER[scope].map(c => c.name)
-    : ['交通費','住宿費','雜費','大陸港澳','出國進修','生活費','手續費','保險費','行政費','禮品交際及雜費','收據與發票','採購結報','系統化結報','補助與分攤','差旅費結報','酬勞與會議','通則與其他','其他'];
+  // section 排序:沿用上方下拉選單同一順序(大陸港澳放最後,屬特殊情境)
+  const expenseOrder = expenseOrderForFilter;
   function expRank(name) {
     const i = expenseOrder.indexOf(name);
     return i < 0 ? 999 : i;
