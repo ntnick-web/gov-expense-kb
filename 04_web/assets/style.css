@@ -1680,18 +1680,7 @@ body.modal-open { overflow: hidden; }
   border: 1px solid #90caf9;
   font-size: 14px;
 }
-@media (prefers-color-scheme: dark) {
-  .rate-search-wrap.is-global {
-    background: #0d2747;
-    border-color: #1565c0;
-  }
-  .rate-search-wrap.is-global::before { color: #90caf9; }
-  .rate-search-wrap.is-global .rate-search-input {
-    background: #1a3a5c;
-    border-color: #1565c0;
-    color: #e3f2fd;
-  }
-}
+/* 深淺色模式統一使用淺藍底:全域搜尋框不套 dark mode override */
 
 /* 情境視圖快捷按鈕 — 白底 + 藍色強調 */
 .scenarios-quick-actions {
@@ -1759,24 +1748,74 @@ body.modal-open { overflow: hidden; }
   line-height: 1.3;
 }
 
-@media (prefers-color-scheme: dark) {
-  .scenarios-quick-actions {
-    background: #ffffff;
-    border-color: #1976d2;
-  }
-  .scenarios-quick-title { color: #1565c0; }
-  .quick-action-btn {
-    background: #ffffff;
-    border-color: #90caf9;
-    color: #212121;
-  }
-  .quick-action-btn:hover {
-    background: #e3f2fd;
-    border-color: #1976d2;
-  }
-  .qa-title { color: #1565c0; }
-  .qa-sub { color: #616161; }
+/* 快捷面板 dark mode:深藍底配淺藍框,呼應整體深色調 */
+[data-theme="dark"] .scenarios-quick-actions {
+  background: #1c2733;
+  border-color: #1976d2;
+  box-shadow: 0 1px 3px rgba(25, 118, 210, 0.25);
 }
+[data-theme="dark"] .scenarios-quick-title { color: #64b5f6; }
+[data-theme="dark"] .quick-action-btn {
+  background: #2c3a4a;
+  border-color: #1565c0;
+  color: var(--text-primary);
+}
+[data-theme="dark"] .quick-action-btn:hover {
+  background: #34465a;
+  border-color: #42a5f5;
+  box-shadow: 0 2px 6px rgba(66, 165, 245, 0.25);
+}
+[data-theme="dark"] .qa-title { color: #90caf9; }
+[data-theme="dark"] .qa-sub { color: #b0bec5; }
+
+/* 全域跨地區搜尋框 dark mode */
+[data-theme="dark"] .rate-search-wrap.is-global {
+  background: #1c2733;
+  border-color: #1976d2;
+}
+[data-theme="dark"] .rate-search-wrap.is-global::before { color: #64b5f6; }
+[data-theme="dark"] .rate-search-wrap.is-global .rate-search-input {
+  background: #2c3a4a;
+  border-color: #1565c0;
+  color: var(--text-primary);
+}
+
+/* 保險試算 widget dark mode */
+[data-theme="dark"] .ins-widget {
+  background: linear-gradient(135deg, #1c2733 0%, #243140 100%);
+  border-color: #1976d2;
+}
+[data-theme="dark"] .ins-widget-title { color: #64b5f6; }
+[data-theme="dark"] .ins-tab {
+  background: rgba(255, 255, 255, 0.05);
+  border-color: #1565c0;
+  color: #90caf9;
+}
+[data-theme="dark"] .ins-tab:hover { background: rgba(255, 255, 255, 0.12); }
+[data-theme="dark"] .ins-tab.is-active {
+  background: #1976d2;
+  border-color: #42a5f5;
+  color: #fff;
+}
+[data-theme="dark"] .ins-widget-input label { color: #cfd8dc; }
+[data-theme="dark"] .ins-days-input {
+  background: #2c3a4a;
+  border-color: #1565c0;
+  color: var(--text-primary);
+}
+[data-theme="dark"] .ins-widget-input label { color: #cfd8dc; }
+[data-theme="dark"] .ins-widget-result {
+  background: rgba(255, 255, 255, 0.04);
+  color: #b0bec5;
+  border-color: #455a64;
+}
+[data-theme="dark"] .ins-widget-result.is-hit {
+  background: linear-gradient(90deg, #3e2c00 0%, #4a3500 100%);
+  border-color: #fbc02d;
+  color: #fff9c4;
+}
+[data-theme="dark"] .ins-result-label { color: #ffe082; }
+[data-theme="dark"] .ins-result-value { color: #ff8a65; }
 
 
 /* 情境分組 (依 expense 類別) */
@@ -1973,42 +2012,38 @@ body.modal-open { overflow: hidden; }
 }
 
 /* Dark mode */
-@media (prefers-color-scheme: dark) {
-  .ins-widget {
-    background: linear-gradient(135deg, #0d2747 0%, #1a3a5c 100%);
-    border-color: #1565c0;
-  }
-  .ins-widget-title { color: #90caf9; }
-  .ins-tab {
-    background: rgba(0, 0, 0, 0.3);
-    border-color: #1565c0;
-    color: #bbdefb;
-  }
-  .ins-tab.is-active {
-    background: #42a5f5;
-    border-color: #64b5f6;
-    color: #fff;
-  }
-  .ins-widget-input label { color: #cfd8dc; }
-  .ins-days-input { background: #2c3e50; color: #ecf0f1; border-color: #1565c0; }
-  .ins-widget-result {
-    background: rgba(0, 0, 0, 0.4);
-    color: #cfd8dc;
-    border-color: #455a64;
-  }
-  .ins-widget-result.is-hit {
-    background: linear-gradient(90deg, #4d3f00 0%, #5a4500 100%);
-    border-color: #fbc02d;
-    color: #fff9c4;
-  }
-  .ins-result-label { color: #ffe082; }
-  .ins-result-value { color: #ff8a80; }
-  .expired-banner {
-    background: linear-gradient(90deg, #4d2e00 0%, #5a3500 100%);
-    border-color: #ff9800;
-    color: #ffe0b2;
-  }
-  .expired-banner strong { color: #ffab91; }
-  .scenario-card.has-flow { border-color: #ef5350; }
-  .scenario-flow-badge { background: #4d1e1e; color: #ef9a9a; border-color: #b71c1c; }
+/* 已逾期 banner dark mode:深暖色底配橘色點綴 */
+[data-theme="dark"] .expired-banner {
+  background: linear-gradient(90deg, #3a2200 0%, #4a2c00 100%);
+  border-color: #ff9800;
+  color: #ffe0b2;
+}
+[data-theme="dark"] .expired-banner strong { color: #ffab91; }
+[data-theme="dark"] .expired-banner-link { color: #64b5f6; }
+[data-theme="dark"] .expired-banner-link:hover { color: #90caf9; }
+
+/* 情境蠟筆紅框 dark mode */
+[data-theme="dark"] .scenario-card.has-flow {
+  border-color: #ef5350;
+  box-shadow:
+    0 0 0 1px #ef5350,
+    inset 0 0 0 1px rgba(239, 83, 80, 0.2),
+    2px 2px 0 rgba(239, 83, 80, 0.18),
+    -1px 1px 0 rgba(239, 83, 80, 0.12);
+}
+[data-theme="dark"] .scenario-card.has-flow::before {
+  border-color: rgba(239, 83, 80, 0.4);
+}
+[data-theme="dark"] .scenario-card.has-flow:hover {
+  border-color: #f44336;
+  box-shadow:
+    0 0 0 1px #f44336,
+    inset 0 0 0 1px rgba(244, 67, 54, 0.25),
+    3px 3px 0 rgba(244, 67, 54, 0.22),
+    -1px 2px 0 rgba(244, 67, 54, 0.15);
+}
+[data-theme="dark"] .scenario-flow-badge {
+  background: #3e1a1a;
+  color: #ef9a9a;
+  border-color: #c62828;
 }
