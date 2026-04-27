@@ -1657,6 +1657,42 @@ body.modal-open { overflow: hidden; }
  * 2026-04-28c: 情境視圖快捷按鈕(最新標準表一鍵跳)
  * ───────────────────────────────────────────── */
 
+/* 全域跨 section 費率表搜尋框(B-003 / B-004 全球日支表用) */
+.rate-search-wrap.is-global {
+  margin-bottom: 14px;
+  padding: 8px 10px;
+  background: #e3f2fd;
+  border: 1px solid #1976d2;
+  border-radius: 6px;
+  position: sticky;
+  top: 0;
+  z-index: 5;
+}
+.rate-search-wrap.is-global::before {
+  content: '🔍 跨地區搜尋:';
+  font-size: 12px;
+  font-weight: 600;
+  color: #1565c0;
+  margin-right: 8px;
+}
+.rate-search-wrap.is-global .rate-search-input {
+  background: #fff;
+  border: 1px solid #90caf9;
+  font-size: 14px;
+}
+@media (prefers-color-scheme: dark) {
+  .rate-search-wrap.is-global {
+    background: #0d2747;
+    border-color: #1565c0;
+  }
+  .rate-search-wrap.is-global::before { color: #90caf9; }
+  .rate-search-wrap.is-global .rate-search-input {
+    background: #1a3a5c;
+    border-color: #1565c0;
+    color: #e3f2fd;
+  }
+}
+
 /* 情境視圖快捷按鈕 — 白底 + 藍色強調 */
 .scenarios-quick-actions {
   max-width: 1100px;

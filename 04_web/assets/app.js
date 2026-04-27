@@ -1,7 +1,7 @@
 // 政府支出法規知識庫 — 前端主程式
 // 純 ES6,無框架。從 03_index/*.json 載入資料,渲染條文庫主介面。
 
-const DATA_VERSION = '2026-04-28e';
+const DATA_VERSION = '2026-04-28f';
 const DATA_BASE = '../03_index/';
 const MD_BASE = '../';
 const DATA_QS = '?v=' + DATA_VERSION;
@@ -1781,6 +1781,11 @@ function renderRateTable(rt, node) {
     html.push(renderRateTableBlock(rt.headers, rt.rows));
   }
 
+  // Sections 模式 + rt.searchable:渲染跨 section 的全域搜尋框
+  if (hasSections && rt.searchable) {
+    html.push(renderRateSearchInput(rt.search_placeholder, true));
+  }
+
   if (hasSections) {
     for (const sec of rt.sections) {
       html.push('<div class="rate-section">');
@@ -1930,41 +1935,79 @@ function renderRateTableBlock(headers, rows) {
   return html.join('');
 }
 
-function renderRateSearchInput(placeholder) {
+function renderRateSearchInput(placeholder, isGlobal) {
   const ph = placeholder || '搜尋…';
-  return `<div class="rate-search-wrap">
+  const cls = 'rate-search-wrap' + (isGlobal ? ' is-global' : '');
+  return `<div class="${cls}">
     <input type="search" class="rate-search-input" placeholder="${esc(ph)}" aria-label="${esc(ph)}">
     <span class="rate-search-empty" hidden>無符合結果</span>
   </div>`;
 }
 
-// 在 drawer body 內為每個 .rate-search-input 綁定即時過濾 — 比對同一 .rate-table-scroll 的所有列
+// 在 drawer body 內為每個 .rate-search-input 綁定即時過濾。
+// 兩種模式:
+//   1. .rate-search-wrap.is-global → 過濾整個 .rate-table-wrap 內所有 .rate-section,
+//      並隱藏全部列被過濾掉的 section(連同 title)
+//   2. 一般 .rate-search-wrap → 只過濾下一個 sibling 的 .rate-table-scroll
 function wireRateTableInteractions($scope) {
   const wraps = $scope.querySelectorAll('.rate-search-wrap');
   for (const wrap of wraps) {
     const input = wrap.querySelector('.rate-search-input');
     const empty = wrap.querySelector('.rate-search-empty');
-    // 找下一個 sibling 的 .rate-table-scroll
-    let target = wrap.nextElementSibling;
-    while (target && !target.classList.contains('rate-table-scroll')) target = target.nextElementSibling;
-    if (!target || !input) continue;
-    const rows = [...target.querySelectorAll('tbody tr')];
-    input.addEventListener('input', () => {
-      const q = input.value.trim().toLowerCase();
-      let visible = 0;
-      for (const tr of rows) {
-        if (!q) {
-          tr.hidden = false;
-          visible++;
-        } else {
-          const txt = tr.textContent.toLowerCase();
-          const hit = txt.includes(q);
-          tr.hidden = !hit;
-          if (hit) visible++;
+    if (!input) continue;
+
+    if (wrap.classList.contains('is-global')) {
+      // 全域跨 section 過濾
+      const rateWrap = wrap.closest('.rate-table-wrap');
+      if (!rateWrap) continue;
+      const sections = [...rateWrap.querySelectorAll('.rate-section')];
+      const sectionData = sections.map(sec => ({
+        el: sec,
+        rows: [...sec.querySelectorAll('tbody tr')],
+      }));
+      input.addEventListener('input', () => {
+        const q = input.value.trim().toLowerCase();
+        let totalVisible = 0;
+        for (const { el, rows } of sectionData) {
+          let secVisible = 0;
+          for (const tr of rows) {
+            if (!q) {
+              tr.hidden = false;
+              secVisible++;
+            } else {
+              const hit = tr.textContent.toLowerCase().includes(q);
+              tr.hidden = !hit;
+              if (hit) secVisible++;
+            }
+          }
+          // section 全部被過濾掉時隱藏整個 section(含標題)
+          el.hidden = q !== '' && secVisible === 0;
+          totalVisible += secVisible;
         }
-      }
-      if (empty) empty.hidden = visible !== 0;
-    });
+        if (empty) empty.hidden = totalVisible !== 0;
+      });
+    } else {
+      // 單一 section 過濾(舊行為)
+      let target = wrap.nextElementSibling;
+      while (target && !target.classList.contains('rate-table-scroll')) target = target.nextElementSibling;
+      if (!target) continue;
+      const rows = [...target.querySelectorAll('tbody tr')];
+      input.addEventListener('input', () => {
+        const q = input.value.trim().toLowerCase();
+        let visible = 0;
+        for (const tr of rows) {
+          if (!q) {
+            tr.hidden = false;
+            visible++;
+          } else {
+            const hit = tr.textContent.toLowerCase().includes(q);
+            tr.hidden = !hit;
+            if (hit) visible++;
+          }
+        }
+        if (empty) empty.hidden = visible !== 0;
+      });
+    }
   }
 }
 

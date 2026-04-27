@@ -1625,14 +1625,14 @@
       "caption": "中央政府各機關派赴國外各地區出差人員生活費日支數額表",
       "unit": "美元",
       "effective": "2026-01-01",
+      "searchable": true,
+      "search_label_idx": 2,
+      "search_value_idx": 3,
+      "search_country_idx": 1,
+      "search_placeholder": "搜尋國家或城市…例:日本、Tokyo、東京、其他",
       "sections": [
         {
           "title": "A 亞太地區",
-          "searchable": true,
-          "search_label_idx": 2,
-          "search_value_idx": 3,
-          "search_country_idx": 1,
-          "search_placeholder": "搜尋國家或城市…例:日本、Tokyo、東京、其他",
           "headers": [
             "編號",
             "國家",
@@ -2463,11 +2463,6 @@
         },
         {
           "title": "B 亞西地區",
-          "searchable": true,
-          "search_label_idx": 2,
-          "search_value_idx": 3,
-          "search_country_idx": 1,
-          "search_placeholder": "搜尋國家或城市…例:日本、Tokyo、東京、其他",
           "headers": [
             "編號",
             "國家",
@@ -2905,11 +2900,6 @@
         },
         {
           "title": "C 歐洲地區",
-          "searchable": true,
-          "search_label_idx": 2,
-          "search_value_idx": 3,
-          "search_country_idx": 1,
-          "search_placeholder": "搜尋國家或城市…例:日本、Tokyo、東京、其他",
           "headers": [
             "編號",
             "國家",
@@ -3494,11 +3484,6 @@
         },
         {
           "title": "D 北美洲地區",
-          "searchable": true,
-          "search_label_idx": 2,
-          "search_value_idx": 3,
-          "search_country_idx": 1,
-          "search_placeholder": "搜尋國家或城市…例:日本、Tokyo、東京、其他",
           "headers": [
             "編號",
             "國家",
@@ -3615,11 +3600,6 @@
         },
         {
           "title": "E 拉丁美洲及加勒比海地區",
-          "searchable": true,
-          "search_label_idx": 2,
-          "search_value_idx": 3,
-          "search_country_idx": 1,
-          "search_placeholder": "搜尋國家或城市…例:日本、Tokyo、東京、其他",
           "headers": [
             "編號",
             "國家",
@@ -4252,11 +4232,6 @@
         },
         {
           "title": "F 非洲地區",
-          "searchable": true,
-          "search_label_idx": 2,
-          "search_value_idx": 3,
-          "search_country_idx": 1,
-          "search_placeholder": "搜尋國家或城市…例:日本、Tokyo、東京、其他",
           "headers": [
             "編號",
             "國家",
@@ -5131,14 +5106,14 @@
       "caption": "中央政府各機關派赴國外各地區出差人員生活費日支數額表(114年1月1日生效,已於115年1月1日由新版取代)",
       "unit": "美元",
       "effective": "2025-01-01",
+      "searchable": true,
+      "search_label_idx": 2,
+      "search_value_idx": 3,
+      "search_country_idx": 1,
+      "search_placeholder": "搜尋國家或城市…例:日本、Tokyo、東京、其他",
       "sections": [
         {
           "title": "A 亞太地區",
-          "searchable": true,
-          "search_label_idx": 2,
-          "search_value_idx": 3,
-          "search_country_idx": 1,
-          "search_placeholder": "搜尋國家或城市…例:日本、Tokyo、東京、其他",
           "headers": [
             "編號",
             "國家",
@@ -5960,11 +5935,6 @@
         },
         {
           "title": "B 亞西地區",
-          "searchable": true,
-          "search_label_idx": 2,
-          "search_value_idx": 3,
-          "search_country_idx": 1,
-          "search_placeholder": "搜尋國家或城市…例:日本、Tokyo、東京、其他",
           "headers": [
             "編號",
             "國家",
@@ -6366,11 +6336,6 @@
         },
         {
           "title": "C 歐洲地區",
-          "searchable": true,
-          "search_label_idx": 2,
-          "search_value_idx": 3,
-          "search_country_idx": 1,
-          "search_placeholder": "搜尋國家或城市…例:日本、Tokyo、東京、其他",
           "headers": [
             "編號",
             "國家",
@@ -6862,11 +6827,6 @@
         },
         {
           "title": "D 北美洲地區",
-          "searchable": true,
-          "search_label_idx": 2,
-          "search_value_idx": 3,
-          "search_country_idx": 1,
-          "search_placeholder": "搜尋國家或城市…例:日本、Tokyo、東京、其他",
           "headers": [
             "編號",
             "國家",
@@ -6974,11 +6934,6 @@
         },
         {
           "title": "E 拉丁美洲及加勒比海地區",
-          "searchable": true,
-          "search_label_idx": 2,
-          "search_value_idx": 3,
-          "search_country_idx": 1,
-          "search_placeholder": "搜尋國家或城市…例:日本、Tokyo、東京、其他",
           "headers": [
             "編號",
             "國家",
@@ -7530,11 +7485,6 @@
         },
         {
           "title": "F 非洲地區",
-          "searchable": true,
-          "search_label_idx": 2,
-          "search_value_idx": 3,
-          "search_country_idx": 1,
-          "search_placeholder": "搜尋國家或城市…例:日本、Tokyo、東京、其他",
           "headers": [
             "編號",
             "國家",
