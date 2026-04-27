@@ -1,0 +1,16 @@
+{
+  "last_indexed": "2026-04-27",
+  "last_indexed_iso": "2026-04-27T19:32:28+08:00",
+  "node_count": 513,
+  "edge_count": 471,
+  "status_counts": {
+    "現行": 511,
+    "部分修正": 0,
+    "已廢止": 2
+  },
+  "reviewed_count": 513,
+  "review_level_counts": {
+    "人工": 28,
+    "自動初校": 485
+  }
+}

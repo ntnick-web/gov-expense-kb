@@ -4,10 +4,10 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>政府支出法規知識庫</title>
-<link rel="stylesheet" href="assets/style.css?v=2026-04-27e">
-<link rel="preload" href="../03_index/nodes.json?v=2026-04-27e" as="fetch" crossorigin>
-<link rel="preload" href="../03_index/edges.json?v=2026-04-27e" as="fetch" crossorigin>
-<link rel="preload" href="../03_index/tags.json?v=2026-04-27e" as="fetch" crossorigin>
+<link rel="stylesheet" href="assets/style.css?v=2026-04-27g">
+<link rel="preload" href="../03_index/nodes.json?v=2026-04-27g" as="fetch" crossorigin>
+<link rel="preload" href="../03_index/edges.json?v=2026-04-27g" as="fetch" crossorigin>
+<link rel="preload" href="../03_index/tags.json?v=2026-04-27g" as="fetch" crossorigin>
 </head>
 <body data-theme="light" data-view="overview">
 
@@ -47,6 +47,7 @@
       </div>
       <button id="scenario-banner-clear" class="link-btn" type="button">✕ 清除情境</button>
     </div>
+    <div id="scenario-detail" class="scenario-detail" hidden></div>
     <div id="beta-banner" class="beta-banner" hidden>
       <span class="beta-tag">BETA</span>
       <span>本類別仍在校對中,內容供參考,引用前請與原始法規或主管機關核對。</span>
@@ -182,6 +183,7 @@
   </div>
   <div class="footer-row footer-disclaimer">
     本站僅供查詢輔助使用,正式引用請以主管機關公告版本為準。
+    <span class="footer-meta-stat" id="footer-data-stat" hidden></span>
   </div>
 </footer>
 
@@ -189,6 +191,6 @@
 <script defer src="https://static.cloudflareinsights.com/beacon.min.js"
         data-cf-beacon='{"token": "fd2a519ea4a348eda9d77bcfa08727f8"}'></script>
 
-<script type="module" src="assets/app.js?v=2026-04-27e"></script>
+<script type="module" src="assets/app.js?v=2026-04-27g"></script>
 </body>
 </html>

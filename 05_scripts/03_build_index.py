@@ -85,6 +85,7 @@ class Node:
     agency: Optional[str] = None
     doc_no: Optional[str] = None
     reviewed: Optional[str] = None
+    review_level: Optional[str] = None  # 人工 / 自動初校 / llm精校
     status: str = "現行"          # 現行 / 部分修正 / 已廢止
     source_url: Optional[str] = None
     summary_pending: bool = False
@@ -178,12 +179,22 @@ def extract_section(body: str, heading: str) -> str:
     return m.group(1).strip() if m else ""
 
 
+_AUTO_NOTICE_RE = re.compile(r"_\(自動初校[,，]\s*待人工潤飾\)_")
+
+
 def extract_summary(body: str, limit: int = SUMMARY_LIMIT) -> tuple[str, list[str]]:
-    """從 ## 重點摘要 抽前 N 字。placeholder 則回空字串 + 警告。"""
+    """從 ## 重點摘要 抽前 N 字。placeholder 則回空字串 + 警告。
+
+    剝掉「自動初校,待人工潤飾」斜體標記後再計算長度與抽取,避免標記溢出到 summary。
+    """
     section = extract_section(body, "重點摘要")
     if not section:
         return "", ["summary_section_missing"]
     if any(mark in section for mark in PLACEHOLDER_MARKERS):
+        return "", ["summary_placeholder"]
+    # 剝掉斜體標記,只做摘要本體
+    section = _AUTO_NOTICE_RE.sub("", section).strip()
+    if not section:
         return "", ["summary_placeholder"]
     flat = re.sub(r"\s+", "", section)
     if len(flat) <= limit:
@@ -312,6 +323,7 @@ def load_nodes(
             agency=str(fm["agency"]) if fm.get("agency") else None,
             doc_no=str(fm["doc_no"]) if fm.get("doc_no") else None,
             reviewed=str(fm["reviewed"]) if fm.get("reviewed") else None,
+            review_level=str(fm["review_level"]) if fm.get("review_level") else None,
             status=status_val,
             source_url=str(fm["source_url"]) if fm.get("source_url") else None,
             summary_pending=bool(fm.get("summary_pending")),
@@ -336,6 +348,7 @@ def build_nodes_json(nodes: list[Node]) -> list[dict]:
             "parent": n.parent,
             "title": n.title,
             "tags": n.tags,
+            "related": n.related,
             "file_path": n.file_path,
             "version": n.version,
             "summary": n.summary,
@@ -347,6 +360,8 @@ def build_nodes_json(nodes: list[Node]) -> list[dict]:
             d["doc_no"] = n.doc_no
         if n.reviewed:
             d["reviewed"] = n.reviewed
+        if n.review_level:
+            d["review_level"] = n.review_level
         if n.source_url:
             d["source_url"] = n.source_url
         if n.summary_pending:
@@ -730,6 +745,31 @@ def main(argv: Optional[list[str]] = None) -> int:
     nodes_json = build_nodes_json(nodes)
     search_corpus = build_search_corpus(nodes)
 
+    # _meta.json:索引建構時間 + 節點統計,前端 footer 顯示「資料更新日」
+    from datetime import datetime, timezone, timedelta
+    tz_tw = timezone(timedelta(hours=8))
+    now_tw = datetime.now(tz_tw)
+    obsolete_n = sum(1 for n in nodes if n.status == "已廢止")
+    revising_n = sum(1 for n in nodes if n.status == "部分修正")
+    reviewed_n = sum(1 for n in nodes if n.reviewed)
+    level_counts: dict[str, int] = {}
+    for n in nodes:
+        lv = n.review_level or "未標"
+        level_counts[lv] = level_counts.get(lv, 0) + 1
+    meta = {
+        "last_indexed": now_tw.strftime("%Y-%m-%d"),
+        "last_indexed_iso": now_tw.isoformat(timespec="seconds"),
+        "node_count": len(nodes),
+        "edge_count": len(edges),
+        "status_counts": {
+            "現行": len(nodes) - obsolete_n - revising_n,
+            "部分修正": revising_n,
+            "已廢止": obsolete_n,
+        },
+        "reviewed_count": reviewed_n,
+        "review_level_counts": level_counts,
+    }
+
     write_json(INDEX_DIR / "nodes.json", nodes_json, dry_run=args.validate, log=log)
     write_json(INDEX_DIR / "edges.json", edges, dry_run=args.validate, log=log)
     write_json(INDEX_DIR / "tags.json", tags_json, dry_run=args.validate, log=log)
@@ -737,6 +777,7 @@ def main(argv: Optional[list[str]] = None) -> int:
         INDEX_DIR / "search_index.json", search_corpus,
         dry_run=args.validate, log=log,
     )
+    write_json(INDEX_DIR / "_meta.json", meta, dry_run=args.validate, log=log)
 
     print_summary(nodes, edges, tags_json, warnings, errors, args.validate)
 

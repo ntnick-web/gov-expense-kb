@@ -149,6 +149,18 @@ body {
   color: inherit;
   padding: 0 1px;
 }
+.search-result-synbadge {
+  display: inline-block;
+  margin-left: 6px;
+  padding: 1px 6px;
+  font-size: 11px;
+  font-weight: 500;
+  color: var(--text-muted);
+  background: var(--bg-secondary);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  vertical-align: middle;
+}
 
 .topbar-actions { display: flex; gap: 4px; margin-left: auto; }
 
@@ -562,6 +574,20 @@ body {
   font-weight: 500;
   color: var(--text-secondary);
 }
+/* 自動初校用淡灰、人工校對用綠色,以區分可信度 */
+.card-footer .reviewed-date[data-level="人工"] {
+  color: #2e8b57;
+  font-weight: 600;
+}
+.card-footer .reviewed-date[data-level="自動初校"] {
+  color: var(--text-muted);
+  font-weight: 400;
+  font-style: italic;
+}
+.card-footer .reviewed-date[data-level="llm精校"] {
+  color: #6c5dd3;
+  font-weight: 500;
+}
 .card-footer .source-link {
   margin-left: auto;
   color: var(--color-A);
@@ -643,6 +669,28 @@ body {
   flex-shrink: 0;
   background: var(--bg-secondary);
 }
+
+/* 抽屜內「正向 / 反向關聯」對稱顯示 */
+.related-section {
+  margin-top: 18px;
+  padding: 10px 12px;
+  background: var(--bg-secondary);
+  border-radius: 6px;
+  font-size: 13px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.related-section .related-line strong {
+  color: var(--text-secondary);
+  margin-right: 4px;
+}
+.related-section .related-line a {
+  color: var(--accent);
+  cursor: pointer;
+  text-decoration: none;
+}
+.related-section .related-line a:hover { text-decoration: underline; }
 
 /* Markdown body */
 
@@ -1102,6 +1150,102 @@ body {
 .scenario-banner-text strong { color: var(--text-primary); display: block; }
 .scenario-banner-text span { color: var(--text-secondary); font-size: 12px; }
 
+/* ─── 情境細節:條件問答 / 附件 / 簽核 ─── */
+.scenario-detail {
+  margin-bottom: 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.scenario-detail[hidden] { display: none; }
+.scenario-block {
+  background: var(--bg-primary);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 12px 14px;
+  font-size: 13px;
+  line-height: 1.55;
+}
+.scenario-block h4 {
+  margin: 0 0 8px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-secondary);
+}
+.scenario-block ul, .scenario-block ol {
+  padding-left: 22px;
+  margin: 0;
+}
+.scenario-block li { margin: 2px 0; }
+
+.scenario-flow .flow-step + .flow-step {
+  margin-top: 10px;
+  padding-top: 10px;
+  border-top: 1px dashed var(--border);
+}
+.flow-question {
+  margin: 0 0 6px;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+.flow-hint {
+  margin: 0 0 6px;
+  font-size: 12px;
+  color: var(--text-muted);
+}
+.flow-options {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+.flow-option {
+  background: var(--bg-secondary);
+  border: 1px solid var(--border);
+  color: var(--text-primary);
+  border-radius: 14px;
+  padding: 4px 12px;
+  font-size: 12.5px;
+  cursor: pointer;
+  transition: background 0.12s, border-color 0.12s;
+}
+.flow-option:hover { background: var(--bg-hover); }
+.flow-option.is-selected {
+  background: var(--color-A);
+  color: #fff;
+  border-color: var(--color-A);
+}
+.flow-restart {
+  margin-top: 10px;
+  font-size: 12px;
+}
+
+.scenario-conclusion {
+  border-left: 4px solid #2e8b57;
+  background: rgba(46,139,87,0.06);
+}
+.scenario-conclusion h5 {
+  margin: 0 0 6px;
+  font-size: 14px;
+  color: var(--text-primary);
+}
+.conclusion-limit {
+  margin: 0 0 6px;
+  font-size: 13px;
+}
+.conclusion-note {
+  margin: 0 0 6px;
+  color: var(--text-secondary);
+  font-size: 12.5px;
+}
+.conclusion-refs { margin: 6px 0 0; font-size: 12.5px; }
+.conclusion-refs .ref-jump {
+  color: var(--color-A);
+  cursor: pointer;
+  text-decoration: none;
+}
+.conclusion-refs .ref-jump:hover { text-decoration: underline; }
+.conclusion-refs .ref-missing { color: var(--text-muted); }
+
 /* ─── Beta tag 在母題泡泡與分類樹 ─── */
 
 .parent-beta-tag {
@@ -1156,6 +1300,11 @@ body {
   font-size: 12px;
   color: var(--text-muted);
   font-style: italic;
+}
+.footer-meta-stat {
+  font-style: normal;
+  color: var(--text-muted);
+  white-space: nowrap;
 }
 
 /* 鎖定 body 捲動(modal 開啟時) */
@@ -1242,4 +1391,87 @@ body.modal-open { overflow: hidden; }
   .info-modal-panel { width: calc(100vw - 16px); max-height: calc(100vh - 32px); }
   .info-modal-body { padding: 14px 18px 18px; font-size: 13.5px; }
   .footer-links a { display: inline-block; margin: 4px 8px; }
+}
+
+/* ─────────────────────────────────────────────
+   行動版(< 768px):分類樹收起為 details / drawer 全螢幕 / 卡片單欄
+   ───────────────────────────────────────────── */
+@media (max-width: 768px) {
+  /* topbar:tab + 搜尋折成兩列 */
+  .topbar {
+    flex-wrap: wrap;
+    padding: 6px 8px;
+    gap: 6px;
+  }
+  .view-tabs {
+    order: 1;
+    flex-wrap: wrap;
+  }
+  .view-tabs .view-tab {
+    font-size: 13px;
+    padding: 4px 8px;
+  }
+  .search-wrap {
+    order: 3;
+    flex: 1 1 100%;
+    min-width: 0;
+  }
+  .topbar-actions {
+    order: 2;
+    margin-left: auto;
+  }
+
+  /* 條文庫:三欄 → 單欄,分類樹收起 */
+  .library-view {
+    grid-template-columns: 1fr;
+    grid-template-rows: auto 1fr;
+  }
+  .tree-panel {
+    max-height: 38vh;
+    border-right: none;
+    border-bottom: 1px solid var(--border);
+    padding: 8px 0;
+  }
+  .tree-header { padding: 0 12px 6px; }
+  .cards-panel { padding: 12px; }
+  .cards-grid {
+    grid-template-columns: 1fr;
+    gap: 10px;
+  }
+
+  /* 抽屜:從側欄改全螢幕浮層 */
+  .drawer {
+    position: fixed;
+    inset: 0;
+    width: 100vw !important;
+    max-width: 100vw;
+    z-index: 1000;
+    border-left: none;
+  }
+  .drawer-header { padding: 12px 14px 6px; }
+  .drawer-body { padding: 14px 18px; }
+  .drawer-footer { padding: 8px 14px; flex-wrap: wrap; }
+
+  /* 情境卡網格:單欄 */
+  .scenarios-grid {
+    grid-template-columns: 1fr !important;
+    gap: 10px;
+    padding: 12px;
+  }
+  .scenarios-header { padding: 12px 14px 8px; }
+  .scenarios-header h1 { font-size: 18px; }
+
+  /* 母題泡泡圖:確保填滿可見區 */
+  .overview-view { padding: 0; }
+  #bubble-svg { width: 100%; height: 100%; }
+  .overview-legend { font-size: 11px; }
+
+  /* footer 連結折行 */
+  .site-footer { padding: 12px 10px; font-size: 12px; }
+  .footer-row { flex-wrap: wrap; justify-content: center; }
+  .footer-links a { display: inline-block; margin: 4px 8px; }
+
+  /* 麵包屑、標籤雲 */
+  .breadcrumb { font-size: 12px; flex-wrap: wrap; }
+  .tag-cloud { gap: 4px; }
 }

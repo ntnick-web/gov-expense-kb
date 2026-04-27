@@ -1,7 +1,7 @@
 // 政府支出法規知識庫 — 前端主程式
 // 純 ES6,無框架。從 03_index/*.json 載入資料,渲染條文庫主介面。
 
-const DATA_VERSION = '2026-04-27e';
+const DATA_VERSION = '2026-04-27g';
 const DATA_BASE = '../03_index/';
 const MD_BASE = '../';
 const DATA_QS = '?v=' + DATA_VERSION;
@@ -45,7 +45,7 @@ const EXPENSE_LAYER = {
     { name: '交通費', match: ['交通費', '自駕租賃', '自用汽車', '機車', '租賃汽車', '高鐵', '飛機', '火車', '商務車廂', '票根', '購票證明', '必要路程', '公里數'] },
     { name: '住宿費', match: ['住宿費', '長期派駐', '同一地點超過一個月'] },
     { name: '雜費', match: ['雜費', '住院雜費'] },
-    { name: '程序總則', match: ['總則', '法源依據', '公差派遣', '出差行程', '報支期限', '調任', '準用', '懲處', '休職', '撤職', '停職', '免職', '起程日', '差竣日', '結報核銷'] },
+    { name: '通則與其他', match: ['總則', '法源依據', '公差派遣', '出差行程', '報支期限', '調任', '準用', '懲處', '休職', '撤職', '停職', '免職', '起程日', '差竣日', '結報核銷'] },
     { name: '其他', match: null },
   ],
   '國外旅費': [
@@ -60,7 +60,7 @@ const EXPENSE_LAYER = {
     { name: '行政費', match: ['行政費', '辦公費', '資料費', '文件費', '補助核定', '補助', '採購', '電子憑證', '原始憑證', '支出憑證', '業務費', '顧問費'] },
     { name: '禮品交際及雜費', match: ['禮品', '禮品交際', '交際費', '會議費', '出席費', '會議', '雜費', '短程車資', '耗材物品'] },
     // 「程序總則」:命中泛 tag 或行政事項 tag(僅未命中前面具體類別者落入)
-    { name: '程序總則', match: ['結報核銷', '國外旅費', '總則', '法源依據', '公差派遣', '調任', '準用', '懲處', '休職', '撤職', '停職', '免職'] },
+    { name: '通則與其他', match: ['結報核銷', '國外旅費', '總則', '法源依據', '公差派遣', '調任', '準用', '懲處', '休職', '撤職', '停職', '免職'] },
     { name: '其他', match: null },
   ],
   '支出憑證與結報': [
@@ -74,9 +74,31 @@ const EXPENSE_LAYER = {
     { name: '差旅費結報', match: ['國內旅費', '國外旅費', '住宿費', '大陸港澳旅費', '出國進修', '教育訓練費'] },
     { name: '酬勞與會議', match: ['出席費', '鐘點費', '稿費', '顧問費', '會議費', '膳費', '保險費'] },
     // 命中泛 tag(結報核銷)且未落入上面者 → 程序總則
-    { name: '程序總則', match: ['結報核銷', '法源依據', '總則'] },
+    { name: '通則與其他', match: ['結報核銷', '法源依據', '總則'] },
     { name: '其他', match: null },
   ],
+};
+
+// 各支出類別的說明文字(顯示在分類樹滑鼠提示)
+const EXPENSE_TOOLTIP = {
+  '通則與其他': '法源、定義、誠信原則、跨年度結報等綜合性條文(無具體費目歸類者)',
+  '交通費':     '高鐵、火車、計程車、自駕、機票艙等等交通工具費用',
+  '住宿費':     '旅館住宿、長期派駐、住宿事實認定',
+  '雜費':       '雜項支出、住院雜費等',
+  '大陸港澳':   '赴大陸地區、香港、澳門出差適用',
+  '出國進修':   '出國進修、研究實習、海外教育訓練',
+  '生活費':     '日支生活費、膳食費、零用費',
+  '手續費':     '簽證費、護照費、出國手續費',
+  '保險費':     '旅遊平安險、健康保險、綜合保險',
+  '行政費':     '辦公費、業務費、資料費、顧問費',
+  '禮品交際及雜費': '禮品、交際費、會議費、出席費、雜費、短程車資',
+  '收據與發票': '原始憑證、電子發票、單據要件',
+  '採購結報':   '政府採購法相關結報疑義',
+  '系統化結報': '憑證存管、保存與銷毀',
+  '補助與分攤': '補助核定、跨機關/跨計畫經費分攤',
+  '差旅費結報': '結報程序中與差旅費(國內/國外)交叉的疑義',
+  '酬勞與會議': '出席費、鐘點費、稿費、會議費等酬勞類結報',
+  '其他':       '未分類至以上類別者',
 };
 
 function nodeExpenseLayer(node) {
@@ -100,12 +122,16 @@ const state = {
   searchCorpus: [],
   scenarios: [],                    // 從 data/scenarios.json 載入
   scenariosById: new Map(),
+  synonyms: [],                     // 從 data/synonyms.json 載入,搜尋時 OR 展開
+  indexMeta: null,                  // 從 03_index/_meta.json 載入(last_indexed 等)
   nodeById: new Map(),
   incomingEdges: new Map(),  // to → [edges]
   filter: { parent: null, expense: null, category: null, tag: null, scenario: null, query: '' },
   activeId: null,
   treeOpen: new Set(),
   searchFocusIdx: -1,
+  flowAnswers: {},          // 條件問答進度:{ questionId: optionIndex }
+  flowConclusion: null,     // 走到的 conclusion id
 };
 
 // ─────────────────────────────────────────────
@@ -113,12 +139,14 @@ const state = {
 // ─────────────────────────────────────────────
 
 async function loadData() {
-  const [nodes, edges, tags, search, scenarios] = await Promise.all([
+  const [nodes, edges, tags, search, scenarios, synonyms, indexMeta] = await Promise.all([
     fetch(DATA_BASE + 'nodes.json' + DATA_QS).then(r => r.json()),
     fetch(DATA_BASE + 'edges.json' + DATA_QS).then(r => r.json()),
     fetch(DATA_BASE + 'tags.json' + DATA_QS).then(r => r.json()),
     fetch(DATA_BASE + 'search_index.json' + DATA_QS).then(r => r.json()),
     fetch('data/scenarios.json' + DATA_QS).then(r => r.json()).catch(() => ({ scenarios: [] })),
+    fetch('data/synonyms.json' + DATA_QS).then(r => r.json()).catch(() => ({ groups: [] })),
+    fetch(DATA_BASE + '_meta.json' + DATA_QS).then(r => r.ok ? r.json() : null).catch(() => null),
   ]);
   state.nodes = nodes;
   state.edges = edges;
@@ -126,12 +154,29 @@ async function loadData() {
   state.searchCorpus = search.documents || [];
   state.scenarios = scenarios.scenarios || [];
   state.scenariosById = new Map(state.scenarios.map(s => [s.id, s]));
+  state.synonyms = synonyms.groups || [];
+  state.indexMeta = indexMeta;
   state.nodeById = new Map(nodes.map(n => [n.id, n]));
   state.incomingEdges = new Map();
   for (const e of edges) {
     if (!state.incomingEdges.has(e.to)) state.incomingEdges.set(e.to, []);
     state.incomingEdges.get(e.to).push(e);
   }
+}
+
+// 把 query 展開為 [query, ...同義詞]:命中任一 group 的 canonical 或 alias 時,
+// 全組詞都進候選。回傳去重 lowercase 詞列。
+function expandSynonyms(query) {
+  const q = query.trim().toLowerCase();
+  if (!q) return [];
+  const out = new Set([q]);
+  for (const g of state.synonyms || []) {
+    const all = [g.canonical, ...(g.aliases || [])].map(s => s.toLowerCase());
+    if (all.some(t => t === q || q.includes(t) || t.includes(q))) {
+      all.forEach(t => out.add(t));
+    }
+  }
+  return [...out];
 }
 
 // ─────────────────────────────────────────────
@@ -229,6 +274,7 @@ function renderScopedTree($tree, tree, parent) {
       const isExpActive = state.filter.expense === expName && !state.filter.category;
       const $exp = el('div', {
         class: 'tree-item is-level-2' + (isExpOpen ? ' is-open' : '') + (isExpActive ? ' is-active' : ''),
+        title: EXPENSE_TOOLTIP[expName] || expName,
       });
       $exp.innerHTML = `<span class="twirl">▶</span>${esc(expName)}<span class="count">${totalExp}</span>`;
       $exp.onclick = (ev) => {
@@ -354,6 +400,7 @@ function renderCards() {
       $scBanner.hidden = true;
     }
   }
+  renderScenarioDetail();
 
   // Beta banner(視當前 parent 是否為 beta 母題)
   const $betaBanner = document.getElementById('beta-banner');
@@ -384,6 +431,7 @@ function renderCards() {
 function renderCard(n) {
   const cat = n.id.split('-')[0];
   const isReviewed = !!n.reviewed;
+  const reviewLevel = n.review_level || '';
   const status = n.status || '現行';
   const $c = el('div', {
     class: 'card' + (isReviewed ? ' is-reviewed' : '') + (state.activeId === n.id ? ' is-active' : ''),
@@ -391,6 +439,7 @@ function renderCard(n) {
     'data-cat': cat,
     'data-id': n.id,
     'data-status': status,
+    'data-review-level': reviewLevel,
   });
   const summaryHTML = n.summary
     ? esc(n.summary)
@@ -400,9 +449,13 @@ function renderCard(n) {
   ).join('');
   const flag = isReviewed ? '' : '<span class="card-flag">草稿</span>';
   const statusBadge = `<span class="status-badge" data-status="${esc(status)}">${esc(status)}</span>`;
-  // 卡片底部:校對日 + 原始出處(若有)
+  // 卡片底部:校對日(分人工/自動)+ 原始出處
+  const reviewIcon = reviewLevel === '人工' ? '✅' : (reviewLevel ? '🤖' : '📅');
+  const reviewLabel = reviewLevel === '人工'
+    ? '人工校對'
+    : (reviewLevel === '自動初校' ? '自動初校(待人工潤飾)' : (reviewLevel ? esc(reviewLevel) : '校對'));
   const reviewedHtml = n.reviewed
-    ? `<span class="reviewed-date">📅 ${esc(n.reviewed)} 校對</span>`
+    ? `<span class="reviewed-date" data-level="${esc(reviewLevel)}" title="${esc(reviewLabel)}">${reviewIcon} ${esc(n.reviewed)} ${esc(reviewLabel)}</span>`
     : `<span class="draft-flag">⚠ 尚未校對</span>`;
   const sourceHtml = n.source_url
     ? `<a class="source-link" href="${esc(n.source_url)}" target="_blank" rel="noopener" title="開啟原始出處">🔗 原始出處</a>`
@@ -466,12 +519,23 @@ function renderOverview() {
 
   // 統計每個母題的節點數,過濾 0 筆母題(已廢止節點不算入泡泡尺寸)
   const counts = new Map();
+  const tagFreq = new Map();   // parent → Map<tag, n>
   for (const n of state.nodes) {
     if (!isVisible(n)) continue;
     counts.set(n.parent, (counts.get(n.parent) || 0) + 1);
+    if (!tagFreq.has(n.parent)) tagFreq.set(n.parent, new Map());
+    const tf = tagFreq.get(n.parent);
+    for (const t of (n.tags || [])) tf.set(t, (tf.get(t) || 0) + 1);
   }
   const visibleParents = PARENTS_ALL.filter(p => (counts.get(p) || 0) > 0);
   const maxCount = Math.max(1, ...visibleParents.map(p => counts.get(p)));
+  // 計算每個母題前 3 高頻 tag(供 hover 提示)
+  const topTagsByParent = new Map();
+  for (const p of visibleParents) {
+    const tf = tagFreq.get(p) || new Map();
+    const top = [...tf.entries()].sort((a, b) => b[1] - a[1]).slice(0, 3).map(([t]) => t);
+    topTagsByParent.set(p, top);
+  }
 
   // 主泡泡尺寸依容器較短邊縮放
   const baseDim = Math.min(W, H);
@@ -493,6 +557,7 @@ function renderOverview() {
       count: c,
       color,
       r,
+      topTags: topTagsByParent.get(parent) || [],
       x: cx + initR * Math.cos(angle),
       y: cy + initR * Math.sin(angle),
     });
@@ -594,7 +659,7 @@ function packBubbles(bubbles, W, H, cx, cy) {
   }
 }
 
-function makeBubble({ kind, x, y, r, label, color, parent, delay = 0 }) {
+function makeBubble({ kind, x, y, r, label, color, parent, topTags, count, delay = 0 }) {
   const g = document.createElementNS(SVG_NS, 'g');
   const classes = ['bubble', `bubble-${kind}`];
   if (parent) classes.push('is-clickable');
@@ -630,7 +695,13 @@ function makeBubble({ kind, x, y, r, label, color, parent, delay = 0 }) {
 
     const title = document.createElementNS(SVG_NS, 'title');
     const betaSuffix = parent && BETA_PARENTS.has(parent) ? ' [BETA — 校對中]' : '';
-    title.textContent = parent ? `${parent}${betaSuffix}(點擊進入)` : label;
+    const tagLine = (topTags && topTags.length > 0)
+      ? `\n常見 tag:${topTags.join('、')}`
+      : '';
+    const countLine = count ? `\n${count} 個節點` : '';
+    title.textContent = parent
+      ? `${parent}${betaSuffix}${countLine}${tagLine}\n(點擊進入該母題情境)`
+      : label;
     g.appendChild(title);
 
     if (parent) {
@@ -771,6 +842,9 @@ function countScenarioMatches(sc) {
 function applyScenario(scenarioId) {
   const sc = state.scenariosById.get(scenarioId);
   if (!sc) return;
+  // 切情境時重置 flow 進度
+  state.flowAnswers = {};
+  state.flowConclusion = null;
   switchView('library');
   setFilter({
     parent: sc.parent || null,
@@ -785,9 +859,148 @@ function applyScenario(scenarioId) {
 
 function clearScenario() {
   setFilter({ scenario: null });
+  state.flowAnswers = {};
+  state.flowConclusion = null;
   if (location.hash.startsWith('#scenario=')) {
     history.replaceState(null, '', location.pathname);
   }
+}
+
+// 情境細節面板:附件、簽核、條件問答 flow
+function renderScenarioDetail() {
+  const $box = document.getElementById('scenario-detail');
+  if (!$box) return;
+  const sid = state.filter.scenario;
+  if (!sid) { $box.hidden = true; $box.innerHTML = ''; return; }
+  const sc = state.scenariosById.get(sid);
+  if (!sc) { $box.hidden = true; $box.innerHTML = ''; return; }
+
+  const blocks = [];
+
+  if (sc.flow) {
+    blocks.push(renderFlowBlock(sc));
+  }
+  if (sc.attachments && sc.attachments.length) {
+    blocks.push(`
+      <section class="scenario-block">
+        <h4>📎 所需附件</h4>
+        <ul>${sc.attachments.map(a => `<li>${esc(a)}</li>`).join('')}</ul>
+      </section>
+    `);
+  }
+  if (sc.approvers && sc.approvers.length) {
+    blocks.push(`
+      <section class="scenario-block">
+        <h4>✍️ 簽核層級</h4>
+        <ol>${sc.approvers.map(a => `<li>${esc(a)}</li>`).join('')}</ol>
+      </section>
+    `);
+  }
+
+  if (blocks.length === 0) { $box.hidden = true; $box.innerHTML = ''; return; }
+
+  $box.innerHTML = blocks.join('');
+  $box.hidden = false;
+  bindFlowEvents($box, sc);
+}
+
+function renderFlowBlock(sc) {
+  const flow = sc.flow;
+  const answers = state.flowAnswers || {};
+  const conclusionId = state.flowConclusion;
+
+  if (conclusionId && flow.conclusions && flow.conclusions[conclusionId]) {
+    const c = flow.conclusions[conclusionId];
+    const refsHtml = (c.refs || []).map(rid => {
+      const n = state.nodeById.get(rid);
+      return n
+        ? `<a class="ref-jump" data-jump="${esc(rid)}">${esc(n.title)} <small>(${esc(rid)})</small></a>`
+        : `<span class="ref-missing">${esc(rid)}</span>`;
+    }).join('、');
+    const noteHtml = c.note ? `<p class="conclusion-note">${esc(c.note)}</p>` : '';
+    const limitHtml = c.limit ? `<p class="conclusion-limit"><strong>金額上限:</strong>${esc(c.limit)}</p>` : '';
+    return `
+      <section class="scenario-block scenario-conclusion">
+        <h4>✅ 結論</h4>
+        <h5>${esc(c.title)}</h5>
+        ${limitHtml}
+        ${noteHtml}
+        ${refsHtml ? `<p class="conclusion-refs"><strong>法源:</strong>${refsHtml}</p>` : ''}
+        <button class="link-btn flow-restart" type="button">↩ 重新作答</button>
+      </section>
+    `;
+  }
+
+  // 找下一題:從 start 沿著答過的選項走,看落到哪一題
+  let qid = flow.start;
+  const path = [];
+  while (qid && flow.questions[qid]) {
+    const q = flow.questions[qid];
+    const ans = answers[qid];
+    path.push({ qid, q, ans });
+    if (ans === undefined) break;
+    const opt = q.options[ans];
+    if (!opt) break;
+    if (opt.conclude) {
+      // 不該到這(已被上面 conclusionId 攔截),保險起見
+      break;
+    }
+    qid = opt.next;
+  }
+
+  const items = path.map(({ qid, q, ans }) => {
+    const optsHtml = q.options.map((opt, i) => {
+      const isAns = ans === i;
+      return `<button class="flow-option${isAns ? ' is-selected' : ''}" data-q="${esc(qid)}" data-opt="${i}" type="button">${esc(opt.label)}</button>`;
+    }).join('');
+    const hint = q.hint ? `<p class="flow-hint">${esc(q.hint)}</p>` : '';
+    return `
+      <div class="flow-step">
+        <p class="flow-question">Q. ${esc(q.label)}</p>
+        ${hint}
+        <div class="flow-options">${optsHtml}</div>
+      </div>
+    `;
+  }).join('');
+
+  const restartBtn = path.length > 1
+    ? `<button class="link-btn flow-restart" type="button">↩ 重新作答</button>`
+    : '';
+
+  return `
+    <section class="scenario-block scenario-flow">
+      <h4>🤔 條件問答</h4>
+      ${items}
+      ${restartBtn}
+    </section>
+  `;
+}
+
+function bindFlowEvents($box, sc) {
+  $box.querySelectorAll('.flow-option').forEach(btn => {
+    btn.onclick = () => {
+      const qid = btn.dataset.q;
+      const optIdx = +btn.dataset.opt;
+      const opt = sc.flow.questions[qid].options[optIdx];
+      state.flowAnswers = { ...(state.flowAnswers || {}), [qid]: optIdx };
+      if (opt.conclude) {
+        state.flowConclusion = opt.conclude;
+      } else {
+        state.flowConclusion = null;
+      }
+      renderScenarioDetail();
+    };
+  });
+  $box.querySelectorAll('.flow-restart').forEach(btn => {
+    btn.onclick = () => {
+      state.flowAnswers = {};
+      state.flowConclusion = null;
+      renderScenarioDetail();
+    };
+  });
+  $box.querySelectorAll('.ref-jump').forEach(a => {
+    a.onclick = (ev) => { ev.preventDefault(); openDrawer(a.dataset.jump); };
+  });
 }
 
 // ─────────────────────────────────────────────
@@ -1317,7 +1530,7 @@ async function openDrawer(id) {
     node.agency && ['機關', node.agency],
     ['版本', node.version],
     node.doc_no && ['發文字號', node.doc_no],
-    node.reviewed ? ['校對', node.reviewed] : ['校對', '尚未校對'],
+    node.reviewed ? ['校對', node.reviewed + (node.review_level ? `(${node.review_level})` : '')] : ['校對', '尚未校對'],
   ].filter(Boolean);
   let metaHtml = meta.map(([k, v]) =>
     `<span><strong>${esc(k)}:</strong>${esc(String(v))}</span>`
@@ -1351,17 +1564,29 @@ function closeDrawer() {
 }
 
 function appendRelatedSection($body, node) {
-  // 入連結:本節點被誰引用
-  const incoming = state.incomingEdges.get(node.id) || [];
-  if (incoming.length === 0) return;
-  const $box = el('div', { class: 'related-incoming' });
-  $box.style.cssText = 'margin-top:18px;padding:10px 12px;background:var(--bg-secondary);border-radius:6px;font-size:13px';
-  const links = incoming.map(e => {
-    const from = state.nodeById.get(e.from);
-    if (!from) return null;
-    return `<a data-jump="${esc(from.id)}">${esc(from.title)}</a>`;
-  }).filter(Boolean).join('、');
-  $box.innerHTML = `<strong style="color:var(--text-secondary)">本節點被以下引用 (${incoming.length}):</strong> ${links}`;
+  // 出連結:本節點引用了誰(從 node.related)
+  const outgoing = (node.related || [])
+    .map(rid => state.nodeById.get(rid))
+    .filter(Boolean);
+  // 入連結:本節點被誰引用(從 incomingEdges)
+  const incoming = (state.incomingEdges.get(node.id) || [])
+    .map(e => state.nodeById.get(e.from))
+    .filter(Boolean);
+
+  if (outgoing.length === 0 && incoming.length === 0) return;
+
+  const renderList = (label, list) => {
+    if (list.length === 0) return '';
+    const links = list.map(n => `<a data-jump="${esc(n.id)}">${esc(n.title)}</a>`).join('、');
+    return `<div class="related-line"><strong>${label} (${list.length}):</strong> ${links}</div>`;
+  };
+
+  const $box = el('div', { class: 'related-section' });
+  $box.innerHTML = `
+    ${renderList('本節點引用', outgoing)}
+    ${renderList('本節點被以下引用', incoming)}
+  `.trim();
+
   $box.querySelectorAll('a[data-jump]').forEach(a => {
     a.onclick = (ev) => { ev.preventDefault(); openDrawer(a.dataset.jump); };
   });
@@ -1465,27 +1690,52 @@ function runSearch(query) {
   const q = query.trim();
   if (q.length < 1) return [];
   const qLower = q.toLowerCase();
+  const expanded = expandSynonyms(q);     // 含 q 自己 + 命中組同義詞
+  const isExpanded = expanded.length > 1;
   const results = [];
   for (const doc of state.searchCorpus) {
     let score = 0;
     let snippet = '';
-    if (doc.title.toLowerCase().includes(qLower)) score += 5;
-    if ((doc.tags || []).some(t => t.toLowerCase().includes(qLower))) score += 3;
-    const idx = (doc.body || '').toLowerCase().indexOf(qLower);
-    if (idx >= 0) {
-      score += 1;
-      const start = Math.max(0, idx - 20);
-      snippet = doc.body.slice(start, idx + q.length + 40);
-      if (start > 0) snippet = '…' + snippet;
-    }
-    if (idx < 0) {
-      const sIdx = (doc.summary || '').toLowerCase().indexOf(qLower);
-      if (sIdx >= 0) {
-        score += 1;
-        snippet = doc.summary;
+    let matchedTerm = '';   // 命中的 term(用於 snippet 與高亮)
+    const titleLower = doc.title.toLowerCase();
+    const bodyLower = (doc.body || '').toLowerCase();
+    const summaryLower = (doc.summary || '').toLowerCase();
+    const tagLowers = (doc.tags || []).map(t => t.toLowerCase());
+
+    for (const term of expanded) {
+      // 主查詢權重最重,同義詞展開稍降權避免噪音
+      const isOriginal = term === qLower;
+      const wTitle = isOriginal ? 5 : 3;
+      const wTag   = isOriginal ? 3 : 2;
+      const wBody  = isOriginal ? 1 : 0.5;
+
+      if (titleLower.includes(term)) {
+        score += wTitle;
+        if (!matchedTerm) matchedTerm = term;
+      }
+      if (tagLowers.some(t => t.includes(term))) {
+        score += wTag;
+        if (!matchedTerm) matchedTerm = term;
+      }
+      const idx = bodyLower.indexOf(term);
+      if (idx >= 0) {
+        score += wBody;
+        if (!snippet) {
+          const start = Math.max(0, idx - 20);
+          snippet = doc.body.slice(start, idx + term.length + 40);
+          if (start > 0) snippet = '…' + snippet;
+          if (!matchedTerm) matchedTerm = term;
+        }
+      } else {
+        const sIdx = summaryLower.indexOf(term);
+        if (sIdx >= 0) {
+          score += wBody;
+          if (!snippet) snippet = doc.summary;
+          if (!matchedTerm) matchedTerm = term;
+        }
       }
     }
-    if (score > 0) results.push({ doc, score, snippet });
+    if (score > 0) results.push({ doc, score, snippet, matchedTerm, viaSynonym: isExpanded && matchedTerm !== qLower });
   }
   results.sort((a, b) => b.score - a.score);
   return results.slice(0, 12);
@@ -1500,12 +1750,16 @@ function renderSearchResults(results, query) {
   $list.innerHTML = '';
   state.searchFocusIdx = -1;
   for (let i = 0; i < results.length; i++) {
-    const { doc, snippet } = results[i];
+    const { doc, snippet, matchedTerm, viaSynonym } = results[i];
     const $li = el('li', { 'data-id': doc.id, role: 'option' });
+    const synBadge = viaSynonym && matchedTerm
+      ? `<span class="search-result-synbadge" title="同義詞展開命中">≈ ${esc(matchedTerm)}</span>`
+      : '';
+    const hlTerms = [query, matchedTerm].filter(Boolean);
     $li.innerHTML = `
-      <div class="search-result-title">${highlight(doc.title, query)}</div>
+      <div class="search-result-title">${highlightMany(doc.title, hlTerms)}${synBadge}</div>
       <div class="search-result-meta">${esc(doc.id)} · ${esc(CATEGORY_LABEL[doc.id.split('-')[0]] || '')} · ${esc(doc.parent)}</div>
-      ${snippet ? `<div class="search-result-snippet">${highlight(snippet, query)}</div>` : ''}
+      ${snippet ? `<div class="search-result-snippet">${highlightMany(snippet, hlTerms)}</div>` : ''}
     `;
     $li.onclick = () => { closeSearch(); openDrawer(doc.id); };
     $list.appendChild($li);
@@ -1517,6 +1771,15 @@ function highlight(text, query) {
   if (!query) return esc(text);
   const safeQ = query.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
   return esc(text).replace(new RegExp(safeQ, 'gi'), '<mark>$&</mark>');
+}
+
+function highlightMany(text, terms) {
+  const uniq = [...new Set((terms || []).filter(Boolean).map(t => t.trim()).filter(t => t.length > 0))];
+  if (uniq.length === 0) return esc(text);
+  const safe = uniq.map(t => t.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'));
+  // 長 term 優先,避免短 term 先吃掉部分匹配
+  safe.sort((a, b) => b.length - a.length);
+  return esc(text).replace(new RegExp(safe.join('|'), 'gi'), '<mark>$&</mark>');
 }
 
 function closeSearch() {
@@ -1703,6 +1966,19 @@ function bindEvents() {
 // 啟動
 // ─────────────────────────────────────────────
 
+function renderFooterStat() {
+  const $stat = document.getElementById('footer-data-stat');
+  if (!$stat) return;
+  const m = state.indexMeta;
+  if (!m) return;
+  const parts = [];
+  if (m.last_indexed) parts.push(`資料更新日:${m.last_indexed}`);
+  if (m.node_count) parts.push(`${m.node_count} 節點`);
+  if (parts.length === 0) return;
+  $stat.textContent = ' · ' + parts.join(' · ');
+  $stat.hidden = false;
+}
+
 async function init() {
   try {
     await loadData();
@@ -1720,6 +1996,7 @@ async function init() {
   renderCards();
   bindEvents();
   bindInfoModal();
+  renderFooterStat();
   // 啟動時若預設視圖非 library,主動觸發其渲染
   const v = document.body.dataset.view;
   if (v === 'overview') renderOverview();
