@@ -1,7 +1,7 @@
 // 政府支出法規知識庫 — 前端主程式
 // 純 ES6,無框架。從 03_index/*.json 載入資料,渲染條文庫主介面。
 
-const DATA_VERSION = '2026-04-27l';
+const DATA_VERSION = '2026-04-27m';
 const DATA_BASE = '../03_index/';
 const MD_BASE = '../';
 const DATA_QS = '?v=' + DATA_VERSION;
@@ -2165,20 +2165,11 @@ function bindEvents() {
     }
   });
 
-  // hash 直接打開節點 / 套用情境
+  // 載入時清除 hash:確保「重新整理 / 連結網頁」一律從母題泡泡圖開始,
+  // 不再自動帶到 #scenario=xxx 或 #節點 ID。in-app 內互動仍會更新 hash(供 copy-link / 瀏覽器前後),
+  // 但不會在初始載入時觸發 view 切換。
   if (location.hash) {
-    const raw = decodeURIComponent(location.hash.slice(1));
-    if (raw.startsWith('scenario=')) {
-      const sid = raw.slice('scenario='.length);
-      if (state.scenariosById.has(sid)) {
-        applyScenario(sid);
-      }
-    } else if (state.nodeById.has(raw)) {
-      const node = state.nodeById.get(raw);
-      setFilter({ parent: node.parent, category: raw.split('-')[0], tag: null });
-      switchView('library');
-      openDrawer(raw);
-    }
+    history.replaceState(null, '', location.pathname);
   }
 }
 
