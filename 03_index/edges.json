@@ -43,12 +43,6 @@
   },
   {
     "from": "A-國內旅費-005",
-    "to": "C-國內旅費-002",
-    "relation": "explains",
-    "inferred": false
-  },
-  {
-    "from": "A-國內旅費-005",
     "to": "D-國內旅費-001",
     "relation": "answers",
     "inferred": false
@@ -243,18 +237,6 @@
     "from": "B-國外旅費-003",
     "to": "A-國外旅費-007",
     "relation": "cites",
-    "inferred": false
-  },
-  {
-    "from": "C-國內旅費-002",
-    "to": "A-國內旅費-005",
-    "relation": "explains",
-    "inferred": false
-  },
-  {
-    "from": "C-國內旅費-002",
-    "to": "A-國內旅費-002",
-    "relation": "explains",
     "inferred": false
   },
   {
@@ -1938,6 +1920,24 @@
     "inferred": false
   },
   {
+    "from": "C-國外旅費-185",
+    "to": "A-國外旅費-007",
+    "relation": "explains",
+    "inferred": false
+  },
+  {
+    "from": "C-國外旅費-185",
+    "to": "A-國外旅費-011",
+    "relation": "explains",
+    "inferred": false
+  },
+  {
+    "from": "C-國外旅費-185",
+    "to": "B-國外旅費-003",
+    "relation": "cites",
+    "inferred": false
+  },
+  {
     "from": "D-國內旅費-001",
     "to": "A-國內旅費-005",
     "relation": "answers",
@@ -2054,6 +2054,30 @@
   {
     "from": "D-國內旅費-013",
     "to": "A-國內旅費-015",
+    "relation": "answers",
+    "inferred": false
+  },
+  {
+    "from": "D-國內旅費-014",
+    "to": "A-國內旅費-005",
+    "relation": "answers",
+    "inferred": false
+  },
+  {
+    "from": "D-國內旅費-014",
+    "to": "A-國內旅費-015",
+    "relation": "answers",
+    "inferred": false
+  },
+  {
+    "from": "D-國內旅費-015",
+    "to": "A-國內旅費-005",
+    "relation": "answers",
+    "inferred": false
+  },
+  {
+    "from": "D-國內旅費-016",
+    "to": "A-國內旅費-005",
     "relation": "answers",
     "inferred": false
   },
@@ -2830,5 +2854,29 @@
     "to": "A-支出憑證與結報-005",
     "relation": "answers",
     "inferred": false
+  },
+  {
+    "from": "D-支出憑證與結報-005",
+    "to": "A-支出憑證與結報-015",
+    "relation": "cites_inferred",
+    "inferred": true,
+    "matched": "第 15 點",
+    "cross_parent": false
+  },
+  {
+    "from": "D-支出憑證與結報-015",
+    "to": "A-支出憑證與結報-015",
+    "relation": "cites_inferred",
+    "inferred": true,
+    "matched": "第 15 點",
+    "cross_parent": false
+  },
+  {
+    "from": "D-支出憑證與結報-016",
+    "to": "A-支出憑證與結報-015",
+    "relation": "cites_inferred",
+    "inferred": true,
+    "matched": "第 15 點",
+    "cross_parent": false
   }
 ]
