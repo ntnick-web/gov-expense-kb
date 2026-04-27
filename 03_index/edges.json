@@ -138,6 +138,36 @@
     "inferred": false
   },
   {
+    "from": "A-國外旅費-024",
+    "to": "A-國外旅費-007",
+    "relation": "cites",
+    "inferred": false
+  },
+  {
+    "from": "A-國外旅費-024",
+    "to": "A-國外旅費-013",
+    "relation": "cites",
+    "inferred": false
+  },
+  {
+    "from": "A-國外旅費-024",
+    "to": "A-國外旅費-015",
+    "relation": "cites",
+    "inferred": false
+  },
+  {
+    "from": "A-國外旅費-024",
+    "to": "A-國外旅費-016",
+    "relation": "cites",
+    "inferred": false
+  },
+  {
+    "from": "A-國外旅費-024",
+    "to": "A-國外旅費-017",
+    "relation": "cites",
+    "inferred": false
+  },
+  {
     "from": "A-國外旅費-009",
     "to": "A-國外旅費-008",
     "relation": "cites",
@@ -204,38 +234,44 @@
     "inferred": false
   },
   {
-    "from": "B-國外旅費-001",
-    "to": "A-國外旅費-007",
-    "relation": "cites",
-    "inferred": false
-  },
-  {
-    "from": "B-國外旅費-001",
-    "to": "A-國外旅費-013",
-    "relation": "cites",
-    "inferred": false
-  },
-  {
-    "from": "B-國外旅費-001",
-    "to": "A-國外旅費-015",
-    "relation": "cites",
-    "inferred": false
-  },
-  {
-    "from": "B-國外旅費-001",
-    "to": "A-國外旅費-016",
-    "relation": "cites",
-    "inferred": false
-  },
-  {
-    "from": "B-國外旅費-001",
-    "to": "A-國外旅費-017",
-    "relation": "cites",
-    "inferred": false
-  },
-  {
     "from": "B-國外旅費-003",
     "to": "A-國外旅費-007",
+    "relation": "cites",
+    "inferred": false
+  },
+  {
+    "from": "B-國外旅費-004",
+    "to": "B-國外旅費-003",
+    "relation": "cites",
+    "inferred": false
+  },
+  {
+    "from": "B-國外旅費-004",
+    "to": "A-國外旅費-007",
+    "relation": "cites",
+    "inferred": false
+  },
+  {
+    "from": "B-國外旅費-005",
+    "to": "B-國外旅費-002",
+    "relation": "cites",
+    "inferred": false
+  },
+  {
+    "from": "B-國外旅費-006",
+    "to": "A-國外旅費-014",
+    "relation": "cites",
+    "inferred": false
+  },
+  {
+    "from": "B-國外旅費-007",
+    "to": "B-國外旅費-006",
+    "relation": "cites",
+    "inferred": false
+  },
+  {
+    "from": "B-國外旅費-007",
+    "to": "A-國外旅費-014",
     "relation": "cites",
     "inferred": false
   },

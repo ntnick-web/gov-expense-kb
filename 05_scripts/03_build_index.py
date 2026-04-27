@@ -90,6 +90,8 @@ class Node:
     source_url: Optional[str] = None
     summary_pending: bool = False
     rate_table: Optional[dict] = None  # 結構化費率表(B 類標準表用)
+    effective_period: Optional[str] = None  # 適用期間(已廢止費率表用)
+    superseded_by: Optional[str] = None  # 被哪個節點取代
     body_plain: str = field(default="", repr=False)
 
 
@@ -329,6 +331,8 @@ def load_nodes(
             source_url=str(fm["source_url"]) if fm.get("source_url") else None,
             summary_pending=bool(fm.get("summary_pending")),
             rate_table=fm["rate_table"] if isinstance(fm.get("rate_table"), dict) else None,
+            effective_period=str(fm["effective_period"]) if fm.get("effective_period") else None,
+            superseded_by=str(fm["superseded_by"]) if fm.get("superseded_by") else None,
             body_plain=body_plain,
         )
         nodes.append(node)
@@ -370,6 +374,10 @@ def build_nodes_json(nodes: list[Node]) -> list[dict]:
             d["summary_pending"] = True
         if n.rate_table:
             d["rate_table"] = n.rate_table
+        if n.effective_period:
+            d["effective_period"] = n.effective_period
+        if n.superseded_by:
+            d["superseded_by"] = n.superseded_by
         out.append(d)
     return out
 

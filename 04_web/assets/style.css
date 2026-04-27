@@ -1651,3 +1651,327 @@ body.modal-open { overflow: hidden; }
   .breadcrumb { font-size: 12px; flex-wrap: wrap; }
   .tag-cloud { gap: 4px; }
 }
+
+/* ─────────────────────────────────────────────
+ * 2026-04-28: 情境分組 / 條件問答蠟筆框 / 已逾期 banner / 保險試算 widget
+ * 2026-04-28c: 情境視圖快捷按鈕(最新標準表一鍵跳)
+ * ───────────────────────────────────────────── */
+
+/* 情境視圖快捷按鈕 */
+.scenarios-quick-actions {
+  max-width: 1100px;
+  width: 100%;
+  margin: 0 auto 20px;
+  background: linear-gradient(135deg, #fff8e1 0%, #ffecb3 100%);
+  border: 1px solid #ffc107;
+  border-radius: 10px;
+  padding: 14px 16px;
+}
+.scenarios-quick-title {
+  font-size: 13px;
+  font-weight: 700;
+  color: #6d4c00;
+  margin-bottom: 10px;
+}
+.scenarios-quick-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 10px;
+}
+.quick-action-btn {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: #fff;
+  border: 1px solid #ffc107;
+  border-radius: 8px;
+  padding: 10px 14px;
+  cursor: pointer;
+  text-align: left;
+  transition: background 0.15s, border-color 0.15s, transform 0.05s, box-shadow 0.15s;
+  font-family: inherit;
+  color: var(--text-primary);
+}
+.quick-action-btn:hover {
+  background: #fffde7;
+  border-color: #f57c00;
+  box-shadow: 0 2px 6px rgba(245, 124, 0, 0.2);
+  transform: translateY(-1px);
+}
+.quick-action-btn:active { transform: translateY(0); }
+.qa-icon {
+  font-size: 24px;
+  line-height: 1;
+  flex-shrink: 0;
+}
+.qa-text {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+.qa-title {
+  font-size: 14px;
+  font-weight: 600;
+  color: #424242;
+  line-height: 1.3;
+}
+.qa-sub {
+  font-size: 11px;
+  color: #757575;
+  line-height: 1.3;
+}
+
+@media (prefers-color-scheme: dark) {
+  .scenarios-quick-actions {
+    background: linear-gradient(135deg, #4d3f00 0%, #5a4500 100%);
+    border-color: #ff9800;
+  }
+  .scenarios-quick-title { color: #ffe082; }
+  .quick-action-btn {
+    background: #2c3e50;
+    border-color: #ff9800;
+    color: #ecf0f1;
+  }
+  .quick-action-btn:hover {
+    background: #34495e;
+    border-color: #ffb74d;
+  }
+  .qa-title { color: #ecf0f1; }
+  .qa-sub { color: #bdc3c7; }
+}
+
+
+/* 情境分組 (依 expense 類別) */
+.scenarios-group {
+  max-width: 1100px;
+  width: 100%;
+  margin: 0 auto 24px;
+}
+.scenarios-group-title {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--text-secondary);
+  margin: 0 0 10px;
+  padding: 6px 12px;
+  background: var(--bg-secondary);
+  border-left: 4px solid var(--color-A);
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.scenarios-group-count {
+  font-size: 11px;
+  font-weight: 500;
+  color: var(--text-muted);
+  background: var(--bg-primary);
+  padding: 1px 8px;
+  border-radius: 10px;
+  border: 1px solid var(--border);
+}
+.scenarios-group-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 14px;
+}
+
+/* 有條件問答 (flow) 的情境卡 — 紅色蠟筆粗框效果 */
+.scenario-card.has-flow {
+  border: 3px solid #d32f2f;
+  border-style: solid;
+  border-color: #d32f2f;
+  /* 蠟筆紋理:雙重外框 + 微旋轉 + 不規則邊緣 */
+  box-shadow:
+    0 0 0 1px #d32f2f,
+    inset 0 0 0 1px rgba(211, 47, 47, 0.15),
+    2px 2px 0 rgba(211, 47, 47, 0.12),
+    -1px 1px 0 rgba(211, 47, 47, 0.08);
+  /* 蠟筆筆觸感:略微傾斜 + 角落不對稱 */
+  border-radius: 12px 10px 11px 9px;
+  position: relative;
+}
+.scenario-card.has-flow::before {
+  /* 蠟筆紋理疊加層 */
+  content: '';
+  position: absolute;
+  inset: -1px;
+  border-radius: inherit;
+  border: 1px dashed rgba(211, 47, 47, 0.35);
+  pointer-events: none;
+}
+.scenario-card.has-flow:hover {
+  border-color: #b71c1c;
+  box-shadow:
+    0 0 0 1px #b71c1c,
+    inset 0 0 0 1px rgba(183, 28, 28, 0.18),
+    3px 3px 0 rgba(183, 28, 28, 0.18),
+    -1px 2px 0 rgba(183, 28, 28, 0.12);
+}
+.scenario-flow-badge {
+  display: inline-block;
+  font-size: 10px;
+  font-weight: 600;
+  background: #ffebee;
+  color: #c62828;
+  padding: 2px 7px;
+  border-radius: 10px;
+  border: 1px solid #ef9a9a;
+  margin-left: 6px;
+  vertical-align: middle;
+}
+
+/* 已逾期 banner (rate_table 上方) */
+.expired-banner {
+  background: linear-gradient(90deg, #fff3e0 0%, #ffe0b2 100%);
+  border: 1px solid #ff9800;
+  border-left: 4px solid #e65100;
+  color: #6d4c00;
+  padding: 10px 14px;
+  border-radius: 6px;
+  font-size: 13px;
+  line-height: 1.5;
+  margin-bottom: 12px;
+}
+.expired-banner strong { color: #bf360c; }
+.expired-banner-link {
+  color: #1565c0;
+  text-decoration: underline;
+  cursor: pointer;
+  font-weight: 600;
+}
+.expired-banner-link:hover {
+  color: #0d47a1;
+}
+
+/* 保險試算 widget */
+.ins-widget {
+  background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%);
+  border: 1px solid #64b5f6;
+  border-radius: 8px;
+  padding: 14px 16px;
+  margin: 0 0 14px;
+}
+.ins-widget-title {
+  font-size: 14px;
+  font-weight: 700;
+  color: #0d47a1;
+  margin-bottom: 10px;
+}
+.ins-widget-tabs {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 10px;
+  flex-wrap: wrap;
+}
+.ins-tab {
+  background: rgba(255, 255, 255, 0.7);
+  border: 1px solid #90caf9;
+  color: #1565c0;
+  padding: 6px 14px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 13px;
+  font-weight: 500;
+  transition: background 0.15s, border-color 0.15s;
+}
+.ins-tab:hover { background: rgba(255, 255, 255, 0.95); }
+.ins-tab.is-active {
+  background: #1565c0;
+  border-color: #0d47a1;
+  color: #fff;
+}
+.ins-widget-input {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+.ins-widget-input label {
+  font-size: 13px;
+  color: #424242;
+  font-weight: 500;
+  white-space: nowrap;
+}
+.ins-days-input {
+  flex: 1;
+  max-width: 180px;
+  padding: 6px 10px;
+  border: 1px solid #90caf9;
+  border-radius: 4px;
+  font-size: 14px;
+  background: #fff;
+}
+.ins-days-input:focus {
+  outline: none;
+  border-color: #1565c0;
+  box-shadow: 0 0 0 2px rgba(21, 101, 192, 0.2);
+}
+.ins-widget-result {
+  background: rgba(255, 255, 255, 0.85);
+  border-radius: 6px;
+  padding: 10px 14px;
+  font-size: 14px;
+  color: #616161;
+  text-align: center;
+  border: 1px dashed #b0bec5;
+}
+.ins-widget-result.is-hit {
+  background: linear-gradient(90deg, #fffde7 0%, #fff9c4 100%);
+  border: 2px solid #fbc02d;
+  color: #424242;
+  font-weight: 500;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.ins-result-label { font-size: 13px; color: #6d4c00; }
+.ins-result-value {
+  font-size: 18px;
+  font-weight: 700;
+  color: #b71c1c;
+  font-family: monospace;
+}
+
+/* Dark mode */
+@media (prefers-color-scheme: dark) {
+  .ins-widget {
+    background: linear-gradient(135deg, #0d2747 0%, #1a3a5c 100%);
+    border-color: #1565c0;
+  }
+  .ins-widget-title { color: #90caf9; }
+  .ins-tab {
+    background: rgba(0, 0, 0, 0.3);
+    border-color: #1565c0;
+    color: #bbdefb;
+  }
+  .ins-tab.is-active {
+    background: #42a5f5;
+    border-color: #64b5f6;
+    color: #fff;
+  }
+  .ins-widget-input label { color: #cfd8dc; }
+  .ins-days-input { background: #2c3e50; color: #ecf0f1; border-color: #1565c0; }
+  .ins-widget-result {
+    background: rgba(0, 0, 0, 0.4);
+    color: #cfd8dc;
+    border-color: #455a64;
+  }
+  .ins-widget-result.is-hit {
+    background: linear-gradient(90deg, #4d3f00 0%, #5a4500 100%);
+    border-color: #fbc02d;
+    color: #fff9c4;
+  }
+  .ins-result-label { color: #ffe082; }
+  .ins-result-value { color: #ff8a80; }
+  .expired-banner {
+    background: linear-gradient(90deg, #4d2e00 0%, #5a3500 100%);
+    border-color: #ff9800;
+    color: #ffe0b2;
+  }
+  .expired-banner strong { color: #ffab91; }
+  .scenario-card.has-flow { border-color: #ef5350; }
+  .scenario-flow-badge { background: #4d1e1e; color: #ef9a9a; border-color: #b71c1c; }
+}

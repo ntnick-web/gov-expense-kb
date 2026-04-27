@@ -1,7 +1,7 @@
 // 政府支出法規知識庫 — 前端主程式
 // 純 ES6,無框架。從 03_index/*.json 載入資料,渲染條文庫主介面。
 
-const DATA_VERSION = '2026-04-27p';
+const DATA_VERSION = '2026-04-28c';
 const DATA_BASE = '../03_index/';
 const MD_BASE = '../';
 const DATA_QS = '?v=' + DATA_VERSION;
@@ -20,7 +20,13 @@ const PARENTS_ALL = [
 const BETA_PARENTS = new Set(['國內旅費', '國外旅費', '支出憑證與結報']);
 // 已廢止節點是否從卡片網格 / 分類樹 / 母題泡泡中隱藏(關聯圖與搜尋仍會顯示)
 const HIDE_OBSOLETE = true;
-function isVisible(n) { return HIDE_OBSOLETE ? n.status !== '已廢止' : true; }
+function isVisible(n) {
+  if (!HIDE_OBSOLETE) return true;
+  if (n.status !== '已廢止') return true;
+  // 例外:有 effective_period 的歷史費率表,保留供歷史核銷查詢
+  if (n.effective_period) return true;
+  return false;
+}
 const PARENT_COLOR = {
   '國內旅費':       '#4A90E2',
   '國外旅費':       '#F8C471',  // 淺橘色
@@ -777,6 +783,45 @@ function renderScenariosView() {
   }
 
   $grid.innerHTML = '';
+
+  // 快捷按鈕:全部 / 國外旅費 scope 才顯示;一鍵跳到最新標準表抽屜
+  if (!scope || scope === '國外旅費') {
+    const $quick = el('section', { class: 'scenarios-quick-actions' });
+    $quick.innerHTML = `
+      <div class="scenarios-quick-title">🚀 快捷查詢 · 最新標準表</div>
+      <div class="scenarios-quick-grid">
+        <button class="quick-action-btn" data-jump="B-國外旅費-003" type="button">
+          <span class="qa-icon">💰</span>
+          <span class="qa-text">
+            <span class="qa-title">日支生活費表(全球·最新)</span>
+            <span class="qa-sub">B-國外-003 · 6 區域 524 城市 · 含搜尋</span>
+          </span>
+        </button>
+        <button class="quick-action-btn" data-jump="B-國外旅費-002" type="button">
+          <span class="qa-icon">🇨🇳</span>
+          <span class="qa-text">
+            <span class="qa-title">大陸港澳日支表(最新)</span>
+            <span class="qa-sub">B-國外-002 · 19 城市 · 含香港澳門</span>
+          </span>
+        </button>
+        <button class="quick-action-btn" data-jump="B-國外旅費-006" type="button">
+          <span class="qa-icon">🛡️</span>
+          <span class="qa-text">
+            <span class="qa-title">外交部出差綜合保險表(最新)</span>
+            <span class="qa-sub">B-國外-006 · 一般險/申根險試算</span>
+          </span>
+        </button>
+      </div>
+    `;
+    $grid.appendChild($quick);
+    for (const btn of $quick.querySelectorAll('.quick-action-btn')) {
+      btn.addEventListener('click', () => {
+        const id = btn.dataset.jump;
+        if (id) openDrawer(id);
+      });
+    }
+  }
+
   if (visible.length === 0) {
     // 空狀態:該母題還沒建立情境,引導去條文庫
     $grid.hidden = true;
@@ -803,31 +848,84 @@ function renderScenariosView() {
   $grid.hidden = false;
   $empty.hidden = true;
 
+  // 分組:有 scope 時依 expense 類別、無 scope 時依母題 + expense 類別兩層
+  const groups = new Map(); // key: scope ? expense : `${parent}|${expense}` → []
   for (const sc of visible) {
-    const matchedCount = countScenarioMatches(sc);
-    const $c = el('div', { class: 'scenario-card', role: 'listitem', 'data-id': sc.id });
-    const parentTag = !scope && sc.parent
-      ? `<span class="card-tag" style="margin-left:auto">${esc(sc.parent)}</span>`
-      : '';
-    $c.innerHTML = `
-      <div class="scenario-icon">${esc(sc.icon || '📌')}</div>
-      <h3 class="scenario-title">${esc(sc.title)}</h3>
-      <p class="scenario-subtitle">${esc(sc.subtitle || '')}</p>
-      <div class="scenario-meta">
-        <span class="scenario-count">${matchedCount} 張相關卡</span>
-        ${parentTag}
-        <span class="scenario-arrow">查看 →</span>
-      </div>
+    const expense = sc.expense || '其他';
+    const key = scope ? expense : `${sc.parent}|${expense}`;
+    if (!groups.has(key)) groups.set(key, []);
+    groups.get(key).push(sc);
+  }
+
+  // 排序:依 EXPENSE_LAYER 順序
+  const expenseOrder = scope && EXPENSE_LAYER[scope]
+    ? EXPENSE_LAYER[scope].map(c => c.name)
+    : ['交通費','住宿費','雜費','大陸港澳','出國進修','生活費','手續費','保險費','行政費','禮品交際及雜費','收據與發票','採購結報','系統化結報','補助與分攤','差旅費結報','酬勞與會議','通則與其他','其他'];
+  function expRank(name) {
+    const i = expenseOrder.indexOf(name);
+    return i < 0 ? 999 : i;
+  }
+  function keyRank(k) {
+    if (scope) return expRank(k);
+    const [p, e] = k.split('|');
+    const parentOrder = ['國內旅費','國外旅費','支出憑證與結報'];
+    const pi = parentOrder.indexOf(p);
+    return (pi < 0 ? 999 : pi) * 100 + expRank(e);
+  }
+  const sortedKeys = [...groups.keys()].sort((a, b) => keyRank(a) - keyRank(b));
+
+  for (const key of sortedKeys) {
+    const items = groups.get(key);
+    let groupTitle, groupSubtitle = '';
+    if (scope) {
+      groupTitle = key;
+      groupSubtitle = EXPENSE_TOOLTIP[key] || '';
+    } else {
+      const [p, e] = key.split('|');
+      groupTitle = `${p} · ${e}`;
+      groupSubtitle = EXPENSE_TOOLTIP[e] || '';
+    }
+    const $section = el('section', { class: 'scenarios-group' });
+    $section.innerHTML = `
+      <h3 class="scenarios-group-title" title="${esc(groupSubtitle)}">${esc(groupTitle)} <span class="scenarios-group-count">${items.length}</span></h3>
+      <div class="scenarios-group-grid"></div>
     `;
-    $c.onclick = () => applyScenario(sc.id);
-    $c.tabIndex = 0;
-    $c.addEventListener('keydown', (ev) => {
-      if (ev.key === 'Enter' || ev.key === ' ') {
-        ev.preventDefault();
-        applyScenario(sc.id);
-      }
-    });
-    $grid.appendChild($c);
+    const $sub = $section.querySelector('.scenarios-group-grid');
+
+    for (const sc of items) {
+      const matchedCount = countScenarioMatches(sc);
+      const hasFlow = sc.flow && sc.flow.start && sc.flow.questions;
+      const flowMark = hasFlow ? '<span class="scenario-flow-badge" title="此情境提供條件問答">🤔 條件問答</span>' : '';
+      const $c = el('div', {
+        class: 'scenario-card' + (hasFlow ? ' has-flow' : ''),
+        role: 'listitem',
+        'data-id': sc.id,
+        'data-has-flow': hasFlow ? '1' : '0',
+      });
+      const parentTag = !scope && sc.parent
+        ? `<span class="card-tag" style="margin-left:auto">${esc(sc.parent)}</span>`
+        : '';
+      $c.innerHTML = `
+        <div class="scenario-icon">${esc(sc.icon || '📌')}</div>
+        <h3 class="scenario-title">${esc(sc.title)} ${flowMark}</h3>
+        <p class="scenario-subtitle">${esc(sc.subtitle || '')}</p>
+        <div class="scenario-meta">
+          <span class="scenario-count">${matchedCount} 張相關卡</span>
+          ${parentTag}
+          <span class="scenario-arrow">查看 →</span>
+        </div>
+      `;
+      $c.onclick = () => applyScenario(sc.id);
+      $c.tabIndex = 0;
+      $c.addEventListener('keydown', (ev) => {
+        if (ev.key === 'Enter' || ev.key === ' ') {
+          ev.preventDefault();
+          applyScenario(sc.id);
+        }
+      });
+      $sub.appendChild($c);
+    }
+    $grid.appendChild($section);
   }
 }
 
@@ -1555,13 +1653,14 @@ async function openDrawer(id, opts = {}) {
     let body = stripFrontMatter(text);
     let rateHtml = '';
     if (node.rate_table) {
-      rateHtml = renderRateTable(node.rate_table);
+      rateHtml = renderRateTable(node.rate_table, node);
       // 結構化表格已是 SSOT,剝掉 MD 內重複的「## 標準全文」避免雙寫
       body = stripSection(body, '標準全文');
     }
     $body.innerHTML = rateHtml + renderMarkdown(body);
     appendRelatedSection($body, node);
     wireRateTableInteractions($body);
+    wireInsuranceWidgets($body);
   } catch (e) {
     $body.innerHTML = `<p style="color:#c00">載入失敗:${esc(e.message)}</p>`;
   }
@@ -1635,18 +1734,33 @@ function stripSection(md, heading) {
 // 支援兩種模式:
 //   flat:     {headers, rows, notes?}
 //   sectioned: {sections: [{title, headers?, rows?, summary?, notes?}, ...], notes?}
-function renderRateTable(rt) {
+function renderRateTable(rt, node) {
   if (!rt) return '';
   const hasFlat = Array.isArray(rt.headers) && Array.isArray(rt.rows);
   const hasSections = Array.isArray(rt.sections) && rt.sections.length > 0;
   if (!hasFlat && !hasSections) return '';
 
   const html = ['<div class="rate-table-wrap">'];
+
+  // 已逾期 banner — node.status === '已廢止' + 有 effective_period
+  if (node && node.status === '已廢止' && node.effective_period) {
+    const supersededHint = node.superseded_by
+      ? ` 現行版本：<a class="expired-banner-link" data-jump="${esc(node.superseded_by)}">${esc(node.superseded_by)}</a>`
+      : '';
+    html.push(`<div class="expired-banner">⏰ <strong>此表已逾期</strong>　適用期間：${esc(node.effective_period)}　|　保留供歷史核銷參考。${supersededHint}</div>`);
+  }
+
   if (rt.caption) html.push(`<div class="rate-caption">${esc(rt.caption)}</div>`);
   const metaParts = [];
   if (rt.unit) metaParts.push('單位:' + esc(rt.unit));
   if (rt.effective) metaParts.push('生效:' + esc(rt.effective));
   if (metaParts.length) html.push(`<div class="rate-meta">${metaParts.join(' · ')}</div>`);
+
+  // 保險試算 widget — 有 sections + lookup_type:insurance 才出現
+  const isInsurance = rt.lookup_type === 'insurance' && hasSections;
+  if (isInsurance) {
+    html.push(renderInsuranceWidget(rt.sections));
+  }
 
   if (hasFlat) {
     if (rt.searchable) {
@@ -1683,6 +1797,98 @@ function renderRateTable(rt) {
   }
   html.push('</div>');
   return html.join('');
+}
+
+// 保險表互動試算 — 險種選擇 + 天數輸入 → 即顯保費
+function renderInsuranceWidget(sections) {
+  const sectionData = sections
+    .filter(s => Array.isArray(s.rows) && s.rows.length)
+    .map(s => ({
+      title: s.title || '',
+      // 抽出 險種關鍵字 (一般險 / 申根險)
+      key: (s.title || '').replace(/\s*15足歲.*$/, '').trim(),
+      rows: s.rows,  // [[day, premium_str], ...]
+    }));
+  if (sectionData.length === 0) return '';
+  const buttons = sectionData.map((s, i) => {
+    const aria = i === 0 ? 'true' : 'false';
+    const cls = 'ins-tab' + (i === 0 ? ' is-active' : '');
+    return `<button class="${cls}" type="button" role="tab" aria-selected="${aria}" data-ins-key="${esc(s.key)}">${esc(s.key)}</button>`;
+  }).join('');
+  // 預先序列化資料給 JS 用
+  const dataPayload = JSON.stringify(sectionData.map(s => ({
+    key: s.key,
+    rows: s.rows,
+  }))).replace(/</g, '\\u003c');
+  return `<div class="ins-widget" data-ins-payload='${esc(dataPayload)}'>
+    <div class="ins-widget-title">💰 保費試算</div>
+    <div class="ins-widget-tabs" role="tablist">${buttons}</div>
+    <div class="ins-widget-input">
+      <label>天數 (1-365)</label>
+      <input type="number" min="1" max="365" step="1" class="ins-days-input" placeholder="輸入天數,如 30">
+    </div>
+    <div class="ins-widget-result" aria-live="polite">請先選擇險種並輸入天數</div>
+  </div>`;
+}
+
+// 綁定保險試算 widget 互動
+function wireInsuranceWidgets($scope) {
+  const widgets = $scope.querySelectorAll('.ins-widget');
+  for (const w of widgets) {
+    let payload;
+    try { payload = JSON.parse(w.getAttribute('data-ins-payload')); }
+    catch { continue; }
+    const tabs = [...w.querySelectorAll('.ins-tab')];
+    const input = w.querySelector('.ins-days-input');
+    const result = w.querySelector('.ins-widget-result');
+    let activeKey = tabs[0]?.dataset.insKey || '';
+
+    function lookup() {
+      const days = parseInt(input.value, 10);
+      if (!activeKey) {
+        result.textContent = '請先選擇險種';
+        result.className = 'ins-widget-result';
+        return;
+      }
+      if (!days || days < 1 || days > 365) {
+        result.textContent = '請輸入 1~365 之間的整數天數';
+        result.className = 'ins-widget-result';
+        return;
+      }
+      const sect = payload.find(s => s.key === activeKey);
+      if (!sect) { result.textContent = '找不到此險種資料'; return; }
+      // sect.rows: [[dayStr, premiumStr], ...]
+      const found = sect.rows.find(r => parseInt(String(r[0]), 10) === days);
+      if (!found) {
+        result.textContent = `${activeKey} ${days} 天:無對應費率`;
+        result.className = 'ins-widget-result';
+        return;
+      }
+      result.innerHTML = `<span class="ins-result-label">${esc(activeKey)} ${days} 天</span><span class="ins-result-value">NT$ ${esc(String(found[1]))}</span>`;
+      result.className = 'ins-widget-result is-hit';
+    }
+
+    tabs.forEach(t => {
+      t.addEventListener('click', () => {
+        tabs.forEach(x => {
+          x.classList.toggle('is-active', x === t);
+          x.setAttribute('aria-selected', x === t ? 'true' : 'false');
+        });
+        activeKey = t.dataset.insKey;
+        lookup();
+      });
+    });
+    input.addEventListener('input', lookup);
+  }
+  // 已逾期 banner 內的「現行版本」連結 → 跳節點
+  const links = $scope.querySelectorAll('.expired-banner-link[data-jump]');
+  for (const a of links) {
+    a.addEventListener('click', (ev) => {
+      ev.preventDefault();
+      const id = a.dataset.jump;
+      if (id) openDrawer(id);
+    });
+  }
 }
 
 function renderRateTableBlock(headers, rows) {
