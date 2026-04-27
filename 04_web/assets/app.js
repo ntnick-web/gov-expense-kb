@@ -1,7 +1,7 @@
 // 政府支出法規知識庫 — 前端主程式
 // 純 ES6,無框架。從 03_index/*.json 載入資料,渲染條文庫主介面。
 
-const DATA_VERSION = '2026-04-28c';
+const DATA_VERSION = '2026-04-28e';
 const DATA_BASE = '../03_index/';
 const MD_BASE = '../';
 const DATA_QS = '?v=' + DATA_VERSION;
@@ -817,7 +817,19 @@ function renderScenariosView() {
     for (const btn of $quick.querySelectorAll('.quick-action-btn')) {
       btn.addEventListener('click', () => {
         const id = btn.dataset.jump;
-        if (id) openDrawer(id);
+        if (!id) return;
+        // 先切到條文庫(否則抽屜在 hidden 的 view 內看不到),
+        // 並設 parent=國外旅費 scope + 取消任何情境/標籤過濾,讓背景顯示該母題卡片
+        const node = state.nodeById?.get(id);
+        switchView('library');
+        setFilter({
+          parent: node?.parent || '國外旅費',
+          expense: null,
+          category: null,
+          tag: null,
+          scenario: null,
+        });
+        openDrawer(id);
       });
     }
   }
