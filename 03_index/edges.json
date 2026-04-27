@@ -240,6 +240,12 @@
     "inferred": false
   },
   {
+    "from": "B-國外旅費-003",
+    "to": "A-國外旅費-007",
+    "relation": "cites",
+    "inferred": false
+  },
+  {
     "from": "C-國內旅費-002",
     "to": "A-國內旅費-005",
     "relation": "explains",

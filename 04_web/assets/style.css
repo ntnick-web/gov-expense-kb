@@ -144,6 +144,26 @@ body {
 .search-result-title { font-weight: 600; }
 .search-result-meta { color: var(--text-muted); font-size: 12px; }
 .search-result-snippet { color: var(--text-secondary); font-size: 12px; margin-top: 2px; }
+
+/* Ctrl+K 內 rate-table 直接答案 hit */
+.search-result-rate-hit {
+  border-left: 3px solid #f0b400;
+  background: rgba(240, 180, 0, 0.06);
+}
+.search-result-rate-hit:hover { background: rgba(240, 180, 0, 0.14); }
+.search-result-rate-hit .rate-hit-arrow {
+  color: var(--text-muted);
+  margin: 0 4px;
+}
+.search-result-rate-hit .rate-hit-value {
+  color: var(--text-primary);
+  font-weight: 600;
+}
+.search-result-rate-hit.is-fallback {
+  border-left-color: #4a90e2;
+  background: rgba(74, 144, 226, 0.06);
+}
+.search-result-rate-hit.is-fallback:hover { background: rgba(74, 144, 226, 0.14); }
 .search-results mark {
   background: rgba(245,166,35,0.25);
   color: inherit;
@@ -668,6 +688,162 @@ body {
   gap: 12px;
   flex-shrink: 0;
   background: var(--bg-secondary);
+}
+
+/* 抽屜內結構化費率表(B 類標準表) */
+.rate-table-wrap {
+  margin: 0 0 18px;
+  padding: 14px 14px 12px;
+  background: var(--bg-secondary);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+}
+.rate-caption {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-bottom: 4px;
+}
+.rate-meta {
+  font-size: 12px;
+  color: var(--text-muted);
+  margin-bottom: 10px;
+}
+.rate-table-scroll {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+.rate-search-wrap {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0 0 8px;
+}
+.rate-search-input {
+  flex: 1;
+  min-width: 0;
+  padding: 6px 10px;
+  font-size: 13px;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  background: var(--bg-primary);
+  color: var(--text-primary);
+}
+.rate-search-input:focus {
+  outline: none;
+  border-color: var(--accent, #4a7eff);
+  box-shadow: 0 0 0 2px rgba(74, 126, 255, 0.18);
+}
+.rate-search-empty {
+  font-size: 12px;
+  color: var(--text-muted);
+}
+@keyframes rate-row-flash {
+  0%   { background: rgba(255, 220, 80, 0.55); }
+  100% { background: transparent; }
+}
+.rate-table tbody tr.is-highlight td {
+  animation: rate-row-flash 2.2s ease-out;
+}
+.rate-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+  background: var(--bg-primary);
+  border: 1px solid var(--border);
+}
+.rate-table th,
+.rate-table td {
+  padding: 8px 10px;
+  border: 1px solid var(--border);
+  text-align: left;
+  vertical-align: top;
+  line-height: 1.55;
+  overflow-wrap: break-word;
+}
+.rate-table th {
+  background: var(--bg-hover);
+  color: var(--text-secondary);
+  font-weight: 600;
+  white-space: nowrap;
+}
+.rate-table td:first-child {
+  font-weight: 500;
+  color: var(--text-primary);
+  white-space: nowrap;
+  background: var(--bg-secondary);
+  width: 1%;
+}
+.rate-table tbody tr:hover td { background: var(--bg-hover); }
+.rate-table tbody tr:hover td:first-child { background: var(--bg-active); }
+.rate-table td.multiline {
+  line-height: 1.65;
+  font-variant-numeric: tabular-nums;
+  white-space: normal;
+}
+.rate-section {
+  margin-top: 14px;
+  padding-top: 12px;
+  border-top: 1px dashed var(--border);
+}
+.rate-section:first-of-type { border-top: none; padding-top: 4px; margin-top: 8px; }
+.rate-section-title {
+  font-weight: 600;
+  font-size: 13.5px;
+  color: var(--text-primary);
+  margin-bottom: 6px;
+}
+.rate-section-summary {
+  font-size: 13px;
+  color: var(--text-primary);
+  background: var(--bg-primary);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  padding: 8px 10px;
+  line-height: 1.55;
+}
+.rate-section-notes {
+  margin: 8px 0 0;
+  padding-left: 22px;
+  font-size: 12.5px;
+  color: var(--text-secondary);
+}
+.rate-section-notes li {
+  margin-bottom: 4px;
+  line-height: 1.55;
+}
+.rate-notes {
+  margin-top: 14px;
+  padding-top: 10px;
+  border-top: 1px dashed var(--border);
+  font-size: 12.5px;
+  color: var(--text-secondary);
+}
+.rate-notes-title {
+  font-weight: 600;
+  color: var(--text-secondary);
+  margin-bottom: 4px;
+}
+.rate-notes ol {
+  margin: 0;
+  padding-left: 22px;
+}
+.rate-notes li {
+  margin-bottom: 4px;
+  line-height: 1.55;
+}
+@media (max-width: 768px) {
+  .rate-table { font-size: 12.5px; }
+  .rate-table th,
+  .rate-table td { padding: 6px 8px; }
+}
+@media print {
+  .rate-table-wrap {
+    page-break-inside: avoid;
+    background: #fff;
+    border-color: #999;
+  }
+  .rate-table tbody tr:hover td { background: transparent; }
 }
 
 /* 抽屜內「正向 / 反向關聯」對稱顯示 */

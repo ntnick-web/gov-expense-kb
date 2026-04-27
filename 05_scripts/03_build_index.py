@@ -89,6 +89,7 @@ class Node:
     status: str = "現行"          # 現行 / 部分修正 / 已廢止
     source_url: Optional[str] = None
     summary_pending: bool = False
+    rate_table: Optional[dict] = None  # 結構化費率表(B 類標準表用)
     body_plain: str = field(default="", repr=False)
 
 
@@ -327,6 +328,7 @@ def load_nodes(
             status=status_val,
             source_url=str(fm["source_url"]) if fm.get("source_url") else None,
             summary_pending=bool(fm.get("summary_pending")),
+            rate_table=fm["rate_table"] if isinstance(fm.get("rate_table"), dict) else None,
             body_plain=body_plain,
         )
         nodes.append(node)
@@ -366,6 +368,8 @@ def build_nodes_json(nodes: list[Node]) -> list[dict]:
             d["source_url"] = n.source_url
         if n.summary_pending:
             d["summary_pending"] = True
+        if n.rate_table:
+            d["rate_table"] = n.rate_table
         out.append(d)
     return out
 
@@ -595,6 +599,105 @@ def build_tags_json(
     }
 
 
+def _row_cell_text(cell) -> str:
+    """rate_table row cell may be string/number or {v, colspan} dict — get displayable text."""
+    if cell is None:
+        return ""
+    if isinstance(cell, dict):
+        return str(cell.get("v", ""))
+    return str(cell)
+
+
+def _is_other_label(s: str) -> bool:
+    s = (s or "").strip().lower()
+    return s.startswith("其他") or s.startswith("other")
+
+
+def build_rate_lookup(nodes: list[Node]) -> dict:
+    """從 rate_table.searchable=true 的節點抽出可查詢列。
+
+    每筆 entry:{node_id, node_title, table_caption, label, value, unit, row_index,
+              country?, region?, is_other?, section_title?, section_index?}
+    支援 flat 模式 與 sectioned 模式(per-section searchable)。
+
+    Schema 新欄位(用於「未列載城市自動 fallback」):
+    - rt.search_country_idx 或 sec.search_country_idx:rows 中代表「國家」的欄位 index
+    - region 來自 sec.title(若 sectioned)
+    - is_other 自動偵測 label 是否為「其他/Other」
+    """
+    entries: list[dict] = []
+    for n in nodes:
+        rt = n.rate_table
+        if not isinstance(rt, dict):
+            continue
+        unit = str(rt.get("unit") or "")
+        node_caption = str(rt.get("caption") or n.title)
+
+        def _emit(rows, label_idx, value_idx, country_idx, sec_title=None, s_idx=None):
+            for i, row in enumerate(rows):
+                if not isinstance(row, list) or not row:
+                    continue
+                lbl = _row_cell_text(row[label_idx]) if 0 <= label_idx < len(row) else ""
+                val = _row_cell_text(row[value_idx]) if 0 <= value_idx < len(row) else ""
+                if not lbl:
+                    continue
+                country = ""
+                if country_idx is not None and 0 <= country_idx < len(row):
+                    country = _row_cell_text(row[country_idx])
+                # 單城市國家:country 欄空,但 city = country,fallback 抓不到。
+                # 規則:若 country 空且非 「其他」,把 city 也視作 country
+                if not country and not _is_other_label(lbl):
+                    country = lbl
+                entry = {
+                    "node_id": n.id,
+                    "node_title": n.title,
+                    "table_caption": node_caption,
+                    "label": lbl,
+                    "value": val,
+                    "unit": unit,
+                    "row_index": i,
+                }
+                if country:
+                    entry["country"] = country
+                if _is_other_label(lbl):
+                    entry["is_other"] = True
+                if sec_title:
+                    entry["section_title"] = sec_title
+                    entry["section_index"] = s_idx
+                entries.append(entry)
+
+        # flat 模式
+        if rt.get("searchable") and isinstance(rt.get("rows"), list):
+            rows = rt["rows"]
+            cols = len(rows[0]) if rows else 0
+            label_idx = rt.get("search_label_idx")
+            value_idx = rt.get("search_value_idx")
+            country_idx = rt.get("search_country_idx")
+            if label_idx is None:
+                label_idx = 1 if cols >= 3 else 0
+            if value_idx is None:
+                value_idx = cols - 1
+            _emit(rows, label_idx, value_idx, country_idx)
+
+        # sectioned 模式
+        for s_idx, sec in enumerate(rt.get("sections") or []):
+            if not (isinstance(sec, dict) and sec.get("searchable") and isinstance(sec.get("rows"), list)):
+                continue
+            rows = sec["rows"]
+            cols = len(rows[0]) if rows else 0
+            label_idx = sec.get("search_label_idx")
+            value_idx = sec.get("search_value_idx")
+            country_idx = sec.get("search_country_idx")
+            if label_idx is None:
+                label_idx = 1 if cols >= 3 else 0
+            if value_idx is None:
+                value_idx = cols - 1
+            sec_title = str(sec.get("title") or "")
+            _emit(rows, label_idx, value_idx, country_idx, sec_title=sec_title, s_idx=s_idx)
+
+    return {"version": 1, "entries": entries}
+
+
 def build_search_corpus(nodes: list[Node]) -> dict:
     return {
         "version": 1,
@@ -744,6 +847,7 @@ def main(argv: Optional[list[str]] = None) -> int:
     tags_json = build_tags_json(nodes, taxonomy)
     nodes_json = build_nodes_json(nodes)
     search_corpus = build_search_corpus(nodes)
+    rate_lookup = build_rate_lookup(nodes)
 
     # _meta.json:索引建構時間 + 節點統計,前端 footer 顯示「資料更新日」
     from datetime import datetime, timezone, timedelta
@@ -778,6 +882,7 @@ def main(argv: Optional[list[str]] = None) -> int:
         dry_run=args.validate, log=log,
     )
     write_json(INDEX_DIR / "_meta.json", meta, dry_run=args.validate, log=log)
+    write_json(INDEX_DIR / "rate_lookup.json", rate_lookup, dry_run=args.validate, log=log)
 
     print_summary(nodes, edges, tags_json, warnings, errors, args.validate)
 

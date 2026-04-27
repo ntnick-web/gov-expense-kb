@@ -1,7 +1,7 @@
 // 政府支出法規知識庫 — 前端主程式
 // 純 ES6,無框架。從 03_index/*.json 載入資料,渲染條文庫主介面。
 
-const DATA_VERSION = '2026-04-27g';
+const DATA_VERSION = '2026-04-27l';
 const DATA_BASE = '../03_index/';
 const MD_BASE = '../';
 const DATA_QS = '?v=' + DATA_VERSION;
@@ -139,7 +139,7 @@ const state = {
 // ─────────────────────────────────────────────
 
 async function loadData() {
-  const [nodes, edges, tags, search, scenarios, synonyms, indexMeta] = await Promise.all([
+  const [nodes, edges, tags, search, scenarios, synonyms, indexMeta, rateLookup, cityAliases] = await Promise.all([
     fetch(DATA_BASE + 'nodes.json' + DATA_QS).then(r => r.json()),
     fetch(DATA_BASE + 'edges.json' + DATA_QS).then(r => r.json()),
     fetch(DATA_BASE + 'tags.json' + DATA_QS).then(r => r.json()),
@@ -147,6 +147,8 @@ async function loadData() {
     fetch('data/scenarios.json' + DATA_QS).then(r => r.json()).catch(() => ({ scenarios: [] })),
     fetch('data/synonyms.json' + DATA_QS).then(r => r.json()).catch(() => ({ groups: [] })),
     fetch(DATA_BASE + '_meta.json' + DATA_QS).then(r => r.ok ? r.json() : null).catch(() => null),
+    fetch(DATA_BASE + 'rate_lookup.json' + DATA_QS).then(r => r.ok ? r.json() : { entries: [] }).catch(() => ({ entries: [] })),
+    fetch('data/city_aliases.json' + DATA_QS).then(r => r.ok ? r.json() : { aliases: {} }).catch(() => ({ aliases: {} })),
   ]);
   state.nodes = nodes;
   state.edges = edges;
@@ -156,6 +158,8 @@ async function loadData() {
   state.scenariosById = new Map(state.scenarios.map(s => [s.id, s]));
   state.synonyms = synonyms.groups || [];
   state.indexMeta = indexMeta;
+  state.rateLookup = rateLookup.entries || [];
+  state.cityAliases = cityAliases.aliases || {};
   state.nodeById = new Map(nodes.map(n => [n.id, n]));
   state.incomingEdges = new Map();
   for (const e of edges) {
@@ -1510,7 +1514,7 @@ function svgPoint(svg, evt) {
 // 抽屜
 // ─────────────────────────────────────────────
 
-async function openDrawer(id) {
+async function openDrawer(id, opts = {}) {
   const node = state.nodeById.get(id);
   if (!node) return;
   state.activeId = id;
@@ -1548,13 +1552,30 @@ async function openDrawer(id) {
     const r = await fetch(MD_BASE + node.file_path);
     if (!r.ok) throw new Error(`HTTP ${r.status} ${node.file_path}`);
     const text = await r.text();
-    const body = stripFrontMatter(text);
-    $body.innerHTML = renderMarkdown(body);
+    let body = stripFrontMatter(text);
+    let rateHtml = '';
+    if (node.rate_table) {
+      rateHtml = renderRateTable(node.rate_table);
+      // 結構化表格已是 SSOT,剝掉 MD 內重複的「## 標準全文」避免雙寫
+      body = stripSection(body, '標準全文');
+    }
+    $body.innerHTML = rateHtml + renderMarkdown(body);
     appendRelatedSection($body, node);
+    wireRateTableInteractions($body);
   } catch (e) {
     $body.innerHTML = `<p style="color:#c00">載入失敗:${esc(e.message)}</p>`;
   }
   $body.scrollTop = 0;
+  if (opts.scrollToRow != null) {
+    // 等下一輪 paint 再找 row(innerHTML 已就位但要等 layout)
+    requestAnimationFrame(() => {
+      const tr = $body.querySelector(`tr[data-row-index="${opts.scrollToRow}"]`);
+      if (!tr) return;
+      tr.scrollIntoView({ block: 'center', behavior: 'smooth' });
+      tr.classList.add('is-highlight');
+      setTimeout(() => tr.classList.remove('is-highlight'), 2400);
+    });
+  }
 }
 
 function closeDrawer() {
@@ -1602,6 +1623,181 @@ function stripFrontMatter(text) {
   const end = text.indexOf('\n---', 3);
   if (end < 0) return text;
   return text.slice(end + 4).replace(/^\n+/, '');
+}
+
+// 從 markdown body 移除指定 H2 區塊(從 `## {heading}` 到下一個 `## ` 之前)
+function stripSection(md, heading) {
+  const re = new RegExp('(^|\\n)##\\s+' + heading.replace(/[.*+?^${}()|[\\]\\\\]/g, '\\$&') + '[\\s\\S]*?(?=\\n##\\s|$)', '');
+  return md.replace(re, '').replace(/^\n+/, '');
+}
+
+// 渲染結構化費率表(B 類標準表用)
+// 支援兩種模式:
+//   flat:     {headers, rows, notes?}
+//   sectioned: {sections: [{title, headers?, rows?, summary?, notes?}, ...], notes?}
+function renderRateTable(rt) {
+  if (!rt) return '';
+  const hasFlat = Array.isArray(rt.headers) && Array.isArray(rt.rows);
+  const hasSections = Array.isArray(rt.sections) && rt.sections.length > 0;
+  if (!hasFlat && !hasSections) return '';
+
+  const html = ['<div class="rate-table-wrap">'];
+  if (rt.caption) html.push(`<div class="rate-caption">${esc(rt.caption)}</div>`);
+  const metaParts = [];
+  if (rt.unit) metaParts.push('單位:' + esc(rt.unit));
+  if (rt.effective) metaParts.push('生效:' + esc(rt.effective));
+  if (metaParts.length) html.push(`<div class="rate-meta">${metaParts.join(' · ')}</div>`);
+
+  if (hasFlat) {
+    if (rt.searchable) {
+      html.push(renderRateSearchInput(rt.search_placeholder));
+    }
+    html.push(renderRateTableBlock(rt.headers, rt.rows));
+  }
+
+  if (hasSections) {
+    for (const sec of rt.sections) {
+      html.push('<div class="rate-section">');
+      if (sec.title) html.push(`<div class="rate-section-title">${esc(sec.title)}</div>`);
+      if (Array.isArray(sec.headers) && Array.isArray(sec.rows)) {
+        if (sec.searchable) html.push(renderRateSearchInput(sec.search_placeholder));
+        html.push(renderRateTableBlock(sec.headers, sec.rows));
+      }
+      if (sec.summary) {
+        html.push(`<div class="rate-section-summary">${esc(sec.summary)}</div>`);
+      }
+      if (Array.isArray(sec.notes) && sec.notes.length) {
+        html.push('<ol class="rate-section-notes">');
+        for (const n of sec.notes) html.push(`<li>${esc(String(n))}</li>`);
+        html.push('</ol>');
+      }
+      html.push('</div>');
+    }
+  }
+
+  if (Array.isArray(rt.notes) && rt.notes.length) {
+    const title = hasSections ? '附記' : '備註';
+    html.push(`<div class="rate-notes"><div class="rate-notes-title">${title}</div><ol>`);
+    for (const n of rt.notes) html.push(`<li>${esc(String(n))}</li>`);
+    html.push('</ol></div>');
+  }
+  html.push('</div>');
+  return html.join('');
+}
+
+function renderRateTableBlock(headers, rows) {
+  const html = ['<div class="rate-table-scroll"><table class="rate-table"><thead><tr>'];
+  for (const h of headers) html.push(`<th>${esc(h)}</th>`);
+  html.push('</tr></thead><tbody>');
+  for (let i = 0; i < rows.length; i++) {
+    const row = rows[i];
+    html.push(`<tr data-row-index="${i}">`);
+    for (const cell of row) {
+      if (cell == null) {
+        html.push('<td></td>');
+      } else if (typeof cell === 'object') {
+        const cs = cell.colspan ? ` colspan="${parseInt(cell.colspan, 10) || 1}"` : '';
+        const cls = cell.multiline ? ' class="multiline"' : '';
+        const v = cell.v != null ? cell.v : '';
+        const escaped = esc(String(v));
+        const rendered = cell.multiline ? escaped.replace(/\n/g, '<br>') : escaped;
+        html.push(`<td${cs}${cls}>${rendered}</td>`);
+      } else {
+        html.push(`<td>${esc(String(cell))}</td>`);
+      }
+    }
+    html.push('</tr>');
+  }
+  html.push('</tbody></table></div>');
+  return html.join('');
+}
+
+function renderRateSearchInput(placeholder) {
+  const ph = placeholder || '搜尋…';
+  return `<div class="rate-search-wrap">
+    <input type="search" class="rate-search-input" placeholder="${esc(ph)}" aria-label="${esc(ph)}">
+    <span class="rate-search-empty" hidden>無符合結果</span>
+  </div>`;
+}
+
+// 在 drawer body 內為每個 .rate-search-input 綁定即時過濾 — 比對同一 .rate-table-scroll 的所有列
+function wireRateTableInteractions($scope) {
+  const wraps = $scope.querySelectorAll('.rate-search-wrap');
+  for (const wrap of wraps) {
+    const input = wrap.querySelector('.rate-search-input');
+    const empty = wrap.querySelector('.rate-search-empty');
+    // 找下一個 sibling 的 .rate-table-scroll
+    let target = wrap.nextElementSibling;
+    while (target && !target.classList.contains('rate-table-scroll')) target = target.nextElementSibling;
+    if (!target || !input) continue;
+    const rows = [...target.querySelectorAll('tbody tr')];
+    input.addEventListener('input', () => {
+      const q = input.value.trim().toLowerCase();
+      let visible = 0;
+      for (const tr of rows) {
+        if (!q) {
+          tr.hidden = false;
+          visible++;
+        } else {
+          const txt = tr.textContent.toLowerCase();
+          const hit = txt.includes(q);
+          tr.hidden = !hit;
+          if (hit) visible++;
+        }
+      }
+      if (empty) empty.hidden = visible !== 0;
+    });
+  }
+}
+
+// 全域 rate lookup 子集查詢(用於 Ctrl+K 直接顯示「💰 大陸港澳 — 成都 256 美元」)
+// 比對策略(優先級):
+//   1. label exact == query → 100
+//   2. label startsWith query → 60
+//   3. label substring match → 40
+//   4. country substring match → 20(讓「日本」查到所有日本城市)
+// 若全部 0 命中,套 city_aliases fallback:用戶輸入城市未列載,自動 suggest 該國「其他」
+function runRateLookup(query) {
+  const q = query.trim().toLowerCase();
+  if (!q || !state.rateLookup) return [];
+  const hits = [];
+  for (const e of state.rateLookup) {
+    const lblLower = (e.label || '').toLowerCase();
+    const countryLower = (e.country || '').toLowerCase();
+    let score = 0;
+    if (lblLower === q) score = 100;
+    else if (lblLower.startsWith(q)) score = 60;
+    else if (lblLower.includes(q)) score = 40;
+    else if (countryLower && countryLower.includes(q)) score = 20;
+    if (score > 0) {
+      // 國家查詢時,「其他」加 5 分讓它更容易進前幾名(整國通用 fallback 答案)
+      if (score === 20 && e.is_other) score = 25;
+      hits.push({ entry: e, score });
+    }
+  }
+  hits.sort((a, b) => b.score - a.score || (a.entry.row_index ?? 0) - (b.entry.row_index ?? 0));
+  if (hits.length > 0) return hits.slice(0, 8).map(h => h.entry);
+
+  // Fallback:無直接命中時查 city_aliases,推測使用者輸入的城市屬於哪個國家
+  const aliases = state.cityAliases || {};
+  for (const [aliasKey, country] of Object.entries(aliases)) {
+    const ak = aliasKey.toLowerCase();
+    // 雙向 includes:處理「東京都」/「Tokyo Bay」等部分輸入
+    if (q === ak || q.includes(ak) || ak.includes(q)) {
+      // 找該國的「其他」entry
+      const otherEntry = state.rateLookup.find(e =>
+        e.is_other && (e.country || '').includes(country)
+      );
+      if (otherEntry) {
+        return [{
+          ...otherEntry,
+          via_alias: aliasKey,
+          alias_country: country,
+        }];
+      }
+    }
+  }
+  return [];
 }
 
 function renderMarkdown(md) {
@@ -1741,14 +1937,38 @@ function runSearch(query) {
   return results.slice(0, 12);
 }
 
-function renderSearchResults(results, query) {
+function renderSearchResults(results, query, rateHits) {
   const $list = document.getElementById('search-results');
-  if (results.length === 0) {
+  rateHits = rateHits || [];
+  if (results.length === 0 && rateHits.length === 0) {
     $list.hidden = true;
     return;
   }
   $list.innerHTML = '';
   state.searchFocusIdx = -1;
+
+  // 直接答案:rate lookup hits(直接命中 + alias fallback)
+  for (const e of rateHits) {
+    const cls = 'search-result-rate-hit' + (e.via_alias ? ' is-fallback' : '');
+    const $li = el('li', { 'data-rate-row': String(e.row_index), 'data-id': e.node_id, role: 'option', class: cls });
+    const valueText = e.value ? `${e.value}${e.unit ? ' ' + e.unit : ''}` : '';
+    if (e.via_alias) {
+      // Fallback:推測為某國 → 顯示該國「其他」
+      const aliasHl = highlightMany(e.via_alias, [query]);
+      $li.innerHTML = `
+        <div class="search-result-title">💡 推測「${aliasHl}」屬<strong>${esc(e.alias_country)}</strong>(未列載) <span class="rate-hit-arrow">→</span> ${esc(e.country || '')} / ${esc(e.label)} <span class="rate-hit-arrow">→</span> <span class="rate-hit-value">${esc(valueText)}</span></div>
+        <div class="search-result-meta">依附註 §1：未列載城市按該國「其他」支給 · ${esc(e.table_caption || e.node_title)}${e.section_title ? ' · ' + esc(e.section_title) : ''}</div>
+      `;
+    } else {
+      $li.innerHTML = `
+        <div class="search-result-title">💰 ${highlightMany(e.label, [query])} <span class="rate-hit-arrow">→</span> <span class="rate-hit-value">${esc(valueText)}</span></div>
+        <div class="search-result-meta">${esc(e.table_caption || e.node_title)}${e.section_title ? ' · ' + esc(e.section_title) : ''}</div>
+      `;
+    }
+    $li.onclick = () => { closeSearch(); openDrawer(e.node_id, { scrollToRow: e.row_index }); };
+    $list.appendChild($li);
+  }
+
   for (let i = 0; i < results.length; i++) {
     const { doc, snippet, matchedTerm, viaSynonym } = results[i];
     const $li = el('li', { 'data-id': doc.id, role: 'option' });
@@ -1844,7 +2064,7 @@ function bindEvents() {
     if (q === lastQuery) return;
     lastQuery = q;
     if (q.trim().length === 0) { closeSearch(); return; }
-    renderSearchResults(runSearch(q), q);
+    renderSearchResults(runSearch(q), q, runRateLookup(q));
   });
   $search.addEventListener('keydown', (ev) => {
     if (ev.key === 'ArrowDown') { ev.preventDefault(); moveSearchFocus(1); }
