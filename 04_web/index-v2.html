@@ -696,8 +696,76 @@
 /* ──────── compare state (hoisted to top to avoid TDZ in renderCards) ──────── */
 let compareList = [];
 
-/* ──────── data ──────── */
-const DATA = [
+/* ──────── 真實資料載入 (520 nodes from 03_index/) ──────── */
+const DATA_VERSION = '2026-04-28r';
+let DATA = [];                 // 對外用的卡片資料 (mapped from nodes.json)
+let NODES_BY_ID = new Map();   // id → original node (含 file_path 等)
+let INCOMING_EDGES = new Map();// id → [from1, from2, ...] 反向引用
+let SCENARIOS = [];
+
+// 母題 → 簡稱 (sidebar 用)
+const PARENTS = ['國內旅費', '國外旅費', '支出憑證與結報'];
+// 類別代碼 → art (色點 + label)
+const CAT_ART = { A: 'travel', B: 'rate', C: 'fn', D: 'qa' };
+const CAT_LABEL = { A: '核心法規', B: '支出標準', C: '解釋函令', D: '問答集' };
+
+// 把節點 title 拆成 no + 主標 ("第一條 訂定目的" → no: "第一條", title: "訂定目的")
+function splitTitle(rawTitle, id) {
+  if (!rawTitle) return { no: id, title: id };
+  // 條 / 點 / 第 N 條 / Q14 / （一）...
+  const m = rawTitle.match(/^(第[一二三四五六七八九十百零0-9]+[條點]|Q\d+|附表[\d一二三四五六七八九十]*|（[一二三四五六七八九十]+）)\s*(.*)$/);
+  if (m && m[2]) return { no: m[1], title: m[2] };
+  return { no: '', title: rawTitle };
+}
+
+async function loadAllData() {
+  const v = '?v=' + DATA_VERSION;
+  const [nodes, edges, scenarios] = await Promise.all([
+    fetch('../03_index/nodes.json' + v).then(r => r.json()),
+    fetch('../03_index/edges.json' + v).then(r => r.json()),
+    fetch('data/scenarios.json' + v).then(r => r.json()).catch(() => ({ scenarios: [] })),
+  ]);
+  // 建 NODES_BY_ID + 反向 edges
+  for (const n of nodes) NODES_BY_ID.set(n.id, n);
+  const edgeArr = edges.edges || edges;
+  for (const e of edgeArr) {
+    if (!INCOMING_EDGES.has(e.to)) INCOMING_EDGES.set(e.to, []);
+    INCOMING_EDGES.get(e.to).push(e.from);
+  }
+  SCENARIOS = scenarios.scenarios || scenarios;
+  // map nodes → DATA (隱藏已廢止節點,但保留有 effective_period 的歷史費率表)
+  DATA = nodes
+    .filter(n => {
+      if (n.status === '已廢止' && !n.effective_period) return false;
+      return true;
+    })
+    .map(n => {
+      const cat = n.id.split('-')[0];
+      const { no, title } = splitTitle(n.title, n.id);
+      return {
+        id: n.id,
+        no, title,
+        status: n.status || '現行',
+        cat: n.parent || '',
+        art: CAT_ART[cat] || 'travel',
+        type: n.type,
+        catLabel: CAT_LABEL[cat] || '',
+        tags: n.tags || [],
+        summary: n.summary || '',
+        updated: n.reviewed || n.version || '',
+        reviewLevel: n.review_level || '',
+        sourceUrl: n.source_url || '',
+        filePath: n.file_path || '',
+        rateTable: n.rate_table || null,
+        effectivePeriod: n.effective_period || '',
+        supersededBy: n.superseded_by || '',
+      };
+    });
+  return DATA;
+}
+
+// 為了向下相容 (避免 inline mock data 殘留), 這個區塊不再使用
+const _mock_data_removed_ = [
   {
     id: "A-國內旅費-001", no: "第一條", title: "訂定目的",
     status: "現行", cat: "國內旅費", art: "travel",
@@ -838,21 +906,61 @@ const DATA = [
   }
 ];
 
-/* ──────── render cards ──────── */
+/* ──────── filter / view state ──────── */
+const filterState = {
+  parent: null,   // 母題:國內旅費 / 國外旅費 / 支出憑證與結報 / null
+  type: null,     // 類別代碼:A / B / C / D / null
+  tag: null,      // 標籤
+  query: '',      // 搜尋字
+};
+let currentList = [];   // filteredNodes 結果
+let currentIdx = -1;    // 抽屜目前指到 currentList 的 index
 const grid = document.getElementById("grid");
+const hint = document.getElementById("hint");
+
 function statusBadge(s) {
   if (s === "已廢止") return `<span class="badge stop">${s}</span>`;
-  if (s === "暫行") return `<span class="badge warn">${s}</span>`;
+  if (s === "部分修正") return `<span class="badge warn">${s}</span>`;
   return `<span class="badge ok">${s}</span>`;
 }
 function dotClass(art) {
-  return ({ travel: "dot-travel", food: "dot-food", overseas: "dot-overseas", rate: "dot-rate" })[art] || "";
+  return ({ travel: "dot-travel", fn: "dot-overseas", qa: "dot-food", rate: "dot-rate", overseas: "dot-overseas", food: "dot-food" })[art] || "";
 }
+function flashHint(msg) {
+  hint.textContent = msg;
+  hint.classList.add("show");
+  setTimeout(()=>hint.classList.remove("show"), 1400);
+}
+
+/* 套用 filter → 回傳符合的 DATA 子集 */
+function filteredData() {
+  const q = filterState.query.trim().toLowerCase();
+  return DATA.filter(d => {
+    if (filterState.parent && d.cat !== filterState.parent) return false;
+    if (filterState.type && d.id.split('-')[0] !== filterState.type) return false;
+    if (filterState.tag && !d.tags.includes(filterState.tag)) return false;
+    if (q) {
+      const hay = (d.id + ' ' + d.title + ' ' + d.summary + ' ' + d.tags.join(' ')).toLowerCase();
+      if (!hay.includes(q)) return false;
+    }
+    return true;
+  });
+}
+
+/* ──────── render cards ──────── */
 function renderCards() {
-  grid.innerHTML = DATA.map(d => {
+  currentList = filteredData();
+  if (currentList.length === 0) {
+    grid.innerHTML = `<div class="cmp-empty" style="grid-column:1/-1;padding:60px 24px"><strong>沒有符合條件的條文</strong>清除過濾條件再試試</div>`;
+    return;
+  }
+  grid.innerHTML = currentList.map(d => {
     const inCmp = compareList.includes(d.id);
+    const isQa = d.art === 'qa';
+    const isRate = d.art === 'rate';
+    const summary = d.summary || '<em style="color:var(--ink-3)">(摘要待補)</em>';
     return `
-    <article class="card${inCmp ? ' compared' : ''}" data-id="${d.id}" tabindex="0">
+    <article class="card${inCmp ? ' compared' : ''}${isQa ? ' is-qa' : ''}${isRate ? ' is-rate' : ''}" data-id="${d.id}" tabindex="0">
       <button class="card-compare${inCmp ? ' on' : ''}" data-cmp-toggle title="${inCmp ? '已加入比較,點擊移除' : '加入並排比較 (最多 3 張)'}">
         ${inCmp ? '✓ 已加入' : '+ 比較'}
       </button>
@@ -860,75 +968,222 @@ function renderCards() {
         <span class="card-no"><span class="card-art ${dotClass(d.art)}"></span>&nbsp;&nbsp;${d.id}</span>
         ${statusBadge(d.status)}
       </div>
-      <h3 class="card-title">${d.no} ${d.title}</h3>
-      <p class="card-summary">${d.summary}</p>
+      <h3 class="card-title">${d.no ? `<span style="color:var(--ink-3);font-weight:500">${d.no}</span> ` : ''}${d.title}</h3>
+      <p class="card-summary">${summary}</p>
       <div class="card-foot">
-        <div class="card-tags">${d.tags.slice(0,3).map(t=>`<span class="tag">${t}</span>`).join("")}</div>
+        <div class="card-tags">${(d.tags || []).slice(0,3).map(t=>`<span class="tag">${t}</span>`).join("")}</div>
         <span>${d.updated}</span>
       </div>
     </article>
     `;
   }).join("");
+  // 計數
+  const $count = document.getElementById('grid-count');
+  if ($count) $count.textContent = `${currentList.length} 筆`;
 }
-renderCards();
 
-/* ──────── drawer ──────── */
+/* ──────── drawer (動態 fetch MD) ──────── */
 const drawer = document.getElementById("drawer");
 const scrim = document.getElementById("scrim");
-let currentIdx = -1;
+const MD_BASE = '../';
 
-function openDrawer(idx) {
-  const d = DATA[idx];
+// 簡易 MD parser:把 H2/H3、表格、列表等基本格式轉 HTML
+function renderMarkdown(md) {
+  // 移除 front-matter
+  if (md.startsWith('---')) {
+    const end = md.indexOf('\n---', 3);
+    if (end > 0) md = md.slice(end + 4).replace(/^\n+/, '');
+  }
+  // 簡單語法處理
+  let html = md
+    .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+    .replace(/^### (.+)$/gm, '<h4 style="font-size:13px;font-weight:600;color:var(--ink-2);margin:14px 0 6px">$1</h4>')
+    .replace(/^## (.+)$/gm, '<h3 style="margin:0 0 10px;font-size:12px;font-weight:600;text-transform:uppercase;letter-spacing:.08em;color:var(--ink-3);display:flex;align-items:center;gap:8px"><span style="content:\\\"\\\";display:inline-block;width:14px;height:1px;background:var(--line-strong)"></span>$1</h3>')
+    .replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>')
+    .replace(/`([^`]+)`/g, '<code style="font-family:var(--font-mono);background:var(--surface-2);padding:1px 5px;border-radius:4px;font-size:12.5px">$1</code>')
+    .replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2" target="_blank" rel="noopener" style="color:var(--brand)">$1</a>')
+    .replace(/\n\n/g, '</p><p>')
+    .replace(/^\n*/, '<p>') + '</p>';
+  return html;
+}
+
+// 從 MD 抽特定 H2 區塊內容
+function extractSection(md, heading) {
+  const re = new RegExp(`##\\s+${heading}\\s*\\n([\\s\\S]*?)(?=\\n##\\s|$)`);
+  const m = md.match(re);
+  return m ? m[1].trim() : '';
+}
+
+// 渲染 rate_table (B 類專用,簡化版)
+function renderRateTableHtml(rt, node) {
+  if (!rt) return '';
+  const html = ['<div style="background:var(--surface-2);border:1px solid var(--line);border-radius:var(--radius);padding:14px;margin-bottom:18px">'];
+  if (node.status === '已廢止' && node.effectivePeriod) {
+    html.push(`<div style="background:var(--warn-soft);border:1px solid var(--warn);border-radius:6px;padding:8px 12px;margin-bottom:12px;font-size:13px;color:var(--warn)">⏰ <strong>此表已逾期</strong> · 適用 ${node.effectivePeriod}${node.supersededBy ? ` · 現行版本 <strong>${node.supersededBy}</strong>` : ''}</div>`);
+  }
+  if (rt.caption) html.push(`<div style="font-weight:600;font-size:14px;margin-bottom:4px">${rt.caption}</div>`);
+  if (rt.unit || rt.effective) html.push(`<div style="font-size:12px;color:var(--ink-3);margin-bottom:10px">${rt.unit ? '單位: ' + rt.unit : ''}${rt.unit && rt.effective ? ' · ' : ''}${rt.effective ? '生效: ' + rt.effective : ''}</div>`);
+  // sections 模式:逐個 render (限制每節最多 8 列避免過長,完整看舊版)
+  if (Array.isArray(rt.sections)) {
+    for (const sec of rt.sections.slice(0, 4)) {
+      if (sec.title) html.push(`<div style="font-weight:600;font-size:13px;margin:12px 0 6px;color:var(--ink-2)">${sec.title}</div>`);
+      if (Array.isArray(sec.headers) && Array.isArray(sec.rows)) {
+        const rows = sec.rows.slice(0, 8);
+        html.push('<div style="overflow-x:auto"><table style="width:100%;border-collapse:collapse;font-size:12.5px"><thead><tr>');
+        for (const h of sec.headers) html.push(`<th style="text-align:left;padding:4px 8px;border-bottom:1px solid var(--line);color:var(--ink-3);font-weight:600">${h}</th>`);
+        html.push('</tr></thead><tbody>');
+        for (const r of rows) {
+          html.push('<tr>');
+          for (const c of r) html.push(`<td style="padding:4px 8px;border-bottom:1px solid var(--line)">${typeof c === 'object' ? (c.v || '') : (c || '')}</td>`);
+          html.push('</tr>');
+        }
+        html.push('</tbody></table></div>');
+        if (sec.rows.length > 8) html.push(`<div style="font-size:11px;color:var(--ink-3);margin-top:4px">…還有 ${sec.rows.length - 8} 列(請至條文庫舊版查看完整表格)</div>`);
+      } else if (sec.summary) {
+        html.push(`<div style="padding:8px 12px;background:var(--surface);border-radius:6px;font-size:13px">${sec.summary}</div>`);
+      }
+    }
+    if (rt.sections.length > 4) html.push(`<div style="font-size:11px;color:var(--ink-3);margin-top:8px">…另有 ${rt.sections.length - 4} 個章節</div>`);
+  } else if (Array.isArray(rt.headers) && Array.isArray(rt.rows)) {
+    // flat 模式
+    const rows = rt.rows.slice(0, 12);
+    html.push('<div style="overflow-x:auto"><table style="width:100%;border-collapse:collapse;font-size:12.5px"><thead><tr>');
+    for (const h of rt.headers) html.push(`<th style="text-align:left;padding:4px 8px;border-bottom:1px solid var(--line);color:var(--ink-3);font-weight:600">${h}</th>`);
+    html.push('</tr></thead><tbody>');
+    for (const r of rows) {
+      html.push('<tr>');
+      for (const c of r) html.push(`<td style="padding:4px 8px;border-bottom:1px solid var(--line)">${typeof c === 'object' ? (c.v || '') : (c || '')}</td>`);
+      html.push('</tr>');
+    }
+    html.push('</tbody></table></div>');
+    if (rt.rows.length > 12) html.push(`<div style="font-size:11px;color:var(--ink-3);margin-top:4px">…還有 ${rt.rows.length - 12} 列</div>`);
+  }
+  html.push('</div>');
+  return html.join('');
+}
+
+async function openDrawer(idx) {
+  const d = currentList[idx];
   if (!d) return;
   currentIdx = idx;
-  document.querySelectorAll(".card").forEach((c,i)=>c.classList.toggle("active", i === idx));
-  document.getElementById("d-meta").innerHTML = `${d.id} <span class="sep"></span> ${d.updated} 人工校對 <span class="sep"></span> ${d.cat}`;
-  document.getElementById("d-title").textContent = `${d.no} ${d.title}`;
-  document.getElementById("d-tags").innerHTML = d.tags.map(t=>`<span class="tag">${t}</span>`).join("");
-  document.getElementById("d-status").outerHTML = statusBadge(d.status).replace("badge","badge").replace("<span","<span id=\"d-status\"");
-
-  document.getElementById("d-body").innerHTML = `
-    <div class="section">
-      <h3>重點摘要</h3>
-      <ul class="keypoints">
-        ${d.keypoints.map(k=>`<li><span>${k}</span></li>`).join("")}
-      </ul>
-    </div>
-    <div class="section">
-      <h3>條文全文</h3>
-      <div class="article">${d.article}</div>
-    </div>
-    ${d.related.length ? `
-      <div class="section">
-        <h3>相關 Q&amp;A 與函釋</h3>
-        <div class="related">
-          ${d.related.map(r=>`
-            <div class="related-item">
-              <span class="related-kind ${r.kind}">${r.kind === "qa" ? "Q&A" : "函釋"}</span>
-              <div class="related-text">${r.title}<small>${r.meta}</small></div>
-            </div>
-          `).join("")}
-        </div>
-      </div>` : ""}
-  `;
+  document.querySelectorAll(".card").forEach(c => c.classList.toggle("active", c.dataset.id === d.id));
+  // metadata 行 + 類別膠囊
+  const reviewMeta = d.reviewLevel ? ` ${d.reviewLevel}` : '';
+  document.getElementById("d-meta").innerHTML = `${d.id} <span class="sep"></span> ${d.updated || '尚未校對'}${reviewMeta} <span class="sep"></span> ${d.cat} · ${d.catLabel}`;
+  document.getElementById("d-title").textContent = d.no ? `${d.no} ${d.title}` : d.title;
+  document.getElementById("d-tags").innerHTML = (d.tags || []).map(t => `<span class="tag">${t}</span>`).join("");
+  // 重置 status badge 元素
+  const oldStatus = document.getElementById("d-status");
+  if (oldStatus) {
+    oldStatus.outerHTML = statusBadge(d.status).replace("<span", "<span id=\"d-status\"");
+  }
+  // 載入 MD body
+  const $body = document.getElementById("d-body");
+  $body.innerHTML = '<p style="color:var(--ink-3);text-align:center;padding:30px">載入中…</p>';
   drawer.classList.add("show");
   scrim.classList.add("show");
   drawer.setAttribute("aria-hidden","false");
+
+  try {
+    const r = await fetch(MD_BASE + d.filePath);
+    if (!r.ok) throw new Error('HTTP ' + r.status);
+    const md = await r.text();
+
+    let bodyHtml = '';
+    // 重點摘要 (D 類通常是 Q&A,用「問題」+「回答」結構)
+    if (d.art === 'qa') {
+      const question = extractSection(md, '問題');
+      const answer = extractSection(md, '回答') || extractSection(md, '答覆');
+      if (question) bodyHtml += `<div class="section"><h3>問題</h3><div class="article" style="border-left:3px solid var(--brand);background:var(--brand-soft)">${question.replace(/\n/g, '<br>')}</div></div>`;
+      if (answer) bodyHtml += `<div class="section"><h3>回答</h3><div class="article">${answer.replace(/\n/g, '<br>')}</div></div>`;
+    }
+    // B 類:rate_table 結構化渲染
+    if (d.rateTable) {
+      bodyHtml += `<div class="section"><h3>結構化費率表</h3>${renderRateTableHtml(d.rateTable, d)}</div>`;
+    }
+    // 重點摘要 (一般)
+    const summary = extractSection(md, '重點摘要');
+    if (summary && d.art !== 'qa') {
+      bodyHtml += `<div class="section"><h3>重點摘要</h3><div class="article" style="background:var(--brand-soft);border-color:var(--brand-line)">${summary.replace(/\n/g, '<br>')}</div></div>`;
+    }
+    // 條文全文 / 函釋全文 / 標準全文
+    const fullText = extractSection(md, '條文全文') || extractSection(md, '函釋全文') || extractSection(md, '標準全文') || extractSection(md, '函釋內容');
+    if (fullText && !d.rateTable) {
+      const heading = d.art === 'fn' ? '函釋全文' : (d.art === 'rate' ? '標準全文' : '條文全文');
+      bodyHtml += `<div class="section"><h3>${heading}</h3><div class="article">${fullText.replace(/\n/g, '<br>')}</div></div>`;
+    }
+    // 相關規定 (從 node.related + INCOMING_EDGES)
+    const node = NODES_BY_ID.get(d.id);
+    const outgoing = (node?.related || []).map(rid => NODES_BY_ID.get(rid)).filter(Boolean);
+    const incoming = (INCOMING_EDGES.get(d.id) || []).map(rid => NODES_BY_ID.get(rid)).filter(Boolean);
+    if (outgoing.length || incoming.length) {
+      bodyHtml += `<div class="section"><h3>相關規定</h3><div class="related">`;
+      for (const r of outgoing) {
+        const cat = r.id.split('-')[0];
+        const kind = cat === 'D' ? 'qa' : 'fn';
+        bodyHtml += `<div class="related-item" data-jump="${r.id}">
+          <span class="related-kind ${kind}">→ ${CAT_LABEL[cat] || cat}</span>
+          <div class="related-text">${r.title}<small>${r.id} · ${r.parent}</small></div>
+        </div>`;
+      }
+      for (const r of incoming.slice(0, 6)) {
+        const cat = r.id.split('-')[0];
+        const kind = cat === 'D' ? 'qa' : 'fn';
+        bodyHtml += `<div class="related-item" data-jump="${r.id}" style="border-left:3px solid var(--ok)">
+          <span class="related-kind ${kind}">← ${CAT_LABEL[cat] || cat}</span>
+          <div class="related-text">${r.title}<small>${r.id} · ${r.parent}</small></div>
+        </div>`;
+      }
+      bodyHtml += `</div></div>`;
+    }
+    // 備註
+    const note = extractSection(md, '備註');
+    if (note && note.trim()) {
+      bodyHtml += `<div class="section"><h3>備註</h3><div style="font-size:13px;color:var(--ink-2);padding:8px 12px;background:var(--surface-2);border-radius:6px">${note.replace(/\n/g, '<br>')}</div></div>`;
+    }
+
+    if (!bodyHtml) bodyHtml = '<p style="color:var(--ink-3)">(此節點無詳細內容)</p>';
+    $body.innerHTML = bodyHtml;
+    // 綁 related-item 跳轉
+    $body.querySelectorAll('[data-jump]').forEach(el => {
+      el.style.cursor = 'pointer';
+      el.onclick = () => {
+        const target = el.dataset.jump;
+        const targetIdx = currentList.findIndex(x => x.id === target);
+        if (targetIdx >= 0) {
+          openDrawer(targetIdx);
+        } else {
+          // 不在當前過濾結果內,重置 filter 後再開
+          filterState.parent = null;
+          filterState.type = null;
+          filterState.tag = null;
+          filterState.query = '';
+          renderCards();
+          const newIdx = currentList.findIndex(x => x.id === target);
+          if (newIdx >= 0) openDrawer(newIdx);
+        }
+      };
+    });
+  } catch (e) {
+    $body.innerHTML = `<p style="color:var(--stop)">載入失敗: ${e.message}</p>`;
+  }
 }
+
 function closeDrawer() {
   drawer.classList.remove("show");
   scrim.classList.remove("show");
   drawer.setAttribute("aria-hidden","true");
-  document.querySelectorAll(".card.active").forEach(c=>c.classList.remove("active"));
+  document.querySelectorAll(".card.active").forEach(c => c.classList.remove("active"));
   currentIdx = -1;
 }
+
 function move(delta) {
   if (currentIdx < 0) return;
   let n = currentIdx + delta;
-  if (n < 0) n = DATA.length - 1;
-  if (n >= DATA.length) n = 0;
+  if (n < 0) n = currentList.length - 1;
+  if (n >= currentList.length) n = 0;
   openDrawer(n);
-  const card = document.querySelector(`.card[data-id="${DATA[n].id}"]`);
+  const card = document.querySelector(`.card[data-id="${currentList[n].id}"]`);
   card?.scrollIntoView({ block: "nearest", behavior: "smooth" });
 }
 
@@ -941,23 +1196,24 @@ grid.addEventListener("click", e => {
   }
   const card = e.target.closest(".card");
   if (!card) return;
-  const idx = DATA.findIndex(d => d.id === card.dataset.id);
-  openDrawer(idx);
+  const idx = currentList.findIndex(d => d.id === card.dataset.id);
+  if (idx >= 0) openDrawer(idx);
 });
 grid.addEventListener("keydown", e => {
   if (e.key === "Enter") {
     const card = e.target.closest(".card");
     if (card) {
-      const idx = DATA.findIndex(d => d.id === card.dataset.id);
-      openDrawer(idx);
+      const idx = currentList.findIndex(d => d.id === card.dataset.id);
+      if (idx >= 0) openDrawer(idx);
     }
   }
 });
+
 document.getElementById("btn-close").addEventListener("click", closeDrawer);
 scrim.addEventListener("click", closeDrawer);
 
 document.addEventListener("keydown", e => {
-  if (e.key === "Escape") closeDrawer();
+  if (e.key === "Escape" && !document.getElementById('cmp-modal').classList.contains('show')) closeDrawer();
   if (drawer.classList.contains("show")) {
     if (e.key === "ArrowDown" || e.key === "ArrowRight") { e.preventDefault(); move(1); }
     if (e.key === "ArrowUp" || e.key === "ArrowLeft") { e.preventDefault(); move(-1); }
@@ -968,30 +1224,118 @@ document.addEventListener("keydown", e => {
   }
 });
 
-const hint = document.getElementById("hint");
-function flashHint(msg) {
-  hint.textContent = msg;
-  hint.classList.add("show");
-  setTimeout(()=>hint.classList.remove("show"), 1400);
-}
 document.getElementById("btn-copy").addEventListener("click", () => {
   if (currentIdx < 0) return;
-  const d = DATA[currentIdx];
-  navigator.clipboard?.writeText(`${d.id} ${d.no} ${d.title}`);
+  const d = currentList[currentIdx];
+  navigator.clipboard?.writeText(`${d.id} ${d.title}`);
   flashHint("已複製：" + d.id);
 });
-document.getElementById("btn-source").addEventListener("click", () => flashHint("（demo）將開啟原始法規 PDF"));
-
-/* filter chips toggle */
-document.querySelectorAll(".filterbar .chip").forEach(ch => {
-  ch.addEventListener("click", () => {
-    document.querySelectorAll(".filterbar .chip").forEach(c=>c.classList.remove("on"));
-    ch.classList.add("on");
-  });
+document.getElementById("btn-source").addEventListener("click", () => {
+  if (currentIdx < 0) return;
+  const d = currentList[currentIdx];
+  if (d.sourceUrl) window.open(d.sourceUrl, '_blank');
+  else flashHint('此節點無原始出處');
 });
 
-/* open first card by default for showcase */
-setTimeout(()=>openDrawer(1), 250);
+/* ──────── sidebar / chip / search 動態渲染 ──────── */
+function renderSidebar() {
+  // 入口計數 (核心法規 / 解釋函令 / 問答集 / 支出標準)
+  const byType = { A: 0, B: 0, C: 0, D: 0 };
+  for (const d of DATA) {
+    const t = d.id.split('-')[0];
+    if (byType[t] != null) byType[t]++;
+  }
+  // 母題計數
+  const byParent = {};
+  for (const d of DATA) byParent[d.cat] = (byParent[d.cat] || 0) + 1;
+
+  const sideItems = [`
+    <div class="nav-group">
+      <div class="nav-label">類別</div>
+      <div class="nav-item${filterState.type === null ? ' active' : ''}" data-type=""><span>全部</span><span class="nav-count">${DATA.length}</span></div>
+      <div class="nav-item${filterState.type === 'A' ? ' active' : ''}" data-type="A"><span>📑 核心法規</span><span class="nav-count">${byType.A}</span></div>
+      <div class="nav-item${filterState.type === 'B' ? ' active' : ''}" data-type="B"><span>📊 支出標準</span><span class="nav-count">${byType.B}</span></div>
+      <div class="nav-item${filterState.type === 'C' ? ' active' : ''}" data-type="C"><span>📜 解釋函令</span><span class="nav-count">${byType.C}</span></div>
+      <div class="nav-item${filterState.type === 'D' ? ' active' : ''}" data-type="D"><span>💬 問答集</span><span class="nav-count">${byType.D}</span></div>
+    </div>
+    <div class="nav-group">
+      <div class="nav-label">母題</div>
+      <div class="nav-item${filterState.parent === null ? ' active' : ''}" data-parent=""><span>全部</span><span class="nav-count">${DATA.length}</span></div>
+      ${PARENTS.map(p => `<div class="nav-item${filterState.parent === p ? ' active' : ''}" data-parent="${p}"><span>${p}</span><span class="nav-count">${byParent[p] || 0}</span></div>`).join('')}
+    </div>
+  `];
+  // 替換 sidebar 內 nav-group
+  const side = document.querySelector('.side');
+  // 保留 brand,只替換之後的 nav-group
+  const brand = side.querySelector('.brand');
+  side.innerHTML = '';
+  side.appendChild(brand);
+  // 更新節點數副標
+  const brandText = brand.querySelector('.brand-text small');
+  if (brandText) brandText.textContent = `${DATA.length} 節點 · v2 預覽`;
+  side.insertAdjacentHTML('beforeend', sideItems.join(''));
+
+  // 綁 click
+  side.querySelectorAll('.nav-item').forEach(it => {
+    it.onclick = () => {
+      if (it.dataset.type !== undefined) {
+        filterState.type = it.dataset.type || null;
+      }
+      if (it.dataset.parent !== undefined) {
+        filterState.parent = it.dataset.parent || null;
+      }
+      renderSidebar();
+      renderChips();
+      renderCards();
+    };
+  });
+}
+
+function renderChips() {
+  // 由目前過濾後資料計算 top tags
+  const tagCount = new Map();
+  const filtered = filteredData();
+  for (const d of filtered) {
+    for (const t of (d.tags || [])) tagCount.set(t, (tagCount.get(t) || 0) + 1);
+  }
+  const topTags = [...tagCount.entries()].sort((a, b) => b[1] - a[1]).slice(0, 8);
+  const bar = document.querySelector('.filterbar');
+  if (!bar) return;
+  bar.innerHTML = `
+    <button class="chip${!filterState.tag ? ' on' : ''}" data-tag="">全部 <span class="chip-count">${filtered.length}</span></button>
+    ${topTags.map(([t, c]) => `<button class="chip${filterState.tag === t ? ' on' : ''}" data-tag="${t}">${t} <span class="chip-count">${c}</span></button>`).join('')}
+  `;
+  bar.querySelectorAll('.chip').forEach(c => {
+    c.onclick = () => {
+      filterState.tag = c.dataset.tag || null;
+      renderChips();
+      renderCards();
+    };
+  });
+}
+
+// 搜尋 input
+document.getElementById('q').addEventListener('input', (ev) => {
+  filterState.query = ev.target.value;
+  renderChips();
+  renderCards();
+});
+
+/* ──────── init ──────── */
+async function init() {
+  try {
+    await loadAllData();
+    renderSidebar();
+    renderChips();
+    renderCards();
+    // 預設開第一張卡示範
+    if (currentList.length > 0) setTimeout(() => openDrawer(0), 200);
+  } catch (e) {
+    grid.innerHTML = `<div style="color:var(--stop);padding:40px">資料載入失敗: ${e.message}</div>`;
+    console.error(e);
+  }
+}
+init();
 
 /* ──────── compare mode (compareList declared at top of script) ──────── */
 function toggleCompare(id) {
@@ -1049,7 +1393,8 @@ function updateDrawerCmpBtn() {
     if (btn) { btn.innerHTML = `<svg class="icon" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>加入比較`; }
     return;
   }
-  const id = DATA[currentIdx].id;
+  const id = currentList[currentIdx]?.id;
+  if (!id) return;
   const inCmp = compareList.includes(id);
   btn.innerHTML = inCmp
     ? `<svg class="icon" viewBox="0 0 24 24"><path d="M5 12l5 5L20 7"/></svg>已加入比較`
@@ -1057,13 +1402,13 @@ function updateDrawerCmpBtn() {
   btn.classList.toggle("primary", inCmp);
 }
 
-/* hook drawer open to update btn */
+/* hook drawer open to update btn — async safe */
 const _origOpenDrawer = openDrawer;
-window.openDrawer = function(idx) { _origOpenDrawer(idx); updateDrawerCmpBtn(); };
+window.openDrawer = async function(idx) { await _origOpenDrawer(idx); updateDrawerCmpBtn(); };
 
 document.getElementById("btn-add-compare").addEventListener("click", () => {
   if (currentIdx < 0) return;
-  toggleCompare(DATA[currentIdx].id);
+  toggleCompare(currentList[currentIdx].id);
 });
 document.getElementById("btn-clear-compare").addEventListener("click", clearCompare);
 
@@ -1080,7 +1425,7 @@ const META_FIELDS = [
   ["標籤",     n => (n.tags || []).join("、")],
 ];
 
-function openCompareModal() {
+async function openCompareModal() {
   if (compareList.length < 2) return;
   const nodes = compareList.map(id => DATA.find(x => x.id === id)).filter(Boolean);
   const colsClass = nodes.length === 3 ? "cmp-cols-3" : "cmp-cols-2";
@@ -1098,7 +1443,7 @@ function openCompareModal() {
             <svg class="icon" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6l-12 12"/></svg>
           </button>
         </div>
-        <h3 class="cmp-col-title">${d.no} ${d.title}</h3>
+        <h3 class="cmp-col-title">${d.no ? d.no + ' ' : ''}${d.title}</h3>
         <div>${statusBadge(d.status)}</div>
       </div>
       <div class="cmp-meta">
@@ -1109,29 +1454,8 @@ function openCompareModal() {
           </div>
         `).join("")}
       </div>
-      <div class="cmp-col-body">
-        <div class="section">
-          <h3>重點摘要</h3>
-          <ul class="keypoints">
-            ${(d.keypoints || []).map(k => `<li><span>${k}</span></li>`).join("")}
-          </ul>
-        </div>
-        <div class="section">
-          <h3>條文全文</h3>
-          <div class="article">${d.article}</div>
-        </div>
-        ${(d.related || []).length ? `
-          <div class="section">
-            <h3>相關 Q&A 與函釋</h3>
-            <div class="related">
-              ${d.related.map(r => `
-                <div class="related-item">
-                  <span class="related-kind ${r.kind}">${r.kind === "qa" ? "Q&A" : "函釋"}</span>
-                  <div class="related-text">${r.title}<small>${r.meta}</small></div>
-                </div>
-              `).join("")}
-            </div>
-          </div>` : ""}
+      <div class="cmp-col-body" data-load="${d.id}">
+        <p style="color:var(--ink-3);font-size:12px">載入中…</p>
       </div>
       <div class="cmp-col-foot">
         <button class="btn" data-cmp-open="${d.id}">
@@ -1142,19 +1466,46 @@ function openCompareModal() {
     </div>
   `).join("");
 
+  // 載入各 column 的內容 (摘要 + 條文 + rate_table)
+  for (const d of nodes) {
+    const $col = cmpBody.querySelector(`[data-load="${d.id}"]`);
+    if (!$col) continue;
+    try {
+      const r = await fetch(MD_BASE + d.filePath);
+      const md = await r.text();
+      let html = '';
+      const summary = extractSection(md, '重點摘要');
+      if (summary) html += `<div class="section"><h3>重點摘要</h3><div class="article" style="background:var(--brand-soft);border-color:var(--brand-line)">${summary.replace(/\n/g, '<br>')}</div></div>`;
+      if (d.rateTable) {
+        html += `<div class="section"><h3>結構化費率表</h3>${renderRateTableHtml(d.rateTable, d)}</div>`;
+      } else {
+        const full = extractSection(md, '條文全文') || extractSection(md, '函釋全文') || extractSection(md, '標準全文') || extractSection(md, '函釋內容');
+        if (full) {
+          const heading = d.art === 'fn' ? '函釋全文' : (d.art === 'qa' ? '回答' : '條文全文');
+          html += `<div class="section"><h3>${heading}</h3><div class="article">${full.replace(/\n/g, '<br>')}</div></div>`;
+        }
+      }
+      if (!html) html = '<p style="color:var(--ink-3)">(無內容)</p>';
+      $col.innerHTML = html;
+    } catch (e) {
+      $col.innerHTML = `<p style="color:var(--stop);font-size:12px">載入失敗: ${e.message}</p>`;
+    }
+  }
+
   // 綁 column 內的「移除」與「開啟抽屜」
   cmpBody.querySelectorAll("[data-cmp-rm-modal]").forEach(b => {
     b.onclick = () => {
       toggleCompare(b.dataset.cmpRmModal);
       if (compareList.length < 2) closeCompareModal();
-      else openCompareModal();   // 重渲染
+      else openCompareModal();
     };
   });
   cmpBody.querySelectorAll("[data-cmp-open]").forEach(b => {
     b.onclick = () => {
       closeCompareModal();
-      const idx = DATA.findIndex(x => x.id === b.dataset.cmpOpen);
+      const idx = currentList.findIndex(x => x.id === b.dataset.cmpOpen);
       if (idx >= 0) openDrawer(idx);
+      else flashHint('該卡片不在當前過濾結果內,請先清除過濾');
     };
   });
 
