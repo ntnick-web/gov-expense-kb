@@ -1,0 +1,1179 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>條文庫 — 重新設計 Demo</title>
+<style>
+  :root {
+    --bg: oklch(99% 0.004 90);
+    --surface: oklch(100% 0 0);
+    --surface-2: oklch(97.2% 0.005 90);
+    --line: oklch(91% 0.006 90);
+    --line-strong: oklch(85% 0.008 90);
+    --ink: oklch(22% 0.012 265);
+    --ink-2: oklch(40% 0.012 265);
+    --ink-3: oklch(56% 0.012 265);
+    --brand: oklch(55% 0.15 265);
+    --brand-soft: oklch(96% 0.025 265);
+    --brand-line: oklch(85% 0.06 265);
+    --ok: oklch(58% 0.13 155);
+    --ok-soft: oklch(95% 0.03 155);
+    --warn: oklch(68% 0.14 75);
+    --warn-soft: oklch(96% 0.04 75);
+    --stop: oklch(60% 0.14 25);
+    --stop-soft: oklch(96% 0.03 25);
+    --shadow-sm: 0 1px 2px oklch(20% 0.02 265 / .04), 0 1px 1px oklch(20% 0.02 265 / .03);
+    --shadow-md: 0 4px 12px oklch(20% 0.02 265 / .06), 0 2px 4px oklch(20% 0.02 265 / .04);
+    --shadow-lg: 0 24px 60px oklch(20% 0.02 265 / .14), 0 8px 20px oklch(20% 0.02 265 / .08);
+    --radius: 10px;
+    --radius-lg: 14px;
+    --font-zh: "Noto Sans TC", "Noto Sans CJK TC", "PingFang TC", "Microsoft JhengHei", sans-serif;
+    --font-mono: ui-monospace, "SF Mono", "JetBrains Mono", Menlo, Consolas, monospace;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: oklch(16% 0.012 265);
+      --surface: oklch(20% 0.014 265);
+      --surface-2: oklch(23% 0.014 265);
+      --line: oklch(28% 0.014 265);
+      --line-strong: oklch(34% 0.016 265);
+      --ink: oklch(96% 0.005 265);
+      --ink-2: oklch(78% 0.01 265);
+      --ink-3: oklch(60% 0.012 265);
+      --brand: oklch(72% 0.14 265);
+      --brand-soft: oklch(28% 0.05 265);
+      --brand-line: oklch(40% 0.08 265);
+      --ok-soft: oklch(28% 0.04 155);
+      --warn-soft: oklch(28% 0.05 75);
+      --stop-soft: oklch(28% 0.04 25);
+      --shadow-md: 0 4px 12px #0007;
+      --shadow-lg: 0 24px 60px #000a;
+    }
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+  body {
+    font-family: var(--font-zh);
+    color: var(--ink);
+    background: var(--bg);
+    font-size: 15px;
+    line-height: 1.55;
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+  button { font: inherit; color: inherit; }
+  ::selection { background: var(--brand-soft); color: var(--ink); }
+
+  /* ───── App shell ───── */
+  .app { display: grid; grid-template-columns: 240px 1fr; min-height: 100vh; }
+  @media (max-width: 880px) { .app { grid-template-columns: 1fr; } }
+
+  /* ───── Sidebar ───── */
+  .side {
+    border-right: 1px solid var(--line);
+    padding: 18px 14px;
+    position: sticky; top: 0; height: 100vh; overflow: auto;
+    background: var(--bg);
+  }
+  @media (max-width: 880px) { .side { display: none; } }
+  .brand {
+    display: flex; align-items: center; gap: 10px;
+    padding: 4px 8px 18px;
+  }
+  .brand-mark {
+    width: 26px; height: 26px; border-radius: 7px;
+    background: linear-gradient(135deg, var(--brand), oklch(60% 0.15 295));
+    display: grid; place-items: center;
+    color: white; font-weight: 700; font-size: 13px;
+    box-shadow: var(--shadow-sm);
+  }
+  .brand-text { font-weight: 600; font-size: 14px; letter-spacing: .01em; }
+  .brand-text small { display: block; font-weight: 400; color: var(--ink-3); font-size: 11px; letter-spacing: .04em; }
+
+  .nav-group { margin-top: 14px; }
+  .nav-label {
+    font-size: 11px; color: var(--ink-3); padding: 0 8px 6px;
+    text-transform: uppercase; letter-spacing: .08em; font-weight: 600;
+  }
+  .nav-item {
+    display: flex; align-items: center; justify-content: space-between;
+    gap: 8px;
+    padding: 7px 8px; border-radius: 8px; cursor: pointer;
+    color: var(--ink-2); font-size: 14px;
+    user-select: none;
+  }
+  .nav-item > span:first-child {
+    flex: 1; min-width: 0;
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  }
+  .nav-count { flex-shrink: 0; }
+  .nav-item:hover { background: var(--surface-2); color: var(--ink); }
+  .nav-item.active { background: var(--brand-soft); color: var(--brand); font-weight: 500; }
+  .nav-count { font-size: 12px; color: var(--ink-3); font-variant-numeric: tabular-nums; }
+  .nav-item.active .nav-count { color: var(--brand); opacity: .8; }
+
+  /* ───── Main ───── */
+  .main { padding: 28px 32px 80px; max-width: 1400px; }
+  @media (max-width: 880px) { .main { padding: 16px 16px 80px; } }
+
+  .topbar {
+    display: flex; gap: 12px; align-items: center; margin-bottom: 22px;
+    flex-wrap: wrap;
+  }
+  .search {
+    flex: 1; min-width: 240px;
+    display: flex; align-items: center; gap: 10px;
+    padding: 10px 14px; background: var(--surface); border: 1px solid var(--line);
+    border-radius: var(--radius); transition: border-color .15s, box-shadow .15s;
+  }
+  .search:focus-within { border-color: var(--brand-line); box-shadow: 0 0 0 4px var(--brand-soft); }
+  .search input { flex: 1; border: 0; background: transparent; outline: none; font-size: 14px; color: var(--ink); }
+  .search input::placeholder { color: var(--ink-3); }
+  .kbd {
+    font-family: var(--font-mono); font-size: 11px;
+    color: var(--ink-3); padding: 2px 6px; border: 1px solid var(--line-strong);
+    border-radius: 5px; background: var(--surface-2);
+  }
+  .icon { width: 16px; height: 16px; flex-shrink: 0; stroke: currentColor; fill: none; stroke-width: 1.75; stroke-linecap: round; stroke-linejoin: round; }
+
+  .pagehead { margin-bottom: 20px; }
+  .pagehead h1 { margin: 0 0 4px; font-size: 22px; font-weight: 600; letter-spacing: -.01em; }
+  .pagehead p { margin: 0; color: var(--ink-3); font-size: 13px; }
+
+  .filterbar {
+    display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 18px;
+    padding-bottom: 18px; border-bottom: 1px solid var(--line);
+  }
+  .chip {
+    border: 1px solid var(--line); background: var(--surface);
+    padding: 5px 11px; border-radius: 999px; font-size: 12.5px;
+    color: var(--ink-2); cursor: pointer; transition: all .12s;
+    display: inline-flex; align-items: center; gap: 6px;
+  }
+  .chip:hover { border-color: var(--line-strong); color: var(--ink); }
+  .chip.on {
+    background: var(--ink); color: var(--bg); border-color: var(--ink);
+  }
+  .chip-count { font-size: 11px; opacity: .65; font-variant-numeric: tabular-nums; }
+
+  /* ───── Cards grid ───── */
+  .grid {
+    display: grid; gap: 14px;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  }
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: var(--radius-lg);
+    padding: 18px 18px 14px;
+    cursor: pointer;
+    transition: transform .14s ease, box-shadow .14s ease, border-color .14s;
+    position: relative;
+    display: flex; flex-direction: column; gap: 10px;
+    min-height: 178px;
+  }
+  .card:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-md);
+    border-color: var(--line-strong);
+  }
+  .card.active {
+    border-color: var(--brand);
+    box-shadow: 0 0 0 3px var(--brand-soft);
+  }
+  .card-eyebrow {
+    display: flex; align-items: center; justify-content: space-between;
+    font-family: var(--font-mono); font-size: 11px;
+    color: var(--ink-3); letter-spacing: .03em;
+  }
+  .card-art {
+    width: 6px; height: 6px; border-radius: 999px;
+    background: var(--ink-3);
+  }
+  .card-art.dot-travel { background: oklch(60% 0.13 240); }
+  .card-art.dot-food { background: oklch(65% 0.13 75); }
+  .card-art.dot-overseas { background: oklch(60% 0.13 320); }
+  .card-art.dot-rate { background: oklch(58% 0.13 155); }
+
+  .card-no { font-weight: 500; color: var(--ink-2); }
+  .card-title {
+    font-size: 17px; font-weight: 600; letter-spacing: -.005em;
+    line-height: 1.35;
+    display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+  .card-summary {
+    color: var(--ink-2); font-size: 13.5px; line-height: 1.55;
+    display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical;
+    overflow: hidden;
+    flex: 1;
+  }
+  .card-foot {
+    display: flex; align-items: center; justify-content: space-between;
+    padding-top: 10px; border-top: 1px dashed var(--line);
+    font-size: 11.5px; color: var(--ink-3);
+  }
+  .card-tags { display: flex; gap: 4px; flex-wrap: wrap; }
+  .tag {
+    font-size: 11px; padding: 2px 7px; border-radius: 5px;
+    background: var(--surface-2); color: var(--ink-2);
+    border: 1px solid var(--line);
+  }
+  .badge {
+    font-size: 10.5px; padding: 2px 7px; border-radius: 4px;
+    font-weight: 600; letter-spacing: .04em;
+    display: inline-flex; align-items: center; gap: 4px;
+  }
+  .badge.ok { background: var(--ok-soft); color: var(--ok); }
+  .badge.warn { background: var(--warn-soft); color: var(--warn); }
+  .badge.stop { background: var(--stop-soft); color: var(--stop); }
+  .badge::before {
+    content: ""; width: 5px; height: 5px; border-radius: 999px; background: currentColor;
+  }
+
+  /* ───── Drawer ───── */
+  .scrim {
+    position: fixed; inset: 0; background: oklch(20% 0.02 265 / .35);
+    opacity: 0; pointer-events: none; transition: opacity .2s;
+    z-index: 40;
+    backdrop-filter: blur(2px);
+  }
+  .scrim.show { opacity: 1; pointer-events: auto; }
+
+  .drawer {
+    position: fixed; top: 0; right: 0; height: 100vh; width: min(540px, 100%);
+    background: var(--surface);
+    border-left: 1px solid var(--line);
+    box-shadow: var(--shadow-lg);
+    transform: translateX(100%); transition: transform .28s cubic-bezier(.2,.8,.2,1);
+    z-index: 50;
+    display: flex; flex-direction: column;
+  }
+  .drawer.show { transform: translateX(0); }
+  @media (max-width: 720px) {
+    .drawer {
+      top: auto; bottom: 0; right: 0; left: 0;
+      width: 100%; height: 88vh;
+      border-left: 0; border-top: 1px solid var(--line);
+      border-radius: 16px 16px 0 0;
+      transform: translateY(100%);
+    }
+    .drawer.show { transform: translateY(0); }
+    .drawer-grab {
+      width: 40px; height: 4px; border-radius: 999px;
+      background: var(--line-strong); margin: 8px auto 0;
+    }
+  }
+  .drawer-grab { display: none; }
+  @media (max-width: 720px) { .drawer-grab { display: block; } }
+
+  .drawer-head {
+    padding: 18px 22px 16px; border-bottom: 1px solid var(--line);
+    display: flex; flex-direction: column; gap: 8px;
+  }
+  .drawer-row { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+  .drawer-meta { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; font-family: var(--font-mono); font-size: 11.5px; color: var(--ink-3); }
+  .drawer-meta .sep { width: 3px; height: 3px; border-radius: 999px; background: var(--line-strong); }
+  .drawer-actions { display: flex; gap: 4px; }
+  .iconbtn {
+    width: 32px; height: 32px; border-radius: 8px;
+    border: 1px solid transparent; background: transparent; cursor: pointer;
+    display: grid; place-items: center; color: var(--ink-2);
+    transition: background .12s, border-color .12s;
+  }
+  .iconbtn:hover { background: var(--surface-2); border-color: var(--line); color: var(--ink); }
+  .drawer-title { font-size: 22px; font-weight: 600; letter-spacing: -.01em; line-height: 1.3; margin: 2px 0; }
+
+  .drawer-body {
+    flex: 1; overflow: auto;
+    padding: 20px 22px 80px;
+  }
+  .section { margin-bottom: 28px; }
+  .section h3 {
+    margin: 0 0 10px; font-size: 12px; font-weight: 600;
+    text-transform: uppercase; letter-spacing: .08em; color: var(--ink-3);
+    display: flex; align-items: center; gap: 8px;
+  }
+  .section h3::before {
+    content: ""; width: 14px; height: 1px; background: var(--line-strong);
+  }
+  .article {
+    background: var(--surface-2); border: 1px solid var(--line);
+    border-radius: var(--radius); padding: 16px 18px;
+    font-size: 14.5px; line-height: 1.85; color: var(--ink);
+    white-space: pre-wrap;
+  }
+  .keypoints { display: flex; flex-direction: column; gap: 6px; padding: 0; margin: 0; list-style: none; }
+  .keypoints li {
+    display: grid; grid-template-columns: 18px 1fr; gap: 8px;
+    padding: 6px 0; font-size: 14px;
+  }
+  .keypoints li::before {
+    content: "→"; color: var(--brand); font-family: var(--font-mono);
+  }
+  .related {
+    display: flex; flex-direction: column; gap: 8px;
+  }
+  .related-item {
+    display: flex; align-items: flex-start; gap: 10px; padding: 10px 12px;
+    border: 1px solid var(--line); border-radius: 9px;
+    cursor: pointer; transition: all .12s;
+    background: var(--surface);
+  }
+  .related-item:hover { border-color: var(--brand-line); background: var(--brand-soft); }
+  .related-kind {
+    font-family: var(--font-mono); font-size: 10.5px; font-weight: 600;
+    padding: 2px 6px; border-radius: 4px;
+    background: var(--surface-2); color: var(--ink-2);
+    flex-shrink: 0; margin-top: 1px;
+  }
+  .related-kind.qa { background: oklch(96% 0.03 200); color: oklch(45% 0.13 220); }
+  .related-kind.fn { background: oklch(96% 0.03 295); color: oklch(45% 0.13 295); }
+  @media (prefers-color-scheme: dark) {
+    .related-kind.qa { background: oklch(28% 0.05 220); color: oklch(82% 0.1 220); }
+    .related-kind.fn { background: oklch(28% 0.05 295); color: oklch(82% 0.1 295); }
+  }
+  .related-text { font-size: 13.5px; line-height: 1.5; color: var(--ink); }
+  .related-text small { display: block; color: var(--ink-3); font-size: 11.5px; margin-top: 2px; }
+
+  .toolbar-foot {
+    border-top: 1px solid var(--line);
+    padding: 12px 22px;
+    display: flex; gap: 8px; align-items: center; justify-content: space-between;
+    background: var(--surface);
+  }
+  .btn {
+    border: 1px solid var(--line); background: var(--surface);
+    padding: 8px 14px; border-radius: 8px;
+    font-size: 13px; cursor: pointer; color: var(--ink);
+    display: inline-flex; align-items: center; gap: 6px;
+    transition: all .12s;
+  }
+  .btn:hover { background: var(--surface-2); border-color: var(--line-strong); }
+  .btn.primary { background: var(--ink); color: var(--bg); border-color: var(--ink); }
+  .btn.primary:hover { background: oklch(from var(--ink) calc(l + 0.06) c h); }
+
+  /* hint banner */
+  .hint {
+    position: fixed; bottom: 18px; left: 50%; transform: translateX(-50%);
+    background: var(--ink); color: var(--bg); font-size: 12.5px;
+    padding: 8px 14px; border-radius: 999px;
+    opacity: 0; pointer-events: none; transition: opacity .2s;
+    z-index: 60;
+    box-shadow: var(--shadow-md);
+  }
+  .hint.show { opacity: .92; }
+
+  /* mobile bar */
+  .mobile-cats {
+    display: none;
+    overflow-x: auto; gap: 6px; padding: 0 0 12px; margin: -4px 0 12px;
+  }
+  @media (max-width: 880px) { .mobile-cats { display: flex; } }
+
+  /* ───── Compare mode (按設計系統延伸) ───── */
+  /* 卡片右上角「+ 比較」chip,hover 時顯示 */
+  .card { position: relative; }
+  .card-compare {
+    position: absolute; top: 12px; right: 12px;
+    background: var(--surface-2);
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    padding: 3px 10px;
+    font-size: 11px; font-family: var(--font-zh);
+    color: var(--ink-3); cursor: pointer;
+    opacity: 0; transition: opacity .14s, background .12s, border-color .12s, color .12s;
+    z-index: 2;
+  }
+  .card:hover .card-compare,
+  .card-compare.on { opacity: 1; }
+  .card-compare:hover {
+    background: var(--brand-soft); border-color: var(--brand-line); color: var(--brand);
+  }
+  .card-compare.on {
+    background: var(--brand); color: var(--bg); border-color: var(--brand);
+  }
+  .card.compared {
+    border-color: var(--brand-line);
+    box-shadow: 0 0 0 2px var(--brand-soft);
+  }
+
+  /* 浮動比較條 (底部 pill) */
+  .compare-bar {
+    position: fixed; left: 50%; bottom: 22px;
+    display: flex; align-items: center; gap: 12px;
+    padding: 10px 14px;
+    background: var(--surface);
+    border: 1px solid var(--line-strong);
+    border-radius: 999px;
+    box-shadow: var(--shadow-lg);
+    z-index: 45;
+    max-width: calc(100vw - 24px);
+    opacity: 0; pointer-events: none;
+    transform: translateX(-50%) translateY(8px);
+    transition: opacity .2s, transform .2s;
+  }
+  .compare-bar.show { opacity: 1; pointer-events: auto; transform: translateX(-50%) translateY(0); }
+  .compare-bar-label {
+    font-size: 12px; font-weight: 600; color: var(--brand);
+    display: inline-flex; align-items: center; gap: 6px;
+    white-space: nowrap;
+  }
+  .compare-chips { display: flex; gap: 6px; flex-wrap: wrap; max-width: 50vw; }
+  .cmp-chip {
+    display: inline-flex; align-items: center; gap: 6px;
+    padding: 3px 4px 3px 10px;
+    background: var(--brand-soft); border: 1px solid var(--brand-line);
+    border-radius: 999px; font-size: 12px; color: var(--brand);
+    max-width: 220px;
+  }
+  .cmp-chip-no {
+    font-family: var(--font-mono); font-size: 10.5px;
+    background: var(--surface); padding: 1px 5px; border-radius: 6px;
+    color: var(--ink-2); border: 1px solid var(--line);
+  }
+  .cmp-chip-title {
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    max-width: 130px;
+  }
+  .cmp-chip-x {
+    width: 18px; height: 18px; border-radius: 999px;
+    border: 0; background: transparent; color: var(--brand);
+    cursor: pointer; display: inline-grid; place-items: center;
+    font-size: 11px; line-height: 1;
+  }
+  .cmp-chip-x:hover { background: var(--brand); color: var(--bg); }
+
+  /* Compare modal */
+  .cmp-modal {
+    position: fixed; inset: 0; z-index: 60;
+    display: none;
+    align-items: center; justify-content: center;
+  }
+  .cmp-modal.show { display: flex; }
+  .cmp-backdrop {
+    position: absolute; inset: 0;
+    background: oklch(20% 0.02 265 / .45);
+    backdrop-filter: blur(3px);
+  }
+  .cmp-panel {
+    position: relative;
+    width: min(96vw, 1500px);
+    height: min(92vh, 920px);
+    background: var(--surface);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-lg);
+    display: flex; flex-direction: column;
+    overflow: hidden;
+  }
+  .cmp-head {
+    display: flex; align-items: center; gap: 14px;
+    padding: 14px 20px;
+    border-bottom: 1px solid var(--line);
+    flex-shrink: 0;
+  }
+  .cmp-head h2 {
+    margin: 0; font-size: 17px; font-weight: 600; letter-spacing: -.01em;
+    display: inline-flex; align-items: center; gap: 8px;
+  }
+  .cmp-hint {
+    font-size: 12px; color: var(--ink-3);
+    display: inline-flex; align-items: center; gap: 6px;
+    margin-left: auto;
+  }
+  .cmp-hint::before {
+    content: ""; width: 10px; height: 10px; border-radius: 3px;
+    background: var(--warn-soft); border: 1px solid var(--warn);
+  }
+  .cmp-body {
+    flex: 1; overflow: hidden;
+    display: grid;
+  }
+  .cmp-cols-2 { grid-template-columns: 1fr 1fr; }
+  .cmp-cols-3 { grid-template-columns: 1fr 1fr 1fr; }
+  .cmp-col {
+    display: flex; flex-direction: column;
+    border-right: 1px solid var(--line);
+    overflow: hidden;
+  }
+  .cmp-col:last-child { border-right: 0; }
+  .cmp-col-head {
+    padding: 14px 16px;
+    background: var(--surface-2);
+    border-bottom: 1px solid var(--line);
+    flex-shrink: 0;
+    display: flex; flex-direction: column; gap: 6px;
+  }
+  .cmp-col-row {
+    display: flex; align-items: center; justify-content: space-between; gap: 8px;
+  }
+  .cmp-col-no {
+    font-family: var(--font-mono); font-size: 11px; color: var(--ink-3);
+  }
+  .cmp-col-rm {
+    width: 26px; height: 26px; border-radius: 7px;
+    background: transparent; border: 1px solid transparent;
+    color: var(--ink-3); cursor: pointer;
+    display: grid; place-items: center;
+  }
+  .cmp-col-rm:hover { background: var(--surface); border-color: var(--line); color: var(--ink); }
+  .cmp-col-title {
+    font-size: 15px; font-weight: 600; line-height: 1.4;
+    color: var(--ink); margin: 0;
+  }
+  .cmp-meta {
+    background: var(--surface-2); border-bottom: 1px solid var(--line);
+    flex-shrink: 0;
+    max-height: 200px; overflow-y: auto;
+    font-size: 12px;
+  }
+  .cmp-meta-row {
+    display: grid; grid-template-columns: 64px 1fr;
+    gap: 10px; padding: 6px 16px;
+    border-top: 1px dashed var(--line);
+  }
+  .cmp-meta-row:first-child { border-top: 0; }
+  .cmp-meta-row.diff {
+    background: var(--warn-soft); color: oklch(35% 0.06 75);
+  }
+  @media (prefers-color-scheme: dark) {
+    .cmp-meta-row.diff { color: oklch(85% 0.1 75); }
+  }
+  .cmp-meta-k { color: var(--ink-3); font-weight: 600; }
+  .cmp-meta-row.diff .cmp-meta-k { color: inherit; }
+  .cmp-meta-v { word-break: break-word; }
+  .cmp-col-body {
+    flex: 1; overflow-y: auto;
+    padding: 16px 18px;
+  }
+  .cmp-col-foot {
+    border-top: 1px solid var(--line);
+    padding: 10px 16px;
+    background: var(--surface-2);
+    flex-shrink: 0;
+  }
+  .cmp-empty {
+    padding: 60px 24px; text-align: center;
+    color: var(--ink-3); font-size: 14px;
+    grid-column: 1 / -1;
+  }
+  .cmp-empty strong { color: var(--ink); display: block; font-size: 16px; margin-bottom: 6px; }
+
+  @media (max-width: 880px) {
+    .cmp-panel { width: 100vw; height: 100vh; border-radius: 0; }
+    .cmp-cols-2, .cmp-cols-3 {
+      grid-template-columns: 1fr;
+      grid-auto-rows: minmax(0, 1fr);
+      overflow-y: auto;
+    }
+    .cmp-col { border-right: 0; border-bottom: 1px solid var(--line-strong); }
+    .cmp-col:last-child { border-bottom: 0; }
+    .compare-bar { left: 12px; right: 12px; transform: none; bottom: 12px; max-width: none; padding: 8px 12px; }
+    .compare-bar.show { transform: none; }
+    .compare-chips { max-width: none; }
+  }
+</style>
+</head>
+<body>
+
+<div class="app">
+  <!-- ───── Sidebar ───── -->
+  <aside class="side">
+    <div class="brand">
+      <div class="brand-mark">支</div>
+      <div class="brand-text">支出法規庫<small>518 節點 · v2 預覽</small></div>
+    </div>
+
+    <div class="nav-group">
+      <div class="nav-label">入口</div>
+      <div class="nav-item"><span>🧭 情境檢索</span></div>
+      <div class="nav-item active"><span>📑 條文庫</span><span class="nav-count">518</span></div>
+      <div class="nav-item"><span>💬 Q&amp;A</span><span class="nav-count">184</span></div>
+      <div class="nav-item"><span>📊 費率表</span><span class="nav-count">42</span></div>
+    </div>
+
+    <div class="nav-group">
+      <div class="nav-label">分類</div>
+      <div class="nav-item"><span>全部</span><span class="nav-count">518</span></div>
+      <div class="nav-item"><span>國內旅費</span><span class="nav-count">202</span></div>
+      <div class="nav-item"><span>國外旅費</span><span class="nav-count">215</span></div>
+      <div class="nav-item"><span>支出憑證與結報</span><span class="nav-count">101</span></div>
+    </div>
+  </aside>
+
+  <!-- ───── Main ───── -->
+  <main class="main">
+    <div class="topbar">
+      <label class="search" for="q">
+        <svg class="icon" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="m20 20-3-3"/></svg>
+        <input id="q" placeholder="搜尋條文、條號、關鍵字…例如：自用汽車 油資" autocomplete="off">
+        <span class="kbd">⌘ K</span>
+      </label>
+      <button class="btn"><svg class="icon" viewBox="0 0 24 24"><path d="M3 6h18M6 12h12M10 18h4"/></svg>篩選</button>
+    </div>
+
+    <div class="pagehead">
+      <h1>條文庫</h1>
+      <p>核心法規 · 點擊任一卡片查看詳細條文與相關 Q&amp;A</p>
+    </div>
+
+    <div class="filterbar">
+      <button class="chip on">全部 <span class="chip-count">61</span></button>
+      <button class="chip">交通費 <span class="chip-count">137</span></button>
+      <button class="chip">日支生活費 <span class="chip-count">66</span></button>
+      <button class="chip">住宿費 <span class="chip-count">80</span></button>
+      <button class="chip">公差派遣 <span class="chip-count">50</span></button>
+      <button class="chip">原條總組 <span class="chip-count">110</span></button>
+      <button class="chip">經費規定 <span class="chip-count">80</span></button>
+    </div>
+
+    <div class="grid" id="grid"></div>
+  </main>
+</div>
+
+<!-- ───── Drawer ───── -->
+<div class="scrim" id="scrim"></div>
+<aside class="drawer" id="drawer" aria-hidden="true">
+  <div class="drawer-grab"></div>
+  <header class="drawer-head">
+    <div class="drawer-row">
+      <div class="drawer-meta" id="d-meta">A-國內旅費-002 <span class="sep"></span> 2026-04-25 人工校對</div>
+      <div class="drawer-actions">
+        <button class="iconbtn" title="複製條號" id="btn-copy"><svg class="icon" viewBox="0 0 24 24"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg></button>
+        <button class="iconbtn" title="原始出處" id="btn-source"><svg class="icon" viewBox="0 0 24 24"><path d="M14 4h6v6"/><path d="M20 4 10 14"/><path d="M20 14v5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V5a1 1 0 0 1 1-1h5"/></svg></button>
+        <button class="iconbtn" title="關閉 (Esc)" id="btn-close"><svg class="icon" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6l-12 12"/></svg></button>
+      </div>
+    </div>
+    <h2 class="drawer-title" id="d-title">第二條 旅費項目</h2>
+    <div class="drawer-row">
+      <div class="card-tags" id="d-tags"></div>
+      <span class="badge ok" id="d-status">現行</span>
+    </div>
+  </header>
+
+  <div class="drawer-body" id="d-body"></div>
+
+  <div class="toolbar-foot">
+    <div style="font-size:12px;color:var(--ink-3)">↑ ↓ 切換 · Enter 開啟 · Esc 關閉</div>
+    <div style="display:flex;gap:8px">
+      <button class="btn" id="btn-add-compare"><svg class="icon" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>加入比較</button>
+      <button class="btn primary" id="btn-prev-next">查看法規全文 →</button>
+    </div>
+  </div>
+</aside>
+
+<!-- ───── Compare bar (浮動底部) ───── -->
+<div class="compare-bar" id="compare-bar" role="region" aria-label="比較項目">
+  <div class="compare-bar-label">
+    <svg class="icon" viewBox="0 0 24 24"><path d="M3 12h6l3-9 3 18 3-9h3"/></svg>
+    比較區
+  </div>
+  <div class="compare-chips" id="compare-chips"></div>
+  <button class="btn primary" id="btn-show-compare" disabled>並排比較</button>
+  <button class="iconbtn" id="btn-clear-compare" title="清空"><svg class="icon" viewBox="0 0 24 24"><path d="M3 6h18M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/></svg></button>
+</div>
+
+<!-- ───── Compare modal (並排比較) ───── -->
+<div class="cmp-modal" id="cmp-modal" role="dialog" aria-modal="true" aria-labelledby="cmp-title">
+  <div class="cmp-backdrop" data-cmp-close></div>
+  <div class="cmp-panel">
+    <header class="cmp-head">
+      <h2 id="cmp-title">
+        <span class="brand-mark" style="width:22px;height:22px;font-size:11px;border-radius:6px">比</span>
+        並排比較
+      </h2>
+      <span class="cmp-hint">差異欄位以琥珀色標示</span>
+      <button class="iconbtn" data-cmp-close title="關閉 (Esc)"><svg class="icon" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6l-12 12"/></svg></button>
+    </header>
+    <div class="cmp-body" id="cmp-body"></div>
+  </div>
+</div>
+
+<div class="hint" id="hint">已複製到剪貼簿</div>
+
+<script>
+/* ──────── compare state (hoisted to top to avoid TDZ in renderCards) ──────── */
+let compareList = [];
+
+/* ──────── data ──────── */
+const DATA = [
+  {
+    id: "A-國內旅費-001", no: "第一條", title: "訂定目的",
+    status: "現行", cat: "國內旅費", art: "travel",
+    tags: ["公務事項", "旅費支給", "中央機關"],
+    summary: "本要點之訂定目的，係依中央政府各機關員工因公差派國內出差旅費報支事項，據以審查各「中央政府各機關員工」，俾由各「凡具」報支標準。",
+    article: "本要點依「國內出差旅費報支要點」第一點規定訂定。中央政府各機關員工因公差派國內出差，其旅費之支給，依本要點辦理。但其他法令另有規定者，從其規定。",
+    keypoints: [
+      "適用對象：中央政府各機關員工",
+      "適用情境：因公差派國內出差",
+      "排除規定：其他法令另有規定者，從其規定"
+    ],
+    related: [
+      { kind: "qa", title: "聘僱人員出差是否適用本要點？", meta: "Q&A · 出差身分" },
+      { kind: "fn", title: "行政院主計總處 113.2.15 主預字第 1130100123 號函", meta: "解釋函釋 · 適用範圍" },
+      { kind: "qa", title: "離職前最後一日出差，旅費如何處理？", meta: "Q&A · 申請程序" }
+    ],
+    updated: "2026-04-25"
+  },
+  {
+    id: "A-國內旅費-002", no: "第二條", title: "旅費項目",
+    status: "現行", cat: "國內旅費", art: "travel",
+    tags: ["交通費", "住宿費", "雜支上限"],
+    summary: "旅費分為交通費、住宿費、雜費三項。報支金額依本要點所附「報支要點附表」辦理；報支單據及支付方式，依規定辦理。",
+    article: `旅費分為下列三項：
+一、交通費：包含高鐵、火車、船舶、飛機、市區交通、自用汽車及機車燃料費等。
+二、住宿費：依出差地區及職等支給，並以實際住宿之單據核實列支。
+三、雜費：包含必要之過路費、停車費、行李超重費、簽證費及其他與公務有關之必要支出。
+
+前項各款報支金額，依「中央政府各機關員工國內出差旅費報支要點附表」辦理。報支時應檢附原始憑證；無法取得者，應依規定填具切結書。`,
+    keypoints: [
+      "交通費：含高鐵 / 火車 / 船舶 / 飛機 / 市區 / 自用車",
+      "住宿費：依地區與職等核實列支",
+      "雜費：過路、停車、行李超重、簽證等",
+      "無原始憑證：須填切結書"
+    ],
+    related: [
+      { kind: "qa", title: "自用汽車油資怎麼計算？每公里幾元？", meta: "Q&A · 交通費" },
+      { kind: "qa", title: "搭高鐵商務艙可以全額報支嗎？", meta: "Q&A · 交通費" },
+      { kind: "fn", title: "行政院 114.1.10 院授主預字第 1140012345 號函", meta: "解釋函釋 · 雜費項目" },
+      { kind: "qa", title: "出差期間私人行程的住宿費用如何切割？", meta: "Q&A · 住宿費" }
+    ],
+    updated: "2026-04-25"
+  },
+  {
+    id: "A-國內旅費-003", no: "第三條", title: "公差派遣與行程核定",
+    status: "現行", cat: "公差派遣", art: "travel",
+    tags: ["交通費", "公差派遣", "出差報告書"],
+    summary: "公差派遣前，任務內容、公差地點、日期等即可填寫公文/簽辦/email 處理者不得派遣；其他類型公差須填寫「出差申請表」並先行陳核後始得出發。",
+    article: "公差派遣前，應就任務內容、公差地點、起訖日期等，填寫公差派遣表並陳機關首長核定。能以公文、簽辦或電子郵件方式處理者，不得派遣公差。",
+    keypoints: [
+      "派遣前：須填公差派遣表並陳首長核定",
+      "排除：能以公文 / 簽辦 / email 處理者不得派遣"
+    ],
+    related: [
+      { kind: "qa", title: "口頭核准的出差事後補簽可以嗎？", meta: "Q&A · 申請程序" },
+      { kind: "fn", title: "考試院 113.6.20 考臺組貳字第 1130056789 號函", meta: "解釋函釋 · 派遣核定" }
+    ],
+    updated: "2026-04-25"
+  },
+  {
+    id: "A-國內旅費-004", no: "第四條", title: "出差報支程序",
+    status: "現行", cat: "國內旅費", art: "travel",
+    tags: ["交通費", "公差派遣", "出差報告書"],
+    summary: "出差事畢之報支自十五日內檢具附表二「出差旅費報告表」，連同各項收據及憑證辦理。十五日為計算期限，逾期應檢附說明。",
+    article: "出差事畢，應於十五日內檢具附表二「出差旅費報告表」，連同各項收據及憑證辦理結報。逾期者，應敘明事由。",
+    keypoints: [
+      "結報期限：事畢後 15 日內",
+      "應檢附：附表二 + 收據與憑證",
+      "逾期：須敘明事由"
+    ],
+    related: [
+      { kind: "qa", title: "出差結報逾期會怎樣？", meta: "Q&A · 結報" }
+    ],
+    updated: "2026-04-25"
+  },
+  {
+    id: "A-國內旅費-006", no: "第六條", title: "陪同外賓出差",
+    status: "現行", cat: "國內旅費", art: "travel",
+    tags: ["交通費", "住宿費", "雜費"],
+    summary: "陪同外賓在地內以機關所在地為起點，按公務交通費上限規定之例外...",
+    article: "陪同外賓出差者，其交通費、住宿費及雜費之報支，依外賓接待規定辦理；無外賓接待規定者，依本要點辦理。",
+    keypoints: ["優先依：外賓接待規定", "次依：本要點"],
+    related: [],
+    updated: "2026-04-25"
+  },
+  {
+    id: "A-國內旅費-007", no: "第七條", title: "調任視同出差",
+    status: "現行", cat: "公差派遣", art: "travel",
+    tags: ["公差派遣", "調任"],
+    summary: "調任視同出差，旅費依「新任機關」（非原機關）規定辦理。",
+    article: "員工因調任至他機關，其報到差旅，視同出差，旅費由新任機關依本要點辦理。",
+    keypoints: ["調任報到視同出差", "由新任機關辦理"],
+    related: [],
+    updated: "2026-04-25"
+  },
+  {
+    id: "B-國外旅費-001", no: "附表一", title: "各機關員工國內出差旅費支數額表",
+    status: "現行", cat: "費率表", art: "rate",
+    tags: ["交通費", "住宿費", "雜費"],
+    summary: "各機關員工國內出差旅費支數額表（自113年1月15日生效）：住宿費每日上限平日 3,500 元、假日 4,500 元；雜費每日 400 元；公務員依公務人員身份等級分。",
+    article: `自 113 年 1 月 15 日生效
+
+【住宿費上限 / 每人每日】
+平日：3,500 元
+假日：4,500 元
+（依實際住宿單據核實列支，不得超過上限）
+
+【雜費 / 每人每日】
+400 元
+
+【交通費 / 自用車】
+汽車：3 元 / 公里
+機車：2 元 / 公里
+（不得另報油料費）`,
+    keypoints: [
+      "住宿：平日 3,500 / 假日 4,500（核實）",
+      "雜費：每日 400 元",
+      "自用汽車：3 元 / 公里",
+      "自用機車：2 元 / 公里"
+    ],
+    related: [
+      { kind: "qa", title: "假日定義是什麼？週六算假日嗎？", meta: "Q&A · 住宿費" },
+      { kind: "fn", title: "行政院主計總處 113.1.5 函", meta: "解釋函釋 · 數額調整" }
+    ],
+    updated: "2026-04-27"
+  },
+  {
+    id: "B-國外旅費-004", no: "附表（114年版）", title: "國外日支數額表（114年版；已過期）",
+    status: "已廢止", cat: "國外旅費", art: "overseas",
+    tags: ["日支生活費", "國外旅費", "已廢止"],
+    summary: "中央政府各機關派員出國各地區生活費日支數額表 114 年版（已過期）；本表自 114 年 1 月 1 日生效至民國 114 年 12 月 31 日，自 115 年 1 月 1 日起改依新版。",
+    article: "本表自民國 114 年 1 月 1 日生效，至民國 114 年 12 月 31 日止。自民國 115 年 1 月 1 日起，改依「中央政府各機關派員出國各地區生活費日支數額表（115 年版）」辦理。",
+    keypoints: ["有效期間：114.1.1 – 114.12.31", "115.1.1 起改依新版"],
+    related: [
+      { kind: "fn", title: "現行版：B-國外旅費-003", meta: "替代規定" }
+    ],
+    updated: "2026-04-28"
+  }
+];
+
+/* ──────── render cards ──────── */
+const grid = document.getElementById("grid");
+function statusBadge(s) {
+  if (s === "已廢止") return `<span class="badge stop">${s}</span>`;
+  if (s === "暫行") return `<span class="badge warn">${s}</span>`;
+  return `<span class="badge ok">${s}</span>`;
+}
+function dotClass(art) {
+  return ({ travel: "dot-travel", food: "dot-food", overseas: "dot-overseas", rate: "dot-rate" })[art] || "";
+}
+function renderCards() {
+  grid.innerHTML = DATA.map(d => {
+    const inCmp = compareList.includes(d.id);
+    return `
+    <article class="card${inCmp ? ' compared' : ''}" data-id="${d.id}" tabindex="0">
+      <button class="card-compare${inCmp ? ' on' : ''}" data-cmp-toggle title="${inCmp ? '已加入比較,點擊移除' : '加入並排比較 (最多 3 張)'}">
+        ${inCmp ? '✓ 已加入' : '+ 比較'}
+      </button>
+      <div class="card-eyebrow">
+        <span class="card-no"><span class="card-art ${dotClass(d.art)}"></span>&nbsp;&nbsp;${d.id}</span>
+        ${statusBadge(d.status)}
+      </div>
+      <h3 class="card-title">${d.no} ${d.title}</h3>
+      <p class="card-summary">${d.summary}</p>
+      <div class="card-foot">
+        <div class="card-tags">${d.tags.slice(0,3).map(t=>`<span class="tag">${t}</span>`).join("")}</div>
+        <span>${d.updated}</span>
+      </div>
+    </article>
+    `;
+  }).join("");
+}
+renderCards();
+
+/* ──────── drawer ──────── */
+const drawer = document.getElementById("drawer");
+const scrim = document.getElementById("scrim");
+let currentIdx = -1;
+
+function openDrawer(idx) {
+  const d = DATA[idx];
+  if (!d) return;
+  currentIdx = idx;
+  document.querySelectorAll(".card").forEach((c,i)=>c.classList.toggle("active", i === idx));
+  document.getElementById("d-meta").innerHTML = `${d.id} <span class="sep"></span> ${d.updated} 人工校對 <span class="sep"></span> ${d.cat}`;
+  document.getElementById("d-title").textContent = `${d.no} ${d.title}`;
+  document.getElementById("d-tags").innerHTML = d.tags.map(t=>`<span class="tag">${t}</span>`).join("");
+  document.getElementById("d-status").outerHTML = statusBadge(d.status).replace("badge","badge").replace("<span","<span id=\"d-status\"");
+
+  document.getElementById("d-body").innerHTML = `
+    <div class="section">
+      <h3>重點摘要</h3>
+      <ul class="keypoints">
+        ${d.keypoints.map(k=>`<li><span>${k}</span></li>`).join("")}
+      </ul>
+    </div>
+    <div class="section">
+      <h3>條文全文</h3>
+      <div class="article">${d.article}</div>
+    </div>
+    ${d.related.length ? `
+      <div class="section">
+        <h3>相關 Q&amp;A 與函釋</h3>
+        <div class="related">
+          ${d.related.map(r=>`
+            <div class="related-item">
+              <span class="related-kind ${r.kind}">${r.kind === "qa" ? "Q&A" : "函釋"}</span>
+              <div class="related-text">${r.title}<small>${r.meta}</small></div>
+            </div>
+          `).join("")}
+        </div>
+      </div>` : ""}
+  `;
+  drawer.classList.add("show");
+  scrim.classList.add("show");
+  drawer.setAttribute("aria-hidden","false");
+}
+function closeDrawer() {
+  drawer.classList.remove("show");
+  scrim.classList.remove("show");
+  drawer.setAttribute("aria-hidden","true");
+  document.querySelectorAll(".card.active").forEach(c=>c.classList.remove("active"));
+  currentIdx = -1;
+}
+function move(delta) {
+  if (currentIdx < 0) return;
+  let n = currentIdx + delta;
+  if (n < 0) n = DATA.length - 1;
+  if (n >= DATA.length) n = 0;
+  openDrawer(n);
+  const card = document.querySelector(`.card[data-id="${DATA[n].id}"]`);
+  card?.scrollIntoView({ block: "nearest", behavior: "smooth" });
+}
+
+grid.addEventListener("click", e => {
+  if (e.target.closest("[data-cmp-toggle]")) {
+    e.stopPropagation();
+    const card = e.target.closest(".card");
+    if (card) toggleCompare(card.dataset.id);
+    return;
+  }
+  const card = e.target.closest(".card");
+  if (!card) return;
+  const idx = DATA.findIndex(d => d.id === card.dataset.id);
+  openDrawer(idx);
+});
+grid.addEventListener("keydown", e => {
+  if (e.key === "Enter") {
+    const card = e.target.closest(".card");
+    if (card) {
+      const idx = DATA.findIndex(d => d.id === card.dataset.id);
+      openDrawer(idx);
+    }
+  }
+});
+document.getElementById("btn-close").addEventListener("click", closeDrawer);
+scrim.addEventListener("click", closeDrawer);
+
+document.addEventListener("keydown", e => {
+  if (e.key === "Escape") closeDrawer();
+  if (drawer.classList.contains("show")) {
+    if (e.key === "ArrowDown" || e.key === "ArrowRight") { e.preventDefault(); move(1); }
+    if (e.key === "ArrowUp" || e.key === "ArrowLeft") { e.preventDefault(); move(-1); }
+  }
+  if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === "k") {
+    e.preventDefault();
+    document.getElementById("q").focus();
+  }
+});
+
+const hint = document.getElementById("hint");
+function flashHint(msg) {
+  hint.textContent = msg;
+  hint.classList.add("show");
+  setTimeout(()=>hint.classList.remove("show"), 1400);
+}
+document.getElementById("btn-copy").addEventListener("click", () => {
+  if (currentIdx < 0) return;
+  const d = DATA[currentIdx];
+  navigator.clipboard?.writeText(`${d.id} ${d.no} ${d.title}`);
+  flashHint("已複製：" + d.id);
+});
+document.getElementById("btn-source").addEventListener("click", () => flashHint("（demo）將開啟原始法規 PDF"));
+
+/* filter chips toggle */
+document.querySelectorAll(".filterbar .chip").forEach(ch => {
+  ch.addEventListener("click", () => {
+    document.querySelectorAll(".filterbar .chip").forEach(c=>c.classList.remove("on"));
+    ch.classList.add("on");
+  });
+});
+
+/* open first card by default for showcase */
+setTimeout(()=>openDrawer(1), 250);
+
+/* ──────── compare mode (compareList declared at top of script) ──────── */
+function toggleCompare(id) {
+  const i = compareList.indexOf(id);
+  if (i >= 0) {
+    compareList.splice(i, 1);
+    flashHint("已從比較中移除");
+  } else {
+    if (compareList.length >= 3) {
+      flashHint("比較最多 3 張卡");
+      return;
+    }
+    compareList.push(id);
+    flashHint(`已加入比較 (${compareList.length}/3)`);
+  }
+  renderCards();        // 同步卡片狀態 (chip on/off + .compared outline)
+  renderCompareBar();
+  updateDrawerCmpBtn();
+}
+function clearCompare() {
+  compareList = [];
+  renderCards();
+  renderCompareBar();
+  updateDrawerCmpBtn();
+}
+function renderCompareBar() {
+  const bar = document.getElementById("compare-bar");
+  const chips = document.getElementById("compare-chips");
+  const showBtn = document.getElementById("btn-show-compare");
+  if (compareList.length === 0) {
+    bar.classList.remove("show");
+    return;
+  }
+  bar.classList.add("show");
+  chips.innerHTML = compareList.map(id => {
+    const d = DATA.find(x => x.id === id);
+    if (!d) return "";
+    return `<span class="cmp-chip">
+      <span class="cmp-chip-no">${d.id}</span>
+      <span class="cmp-chip-title">${d.no} ${d.title}</span>
+      <button class="cmp-chip-x" data-cmp-rm="${id}" title="移除">✕</button>
+    </span>`;
+  }).join("");
+  chips.querySelectorAll("[data-cmp-rm]").forEach(b => {
+    b.onclick = (e) => { e.stopPropagation(); toggleCompare(b.dataset.cmpRm); };
+  });
+  showBtn.disabled = compareList.length < 2;
+  showBtn.textContent = compareList.length < 2
+    ? `並排比較 (還需 ${2 - compareList.length} 張)`
+    : `並排比較 (${compareList.length} 張)`;
+}
+function updateDrawerCmpBtn() {
+  const btn = document.getElementById("btn-add-compare");
+  if (!btn || currentIdx < 0) {
+    if (btn) { btn.innerHTML = `<svg class="icon" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>加入比較`; }
+    return;
+  }
+  const id = DATA[currentIdx].id;
+  const inCmp = compareList.includes(id);
+  btn.innerHTML = inCmp
+    ? `<svg class="icon" viewBox="0 0 24 24"><path d="M5 12l5 5L20 7"/></svg>已加入比較`
+    : `<svg class="icon" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>加入比較`;
+  btn.classList.toggle("primary", inCmp);
+}
+
+/* hook drawer open to update btn */
+const _origOpenDrawer = openDrawer;
+window.openDrawer = function(idx) { _origOpenDrawer(idx); updateDrawerCmpBtn(); };
+
+document.getElementById("btn-add-compare").addEventListener("click", () => {
+  if (currentIdx < 0) return;
+  toggleCompare(DATA[currentIdx].id);
+});
+document.getElementById("btn-clear-compare").addEventListener("click", clearCompare);
+
+/* compare modal */
+const cmpModal = document.getElementById("cmp-modal");
+const cmpBody = document.getElementById("cmp-body");
+
+const META_FIELDS = [
+  ["條號",     n => n.id],
+  ["條名",     n => `${n.no} ${n.title}`],
+  ["分類",     n => n.cat],
+  ["狀態",     n => n.status],
+  ["更新日",   n => n.updated],
+  ["標籤",     n => (n.tags || []).join("、")],
+];
+
+function openCompareModal() {
+  if (compareList.length < 2) return;
+  const nodes = compareList.map(id => DATA.find(x => x.id === id)).filter(Boolean);
+  const colsClass = nodes.length === 3 ? "cmp-cols-3" : "cmp-cols-2";
+
+  // 偵測哪些 metadata 欄位有差異
+  const isDiff = META_FIELDS.map(([_, fn]) => new Set(nodes.map(fn)).size > 1);
+
+  cmpBody.className = "cmp-body " + colsClass;
+  cmpBody.innerHTML = nodes.map((d, i) => `
+    <div class="cmp-col">
+      <div class="cmp-col-head">
+        <div class="cmp-col-row">
+          <span class="cmp-col-no">${d.id}</span>
+          <button class="cmp-col-rm" data-cmp-rm-modal="${d.id}" title="從比較中移除">
+            <svg class="icon" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6l-12 12"/></svg>
+          </button>
+        </div>
+        <h3 class="cmp-col-title">${d.no} ${d.title}</h3>
+        <div>${statusBadge(d.status)}</div>
+      </div>
+      <div class="cmp-meta">
+        ${META_FIELDS.map(([k, fn], idx) => `
+          <div class="cmp-meta-row${isDiff[idx] ? ' diff' : ''}">
+            <span class="cmp-meta-k">${k}</span>
+            <span class="cmp-meta-v">${(fn(d) || "—")}</span>
+          </div>
+        `).join("")}
+      </div>
+      <div class="cmp-col-body">
+        <div class="section">
+          <h3>重點摘要</h3>
+          <ul class="keypoints">
+            ${(d.keypoints || []).map(k => `<li><span>${k}</span></li>`).join("")}
+          </ul>
+        </div>
+        <div class="section">
+          <h3>條文全文</h3>
+          <div class="article">${d.article}</div>
+        </div>
+        ${(d.related || []).length ? `
+          <div class="section">
+            <h3>相關 Q&A 與函釋</h3>
+            <div class="related">
+              ${d.related.map(r => `
+                <div class="related-item">
+                  <span class="related-kind ${r.kind}">${r.kind === "qa" ? "Q&A" : "函釋"}</span>
+                  <div class="related-text">${r.title}<small>${r.meta}</small></div>
+                </div>
+              `).join("")}
+            </div>
+          </div>` : ""}
+      </div>
+      <div class="cmp-col-foot">
+        <button class="btn" data-cmp-open="${d.id}">
+          <svg class="icon" viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+          開啟此卡完整抽屜
+        </button>
+      </div>
+    </div>
+  `).join("");
+
+  // 綁 column 內的「移除」與「開啟抽屜」
+  cmpBody.querySelectorAll("[data-cmp-rm-modal]").forEach(b => {
+    b.onclick = () => {
+      toggleCompare(b.dataset.cmpRmModal);
+      if (compareList.length < 2) closeCompareModal();
+      else openCompareModal();   // 重渲染
+    };
+  });
+  cmpBody.querySelectorAll("[data-cmp-open]").forEach(b => {
+    b.onclick = () => {
+      closeCompareModal();
+      const idx = DATA.findIndex(x => x.id === b.dataset.cmpOpen);
+      if (idx >= 0) openDrawer(idx);
+    };
+  });
+
+  cmpModal.classList.add("show");
+}
+function closeCompareModal() {
+  cmpModal.classList.remove("show");
+}
+document.getElementById("btn-show-compare").addEventListener("click", openCompareModal);
+document.querySelectorAll("[data-cmp-close]").forEach(el => el.addEventListener("click", closeCompareModal));
+
+// ESC 優先關 compare modal
+const _origKeyHandler = document.onkeydown;
+document.addEventListener("keydown", e => {
+  if (e.key === "Escape" && cmpModal.classList.contains("show")) {
+    e.stopPropagation();
+    closeCompareModal();
+  }
+}, true);  // capture phase 搶在 drawer 之前
+</script>
+</body>
+</html>
