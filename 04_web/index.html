@@ -1076,20 +1076,6 @@
         <p>用使用者語言列出實務常見問題,點選後直接帶到對應的條文與 Q&amp;A</p>
       </div>
 
-      <div class="sc-quick">
-        <span class="sc-quick-label">🚀 最新標準表:</span>
-        <button class="sc-quick-btn" data-jump="B-國外旅費-003">💰 日支生活費(全球)</button>
-        <button class="sc-quick-btn" data-jump="B-國外旅費-002">🇨🇳 大陸港澳日支</button>
-        <button class="sc-quick-btn" data-jump="B-國外旅費-006">🛡️ 外交部保險表</button>
-        <button class="sc-quick-btn" data-jump="A-國外旅費-024">📚 派外進修補助表</button>
-      </div>
-
-      <div class="sc-search">
-        <svg class="icon" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="m20 20-3-3"/></svg>
-        <input type="search" id="sc-q" placeholder="搜尋情境(如「自駕」「假日」「住宿」「電子發票」)…" autocomplete="off">
-        <button type="button" class="sc-search-clear" id="sc-q-clear" hidden>清除</button>
-      </div>
-
       <div id="sc-flow-strip-slot"></div>
 
       <nav class="sc-toc" id="sc-toc" hidden></nav>
@@ -1190,7 +1176,7 @@
 let compareList = [];
 
 /* ──────── 真實資料載入 (520 nodes from 03_index/) ──────── */
-const DATA_VERSION = '2026-04-28s';
+const DATA_VERSION = '2026-04-28t';
 let DATA = [];                 // 對外用的卡片資料 (mapped from nodes.json)
 let NODES_BY_ID = new Map();   // id → original node (含 file_path 等)
 let INCOMING_EDGES = new Map();// id → [from1, from2, ...] 反向引用
@@ -2303,33 +2289,7 @@ function renderScenarios() {
   });
 }
 
-// 情境搜尋框 (script 已在 body 末端,DOM 已就緒,直接綁)
-{
-  const $scQ = document.getElementById('sc-q');
-  const $scQClear = document.getElementById('sc-q-clear');
-  if ($scQ) {
-    $scQ.addEventListener('input', () => {
-      scenarioQuery = $scQ.value.trim();
-      if ($scQClear) $scQClear.hidden = !scenarioQuery;
-      if (currentView === 'scenarios') renderScenarios();
-    });
-  }
-  if ($scQClear) {
-    $scQClear.addEventListener('click', () => {
-      $scQ.value = '';
-      scenarioQuery = '';
-      $scQClear.hidden = true;
-      renderScenarios();
-    });
-  }
-}
 
-// 快捷按鈕 (情境視圖頂部)
-document.addEventListener('click', (e) => {
-  const btn = e.target.closest('.sc-quick-btn[data-jump]');
-  if (!btn) return;
-  jumpToCard(btn.dataset.jump);
-});
 
 /* ──────── 試算表 view (日支生活費 + 保險費) ──────── */
 function getRateTableNode(id) {
@@ -2409,8 +2369,8 @@ function renderCalc() {
 
   $g.innerHTML = `
     <div class="calc-card" id="calc-living">
-      <h2><span class="calc-icon">💰</span>日支生活費試算</h2>
-      <p class="calc-card-desc">查詢 國外 / 大陸港澳 各城市日支數額(現行版)。資料來源:B-國外-002 / 003</p>
+      <h2><span class="calc-icon">💰</span>生活費試算<span style="font-size:11px;font-weight:500;color:var(--ink-3);margin-left:6px">(日支 + 派外進修月支)</span></h2>
+      <p class="calc-card-desc">輸入城市 → 同時顯示日支 (B-國外-002/003) 與派外進修/研究/實習適用之月支 (A-國外-024)</p>
       <div class="calc-row">
         <label for="calc-city">選擇地區 / 城市 (共 ${rows.length} 筆)</label>
         <input type="search" id="calc-city" list="calc-city-list" placeholder="輸入城市,如 東京、Beijing、紐約、巴黎…">
@@ -2421,19 +2381,7 @@ function renderCalc() {
       <div class="calc-result" id="calc-living-result">
         <div class="calc-result-label">請輸入或選擇地區</div>
       </div>
-    </div>
-
-    <div class="calc-card" id="calc-monthly">
-      <h2><span class="calc-icon">📚</span>月支生活費試算<span style="font-size:11px;font-weight:500;color:var(--ink-3);margin-left:6px">(派外進修/研究/實習)</span></h2>
-      <p class="calc-card-desc">出國 ≥31 日按月支領,依日支數額級距對應月支金額。資料來源:A-國外-024 派外進修補助表</p>
-      <div class="calc-row">
-        <label for="calc-monthly-city">選擇地區 / 城市 (沿用日支數額表)</label>
-        <input type="search" id="calc-monthly-city" list="calc-city-list" placeholder="輸入城市,如 東京、紐約、倫敦…">
-      </div>
-      <div class="calc-result" id="calc-monthly-result">
-        <div class="calc-result-label">輸入城市後自動帶出對應月支金額</div>
-      </div>
-      <details class="calc-card-desc" style="margin-top:10px;font-size:12px"><summary style="cursor:pointer;color:var(--ink-2)">📋 月支級距完整對照表</summary>
+      <details class="calc-card-desc" style="margin-top:10px;font-size:12px"><summary style="cursor:pointer;color:var(--ink-2)">📋 月支級距對照表 + 計算規則</summary>
         <div style="margin-top:8px;background:var(--surface-2);border-radius:6px;padding:8px 10px">
           <div style="font-size:11px;color:var(--ink-3);margin-bottom:6px">日支數額級距(美元) → 月支生活費(美元)</div>
           <div style="display:grid;grid-template-columns:1fr 1fr;gap:4px 12px;font-size:12px">
@@ -2463,7 +2411,7 @@ function renderCalc() {
     </div>
   `;
 
-  // ── 日支生活費互動 ──
+  // ── 生活費互動 (日支 + 月支同步顯示) ──
   const $cityInput = document.getElementById('calc-city');
   const $livingResult = document.getElementById('calc-living-result');
   function lookupLiving() {
@@ -2473,7 +2421,6 @@ function renderCalc() {
       $livingResult.innerHTML = '<div class="calc-result-label">請輸入或選擇地區</div>';
       return;
     }
-    // 比對 city / country / shortLabel
     const exact = rows.find(r => r.city.toLowerCase() === q || r.shortLabel.toLowerCase() === q);
     const partial = exact || rows.find(r => r.city.toLowerCase().includes(q) || r.shortLabel.toLowerCase().includes(q));
     if (!partial) {
@@ -2481,57 +2428,34 @@ function renderCalc() {
       $livingResult.innerHTML = `<div class="calc-result-label">查無「${q}」</div><div style="font-size:12px">試試輸入英文(Tokyo)、中文(東京)、或國家名(日本)</div>`;
       return;
     }
+    const dailyVal = parseInt(String(partial.value).replace(/,/g, ''), 10);
+    const tier = monthlyTiers.length ? findMonthlyByDailyRate(dailyVal) : null;
     $livingResult.className = 'calc-result hit';
     $livingResult.innerHTML = `
       <div class="calc-result-label">${partial.label}</div>
-      <div class="calc-result-value">${partial.value} <span style="font-size:14px;color:var(--ink-2);font-family:var(--font-zh)">${partial.unit}/日</span></div>
-      <div class="calc-result-meta">每日全額支給上限 (出國 15 日內)</div>
-      <a class="calc-jump" data-jump-card="${partial.sourceId}">📑 查看完整法源 (${partial.sourceId}) →</a>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:6px 0">
+        <div style="padding:8px 10px;background:var(--surface);border:1px solid var(--brand-line);border-radius:6px">
+          <div style="font-size:11px;color:var(--ink-3);font-weight:600;margin-bottom:2px">日支(短期 ≤15 日)</div>
+          <div style="font-size:20px;font-weight:700;color:var(--brand);font-family:var(--font-mono);line-height:1.2">${partial.value}</div>
+          <div style="font-size:11px;color:var(--ink-2)">${partial.unit}/日</div>
+          <a class="calc-jump" data-jump-card="${partial.sourceId}" style="font-size:11px;margin-top:4px;display:inline-block">📑 ${partial.sourceId}</a>
+        </div>
+        <div style="padding:8px 10px;background:var(--surface);border:1px solid ${tier ? 'var(--brand-line)' : 'var(--line)'};border-radius:6px${tier ? '' : ';opacity:.55'}">
+          <div style="font-size:11px;color:var(--ink-3);font-weight:600;margin-bottom:2px">月支(進修/實習 ≥31 日)</div>
+          ${tier ? `
+            <div style="font-size:20px;font-weight:700;color:var(--brand);font-family:var(--font-mono);line-height:1.2">${tier.monthly.toLocaleString()}</div>
+            <div style="font-size:11px;color:var(--ink-2)">美元/月 · 級距 ${tier.range}</div>
+            <a class="calc-jump" data-jump-card="A-國外旅費-024" style="font-size:11px;margin-top:4px;display:inline-block">📑 A-國外-024</a>
+          ` : `
+            <div style="font-size:13px;color:var(--ink-3);margin-top:6px">無對應級距</div>
+          `}
+        </div>
+      </div>
+      <div class="calc-result-meta">日支為每日全額上限;月支適用派外進修/研究/實習 ≥31 日</div>
     `;
   }
   $cityInput.addEventListener('input', lookupLiving);
   $cityInput.addEventListener('change', lookupLiving);
-
-  // ── 月支生活費(進修)互動 ──
-  const $monthlyInput = document.getElementById('calc-monthly-city');
-  const $monthlyResult = document.getElementById('calc-monthly-result');
-  function lookupMonthly() {
-    const q = ($monthlyInput.value || '').trim().toLowerCase();
-    if (!q) {
-      $monthlyResult.className = 'calc-result';
-      $monthlyResult.innerHTML = '<div class="calc-result-label">輸入城市後自動帶出對應月支金額</div>';
-      return;
-    }
-    if (!monthlyTiers.length) {
-      $monthlyResult.className = 'calc-result';
-      $monthlyResult.innerHTML = '<div class="calc-result-label">月支級距資料未載入</div>';
-      return;
-    }
-    const exact = rows.find(r => r.city.toLowerCase() === q || r.shortLabel.toLowerCase() === q);
-    const partial = exact || rows.find(r => r.city.toLowerCase().includes(q) || r.shortLabel.toLowerCase().includes(q));
-    if (!partial) {
-      $monthlyResult.className = 'calc-result';
-      $monthlyResult.innerHTML = `<div class="calc-result-label">查無「${q}」</div><div style="font-size:12px">大陸港澳地區因日支數額較低,常落到「169 以下」級距(月支 1,000 美元)</div>`;
-      return;
-    }
-    const dailyVal = parseInt(String(partial.value).replace(/,/g, ''), 10);
-    const tier = findMonthlyByDailyRate(dailyVal);
-    if (!tier) {
-      $monthlyResult.className = 'calc-result';
-      $monthlyResult.innerHTML = `<div class="calc-result-label">${partial.label}</div><div style="font-size:12px;color:var(--stop)">日支 ${dailyVal} 美元未對應到任何月支級距</div>`;
-      return;
-    }
-    $monthlyResult.className = 'calc-result hit';
-    $monthlyResult.innerHTML = `
-      <div class="calc-result-label">${partial.label}</div>
-      <div style="font-size:12px;color:var(--ink-2);margin-bottom:4px">日支 ${dailyVal} 美元 → 落於級距 <strong>${tier.range}</strong></div>
-      <div class="calc-result-value">${tier.monthly.toLocaleString()} <span style="font-size:14px;color:var(--ink-2);font-family:var(--font-zh)">美元/月</span></div>
-      <div class="calc-result-meta">出國進修/研究/實習 ≥31 日 月支生活費</div>
-      <a class="calc-jump" data-jump-card="A-國外旅費-024">📑 查看完整補助表 (A-國外-024) →</a>
-    `;
-  }
-  $monthlyInput.addEventListener('input', lookupMonthly);
-  $monthlyInput.addEventListener('change', lookupMonthly);
 
   // ── 保險費互動 ──
   const $tabs = document.querySelectorAll('#calc-ins-tabs .calc-tab');
