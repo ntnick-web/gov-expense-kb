@@ -1162,7 +1162,7 @@ body {
   }
   @page {
     margin: 18mm 16mm;
-    @bottom-left { content: "政府支出法規知識庫"; font-size: 9pt; color: #666; }
+    @bottom-left { content: "核銷這樣做!!! · 政府支出法規知識庫"; font-size: 9pt; color: #666; }
     @bottom-right { content: counter(page) " / " counter(pages); font-size: 9pt; color: #666; }
   }
 }
