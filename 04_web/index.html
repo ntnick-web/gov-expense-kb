@@ -1183,7 +1183,7 @@
 let compareList = [];
 
 /* ──────── 真實資料載入 (520 nodes from 03_index/) ──────── */
-const DATA_VERSION = '2026-04-28v';
+const DATA_VERSION = '2026-04-28w';
 let DATA = [];                 // 對外用的卡片資料 (mapped from nodes.json)
 let NODES_BY_ID = new Map();   // id → original node (含 file_path 等)
 let INCOMING_EDGES = new Map();// id → [from1, from2, ...] 反向引用
@@ -1210,18 +1210,19 @@ function splitTitle(rawTitle, id) {
   return { no: '', title: rawTitle };
 }
 
-// 卡片標題組裝:A 類加法規簡稱前綴;B 類沿用 title;C/D 類僅 title 不顯示 Q/(N) 序號
-function buildCardTitle(d) {
+// 卡片標題組裝:A 類加法規前綴(mode='short' 用簡稱、mode='full' 用完整正式名稱);B 類沿用 title;C/D 類僅 title 不顯示 Q/(N) 序號
+function buildCardTitle(d, mode = 'short') {
   const cat = d.id.split('-')[0];
   if (cat === 'A') {
     const law = PARENT_LAW[d.cat];
-    return { prefix: law ? law.short : '', no: d.no || '', title: d.title || '' };
+    const prefix = law ? (mode === 'full' ? law.full : law.short) : '';
+    return { prefix, no: d.no || '', title: d.title || '' };
   }
   // B / C / D:不加前綴、不顯示 no(去掉 Q1 / (六) 等序號)
   return { prefix: '', no: '', title: d.title || '' };
 }
-function buildCardTitleText(d) {
-  const t = buildCardTitle(d);
+function buildCardTitleText(d, mode = 'short') {
+  const t = buildCardTitle(d, mode);
   return [t.prefix, t.no, t.title].filter(Boolean).join(' ');
 }
 
@@ -1816,7 +1817,7 @@ async function openDrawer(idx) {
   // metadata 行 + 類別膠囊
   const reviewMeta = d.reviewLevel ? ` ${d.reviewLevel}` : '';
   document.getElementById("d-meta").innerHTML = `${d.id} <span class="sep"></span> ${d.updated || '尚未校對'}${reviewMeta} <span class="sep"></span> ${d.cat} · ${d.catLabel}`;
-  document.getElementById("d-title").textContent = buildCardTitleText(d);
+  document.getElementById("d-title").textContent = buildCardTitleText(d, 'full');
   document.getElementById("d-tags").innerHTML = (d.tags || []).map(t => `<span class="tag">${t}</span>`).join("");
   // 重置 status badge 元素
   const oldStatus = document.getElementById("d-status");
@@ -2001,7 +2002,7 @@ document.addEventListener("keydown", e => {
 document.getElementById("btn-copy").addEventListener("click", () => {
   if (currentIdx < 0) return;
   const d = currentList[currentIdx];
-  navigator.clipboard?.writeText(`${d.id} ${buildCardTitleText(d)}`);
+  navigator.clipboard?.writeText(`${d.id} ${buildCardTitleText(d, 'full')}`);
   flashHint("已複製：" + d.id);
 });
 // 已知 source_url 過弱 (連到首頁/列表) 的節點 → 改連更精確 URL
@@ -2893,7 +2894,7 @@ async function openCompareModal() {
             <svg class="icon" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6l-12 12"/></svg>
           </button>
         </div>
-        <h3 class="cmp-col-title">${buildCardTitleText(d)}</h3>
+        <h3 class="cmp-col-title">${buildCardTitleText(d, 'full')}</h3>
         <div>${statusBadge(d.status)}</div>
       </div>
       <div class="cmp-meta">
