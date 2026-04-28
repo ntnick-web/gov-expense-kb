@@ -1,7 +1,7 @@
 // 政府支出法規知識庫 — 前端主程式
 // 純 ES6,無框架。從 03_index/*.json 載入資料,渲染條文庫主介面。
 
-const DATA_VERSION = '2026-04-28p';
+const DATA_VERSION = '2026-04-28q';
 const DATA_BASE = '../03_index/';
 const MD_BASE = '../';
 const DATA_QS = '?v=' + DATA_VERSION;
@@ -133,6 +133,7 @@ const state = {
   nodeById: new Map(),
   incomingEdges: new Map(),  // to → [edges]
   filter: { parent: null, expense: null, category: null, tag: null, scenario: null, query: '' },
+  compareList: [],   // 比較模式:儲存最多 3 個 node ID
   activeId: null,
   treeOpen: new Set(),
   searchFocusIdx: -1,
@@ -485,8 +486,9 @@ function renderCard(n) {
   const isReviewed = !!n.reviewed;
   const reviewLevel = n.review_level || '';
   const status = n.status || '現行';
+  const inCompare = state.compareList.includes(n.id);
   const $c = el('div', {
-    class: 'card' + (isReviewed ? ' is-reviewed' : '') + (state.activeId === n.id ? ' is-active' : ''),
+    class: 'card' + (isReviewed ? ' is-reviewed' : '') + (state.activeId === n.id ? ' is-active' : '') + (inCompare ? ' is-comparing' : ''),
     role: 'listitem',
     'data-cat': cat,
     'data-id': n.id,
@@ -512,8 +514,11 @@ function renderCard(n) {
   const sourceHtml = n.source_url
     ? `<a class="source-link" href="${esc(n.source_url)}" target="_blank" rel="noopener" title="開啟原始出處">🔗 原始出處</a>`
     : '';
+  const compareBtnLabel = inCompare ? '✓ 已加入' : '+ 比較';
+  const compareBtnTitle = inCompare ? '已加入比較,點擊移除' : '加入並排比較 (最多 3 張)';
   $c.innerHTML = `
     ${flag}
+    <button class="card-compare-btn${inCompare ? ' is-active' : ''}" data-compare-toggle title="${compareBtnTitle}" type="button">${compareBtnLabel}</button>
     <div class="card-id">${esc(n.id)}</div>
     <h3 class="card-title">${esc(n.title)}${statusBadge}</h3>
     <div class="card-summary">${summaryHTML}</div>
@@ -523,12 +528,164 @@ function renderCard(n) {
       ${sourceHtml}
     </div>
   `;
-  // 阻止 source-link 觸發 openDrawer
+  // 阻止 source-link / compare-btn 觸發 openDrawer
   $c.onclick = (ev) => {
     if (ev.target.closest('.source-link')) return;
+    if (ev.target.closest('[data-compare-toggle]')) {
+      ev.stopPropagation();
+      toggleCompare(n.id);
+      return;
+    }
     openDrawer(n.id);
   };
   return $c;
+}
+
+// 比較模式 helper:加入 / 移除一個節點
+function toggleCompare(id) {
+  const idx = state.compareList.indexOf(id);
+  if (idx >= 0) {
+    state.compareList.splice(idx, 1);
+    toast('已從比較中移除');
+  } else {
+    if (state.compareList.length >= 3) {
+      toast('比較最多 3 張卡(請先移除其他項)');
+      return;
+    }
+    state.compareList.push(id);
+    toast(`已加入比較 (${state.compareList.length}/3)`);
+  }
+  renderCompareBar();
+  renderCards();  // 重渲染讓卡片狀態同步
+  // 抽屜也同步(若開著)
+  if (state.activeId) updateDrawerCompareBtn();
+}
+
+function clearCompare() {
+  state.compareList = [];
+  renderCompareBar();
+  renderCards();
+  if (state.activeId) updateDrawerCompareBtn();
+}
+
+// 渲染浮動比較條(底部固定):chips + 比較 / 清空 按鈕
+function renderCompareBar() {
+  const $bar = document.getElementById('compare-bar');
+  const $chips = document.getElementById('compare-bar-chips');
+  const $show = document.getElementById('compare-bar-show');
+  if (!$bar || !$chips) return;
+  if (state.compareList.length === 0) {
+    $bar.hidden = true;
+    return;
+  }
+  $bar.hidden = false;
+  $chips.innerHTML = state.compareList.map(id => {
+    const n = state.nodeById.get(id);
+    if (!n) return '';
+    return `<span class="compare-chip" data-id="${esc(id)}">
+      <span class="compare-chip-id">${esc(id)}</span>
+      <span class="compare-chip-title">${esc(n.title)}</span>
+      <button class="compare-chip-x" data-remove="${esc(id)}" type="button" aria-label="移除">✕</button>
+    </span>`;
+  }).join('');
+  $chips.querySelectorAll('[data-remove]').forEach(b => {
+    b.onclick = (ev) => { ev.stopPropagation(); toggleCompare(b.dataset.remove); };
+  });
+  if ($show) {
+    $show.disabled = state.compareList.length < 2;
+    $show.textContent = state.compareList.length < 2
+      ? `📊 並排比較 (還需 ${2 - state.compareList.length} 張)`
+      : `📊 並排比較 (${state.compareList.length} 張)`;
+  }
+}
+
+// 抽屜「+ 加入比較」按鈕同步狀態
+function updateDrawerCompareBtn() {
+  const $btn = document.getElementById('drawer-compare-btn');
+  if (!$btn || !state.activeId) return;
+  const inCompare = state.compareList.includes(state.activeId);
+  $btn.textContent = inCompare ? '✓ 已加入比較' : '+ 加入比較';
+  $btn.classList.toggle('is-active', inCompare);
+}
+
+// 開啟並排比較 modal
+function openCompareModal() {
+  if (state.compareList.length < 2) return;
+  const $modal = document.getElementById('compare-modal');
+  const $body = document.getElementById('compare-modal-body');
+  if (!$modal || !$body) return;
+  const nodes = state.compareList.map(id => state.nodeById.get(id)).filter(Boolean);
+  // 收集所有 metadata 欄位 → 偵測哪些有差異
+  const META_FIELDS = [
+    ['類別', n => CATEGORY_LABEL[n.id.split('-')[0]] || ''],
+    ['母題', n => n.parent || ''],
+    ['機關', n => n.agency || ''],
+    ['版本', n => n.version || ''],
+    ['校對', n => `${n.reviewed || ''}${n.review_level ? '(' + n.review_level + ')' : ''}`],
+    ['狀態', n => n.status || '現行'],
+    ['標籤', n => (n.tags || []).join('、')],
+  ];
+  const isDiff = META_FIELDS.map(([_, fn]) => {
+    const vals = nodes.map(fn);
+    return new Set(vals).size > 1;
+  });
+  $body.innerHTML = `<div class="compare-cols" data-cols="${nodes.length}">
+    ${nodes.map((n, i) => `
+      <div class="compare-col">
+        <div class="compare-col-header">
+          <span class="badge">${esc(n.id)}</span>
+          <h3>${esc(n.title)}</h3>
+          <button class="compare-col-remove icon-btn" data-remove="${esc(n.id)}" aria-label="移除此卡">✕</button>
+        </div>
+        <div class="compare-col-meta">
+          ${META_FIELDS.map(([k, fn], idx) => `
+            <div class="compare-meta-row${isDiff[idx] ? ' is-diff' : ''}">
+              <span class="compare-meta-key">${esc(k)}</span>
+              <span class="compare-meta-val">${esc(fn(n) || '—')}</span>
+            </div>
+          `).join('')}
+        </div>
+        <div class="compare-col-body" data-id="${esc(n.id)}">
+          <p style="color:var(--text-muted);font-size:12px">載入中…</p>
+        </div>
+        <div class="compare-col-footer">
+          <button class="link-btn" data-open="${esc(n.id)}">📑 開啟此卡完整抽屜 →</button>
+        </div>
+      </div>
+    `).join('')}
+  </div>`;
+  // 載入各 column 的 markdown body
+  for (const n of nodes) {
+    fetch(MD_BASE + n.file_path).then(r => r.text()).then(text => {
+      const $col = $body.querySelector(`.compare-col-body[data-id="${cssEsc(n.id)}"]`);
+      if (!$col) return;
+      let md = stripFrontMatter(text);
+      let rateHtml = '';
+      if (n.rate_table) {
+        rateHtml = renderRateTable(n.rate_table, n);
+        md = stripSection(md, '標準全文');
+      }
+      $col.innerHTML = rateHtml + renderMarkdown(md);
+      wireRateTableInteractions($col);
+      wireInsuranceWidgets($col);
+    }).catch(e => {
+      const $col = $body.querySelector(`.compare-col-body[data-id="${cssEsc(n.id)}"]`);
+      if ($col) $col.innerHTML = `<p style="color:#c00">載入失敗:${esc(e.message)}</p>`;
+    });
+  }
+  // 綁 remove / open 按鈕
+  $body.querySelectorAll('[data-remove]').forEach(b => {
+    b.onclick = () => { toggleCompare(b.dataset.remove); if (state.compareList.length < 2) closeCompareModal(); else openCompareModal(); };
+  });
+  $body.querySelectorAll('[data-open]').forEach(b => {
+    b.onclick = () => { closeCompareModal(); openDrawer(b.dataset.open); };
+  });
+  $modal.hidden = false;
+}
+
+function closeCompareModal() {
+  const $modal = document.getElementById('compare-modal');
+  if ($modal) $modal.hidden = true;
 }
 
 function renderTagCloud(visibleNodes) {
@@ -1763,6 +1920,7 @@ async function openDrawer(id, opts = {}) {
     metaHtml += `<span><a class="source-link" href="${esc(node.source_url)}" target="_blank" rel="noopener">🔗 原始出處</a></span>`;
   }
   document.getElementById('drawer-meta').innerHTML = metaHtml;
+  updateDrawerCompareBtn();
 
   // body
   const $body = document.getElementById('drawer-body');
@@ -2520,6 +2678,18 @@ function bindEvents() {
   // 抽屜
   document.getElementById('drawer-close').onclick = closeDrawer;
 
+  // 抽屜「+ 加入比較」
+  document.getElementById('drawer-compare-btn')?.addEventListener('click', () => {
+    if (state.activeId) toggleCompare(state.activeId);
+  });
+
+  // 比較模式 — 浮動條按鈕
+  document.getElementById('compare-bar-show')?.addEventListener('click', openCompareModal);
+  document.getElementById('compare-bar-clear')?.addEventListener('click', clearCompare);
+  document.querySelectorAll('[data-compare-close]').forEach(el => {
+    el.addEventListener('click', closeCompareModal);
+  });
+
   // 引用
   document.getElementById('copy-citation').onclick = () => {
     const id = state.activeId;
@@ -2597,6 +2767,9 @@ function bindEvents() {
     } else if (ev.key === '/' && document.activeElement.tagName !== 'INPUT') {
       ev.preventDefault(); $search.focus();
     } else if (ev.key === 'Escape') {
+      // 優先順序:比較 modal → 抽屜
+      const $cmp = document.getElementById('compare-modal');
+      if ($cmp && !$cmp.hidden) { closeCompareModal(); return; }
       const $drawer = document.getElementById('drawer');
       if (!$drawer.hidden) closeDrawer();
     } else if ((ev.key === 'ArrowLeft' || ev.key === 'ArrowRight') &&

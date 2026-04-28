@@ -4,10 +4,10 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>核銷這樣做!!! 政府支出法規知識庫</title>
-<link rel="stylesheet" href="assets/style.css?v=2026-04-28p">
-<link rel="preload" href="../03_index/nodes.json?v=2026-04-28p" as="fetch" crossorigin>
-<link rel="preload" href="../03_index/edges.json?v=2026-04-28p" as="fetch" crossorigin>
-<link rel="preload" href="../03_index/tags.json?v=2026-04-28p" as="fetch" crossorigin>
+<link rel="stylesheet" href="assets/style.css?v=2026-04-28q">
+<link rel="preload" href="../03_index/nodes.json?v=2026-04-28q" as="fetch" crossorigin>
+<link rel="preload" href="../03_index/edges.json?v=2026-04-28q" as="fetch" crossorigin>
+<link rel="preload" href="../03_index/tags.json?v=2026-04-28q" as="fetch" crossorigin>
 </head>
 <body data-theme="light" data-view="overview">
 
@@ -77,9 +77,32 @@
       <button id="copy-citation" class="link-btn">📋 複製引用</button>
       <button id="copy-link" class="link-btn">🔗 複製連結</button>
       <button id="copy-content" class="link-btn">📄 複製內文</button>
+      <button id="drawer-compare-btn" class="link-btn">+ 加入比較</button>
     </footer>
   </aside>
 </main>
+
+<!-- ────────────────────────────────────────────────
+     比較模式:浮動底部欄 + 並排 modal
+     ──────────────────────────────────────────────── -->
+<div id="compare-bar" class="compare-bar" hidden role="region" aria-label="比較項目">
+  <div class="compare-bar-label">📊 比較區</div>
+  <div id="compare-bar-chips" class="compare-bar-chips"></div>
+  <button id="compare-bar-show" class="link-btn" type="button">並排比較</button>
+  <button id="compare-bar-clear" class="link-btn" type="button">清空</button>
+</div>
+
+<div id="compare-modal" class="compare-modal" hidden role="dialog" aria-modal="true" aria-labelledby="compare-modal-title">
+  <div class="compare-modal-backdrop" data-compare-close></div>
+  <div class="compare-modal-panel">
+    <header class="compare-modal-header">
+      <h2 id="compare-modal-title">📊 並排比較</h2>
+      <span class="compare-modal-hint">差異欄位以黃色標示</span>
+      <button class="icon-btn" data-compare-close aria-label="關閉">✕</button>
+    </header>
+    <div id="compare-modal-body" class="compare-modal-body"></div>
+  </div>
+</div>
 
 <section id="view-scenarios" class="view scenarios-view" hidden aria-label="核銷情境">
   <header class="scenarios-header">
@@ -201,6 +224,6 @@
 <script defer src="https://static.cloudflareinsights.com/beacon.min.js"
         data-cf-beacon='{"token": "fd2a519ea4a348eda9d77bcfa08727f8"}'></script>
 
-<script type="module" src="assets/app.js?v=2026-04-28p"></script>
+<script type="module" src="assets/app.js?v=2026-04-28q"></script>
 </body>
 </html>

@@ -846,6 +846,290 @@ body {
   .rate-table tbody tr:hover td { background: transparent; }
 }
 
+/* ─────────────────────────────────────────────
+   比較模式 (2026-04-28q):卡片 + 抽屜「+ 比較」按鈕 + 浮動條 + 並排 modal
+   ───────────────────────────────────────────── */
+.card { position: relative; }
+.card-compare-btn {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  background: var(--bg-secondary);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 2px 9px;
+  font-size: 11px;
+  font-family: inherit;
+  color: var(--text-secondary);
+  cursor: pointer;
+  opacity: 0;
+  transition: opacity 0.15s, background 0.15s, border-color 0.15s;
+  z-index: 2;
+}
+.card:hover .card-compare-btn,
+.card-compare-btn.is-active {
+  opacity: 1;
+}
+.card-compare-btn:hover {
+  background: var(--bg-hover);
+  border-color: var(--color-A);
+  color: var(--text-primary);
+}
+.card-compare-btn.is-active {
+  background: #1565c0;
+  border-color: #0d47a1;
+  color: #fff;
+}
+.card.is-comparing {
+  border-color: #1976d2;
+  box-shadow: 0 0 0 2px rgba(25, 118, 210, 0.3);
+}
+
+/* 抽屜「+ 加入比較」按鈕 active 狀態 */
+#drawer-compare-btn.is-active {
+  background: #1565c0;
+  color: #fff;
+  border-color: #0d47a1;
+}
+
+/* 底部浮動比較條 */
+.compare-bar {
+  position: fixed;
+  bottom: 16px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 14px;
+  background: var(--bg-primary);
+  border: 2px solid #1976d2;
+  border-radius: 50px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.18);
+  z-index: 900;
+  max-width: calc(100vw - 32px);
+}
+.compare-bar-label {
+  font-weight: 700;
+  color: #1565c0;
+  font-size: 13px;
+  white-space: nowrap;
+}
+.compare-bar-chips {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+.compare-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: #e3f2fd;
+  border: 1px solid #90caf9;
+  border-radius: 14px;
+  padding: 3px 4px 3px 10px;
+  font-size: 12px;
+  max-width: 200px;
+}
+.compare-chip-id {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: #1565c0;
+  background: #fff;
+  padding: 1px 5px;
+  border-radius: 8px;
+}
+.compare-chip-title {
+  color: #1565c0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 120px;
+}
+.compare-chip-x {
+  background: transparent;
+  border: 0;
+  color: #1565c0;
+  cursor: pointer;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  font-size: 11px;
+  line-height: 1;
+  padding: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+.compare-chip-x:hover { background: #1976d2; color: #fff; }
+
+[data-theme="dark"] .compare-bar { background: #1c2733; border-color: #1976d2; }
+[data-theme="dark"] .compare-bar-label { color: #64b5f6; }
+[data-theme="dark"] .compare-chip { background: #1c2733; border-color: #1565c0; }
+[data-theme="dark"] .compare-chip-id { color: #64b5f6; background: #2c3a4a; }
+[data-theme="dark"] .compare-chip-title { color: #90caf9; }
+[data-theme="dark"] .compare-chip-x { color: #64b5f6; }
+
+/* 並排比較 modal */
+.compare-modal {
+  position: fixed;
+  inset: 0;
+  z-index: 1100;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.compare-modal-backdrop {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.5);
+}
+.compare-modal-panel {
+  position: relative;
+  width: min(96vw, 1500px);
+  height: min(92vh, 900px);
+  background: var(--bg-primary);
+  border-radius: 10px;
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.3);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+.compare-modal-header {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 12px 18px;
+  border-bottom: 1px solid var(--border);
+  flex-shrink: 0;
+}
+.compare-modal-header h2 {
+  margin: 0;
+  font-size: 17px;
+  color: var(--text-primary);
+}
+.compare-modal-hint {
+  font-size: 12px;
+  color: var(--text-muted);
+  margin-left: auto;
+  margin-right: 8px;
+}
+.compare-modal-body {
+  flex: 1;
+  overflow: hidden;
+  display: flex;
+}
+.compare-cols {
+  display: grid;
+  flex: 1;
+  height: 100%;
+}
+.compare-cols[data-cols="2"] { grid-template-columns: 1fr 1fr; }
+.compare-cols[data-cols="3"] { grid-template-columns: 1fr 1fr 1fr; }
+.compare-col {
+  display: flex;
+  flex-direction: column;
+  border-right: 1px solid var(--border);
+  overflow: hidden;
+}
+.compare-col:last-child { border-right: 0; }
+.compare-col-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 12px;
+  background: var(--bg-secondary);
+  border-bottom: 1px solid var(--border);
+  flex-shrink: 0;
+}
+.compare-col-header .badge {
+  font-size: 10px;
+  background: var(--bg-primary);
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-family: var(--font-mono);
+}
+.compare-col-header h3 {
+  flex: 1;
+  margin: 0;
+  font-size: 14px;
+  color: var(--text-primary);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.compare-col-remove {
+  width: 24px;
+  height: 24px;
+  font-size: 12px;
+  color: var(--text-muted);
+}
+.compare-col-meta {
+  background: var(--bg-secondary);
+  border-bottom: 1px solid var(--border);
+  font-size: 12px;
+  flex-shrink: 0;
+  max-height: 180px;
+  overflow-y: auto;
+}
+.compare-meta-row {
+  display: flex;
+  padding: 4px 12px;
+  gap: 8px;
+}
+.compare-meta-row.is-diff {
+  background: #fff9c4;
+  color: #5d4037;
+  font-weight: 500;
+}
+[data-theme="dark"] .compare-meta-row.is-diff {
+  background: #4d3f00;
+  color: #fff9c4;
+}
+.compare-meta-key {
+  color: var(--text-muted);
+  font-weight: 600;
+  min-width: 50px;
+}
+.compare-meta-row.is-diff .compare-meta-key { color: inherit; }
+.compare-meta-val { flex: 1; word-break: break-word; }
+.compare-col-body {
+  flex: 1;
+  overflow-y: auto;
+  padding: 14px 18px;
+  font-size: 13px;
+  line-height: 1.6;
+}
+.compare-col-footer {
+  border-top: 1px solid var(--border);
+  padding: 8px 12px;
+  background: var(--bg-secondary);
+  flex-shrink: 0;
+}
+
+/* 行動版:並排改成上下堆疊 */
+@media (max-width: 768px) {
+  .compare-modal-panel { width: 100vw; height: 100vh; border-radius: 0; }
+  .compare-cols[data-cols="2"],
+  .compare-cols[data-cols="3"] {
+    grid-template-columns: 1fr;
+    grid-template-rows: repeat(auto-fit, 1fr);
+    overflow-y: auto;
+  }
+  .compare-col { border-right: 0; border-bottom: 2px solid var(--border-strong); }
+  .compare-col:last-child { border-bottom: 0; }
+  .compare-bar {
+    bottom: 8px;
+    padding: 8px 10px;
+    gap: 6px;
+    border-radius: 16px;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+  .compare-bar-label { font-size: 11px; }
+  .compare-chip { font-size: 11px; }
+}
+
 /* 抽屜上下導航 (2026-04-28p) */
 .drawer-nav {
   display: inline-flex;
