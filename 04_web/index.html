@@ -370,6 +370,39 @@
   }
   @media (max-width: 880px) { .mobile-cats { display: flex; } }
 
+  /* ───── Mobile bottom tabbar (≤880px) ───── */
+  .mobile-tabbar {
+    display: none;
+    position: fixed; bottom: 0; left: 0; right: 0;
+    z-index: 50;
+    background: var(--bg);
+    border-top: 1px solid var(--line);
+    padding: 6px 8px max(env(safe-area-inset-bottom, 8px), 8px);
+    box-shadow: 0 -2px 12px rgba(0,0,0,.05);
+    gap: 4px;
+  }
+  @media (max-width: 880px) { .mobile-tabbar { display: flex; } }
+  .mobile-tab {
+    flex: 1;
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    gap: 2px;
+    padding: 7px 4px;
+    border-radius: 10px;
+    background: transparent; border: 0;
+    color: var(--ink-3);
+    font-size: 11px; line-height: 1.2;
+    cursor: pointer; user-select: none;
+    transition: background .14s, color .14s;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .mobile-tab .tab-emoji { font-size: 19px; line-height: 1; }
+  .mobile-tab.active {
+    background: var(--brand-soft); color: var(--brand);
+    font-weight: 600;
+  }
+  /* 確保抽屜 / compare modal 在 tabbar 之上 */
+  .drawer, .compare-modal { z-index: 100; }
+
   /* ───── 情境視圖 v2 ───── */
   .scenarios-view, .calc-view {
     display: none;
@@ -1178,12 +1211,19 @@
 
 <div class="hint" id="hint">已複製到剪貼簿</div>
 
+<!-- ───── Mobile bottom tabbar (≤880px 才顯示) ───── -->
+<nav class="mobile-tabbar" role="navigation" aria-label="主要導覽">
+  <button class="mobile-tab" data-entry="scenarios" type="button"><span class="tab-emoji">🧭</span><span>情境檢索</span></button>
+  <button class="mobile-tab" data-entry="library" type="button"><span class="tab-emoji">📑</span><span>條文庫</span></button>
+  <button class="mobile-tab" data-entry="calc" type="button"><span class="tab-emoji">🧮</span><span>試算表</span></button>
+</nav>
+
 <script>
 /* ──────── compare state (hoisted to top to avoid TDZ in renderCards) ──────── */
 let compareList = [];
 
 /* ──────── 真實資料載入 (520 nodes from 03_index/) ──────── */
-const DATA_VERSION = '2026-04-29a';
+const DATA_VERSION = '2026-04-29b';
 let DATA = [];                 // 對外用的卡片資料 (mapped from nodes.json)
 let NODES_BY_ID = new Map();   // id → original node (含 file_path 等)
 let INCOMING_EDGES = new Map();// id → [from1, from2, ...] 反向引用
@@ -1454,6 +1494,10 @@ function switchView(v) {
   document.getElementById('view-calc').classList.toggle('active', v === 'calc');
   // Sidebar 入口高亮 (情境 / 條文庫 / 試算表)
   document.querySelectorAll('.nav-item[data-entry]').forEach(it => {
+    it.classList.toggle('active', it.dataset.entry === v);
+  });
+  // Mobile tabbar 入口高亮(若已掛載)
+  document.querySelectorAll('.mobile-tabbar .mobile-tab').forEach(it => {
     it.classList.toggle('active', it.dataset.entry === v);
   });
 }
@@ -3009,6 +3053,27 @@ document.addEventListener("keydown", e => {
     closeCompareModal();
   }
 }, true);  // capture phase 搶在 drawer 之前
+
+// ───── Mobile bottom tabbar wiring ─────
+document.querySelectorAll('.mobile-tabbar .mobile-tab').forEach(btn => {
+  btn.addEventListener('click', () => {
+    const v = btn.dataset.entry;
+    if (!v) return;
+    switchView(v);
+    if (v === 'scenarios') renderScenarios();
+    if (v === 'calc') renderCalc();
+    renderSidebar();
+    syncMobileTabbar();
+    // 切 view 後捲回頂端,避免使用者迷失
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  });
+});
+function syncMobileTabbar() {
+  document.querySelectorAll('.mobile-tabbar .mobile-tab').forEach(it => {
+    it.classList.toggle('active', it.dataset.entry === currentView);
+  });
+}
+syncMobileTabbar();
 </script>
 </body>
 </html>
