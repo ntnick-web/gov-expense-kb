@@ -1183,7 +1183,7 @@
 let compareList = [];
 
 /* ──────── 真實資料載入 (520 nodes from 03_index/) ──────── */
-const DATA_VERSION = '2026-04-28w';
+const DATA_VERSION = '2026-04-28y';
 let DATA = [];                 // 對外用的卡片資料 (mapped from nodes.json)
 let NODES_BY_ID = new Map();   // id → original node (含 file_path 等)
 let INCOMING_EDGES = new Map();// id → [from1, from2, ...] 反向引用
@@ -1210,13 +1210,15 @@ function splitTitle(rawTitle, id) {
   return { no: '', title: rawTitle };
 }
 
-// 卡片標題組裝:A 類加法規前綴(mode='short' 用簡稱、mode='full' 用完整正式名稱);B 類沿用 title;C/D 類僅 title 不顯示 Q/(N) 序號
+// 卡片標題組裝:A 類有「第N條」結構才加母題法規前綴(mode='short' 用簡稱、mode='full' 用完整正式名稱);
+// 無條次結構者(獨立法規/支給標準如派外進修補助表)直接用 title;B 類沿用 title;C/D 類僅 title 不顯示 Q/(N) 序號
 function buildCardTitle(d, mode = 'short') {
   const cat = d.id.split('-')[0];
   if (cat === 'A') {
+    if (!d.no) return { prefix: '', no: '', title: d.title || '' };  // 無條次 = 獨立法規,title 已完整
     const law = PARENT_LAW[d.cat];
     const prefix = law ? (mode === 'full' ? law.full : law.short) : '';
-    return { prefix, no: d.no || '', title: d.title || '' };
+    return { prefix, no: d.no, title: d.title || '' };
   }
   // B / C / D:不加前綴、不顯示 no(去掉 Q1 / (六) 等序號)
   return { prefix: '', no: '', title: d.title || '' };
@@ -1249,6 +1251,22 @@ async function loadAllData() {
     .filter(n => {
       if (n.status === '已廢止' && !n.effective_period) return false;
       return true;
+    })
+    .sort((a, b) => {
+      // 1. 母題序(PARENTS 定義)
+      const pi = PARENTS.indexOf(a.parent || '') - PARENTS.indexOf(b.parent || '');
+      if (pi !== 0) return pi;
+      // 2. 類別代碼 A < B < C < D
+      const ca = a.id.split('-')[0], cb = b.id.split('-')[0];
+      if (ca !== cb) return ca < cb ? -1 : 1;
+      // 3. 有「第N條」結構者(splitTitle no 不空)優先;獨立法規(無條次)排最後
+      const aHasNo = /^第[一二三四五六七八九十百零0-9]+[條點]/.test(a.title || '') || /^Q\d+/.test(a.title || '') || /^（[一二三四五六七八九十]+）/.test(a.title || '');
+      const bHasNo = /^第[一二三四五六七八九十百零0-9]+[條點]/.test(b.title || '') || /^Q\d+/.test(b.title || '') || /^（[一二三四五六七八九十]+）/.test(b.title || '');
+      if (aHasNo !== bHasNo) return aHasNo ? -1 : 1;
+      // 4. 同類內按 ID 末段數字升序
+      const ia = parseInt(a.id.split('-').pop(), 10) || 0;
+      const ib = parseInt(b.id.split('-').pop(), 10) || 0;
+      return ia - ib;
     })
     .map(n => {
       const cat = n.id.split('-')[0];
@@ -1661,10 +1679,18 @@ function renderRateTableHtml(rt, node) {
     </div>`);
   }
 
-  // sections 模式
+  // 各 section / 整表 notes 渲染 helper
+  const renderRtNotes = (notes, headlineForTable) => {
+    if (!Array.isArray(notes) || !notes.length) return '';
+    if (headlineForTable) {
+      return `<div style="margin-top:12px;padding:10px 12px;background:var(--surface-2);border-radius:6px;border-left:3px solid var(--ink-3)"><div style="font-size:11px;font-weight:700;color:var(--ink-3);text-transform:uppercase;letter-spacing:.06em;margin-bottom:4px">📝 整表備註</div><ol style="margin:0;padding-left:20px;font-size:12px;color:var(--ink-2);line-height:1.7">${notes.map(n => `<li>${n}</li>`).join('')}</ol></div>`;
+    }
+    return `<ol style="margin:6px 0 0;padding-left:20px;font-size:11.5px;color:var(--ink-3);line-height:1.65">${notes.map(n => `<li>${n}</li>`).join('')}</ol>`;
+  };
+
+  // sections 模式 — 顯示全部 sections(原 limit=4 會漏掉長表的後段章節)
   if (Array.isArray(rt.sections)) {
-    const limit = isCrossSection ? 999 : 8;  // 跨節搜尋時不限筆數,讓 filter 動作有效
-    for (const sec of rt.sections.slice(0, isCrossSection ? rt.sections.length : 4)) {
+    for (const sec of rt.sections) {
       html.push(`<div class="rt-section" data-sec-title="${sec.title || ''}">`);
       if (sec.title) html.push(`<div style="font-weight:600;font-size:13px;margin:12px 0 6px;color:var(--ink-2)">${sec.title}</div>`);
       if (Array.isArray(sec.headers) && Array.isArray(sec.rows)) {
@@ -1682,9 +1708,10 @@ function renderRateTableHtml(rt, node) {
       } else if (sec.summary) {
         html.push(`<div style="padding:8px 12px;background:var(--surface);border-radius:6px;font-size:13px">${sec.summary}</div>`);
       }
+      // 各 section 備註(計算規則/折扣/排除等)
+      html.push(renderRtNotes(sec.notes));
       html.push('</div>');
     }
-    if (!isCrossSection && rt.sections.length > 4) html.push(`<div style="font-size:11px;color:var(--ink-3);margin-top:8px">…另有 ${rt.sections.length - 4} 個章節</div>`);
   } else if (Array.isArray(rt.headers) && Array.isArray(rt.rows)) {
     // flat 模式
     const rows = rt.rows.slice(0, 50);
@@ -1699,6 +1726,8 @@ function renderRateTableHtml(rt, node) {
     html.push('</tbody></table></div>');
     if (rt.rows.length > 50) html.push(`<div style="font-size:11px;color:var(--ink-3);margin-top:4px">…還有 ${rt.rows.length - 50} 列</div>`);
   }
+  // 整表備註(rt.notes)— 適用範圍/通則/法源等,放在所有 sections / flat table 之後
+  html.push(renderRtNotes(rt.notes, true));
   html.push('</div>');
   return html.join('');
 }
@@ -2015,13 +2044,16 @@ const SOURCE_URL_OVERRIDE = {
 function resolveSourceUrl(d) {
   return SOURCE_URL_OVERRIDE[d.id] || d.sourceUrl || '';
 }
-document.getElementById("btn-source").addEventListener("click", () => {
+function openSourceUrlForCurrent() {
   if (currentIdx < 0) return;
   const d = currentList[currentIdx];
   const url = resolveSourceUrl(d);
   if (url) window.open(url, '_blank', 'noopener');
   else flashHint('此節點無原始出處');
-});
+}
+document.getElementById("btn-source").addEventListener("click", openSourceUrlForCurrent);
+// drawer footer 主按鈕「查看法規全文 →」=同 btn-source 功能,連到主計總處原始出處
+document.getElementById("btn-prev-next")?.addEventListener("click", openSourceUrlForCurrent);
 
 /* ──────── sidebar / chip / search 動態渲染 ──────── */
 function renderSidebar() {
