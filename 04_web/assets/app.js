@@ -1,7 +1,7 @@
 // 政府支出法規知識庫 — 前端主程式
 // 純 ES6,無框架。從 03_index/*.json 載入資料,渲染條文庫主介面。
 
-const DATA_VERSION = '2026-04-28n';
+const DATA_VERSION = '2026-04-28o';
 const DATA_BASE = '../03_index/';
 const MD_BASE = '../';
 const DATA_QS = '?v=' + DATA_VERSION;
@@ -336,6 +336,13 @@ function filteredNodes() {
   const sc = state.filter.scenario ? state.scenariosById.get(state.filter.scenario) : null;
   const scenarioPrimary = sc ? new Set(sc.primary_ids || []) : null;
   const scenarioTags = sc ? new Set(sc.tags || []) : null;
+  // query 過濾:標題 / 標籤 / 內文 任一命中即顯示(含同義詞展開)
+  const q = (state.filter.query || '').trim().toLowerCase();
+  const expandedQ = q ? expandSynonyms(q) : [];
+  // 預先建 search corpus by id 對照(避免每筆都遍歷)
+  if (q && !state._searchCorpusById) {
+    state._searchCorpusById = new Map(state.searchCorpus.map(d => [d.id, d]));
+  }
   return state.nodes.filter(n => {
     if (!isVisible(n)) return false;
     if (state.filter.parent && n.parent !== state.filter.parent) return false;
@@ -344,10 +351,22 @@ function filteredNodes() {
     if (state.filter.category && cat !== state.filter.category) return false;
     if (state.filter.tag && !(n.tags || []).includes(state.filter.tag)) return false;
     if (sc) {
-      // 情境過濾:在 primary_ids ∪ tag 命中
       const inPrimary = scenarioPrimary.has(n.id);
       const tagHit = (n.tags || []).some(t => scenarioTags.has(t));
       if (!inPrimary && !tagHit) return false;
+    }
+    if (q) {
+      const titleLower = n.title.toLowerCase();
+      const tags = (n.tags || []).map(t => t.toLowerCase());
+      const doc = state._searchCorpusById?.get(n.id);
+      const bodyLower = (doc?.body || '').toLowerCase();
+      const summaryLower = (doc?.summary || '').toLowerCase();
+      const hit = expandedQ.some(term =>
+        titleLower.includes(term) ||
+        tags.some(t => t.includes(term)) ||
+        bodyLower.includes(term) ||
+        summaryLower.includes(term));
+      if (!hit) return false;
     }
     return true;
   });
@@ -416,6 +435,29 @@ function renderCards() {
   const $betaBanner = document.getElementById('beta-banner');
   if ($betaBanner) {
     $betaBanner.hidden = !(state.filter.parent && BETA_PARENTS.has(state.filter.parent));
+  }
+
+  // Query banner — 顯示目前以搜尋字詞過濾,可一鍵清除
+  let $qBanner = document.getElementById('query-banner');
+  if (!$qBanner) {
+    $qBanner = el('div', { id: 'query-banner', class: 'query-banner' });
+    $betaBanner?.parentNode?.insertBefore($qBanner, $betaBanner.nextSibling);
+  }
+  if (state.filter.query) {
+    $qBanner.hidden = false;
+    $qBanner.innerHTML = `
+      <span class="query-banner-icon">🔍</span>
+      <span class="query-banner-text">搜尋條件:<strong>${esc(state.filter.query)}</strong> · 命中 ${list.length} 筆</span>
+      <button class="link-btn" id="query-banner-clear" type="button">✕ 清除搜尋</button>
+    `;
+    document.getElementById('query-banner-clear')?.addEventListener('click', () => {
+      setFilter({ query: '' });
+      const $si = document.getElementById('search-input');
+      if ($si) $si.value = '';
+    });
+  } else {
+    $qBanner.hidden = true;
+    $qBanner.innerHTML = '';
   }
 
   // 依類別群組顯示
@@ -1757,27 +1799,51 @@ function closeDrawer() {
 }
 
 function appendRelatedSection($body, node) {
-  // 出連結:本節點引用了誰(從 node.related)
+  // 出連結:本節點引用了誰
   const outgoing = (node.related || [])
     .map(rid => state.nodeById.get(rid))
     .filter(Boolean);
-  // 入連結:本節點被誰引用(從 incomingEdges)
+  // 入連結:本節點被誰引用
   const incoming = (state.incomingEdges.get(node.id) || [])
     .map(e => state.nodeById.get(e.from))
     .filter(Boolean);
+  // 同類別 siblings:同 parent + 同 expense layer 的其他節點(去除已在 outgoing/incoming 內者)
+  const seenIds = new Set([node.id, ...outgoing.map(n => n.id), ...incoming.map(n => n.id)]);
+  const myExpense = nodeExpenseLayer(node);
+  const siblings = state.nodes
+    .filter(n => !seenIds.has(n.id)
+              && n.parent === node.parent
+              && isVisible(n)
+              && (myExpense ? nodeExpenseLayer(n) === myExpense : true))
+    .slice(0, 8);  // 限制 8 個避免太長
 
-  if (outgoing.length === 0 && incoming.length === 0) return;
+  if (outgoing.length === 0 && incoming.length === 0 && siblings.length === 0) return;
 
-  const renderList = (label, list) => {
+  // 渲染單一分組(icon + 標題 + 計數 + 連結列表)
+  const renderGroup = (icon, label, hint, list, cls) => {
     if (list.length === 0) return '';
-    const links = list.map(n => `<a data-jump="${esc(n.id)}">${esc(n.title)}</a>`).join('、');
-    return `<div class="related-line"><strong>${label} (${list.length}):</strong> ${links}</div>`;
+    const links = list.map(n => {
+      const cat = (n.id.split('-')[0]) || '';
+      return `<a class="related-link" data-jump="${esc(n.id)}" title="${esc(n.id)} · ${esc(n.parent)}"><span class="related-link-cat dot-${esc(cat)}">${esc(cat)}</span>${esc(n.title)}</a>`;
+    }).join('');
+    return `
+      <div class="related-group ${cls}">
+        <div class="related-group-header">
+          <span class="related-group-icon">${icon}</span>
+          <strong>${label}</strong>
+          <span class="related-group-count">${list.length}</span>
+          <span class="related-group-hint">${hint}</span>
+        </div>
+        <div class="related-group-links">${links}</div>
+      </div>`;
   };
 
   const $box = el('div', { class: 'related-section' });
   $box.innerHTML = `
-    ${renderList('本節點引用', outgoing)}
-    ${renderList('本節點被以下引用', incoming)}
+    <div class="related-section-title">🔗 相關規定</div>
+    ${renderGroup('→', '本節點引用', '此節點明文提及的條文 / 函釋', outgoing, 'is-outgoing')}
+    ${renderGroup('←', '被以下引用', '其他節點提及此節點之處', incoming, 'is-incoming')}
+    ${renderGroup('≈', '同類別其他', `同${esc(node.parent)}${myExpense ? ' · ' + esc(myExpense) : ''}的其他條文`, siblings, 'is-siblings')}
   `.trim();
 
   $box.querySelectorAll('a[data-jump]').forEach(a => {
@@ -2305,6 +2371,17 @@ function renderSearchResults(results, query, rateHits) {
     `;
     $li.onclick = () => { closeSearch(); openDrawer(doc.id); };
     $list.appendChild($li);
+  }
+  // 「在條文庫看全部」按鈕(套 query 過濾,跳到條文庫主畫面)
+  if (results.length > 0 && query.trim()) {
+    const $more = el('li', { class: 'search-result-more', role: 'option' });
+    $more.innerHTML = `<button type="button">📑 在條文庫看「<strong>${esc(query)}</strong>」全部相關條文 →</button>`;
+    $more.onclick = () => {
+      closeSearch();
+      switchView('library');
+      setFilter({ parent: null, expense: null, category: null, tag: null, scenario: null, query: query.trim() });
+    };
+    $list.appendChild($more);
   }
   $list.hidden = false;
 }

@@ -846,27 +846,158 @@ body {
   .rate-table tbody tr:hover td { background: transparent; }
 }
 
-/* 抽屜內「正向 / 反向關聯」對稱顯示 */
+/* 抽屜內「相關規定」分組顯示(2026-04-28o):引用 / 被引用 / 同類別 */
 .related-section {
   margin-top: 18px;
-  padding: 10px 12px;
+  padding: 12px 14px;
   background: var(--bg-secondary);
-  border-radius: 6px;
+  border-radius: 8px;
   font-size: 13px;
   display: flex;
   flex-direction: column;
+  gap: 12px;
+}
+.related-section-title {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin-bottom: -4px;
+}
+.related-group {
+  border-left: 3px solid var(--border-strong);
+  padding: 6px 10px;
+  background: var(--bg-primary);
+  border-radius: 4px;
+}
+.related-group.is-outgoing { border-left-color: #1976d2; }
+.related-group.is-incoming { border-left-color: #43a047; }
+.related-group.is-siblings { border-left-color: #fb8c00; }
+.related-group-header {
+  display: flex;
+  align-items: center;
   gap: 6px;
+  margin-bottom: 6px;
+  flex-wrap: wrap;
 }
-.related-section .related-line strong {
+.related-group-icon {
+  font-weight: 700;
+  font-size: 14px;
+  color: var(--text-muted);
+  width: 18px;
+  text-align: center;
+}
+.related-group.is-outgoing .related-group-icon { color: #1976d2; }
+.related-group.is-incoming .related-group-icon { color: #43a047; }
+.related-group.is-siblings .related-group-icon { color: #fb8c00; }
+.related-group-header strong {
+  font-size: 12px;
+  color: var(--text-primary);
+}
+.related-group-count {
+  font-size: 11px;
+  background: var(--bg-secondary);
+  padding: 1px 7px;
+  border-radius: 10px;
   color: var(--text-secondary);
-  margin-right: 4px;
 }
-.related-section .related-line a {
-  color: var(--accent);
+.related-group-hint {
+  font-size: 11px;
+  color: var(--text-muted);
+  margin-left: 4px;
+}
+.related-group-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+}
+.related-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  background: var(--bg-secondary);
+  border: 1px solid var(--border);
+  padding: 3px 8px;
+  border-radius: 4px;
   cursor: pointer;
   text-decoration: none;
+  color: var(--text-primary);
+  font-size: 12px;
+  transition: background 0.15s, border-color 0.15s;
 }
-.related-section .related-line a:hover { text-decoration: underline; }
+.related-link:hover {
+  background: var(--bg-hover);
+  border-color: var(--color-A);
+}
+.related-link-cat {
+  display: inline-block;
+  width: 14px;
+  height: 14px;
+  line-height: 14px;
+  text-align: center;
+  font-size: 9px;
+  font-weight: 700;
+  border-radius: 3px;
+  color: #fff;
+}
+.related-link-cat.dot-A { background: var(--color-A); }
+.related-link-cat.dot-B { background: var(--color-B); }
+.related-link-cat.dot-C { background: var(--color-C); }
+.related-link-cat.dot-D { background: var(--color-D); }
+.related-link-cat.dot-N { background: var(--color-N); }
+
+/* Query banner (cards view 上方,顯示目前搜尋過濾條件) */
+.query-banner {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 14px;
+  margin-bottom: 12px;
+  background: linear-gradient(90deg, #e3f2fd 0%, #bbdefb 100%);
+  border: 1px solid #1976d2;
+  border-radius: 6px;
+  font-size: 13px;
+  color: #1565c0;
+}
+.query-banner-icon { font-size: 16px; }
+.query-banner-text { flex: 1; }
+.query-banner-text strong {
+  background: #fff9c4;
+  padding: 1px 6px;
+  border-radius: 3px;
+  color: #5d4037;
+  font-weight: 600;
+}
+[data-theme="dark"] .query-banner {
+  background: linear-gradient(90deg, #1c2733 0%, #243140 100%);
+  border-color: #1976d2;
+  color: #64b5f6;
+}
+[data-theme="dark"] .query-banner-text strong {
+  background: #5d4500;
+  color: #fff9c4;
+}
+
+/* 搜尋下拉「查看全部」按鈕 */
+.search-result-more {
+  border-top: 1px solid var(--border);
+  padding: 0 !important;
+  background: var(--bg-secondary);
+}
+.search-result-more button {
+  width: 100%;
+  padding: 10px 14px;
+  background: transparent;
+  border: 0;
+  cursor: pointer;
+  font-family: inherit;
+  font-size: 13px;
+  color: #1565c0;
+  text-align: left;
+  font-weight: 500;
+}
+.search-result-more button:hover { background: #e3f2fd; }
+[data-theme="dark"] .search-result-more button { color: #64b5f6; }
+[data-theme="dark"] .search-result-more button:hover { background: #1c2733; }
 
 /* Markdown body */
 
