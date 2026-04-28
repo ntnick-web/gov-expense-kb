@@ -1,7 +1,7 @@
 // 政府支出法規知識庫 — 前端主程式
 // 純 ES6,無框架。從 03_index/*.json 載入資料,渲染條文庫主介面。
 
-const DATA_VERSION = '2026-04-28o';
+const DATA_VERSION = '2026-04-28p';
 const DATA_BASE = '../03_index/';
 const MD_BASE = '../';
 const DATA_QS = '?v=' + DATA_VERSION;
@@ -410,7 +410,7 @@ function renderCards() {
       if (target?.filter) setFilter(target.filter);
     };
   });
-  $treeClear.hidden = !(state.filter.parent || state.filter.expense || state.filter.category || state.filter.tag || state.filter.scenario);
+  $treeClear.hidden = !(state.filter.parent || state.filter.expense || state.filter.category || state.filter.tag || state.filter.scenario || state.filter.query);
 
   // 情境 banner
   const $scBanner = document.getElementById('scenario-banner');
@@ -1730,6 +1730,11 @@ function svgPoint(svg, evt) {
 async function openDrawer(id, opts = {}) {
   const node = state.nodeById.get(id);
   if (!node) return;
+  // 第一次開抽屜時記下 cards 區的 scrollTop,稍後關閉時還原
+  const $cards = document.getElementById('cards');
+  if (!$drawer_isOpen() && $cards) {
+    state._cardsScrollTop = $cards.scrollTop;
+  }
   state.activeId = id;
   document.querySelectorAll('.card.is-active').forEach(c => c.classList.remove('is-active'));
   document.querySelector(`.card[data-id="${cssEsc(id)}"]`)?.classList.add('is-active');
@@ -1738,6 +1743,7 @@ async function openDrawer(id, opts = {}) {
   $drawer.hidden = false;
   document.getElementById('drawer-id').textContent = id;
   document.getElementById('drawer-title').textContent = node.title;
+  updateDrawerNav();
 
   // metadata 行
   const status = node.status || '現行';
@@ -1796,6 +1802,36 @@ function closeDrawer() {
   document.getElementById('drawer').hidden = true;
   state.activeId = null;
   document.querySelectorAll('.card.is-active').forEach(c => c.classList.remove('is-active'));
+  // 還原 cards 區的捲動位置(避免關抽屜後跳回頂端)
+  const $cards = document.getElementById('cards');
+  if ($cards && state._cardsScrollTop != null) {
+    requestAnimationFrame(() => { $cards.scrollTop = state._cardsScrollTop; });
+  }
+}
+
+function $drawer_isOpen() {
+  return !document.getElementById('drawer')?.hidden;
+}
+
+// 計算目前抽屜在 filtered 列表中的位置 + 控制 ← / → 按鈕
+function updateDrawerNav() {
+  const $prev = document.getElementById('drawer-prev');
+  const $next = document.getElementById('drawer-next');
+  const $pos = document.getElementById('drawer-pos');
+  if (!$prev || !$next || !$pos) return;
+  const list = filteredNodes();
+  const idx = list.findIndex(n => n.id === state.activeId);
+  if (idx < 0) {
+    $prev.disabled = true;
+    $next.disabled = true;
+    $pos.textContent = '';
+    return;
+  }
+  $prev.disabled = idx === 0;
+  $next.disabled = idx === list.length - 1;
+  $pos.textContent = `${idx + 1} / ${list.length}`;
+  $prev.onclick = () => { if (idx > 0) openDrawer(list[idx - 1].id); };
+  $next.onclick = () => { if (idx < list.length - 1) openDrawer(list[idx + 1].id); };
 }
 
 function appendRelatedSection($body, node) {
@@ -2497,10 +2533,21 @@ function bindEvents() {
     const url = location.origin + location.pathname + '#' + state.activeId;
     navigator.clipboard?.writeText(url).then(() => toast('已複製連結'));
   };
+  // 複製抽屜內文(純文字,去除 HTML)
+  document.getElementById('copy-content').onclick = () => {
+    const $body = document.getElementById('drawer-body');
+    if (!$body || !state.activeId) return;
+    const node = state.nodeById.get(state.activeId);
+    const header = node ? `${node.title}\n${state.activeId}\n出處:${node.source || ''}\n${'─'.repeat(40)}\n\n` : '';
+    const plain = $body.innerText.trim();
+    navigator.clipboard?.writeText(header + plain).then(() => toast('已複製內文(純文字)'));
+  };
 
-  // 分類樹清除
+  // 分類樹清除 — master clear:同時清掉 parent/expense/category/tag/scenario/query
   document.getElementById('tree-clear').onclick = () => {
-    setFilter({ parent: null, expense: null, category: null, tag: null, scenario: null });
+    setFilter({ parent: null, expense: null, category: null, tag: null, scenario: null, query: '' });
+    const $si = document.getElementById('search-input');
+    if ($si) $si.value = '';
     if (location.hash.startsWith('#scenario=')) {
       history.replaceState(null, '', location.pathname);
     }

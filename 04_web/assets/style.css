@@ -846,6 +846,51 @@ body {
   .rate-table tbody tr:hover td { background: transparent; }
 }
 
+/* 抽屜上下導航 (2026-04-28p) */
+.drawer-nav {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  margin-left: auto;
+  margin-right: 8px;
+  background: var(--bg-secondary);
+  border-radius: 6px;
+  padding: 2px 4px;
+}
+.drawer-nav-btn {
+  width: 26px;
+  height: 26px;
+  font-size: 18px;
+  font-weight: 700;
+  line-height: 1;
+  border: 0;
+  background: transparent;
+  border-radius: 4px;
+  color: var(--text-secondary);
+  cursor: pointer;
+  padding: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+.drawer-nav-btn:hover:not(:disabled) {
+  background: var(--bg-hover);
+  color: var(--color-A);
+}
+.drawer-nav-btn:disabled {
+  color: var(--text-muted);
+  cursor: not-allowed;
+  opacity: 0.4;
+}
+.drawer-pos {
+  font-size: 11px;
+  color: var(--text-muted);
+  font-family: var(--font-mono);
+  min-width: 50px;
+  text-align: center;
+  padding: 0 4px;
+}
+
 /* 抽屜內「相關規定」分組顯示(2026-04-28o):引用 / 被引用 / 同類別 */
 .related-section {
   margin-top: 18px;
@@ -1754,9 +1799,61 @@ body.modal-open { overflow: hidden; }
     z-index: 1000;
     border-left: none;
   }
-  .drawer-header { padding: 12px 14px 6px; }
+  .drawer-header {
+    padding: 12px 14px 6px;
+    flex-wrap: wrap;
+    row-gap: 6px;
+  }
+  .drawer-header h2 {
+    font-size: 16px;
+    line-height: 1.4;
+    flex-basis: 100%;
+    order: 4;
+    margin: 4px 0 0;
+  }
+  .drawer-nav {
+    margin-left: 0;
+    margin-right: 4px;
+  }
+  .drawer-pos { min-width: 38px; font-size: 10px; }
   .drawer-body { padding: 14px 18px; }
-  .drawer-footer { padding: 8px 14px; flex-wrap: wrap; }
+  .drawer-footer {
+    padding: 8px 14px;
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+  .drawer-footer .link-btn { font-size: 12px; padding: 6px 10px; }
+
+  /* 行動版補強(2026-04-28p):快捷條 + 下拉自適應 */
+  .scenarios-quick-strip {
+    padding: 6px 8px;
+    gap: 6px;
+  }
+  .qstrip-btn {
+    padding: 4px 8px;
+    font-size: 12px;
+  }
+  .qstrip-text { display: none; }
+  .qstrip-btn { gap: 0; }
+  .qstrip-icon { font-size: 18px; }
+  .qstrip-filter-select {
+    padding: 4px 8px;
+    font-size: 12px;
+    max-width: 160px;
+  }
+
+  /* query banner 行動版折行 */
+  .query-banner {
+    flex-wrap: wrap;
+    padding: 8px 10px;
+    gap: 6px;
+  }
+  .query-banner-text { flex-basis: 100%; }
+
+  /* 抽屜內關聯規定分組:chip 縮小 */
+  .related-link { font-size: 11px; padding: 2px 6px; }
+  .related-group { padding: 4px 8px; }
+  .related-group-hint { display: none; }
 
   /* 情境卡網格:行動版每組內單欄 */
   .scenarios-grid { gap: 14px; padding: 12px; }

@@ -4,10 +4,10 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>核銷這樣做!!! 政府支出法規知識庫</title>
-<link rel="stylesheet" href="assets/style.css?v=2026-04-28o">
-<link rel="preload" href="../03_index/nodes.json?v=2026-04-28o" as="fetch" crossorigin>
-<link rel="preload" href="../03_index/edges.json?v=2026-04-28o" as="fetch" crossorigin>
-<link rel="preload" href="../03_index/tags.json?v=2026-04-28o" as="fetch" crossorigin>
+<link rel="stylesheet" href="assets/style.css?v=2026-04-28p">
+<link rel="preload" href="../03_index/nodes.json?v=2026-04-28p" as="fetch" crossorigin>
+<link rel="preload" href="../03_index/edges.json?v=2026-04-28p" as="fetch" crossorigin>
+<link rel="preload" href="../03_index/tags.json?v=2026-04-28p" as="fetch" crossorigin>
 </head>
 <body data-theme="light" data-view="overview">
 
@@ -32,7 +32,7 @@
   <aside class="tree-panel" aria-label="分類樹">
     <div class="tree-header">
       <span>分類</span>
-      <button id="tree-clear" class="link-btn" hidden>清除過濾</button>
+      <button id="tree-clear" class="link-btn" hidden title="一鍵清除所有過濾條件 (類別/標籤/情境/搜尋)">🗑️ 清除全部</button>
     </div>
     <nav id="tree" class="tree" aria-label="分類導覽"></nav>
   </aside>
@@ -64,13 +64,19 @@
     <header class="drawer-header">
       <span id="drawer-id" class="badge"></span>
       <h2 id="drawer-title"></h2>
-      <button id="drawer-close" class="icon-btn" aria-label="關閉">✕</button>
+      <div class="drawer-nav" role="group" aria-label="抽屜內導航">
+        <button id="drawer-prev" class="icon-btn drawer-nav-btn" aria-label="上一張 (←)" title="上一張 (←)">‹</button>
+        <span id="drawer-pos" class="drawer-pos" aria-live="polite"></span>
+        <button id="drawer-next" class="icon-btn drawer-nav-btn" aria-label="下一張 (→)" title="下一張 (→)">›</button>
+      </div>
+      <button id="drawer-close" class="icon-btn" aria-label="關閉 (Esc)" title="關閉 (Esc)">✕</button>
     </header>
     <div id="drawer-meta" class="drawer-meta"></div>
     <article id="drawer-body" class="drawer-body markdown-body"></article>
     <footer class="drawer-footer">
       <button id="copy-citation" class="link-btn">📋 複製引用</button>
       <button id="copy-link" class="link-btn">🔗 複製連結</button>
+      <button id="copy-content" class="link-btn">📄 複製內文</button>
     </footer>
   </aside>
 </main>
@@ -195,6 +201,6 @@
 <script defer src="https://static.cloudflareinsights.com/beacon.min.js"
         data-cf-beacon='{"token": "fd2a519ea4a348eda9d77bcfa08727f8"}'></script>
 
-<script type="module" src="assets/app.js?v=2026-04-28o"></script>
+<script type="module" src="assets/app.js?v=2026-04-28p"></script>
 </body>
 </html>
