@@ -6,6 +6,7 @@
 <title>條文庫 — 重新設計 Demo</title>
 <style>
   :root {
+    color-scheme: light;
     --bg: oklch(99% 0.004 90);
     --surface: oklch(100% 0 0);
     --surface-2: oklch(97.2% 0.005 90);
@@ -31,25 +32,24 @@
     --font-zh: "Noto Sans TC", "Noto Sans CJK TC", "PingFang TC", "Microsoft JhengHei", sans-serif;
     --font-mono: ui-monospace, "SF Mono", "JetBrains Mono", Menlo, Consolas, monospace;
   }
-  @media (prefers-color-scheme: dark) {
-    :root {
-      --bg: oklch(16% 0.012 265);
-      --surface: oklch(20% 0.014 265);
-      --surface-2: oklch(23% 0.014 265);
-      --line: oklch(28% 0.014 265);
-      --line-strong: oklch(34% 0.016 265);
-      --ink: oklch(96% 0.005 265);
-      --ink-2: oklch(78% 0.01 265);
-      --ink-3: oklch(60% 0.012 265);
-      --brand: oklch(72% 0.14 265);
-      --brand-soft: oklch(28% 0.05 265);
-      --brand-line: oklch(40% 0.08 265);
-      --ok-soft: oklch(28% 0.04 155);
-      --warn-soft: oklch(28% 0.05 75);
-      --stop-soft: oklch(28% 0.04 25);
-      --shadow-md: 0 4px 12px #0007;
-      --shadow-lg: 0 24px 60px #000a;
-    }
+  :root[data-theme="dark"] {
+    color-scheme: dark;
+    --bg: oklch(16% 0.012 265);
+    --surface: oklch(20% 0.014 265);
+    --surface-2: oklch(23% 0.014 265);
+    --line: oklch(28% 0.014 265);
+    --line-strong: oklch(34% 0.016 265);
+    --ink: oklch(96% 0.005 265);
+    --ink-2: oklch(78% 0.01 265);
+    --ink-3: oklch(60% 0.012 265);
+    --brand: oklch(72% 0.14 265);
+    --brand-soft: oklch(28% 0.05 265);
+    --brand-line: oklch(40% 0.08 265);
+    --ok-soft: oklch(28% 0.04 155);
+    --warn-soft: oklch(28% 0.05 75);
+    --stop-soft: oklch(28% 0.04 25);
+    --shadow-md: 0 4px 12px #0007;
+    --shadow-lg: 0 24px 60px #000a;
   }
   * { box-sizing: border-box; }
   html, body { margin: 0; padding: 0; }
@@ -330,10 +330,8 @@
   }
   .related-kind.qa { background: oklch(96% 0.03 200); color: oklch(45% 0.13 220); }
   .related-kind.fn { background: oklch(96% 0.03 295); color: oklch(45% 0.13 295); }
-  @media (prefers-color-scheme: dark) {
-    .related-kind.qa { background: oklch(28% 0.05 220); color: oklch(82% 0.1 220); }
-    .related-kind.fn { background: oklch(28% 0.05 295); color: oklch(82% 0.1 295); }
-  }
+  [data-theme="dark"] .related-kind.qa { background: oklch(28% 0.05 220); color: oklch(82% 0.1 220); }
+  [data-theme="dark"] .related-kind.fn { background: oklch(28% 0.05 295); color: oklch(82% 0.1 295); }
   .related-text { font-size: 13.5px; line-height: 1.5; color: var(--ink); }
   .related-text small { display: block; color: var(--ink-3); font-size: 11.5px; margin-top: 2px; }
 
@@ -505,6 +503,146 @@
     border-radius: var(--radius);
     margin-bottom: 18px;
   }
+  /* 情境視圖內搜尋框 */
+  .sc-search {
+    display: flex; align-items: center; gap: 10px;
+    padding: 10px 14px;
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    margin-bottom: 14px;
+  }
+  .sc-search:focus-within { border-color: var(--brand-line); box-shadow: 0 0 0 4px var(--brand-soft); }
+  .sc-search input { flex: 1; border: 0; outline: 0; background: transparent; font: inherit; color: var(--ink); font-size: 14px; }
+  .sc-search-clear {
+    border: 1px solid var(--line); background: var(--surface-2);
+    padding: 3px 10px; border-radius: 999px; cursor: pointer;
+    font-size: 12px; color: var(--ink-2);
+  }
+  .sc-search-clear:hover { color: var(--ink); border-color: var(--line-strong); }
+  /* 互動試算情境置頂列(全部 has-flow 情境聚合) */
+  .sc-flow-strip {
+    display: flex; align-items: center; gap: 8px; flex-wrap: wrap;
+    padding: 10px 14px;
+    background: oklch(97% 0.025 25);
+    border: 1px solid oklch(82% 0.07 25);
+    border-radius: var(--radius);
+    margin-bottom: 18px;
+  }
+  [data-theme="dark"] .sc-flow-strip { background: oklch(28% 0.04 25); border-color: oklch(40% 0.06 25); }
+  .sc-flow-strip-label { font-size: 12px; font-weight: 700; color: var(--stop); }
+  .sc-flow-strip button {
+    display: inline-flex; align-items: center; gap: 6px;
+    padding: 4px 12px;
+    background: var(--surface);
+    border: 1px solid oklch(82% 0.07 25);
+    border-radius: 999px;
+    font-size: 12.5px; color: var(--stop);
+    cursor: pointer; transition: background .12s;
+  }
+  .sc-flow-strip button:hover { background: oklch(96% 0.03 25); }
+  [data-theme="dark"] .sc-flow-strip button { background: var(--surface); border-color: oklch(40% 0.06 25); }
+  /* 情境分組 TOC (sticky 浮在 sc-grid 上方) */
+  .sc-toc {
+    position: sticky; top: 0; z-index: 8;
+    display: flex; flex-wrap: wrap; gap: 6px;
+    padding: 10px 12px;
+    background: var(--bg);
+    border-bottom: 1px solid var(--line);
+    margin: 0 -2px 14px;
+  }
+  .sc-toc-link {
+    font-size: 12px; color: var(--ink-2);
+    padding: 3px 10px;
+    border: 1px solid var(--line);
+    background: var(--surface);
+    border-radius: 999px;
+    cursor: pointer; text-decoration: none;
+    transition: all .12s;
+  }
+  .sc-toc-link:hover { background: var(--surface-2); color: var(--ink); }
+  .sc-toc-link strong { font-weight: 600; }
+  .sc-toc-link em { font-style: normal; opacity: .55; margin-left: 4px; }
+  /* 情境視圖空結果 */
+  .sc-empty {
+    padding: 60px 24px; text-align: center;
+    color: var(--ink-3); font-size: 14px;
+    background: var(--surface-2);
+    border: 1px dashed var(--line-strong);
+    border-radius: var(--radius);
+  }
+  /* 情境 banner — 條文庫頂部, 顯示「目前情境」+ 回情境鍵 */
+  .scope-banner {
+    display: flex; align-items: center; gap: 10px;
+    padding: 10px 14px; margin-bottom: 14px;
+    background: var(--brand-soft);
+    border: 1px solid var(--brand-line);
+    border-radius: var(--radius);
+    font-size: 13px;
+  }
+  .scope-banner-icon { font-size: 16px; }
+  .scope-banner-text { flex: 1; color: var(--ink); }
+  .scope-banner-text strong { color: var(--brand); }
+  .scope-banner-back, .scope-banner-clear {
+    display: inline-flex; align-items: center; gap: 4px;
+    border: 1px solid var(--brand-line);
+    background: var(--surface);
+    color: var(--brand);
+    padding: 4px 12px;
+    border-radius: 999px;
+    font-size: 12px; font-weight: 600;
+    cursor: pointer;
+  }
+  .scope-banner-back:hover, .scope-banner-clear:hover { background: var(--brand); color: white; }
+  /* topbar 篩選下拉面板 */
+  .filter-pop-wrap { position: relative; }
+  .filter-pop {
+    position: absolute; top: calc(100% + 6px); right: 0;
+    width: 320px; max-width: 90vw;
+    background: var(--surface);
+    border: 1px solid var(--line-strong);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow-lg);
+    padding: 14px;
+    z-index: 20;
+    display: none;
+  }
+  .filter-pop.show { display: block; }
+  .filter-pop h4 {
+    margin: 0 0 8px; font-size: 11px; font-weight: 700;
+    color: var(--ink-3); text-transform: uppercase; letter-spacing: .08em;
+  }
+  .filter-pop h4:not(:first-child) { margin-top: 14px; }
+  .filter-pop .opt-grid {
+    display: flex; flex-wrap: wrap; gap: 6px;
+  }
+  .filter-pop .opt {
+    border: 1px solid var(--line); background: var(--surface);
+    padding: 5px 11px; border-radius: 999px;
+    font-size: 12.5px; color: var(--ink-2);
+    cursor: pointer; transition: all .12s;
+    font-family: inherit;
+  }
+  .filter-pop .opt:hover { border-color: var(--line-strong); color: var(--ink); }
+  .filter-pop .opt.on {
+    background: var(--ink); color: var(--bg); border-color: var(--ink);
+  }
+  .filter-pop .opt-count { font-size: 11px; opacity: .65; margin-left: 4px; font-variant-numeric: tabular-nums; }
+  .filter-pop-foot {
+    display: flex; justify-content: space-between; align-items: center;
+    margin-top: 14px; padding-top: 12px; border-top: 1px dashed var(--line);
+  }
+  .filter-pop-foot .reset {
+    font-size: 12px; color: var(--ink-3); border: 0; background: 0;
+    cursor: pointer; padding: 4px 8px; font-family: inherit;
+  }
+  .filter-pop-foot .reset:hover { color: var(--stop); }
+  .filter-toggle.has-filter::after {
+    content: ""; display: inline-block;
+    width: 6px; height: 6px;
+    background: var(--brand); border-radius: 50%;
+    margin-left: 6px; vertical-align: middle;
+  }
   .sc-quick-label {
     font-size: 12px; font-weight: 700; color: var(--brand);
   }
@@ -596,10 +734,8 @@
     box-shadow: 0 4px 12px oklch(60% 0.14 25 / .3);
   }
   .sc-flow-start svg { width: 12px; height: 12px; }
-  @media (prefers-color-scheme: dark) {
-    .sc-flow-badge {
-      background: oklch(28% 0.05 25); color: oklch(82% 0.1 25);
-    }
+  [data-theme="dark"] .sc-flow-badge {
+    background: oklch(28% 0.05 25); color: oklch(82% 0.1 25);
   }
   .sc-subtitle {
     font-size: 12.5px; color: var(--ink-2); line-height: 1.5;
@@ -834,9 +970,7 @@
   .cmp-meta-row.diff {
     background: var(--warn-soft); color: oklch(35% 0.06 75);
   }
-  @media (prefers-color-scheme: dark) {
-    .cmp-meta-row.diff { color: oklch(85% 0.1 75); }
-  }
+  [data-theme="dark"] .cmp-meta-row.diff { color: oklch(85% 0.1 75); }
   .cmp-meta-k { color: var(--ink-3); font-weight: 600; }
   .cmp-meta-row.diff .cmp-meta-k { color: inherit; }
   .cmp-meta-v { word-break: break-word; }
@@ -907,16 +1041,20 @@
         <input id="q" placeholder="搜尋條文、條號、關鍵字…例如：自用汽車 油資" autocomplete="off">
         <span class="kbd">⌘ K</span>
       </label>
-      <button class="btn"><svg class="icon" viewBox="0 0 24 24"><path d="M3 6h18M6 12h12M10 18h4"/></svg>篩選</button>
+      <div class="filter-pop-wrap">
+        <button class="btn filter-toggle" id="filter-toggle" type="button" aria-expanded="false"><svg class="icon" viewBox="0 0 24 24"><path d="M3 6h18M6 12h12M10 18h4"/></svg>篩選</button>
+        <div class="filter-pop" id="filter-pop" role="dialog"></div>
+      </div>
     </div>
 
     <!-- 條文庫 view -->
-    <section id="view-library" class="library-view">
+    <section id="view-library" class="library-view hidden">
       <div class="pagehead">
         <h1>條文庫</h1>
         <p>核心法規 · 點擊任一卡片查看詳細條文與相關 Q&amp;A · <span id="grid-count" style="color:var(--brand);font-weight:600"></span></p>
       </div>
 
+      <div id="scope-banner-slot"></div>
       <div class="filterbar"></div>
 
       <div class="grid" id="grid"></div>
@@ -932,7 +1070,7 @@
     </section>
 
     <!-- 情境檢索 view -->
-    <section id="view-scenarios" class="scenarios-view">
+    <section id="view-scenarios" class="scenarios-view active">
       <div class="sc-head">
         <h1>核銷情境</h1>
         <p>用使用者語言列出實務常見問題,點選後直接帶到對應的條文與 Q&amp;A</p>
@@ -943,8 +1081,18 @@
         <button class="sc-quick-btn" data-jump="B-國外旅費-003">💰 日支生活費(全球)</button>
         <button class="sc-quick-btn" data-jump="B-國外旅費-002">🇨🇳 大陸港澳日支</button>
         <button class="sc-quick-btn" data-jump="B-國外旅費-006">🛡️ 外交部保險表</button>
+        <button class="sc-quick-btn" data-jump="A-國外旅費-024">📚 派外進修補助表</button>
       </div>
 
+      <div class="sc-search">
+        <svg class="icon" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="m20 20-3-3"/></svg>
+        <input type="search" id="sc-q" placeholder="搜尋情境(如「自駕」「假日」「住宿」「電子發票」)…" autocomplete="off">
+        <button type="button" class="sc-search-clear" id="sc-q-clear" hidden>清除</button>
+      </div>
+
+      <div id="sc-flow-strip-slot"></div>
+
+      <nav class="sc-toc" id="sc-toc" hidden></nav>
       <div id="sc-list"></div>
     </section>
   </main>
@@ -1042,7 +1190,7 @@
 let compareList = [];
 
 /* ──────── 真實資料載入 (520 nodes from 03_index/) ──────── */
-const DATA_VERSION = '2026-04-28r';
+const DATA_VERSION = '2026-04-28s';
 let DATA = [];                 // 對外用的卡片資料 (mapped from nodes.json)
 let NODES_BY_ID = new Map();   // id → original node (含 file_path 等)
 let INCOMING_EDGES = new Map();// id → [from1, from2, ...] 反向引用
@@ -1252,13 +1400,15 @@ const _mock_data_removed_ = [
 ];
 
 /* ──────── filter / view state ──────── */
-let currentView = 'library';   // 'library' | 'scenarios'
+let currentView = 'scenarios';   // 'library' | 'scenarios' | 'calc'
 const filterState = {
   parent: null,   // 母題:國內旅費 / 國外旅費 / 支出憑證與結報 / null
   type: null,     // 類別代碼:A / B / C / D / null
   tag: null,      // 標籤
   query: '',      // 搜尋字
   scenario: null, // 情境 ID (套後限定 primary_ids ∪ tags)
+  expense: null,  // 支出類別 (交通費/住宿費/生活費/...)
+  showObsolete: false, // 是否包含已廢止節點 (預設 false)
 };
 
 function switchView(v) {
@@ -1290,6 +1440,19 @@ function flashHint(msg) {
   setTimeout(()=>hint.classList.remove("show"), 1400);
 }
 
+/* 支出類別 (用於篩選與情境分組) — 與 tag 同名比對即可 */
+const EXPENSE_LIST = ['交通費','住宿費','生活費','雜費','保險費','手續費','行政費','禮品交際及雜費','收據與發票','採購結報','系統化結報','補助與分攤','差旅費結報','酬勞與會議','大陸港澳','出國進修','程序與通則'];
+// 情境 expense 值 → 條文 tag 比對 (節點 tag 中沒有「程序與通則」這詞,故額外處理)
+function nodeMatchesExpense(d, expense) {
+  if (!expense) return true;
+  if (expense === '程序與通則') {
+    // 沒具體費用 tag (沒命中任何具體 expense) 才算「通則」
+    const concreteHit = (d.tags || []).some(t => EXPENSE_LIST.includes(t) && t !== '程序與通則');
+    return !concreteHit;
+  }
+  return (d.tags || []).includes(expense);
+}
+
 /* 套用 filter → 回傳符合的 DATA 子集 */
 function filteredData() {
   const q = filterState.query.trim().toLowerCase();
@@ -1298,9 +1461,12 @@ function filteredData() {
   const scPrimary = sc ? new Set(sc.primary_ids || []) : null;
   const scTags = sc ? new Set(sc.tags || []) : null;
   return DATA.filter(d => {
+    // 已廢止預設隱藏,但有 effective_period 的歷史費率表例外保留(供歷史核銷查找)
+    if (!filterState.showObsolete && d.status === '已廢止' && !d.effectivePeriod) return false;
     if (filterState.parent && d.cat !== filterState.parent) return false;
     if (filterState.type && d.id.split('-')[0] !== filterState.type) return false;
     if (filterState.tag && !d.tags.includes(filterState.tag)) return false;
+    if (filterState.expense && !nodeMatchesExpense(d, filterState.expense)) return false;
     if (sc) {
       const inP = scPrimary.has(d.id);
       const tagHit = (d.tags || []).some(t => scTags.has(t));
@@ -1314,8 +1480,38 @@ function filteredData() {
   });
 }
 
+/* ──────── 情境 banner (條文庫頂部, 套情境/有 filter 時顯示) ──────── */
+function renderScopeBanner() {
+  const $slot = document.getElementById('scope-banner-slot');
+  if (!$slot) return;
+  if (filterState.scenario) {
+    const sc = SCENARIOS.find(s => s.id === filterState.scenario);
+    if (!sc) { $slot.innerHTML = ''; return; }
+    $slot.innerHTML = `
+      <div class="scope-banner">
+        <span class="scope-banner-icon">${sc.icon || '🧭'}</span>
+        <div class="scope-banner-text">情境:<strong>${sc.title}</strong>${sc.subtitle ? ` · <span style="color:var(--ink-3)">${sc.subtitle}</span>` : ''}</div>
+        <button class="scope-banner-back" data-banner-back>← 回情境列表</button>
+        <button class="scope-banner-clear" data-banner-clear>✕ 清除情境</button>
+      </div>`;
+    $slot.querySelector('[data-banner-back]').onclick = () => {
+      filterState.scenario = null; filterState.parent = null;
+      filterState.tag = null; filterState.expense = null;
+      switchView('scenarios'); renderScenarios(); renderSidebar();
+    };
+    $slot.querySelector('[data-banner-clear]').onclick = () => {
+      filterState.scenario = null;
+      renderScopeBanner(); renderSidebar(); renderChips(); renderCards();
+    };
+  } else {
+    $slot.innerHTML = '';
+  }
+}
+
 /* ──────── render cards ──────── */
 function renderCards() {
+  renderScopeBanner();
+  renderFilterPop();
   currentList = filteredData();
   if (currentList.length === 0) {
     grid.innerHTML = `<div class="cmp-empty" style="grid-column:1/-1;padding:60px 24px"><strong>沒有符合條件的條文</strong>清除過濾條件再試試</div>`;
@@ -1554,6 +1750,32 @@ async function openDrawer(idx) {
     const md = await r.text();
 
     let bodyHtml = '';
+    // 原始出處明顯連結 (放在 body 頂部, 比小 icon btn-source 更易發現)
+    const srcUrl = resolveSourceUrl(d);
+    if (srcUrl) {
+      const cat = d.id.split('-')[0];
+      // 依 URL 判斷目標,給出說明文字讓使用者知道會看到什麼
+      let label, hint = '';
+      if (srcUrl.includes('law.dgbas.gov.tw/LawContent.aspx')) {
+        label = '主計總處法規查詢系統 — 完整法規';
+        if (cat === 'A') hint = '官方系統不支援單一條文錨點,連結為整份法規,請於頁內搜尋條號';
+        else if (cat === 'B') hint = '此費率表收錄於整份法規附表,請於頁內捲動查找';
+      }
+      else if (srcUrl.includes('News.aspx?n=1522')) { label = '主計總處 — 解釋彙編 / 公告索引'; hint = '官方僅提供索引列表,需於頁內查找對應彙編 PDF'; }
+      else if (srcUrl.includes('cp.aspx?n=4322')) { label = '主計總處 — 經費結報常見疑義問答集'; hint = '官方僅提供 Q&A 集首頁,需於頁內捲動查找對應 Q'; }
+      else if (srcUrl.includes('cp.aspx?n=4342')) { label = '主計總處 — 國內外旅費 Q&A 集'; hint = '官方僅提供 Q&A 集首頁,需於頁內捲動查找對應 Q'; }
+      else if (srcUrl.includes('ebasnew.dgbas.gov.tw')) label = '主計總處內部審核公告';
+      else if (srcUrl.includes('mofa.gov.tw')) label = '外交部相關公告';
+      else label = '原始出處';
+      bodyHtml += `<div style="margin-bottom:14px;padding:10px 12px;background:var(--brand-soft);border:1px solid var(--brand-line);border-radius:var(--radius);font-size:13px">
+        <div style="display:flex;gap:8px;align-items:center">
+          <span style="font-size:16px">📖</span>
+          <span style="flex:1;color:var(--ink-2);font-weight:500">${label}</span>
+          <a href="${srcUrl}" target="_blank" rel="noopener" style="color:var(--brand);font-weight:600;text-decoration:none;display:inline-flex;align-items:center;gap:4px">前往 →</a>
+        </div>
+        ${hint ? `<div style="margin-top:6px;font-size:11.5px;color:var(--ink-3);line-height:1.5">💡 ${hint}</div>` : ''}
+      </div>`;
+    }
     // 重點摘要 (D 類通常是 Q&A,用「問題」+「回答」結構)
     if (d.art === 'qa') {
       const question = extractSection(md, '問題');
@@ -1696,10 +1918,21 @@ document.getElementById("btn-copy").addEventListener("click", () => {
   navigator.clipboard?.writeText(`${d.id} ${d.title}`);
   flashHint("已複製：" + d.id);
 });
+// 已知 source_url 過弱 (連到首頁/列表) 的節點 → 改連更精確 URL
+// 主計總處 News.aspx 與 cp.aspx 為彙編/Q&A 列表,沒辦法 deep link 但已是官方提供最深 URL,維持原樣
+// mofa.gov.tw 首頁太弱 → 改連到主計總處國外旅費要點 (保險規定的法源依據)
+const SOURCE_URL_OVERRIDE = {
+  'B-國外旅費-006': 'https://law.dgbas.gov.tw/LawContent.aspx?id=FL017584',
+  'B-國外旅費-007': 'https://law.dgbas.gov.tw/LawContent.aspx?id=FL017584',
+};
+function resolveSourceUrl(d) {
+  return SOURCE_URL_OVERRIDE[d.id] || d.sourceUrl || '';
+}
 document.getElementById("btn-source").addEventListener("click", () => {
   if (currentIdx < 0) return;
   const d = currentList[currentIdx];
-  if (d.sourceUrl) window.open(d.sourceUrl, '_blank');
+  const url = resolveSourceUrl(d);
+  if (url) window.open(url, '_blank', 'noopener');
   else flashHint('此節點無原始出處');
 });
 
@@ -1802,9 +2035,98 @@ document.getElementById('q').addEventListener('input', (ev) => {
   renderCards();
 });
 
+/* ──────── 篩選下拉 (狀態 toggle + 支出類別 pills) ──────── */
+function renderFilterPop() {
+  const $pop = document.getElementById('filter-pop');
+  const $btn = document.getElementById('filter-toggle');
+  if (!$pop || !$btn) return;
+  // 算每個 expense 在「忽略 expense filter 後」的命中數
+  const baselineFilter = { ...filterState, expense: null };
+  const baseline = DATA.filter(d => {
+    if (!baselineFilter.showObsolete && d.status === '已廢止' && !d.effectivePeriod) return false;
+    if (baselineFilter.parent && d.cat !== baselineFilter.parent) return false;
+    if (baselineFilter.type && d.id.split('-')[0] !== baselineFilter.type) return false;
+    if (baselineFilter.scenario) {
+      const sc = SCENARIOS.find(s => s.id === baselineFilter.scenario);
+      if (sc) {
+        const inP = (sc.primary_ids || []).includes(d.id);
+        const tagHit = (d.tags || []).some(t => (sc.tags || []).includes(t));
+        if (!inP && !tagHit) return false;
+      }
+    }
+    return true;
+  });
+  const expCount = {};
+  for (const e of EXPENSE_LIST) expCount[e] = 0;
+  for (const d of baseline) {
+    let matched = false;
+    for (const t of (d.tags || [])) {
+      if (EXPENSE_LIST.includes(t) && t !== '程序與通則') {
+        expCount[t] = (expCount[t] || 0) + 1;
+        matched = true;
+      }
+    }
+    if (!matched) expCount['程序與通則']++;
+  }
+  const obsoleteCount = DATA.filter(d => d.status === '已廢止').length;
+
+  $pop.innerHTML = `
+    <h4>顯示狀態</h4>
+    <div class="opt-grid">
+      <button class="opt${!filterState.showObsolete ? ' on' : ''}" data-status="current">✓ 只看現行 <span class="opt-count">${DATA.length - obsoleteCount}</span></button>
+      <button class="opt${filterState.showObsolete ? ' on' : ''}" data-status="all">含已廢止 <span class="opt-count">${DATA.length}</span></button>
+    </div>
+    <h4>支出類別</h4>
+    <div class="opt-grid">
+      <button class="opt${!filterState.expense ? ' on' : ''}" data-expense="">全部</button>
+      ${EXPENSE_LIST.filter(e => expCount[e] > 0).map(e =>
+        `<button class="opt${filterState.expense === e ? ' on' : ''}" data-expense="${e}">${e} <span class="opt-count">${expCount[e]}</span></button>`
+      ).join('')}
+    </div>
+    <div class="filter-pop-foot">
+      <button class="reset" data-filter-reset>重置全部</button>
+      <button class="opt on" data-filter-close>完成</button>
+    </div>
+  `;
+  // 是否啟用過濾的視覺指示
+  const hasFilter = filterState.expense || filterState.showObsolete;
+  $btn.classList.toggle('has-filter', !!hasFilter);
+
+  $pop.querySelectorAll('[data-status]').forEach(b => b.onclick = () => {
+    filterState.showObsolete = b.dataset.status === 'all';
+    renderSidebar(); renderChips(); renderCards();
+  });
+  $pop.querySelectorAll('[data-expense]').forEach(b => b.onclick = () => {
+    filterState.expense = b.dataset.expense || null;
+    renderChips(); renderCards();
+  });
+  $pop.querySelector('[data-filter-reset]').onclick = () => {
+    filterState.expense = null; filterState.showObsolete = false;
+    filterState.tag = null; filterState.type = null;
+    renderSidebar(); renderChips(); renderCards();
+  };
+  $pop.querySelector('[data-filter-close]').onclick = () => $pop.classList.remove('show');
+}
+document.getElementById('filter-toggle').addEventListener('click', (e) => {
+  e.stopPropagation();
+  const $pop = document.getElementById('filter-pop');
+  $pop.classList.toggle('show');
+  if ($pop.classList.contains('show')) renderFilterPop();
+});
+document.addEventListener('click', (e) => {
+  const $pop = document.getElementById('filter-pop');
+  if (!$pop?.classList.contains('show')) return;
+  if (e.target.closest('#filter-pop') || e.target.closest('#filter-toggle')) return;
+  $pop.classList.remove('show');
+});
+
 /* ──────── scenarios view ──────── */
 const PARENT_ORDER = ['國內旅費', '國外旅費', '支出憑證與結報'];
-const EXPENSE_ORDER = ['交通費','住宿費','雜費','出國進修','生活費','手續費','保險費','行政費','禮品交際及雜費','收據與發票','採購結報','系統化結報','補助與分攤','差旅費結報','酬勞與會議','通則與其他','大陸港澳','其他'];
+const EXPENSE_ORDER = ['交通費','住宿費','雜費','出國進修','生活費','手續費','保險費','行政費','禮品交際及雜費','收據與發票','採購結報','系統化結報','補助與分攤','差旅費結報','酬勞與會議','程序與通則','通則與其他','大陸港澳','其他'];
+// 顯示時將舊用語「通則與其他」一律呈現為「程序與通則」(資料源不動,維持向下相容)
+const EXPENSE_DISPLAY_RENAME = { '通則與其他': '程序與通則' };
+function renameExpense(e) { return EXPENSE_DISPLAY_RENAME[e] || e; }
+let scenarioQuery = '';
 
 function countScenarioMatches(sc) {
   const primary = new Set(sc.primary_ids || []);
@@ -1818,13 +2140,48 @@ function countScenarioMatches(sc) {
   return n;
 }
 
+function matchScenarioQuery(sc, q) {
+  if (!q) return true;
+  const ql = q.toLowerCase();
+  const hay = (sc.title + ' ' + (sc.subtitle || '') + ' ' + (sc.tags || []).join(' ') + ' ' + (sc.parent || '') + ' ' + renameExpense(sc.expense || '')).toLowerCase();
+  return hay.includes(ql);
+}
+
 function renderScenarios() {
   const $list = document.getElementById('sc-list');
+  const $toc = document.getElementById('sc-toc');
+  const $flowSlot = document.getElementById('sc-flow-strip-slot');
   if (!$list) return;
+
+  // 套用 in-view query
+  const filtered = SCENARIOS.filter(s => matchScenarioQuery(s, scenarioQuery));
+
+  // 互動試算情境 (has flow) 置頂列 — 不受搜尋影響時顯示全部, 受搜尋時也照搜尋過濾
+  const flowCards = filtered.filter(s => s.flow && s.flow.start && s.flow.questions);
+  if ($flowSlot) {
+    if (flowCards.length === 0) {
+      $flowSlot.innerHTML = '';
+    } else {
+      $flowSlot.innerHTML = `
+        <div class="sc-flow-strip">
+          <span class="sc-flow-strip-label">🤔 互動試算/條件問答(${flowCards.length}):</span>
+          ${flowCards.map(s => `<button data-flow-quick="${s.id}" type="button">${s.icon || ''} ${s.title}</button>`).join('')}
+        </div>`;
+      $flowSlot.querySelectorAll('[data-flow-quick]').forEach(b => {
+        b.onclick = () => {
+          const sc = SCENARIOS.find(x => x.id === b.dataset.flowQuick);
+          if (sc) openFlowModal(sc);
+        };
+      });
+    }
+  }
+
   // 分組 by parent → expense
   const groups = new Map();
-  for (const sc of SCENARIOS) {
-    const key = `${sc.parent}|${sc.expense || '其他'}`;
+  for (const sc of filtered) {
+    const expRaw = sc.expense || '其他';
+    const exp = renameExpense(expRaw);
+    const key = `${sc.parent}|${exp}`;
     if (!groups.has(key)) groups.set(key, []);
     groups.get(key).push(sc);
   }
@@ -1835,10 +2192,55 @@ function renderScenarios() {
     return EXPENSE_ORDER.indexOf(ea) - EXPENSE_ORDER.indexOf(eb);
   });
 
+  // TOC: 母題分組為單位
+  if ($toc) {
+    if (sortedKeys.length === 0) {
+      $toc.hidden = true;
+      $toc.innerHTML = '';
+    } else {
+      const byParent = new Map();
+      for (const k of sortedKeys) {
+        const [p] = k.split('|');
+        byParent.set(p, (byParent.get(p) || 0) + groups.get(k).length);
+      }
+      $toc.hidden = false;
+      $toc.innerHTML = [...byParent.entries()].map(([p, n]) =>
+        `<a class="sc-toc-link" href="#sc-anchor-${encodeURIComponent(p)}" data-toc="${p}"><strong>${p}</strong><em>${n}</em></a>`
+      ).join('');
+      $toc.querySelectorAll('[data-toc]').forEach(a => {
+        a.onclick = (ev) => {
+          ev.preventDefault();
+          const target = document.getElementById(`sc-anchor-${a.dataset.toc}`);
+          if (target) target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        };
+      });
+    }
+  }
+
+  // 空結果
+  if (sortedKeys.length === 0) {
+    $list.innerHTML = `<div class="sc-empty"><strong>找不到符合「${scenarioQuery}」的情境</strong><br><span style="font-size:13px">改用更短關鍵字,或<button class="sc-search-clear" data-clear-q style="margin-left:6px">清除搜尋</button></span></div>`;
+    $list.querySelector('[data-clear-q]')?.addEventListener('click', () => {
+      document.getElementById('sc-q').value = '';
+      scenarioQuery = '';
+      document.getElementById('sc-q-clear').hidden = true;
+      renderScenarios();
+    });
+    return;
+  }
+
+  // anchors:每個 parent 第一次出現處放 anchor div
+  const seenParent = new Set();
   $list.innerHTML = sortedKeys.map(key => {
     const [parent, expense] = key.split('|');
     const items = groups.get(key);
+    let anchorHtml = '';
+    if (!seenParent.has(parent)) {
+      seenParent.add(parent);
+      anchorHtml = `<div id="sc-anchor-${parent}" style="position:relative;top:-60px"></div>`;
+    }
     return `
+      ${anchorHtml}
       <section class="sc-group">
         <h3 class="sc-group-title">
           <span>${parent} · ${expense}</span>
@@ -1891,6 +2293,7 @@ function renderScenarios() {
       filterState.parent = sc.parent || null;
       filterState.type = null;
       filterState.tag = null;
+      filterState.expense = null;
       switchView('library');
       renderSidebar();
       renderChips();
@@ -1900,27 +2303,32 @@ function renderScenarios() {
   });
 }
 
+// 情境搜尋框 (script 已在 body 末端,DOM 已就緒,直接綁)
+{
+  const $scQ = document.getElementById('sc-q');
+  const $scQClear = document.getElementById('sc-q-clear');
+  if ($scQ) {
+    $scQ.addEventListener('input', () => {
+      scenarioQuery = $scQ.value.trim();
+      if ($scQClear) $scQClear.hidden = !scenarioQuery;
+      if (currentView === 'scenarios') renderScenarios();
+    });
+  }
+  if ($scQClear) {
+    $scQClear.addEventListener('click', () => {
+      $scQ.value = '';
+      scenarioQuery = '';
+      $scQClear.hidden = true;
+      renderScenarios();
+    });
+  }
+}
+
 // 快捷按鈕 (情境視圖頂部)
 document.addEventListener('click', (e) => {
   const btn = e.target.closest('.sc-quick-btn[data-jump]');
   if (!btn) return;
-  const id = btn.dataset.jump;
-  // 切到 library + 套對應母題 + 開抽屜
-  const node = NODES_BY_ID.get(id);
-  if (!node) return;
-  filterState.parent = node.parent || null;
-  filterState.type = null;
-  filterState.tag = null;
-  filterState.scenario = null;
-  filterState.query = '';
-  document.getElementById('q').value = '';
-  switchView('library');
-  renderSidebar();
-  renderChips();
-  renderCards();
-  // 開抽屜 (要等 currentList 更新後)
-  const idx = currentList.findIndex(x => x.id === id);
-  if (idx >= 0) openDrawer(idx);
+  jumpToCard(btn.dataset.jump);
 });
 
 /* ──────── 試算表 view (日支生活費 + 保險費) ──────── */
@@ -1934,6 +2342,8 @@ function renderCalc() {
   // 日支生活費資料來源:B-國外旅費-003 (全球 sectioned) + B-國外旅費-002 (大陸港澳 flat)
   const global = getRateTableNode('B-國外旅費-003');
   const mainland = getRateTableNode('B-國外旅費-002');
+  // 派外進修補助表 (A-國外-024) — 月支生活費級距
+  const studyAbroad = getRateTableNode('A-國外旅費-024');
   // 收集 (region, country, city, value) 給 select 用
   const rows = [];
   if (global?.rateTable?.sections) {
@@ -1969,6 +2379,27 @@ function renderCalc() {
     }
   }
 
+  // 月支生活費級距 (A-國外-024 第一個 section)
+  const monthlySection = studyAbroad?.rateTable?.sections?.[0];
+  const monthlyRows = Array.isArray(monthlySection?.rows) ? monthlySection.rows : [];
+  // [['410 以上', '1,700'], ['370–409', '1,600'], ...] — 解析為 {min, max, monthly}
+  function parseMonthlyTier(row) {
+    const range = (row[0] || '').replace(/\s/g, '');
+    const monthly = parseInt((row[1] || '').replace(/,/g, ''), 10);
+    let min, max;
+    const m1 = range.match(/^(\d+)以上/);
+    const m2 = range.match(/^(\d+)以下/);
+    const m3 = range.match(/^(\d+)[–\-~](\d+)/);
+    if (m1) { min = +m1[1]; max = Infinity; }
+    else if (m2) { min = 0; max = +m2[1]; }
+    else if (m3) { min = +m3[1]; max = +m3[2]; }
+    return { range: row[0], min, max, monthly };
+  }
+  const monthlyTiers = monthlyRows.map(parseMonthlyTier).filter(t => Number.isFinite(t.min));
+  function findMonthlyByDailyRate(daily) {
+    return monthlyTiers.find(t => daily >= t.min && daily <= t.max);
+  }
+
   // 保險費資料 (B-國外旅費-006 一般險/申根險)
   const insurance = getRateTableNode('B-國外旅費-006');
   const insSections = insurance?.rateTable?.sections?.filter(s => Array.isArray(s.rows) && s.rows.length).map(s => ({
@@ -1990,6 +2421,27 @@ function renderCalc() {
       <div class="calc-result" id="calc-living-result">
         <div class="calc-result-label">請輸入或選擇地區</div>
       </div>
+    </div>
+
+    <div class="calc-card" id="calc-monthly">
+      <h2><span class="calc-icon">📚</span>月支生活費試算<span style="font-size:11px;font-weight:500;color:var(--ink-3);margin-left:6px">(派外進修/研究/實習)</span></h2>
+      <p class="calc-card-desc">出國 ≥31 日按月支領,依日支數額級距對應月支金額。資料來源:A-國外-024 派外進修補助表</p>
+      <div class="calc-row">
+        <label for="calc-monthly-city">選擇地區 / 城市 (沿用日支數額表)</label>
+        <input type="search" id="calc-monthly-city" list="calc-city-list" placeholder="輸入城市,如 東京、紐約、倫敦…">
+      </div>
+      <div class="calc-result" id="calc-monthly-result">
+        <div class="calc-result-label">輸入城市後自動帶出對應月支金額</div>
+      </div>
+      <details class="calc-card-desc" style="margin-top:10px;font-size:12px"><summary style="cursor:pointer;color:var(--ink-2)">📋 月支級距完整對照表</summary>
+        <div style="margin-top:8px;background:var(--surface-2);border-radius:6px;padding:8px 10px">
+          <div style="font-size:11px;color:var(--ink-3);margin-bottom:6px">日支數額級距(美元) → 月支生活費(美元)</div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:4px 12px;font-size:12px">
+            ${monthlyTiers.map(t => `<div style="display:flex;justify-content:space-between"><span>${t.range}</span><strong>${t.monthly?.toLocaleString() || ''}</strong></div>`).join('')}
+          </div>
+          <div style="font-size:11px;color:var(--ink-3);margin-top:8px;line-height:1.6">補充:出國 1~15 日按日支表全額;16~30 日每日為日支表 1/20;31 日起按月支表;畸零日按月支表 1/30。供膳宿 3 折、供宿不供膳 4 折、供膳不供宿 9 折。</div>
+        </div>
+      </details>
     </div>
 
     <div class="calc-card" id="calc-insurance">
@@ -2040,6 +2492,47 @@ function renderCalc() {
   $cityInput.addEventListener('input', lookupLiving);
   $cityInput.addEventListener('change', lookupLiving);
 
+  // ── 月支生活費(進修)互動 ──
+  const $monthlyInput = document.getElementById('calc-monthly-city');
+  const $monthlyResult = document.getElementById('calc-monthly-result');
+  function lookupMonthly() {
+    const q = ($monthlyInput.value || '').trim().toLowerCase();
+    if (!q) {
+      $monthlyResult.className = 'calc-result';
+      $monthlyResult.innerHTML = '<div class="calc-result-label">輸入城市後自動帶出對應月支金額</div>';
+      return;
+    }
+    if (!monthlyTiers.length) {
+      $monthlyResult.className = 'calc-result';
+      $monthlyResult.innerHTML = '<div class="calc-result-label">月支級距資料未載入</div>';
+      return;
+    }
+    const exact = rows.find(r => r.city.toLowerCase() === q || r.shortLabel.toLowerCase() === q);
+    const partial = exact || rows.find(r => r.city.toLowerCase().includes(q) || r.shortLabel.toLowerCase().includes(q));
+    if (!partial) {
+      $monthlyResult.className = 'calc-result';
+      $monthlyResult.innerHTML = `<div class="calc-result-label">查無「${q}」</div><div style="font-size:12px">大陸港澳地區因日支數額較低,常落到「169 以下」級距(月支 1,000 美元)</div>`;
+      return;
+    }
+    const dailyVal = parseInt(String(partial.value).replace(/,/g, ''), 10);
+    const tier = findMonthlyByDailyRate(dailyVal);
+    if (!tier) {
+      $monthlyResult.className = 'calc-result';
+      $monthlyResult.innerHTML = `<div class="calc-result-label">${partial.label}</div><div style="font-size:12px;color:var(--stop)">日支 ${dailyVal} 美元未對應到任何月支級距</div>`;
+      return;
+    }
+    $monthlyResult.className = 'calc-result hit';
+    $monthlyResult.innerHTML = `
+      <div class="calc-result-label">${partial.label}</div>
+      <div style="font-size:12px;color:var(--ink-2);margin-bottom:4px">日支 ${dailyVal} 美元 → 落於級距 <strong>${tier.range}</strong></div>
+      <div class="calc-result-value">${tier.monthly.toLocaleString()} <span style="font-size:14px;color:var(--ink-2);font-family:var(--font-zh)">美元/月</span></div>
+      <div class="calc-result-meta">出國進修/研究/實習 ≥31 日 月支生活費</div>
+      <a class="calc-jump" data-jump-card="A-國外旅費-024">📑 查看完整補助表 (A-國外-024) →</a>
+    `;
+  }
+  $monthlyInput.addEventListener('input', lookupMonthly);
+  $monthlyInput.addEventListener('change', lookupMonthly);
+
   // ── 保險費互動 ──
   const $tabs = document.querySelectorAll('#calc-ins-tabs .calc-tab');
   const $daysInput = document.getElementById('calc-days');
@@ -2079,16 +2572,33 @@ function renderCalc() {
   });
   $daysInput.addEventListener('input', lookupIns);
 
-  // 卡片內「查看完整法源」跳 drawer
+  // 卡片內「查看完整法源」跳 drawer (reset filter 確保目標可見)
   $g.addEventListener('click', (ev) => {
     const a = ev.target.closest('[data-jump-card]');
     if (!a) return;
-    const id = a.dataset.jumpCard;
-    switchView('library');
-    renderSidebar(); renderCards();
-    const idx = currentList.findIndex(x => x.id === id);
-    if (idx >= 0) openDrawer(idx);
+    jumpToCard(a.dataset.jumpCard);
   });
+}
+
+// 共用跳卡 helper:reset 必要的 filter 後切到 library + open drawer
+function jumpToCard(id) {
+  const node = NODES_BY_ID.get(id);
+  if (!node) { flashHint('找不到節點:' + id); return; }
+  // 為了確保 currentList 一定含此節點:清掉所有可能擋住它的 filter
+  filterState.scenario = null;
+  filterState.tag = null;
+  filterState.expense = null;
+  filterState.query = '';
+  filterState.parent = node.parent || null;
+  filterState.type = null;
+  // 已廢止節點若預設隱藏會看不到 — 偵測並暫開
+  if (node.status === '已廢止' && !node.effective_period) filterState.showObsolete = true;
+  const $q = document.getElementById('q'); if ($q) $q.value = '';
+  switchView('library');
+  renderSidebar(); renderChips(); renderCards();
+  const idx = currentList.findIndex(x => x.id === id);
+  if (idx >= 0) openDrawer(idx);
+  else flashHint('節點被過濾隱藏:' + id);
 }
 
 /* ──────── 條件問答 modal (flow decision tree) ──────── */
@@ -2196,11 +2706,7 @@ function openFlowModal(scenario) {
     $body.querySelectorAll('[data-flow-jump]').forEach(b => {
       b.onclick = () => {
         modal.classList.remove('show');
-        const id = b.dataset.flowJump;
-        switchView('library');
-        renderSidebar(); renderCards();
-        const idx = currentList.findIndex(x => x.id === id);
-        if (idx >= 0) openDrawer(idx);
+        jumpToCard(b.dataset.flowJump);
       };
     });
     $body.querySelectorAll('[data-flow-restart]').forEach(b => {
@@ -2227,8 +2733,9 @@ async function init() {
     renderSidebar();
     renderChips();
     renderCards();
-    // 預設開第一張卡示範
-    if (currentList.length > 0) setTimeout(() => openDrawer(0), 200);
+    // 預設入口:情境檢索
+    switchView('scenarios');
+    renderScenarios();
   } catch (e) {
     grid.innerHTML = `<div style="color:var(--stop);padding:40px">資料載入失敗: ${e.message}</div>`;
     console.error(e);
