@@ -2,7 +2,7 @@
 id: C-國外旅費-106
 type: 解釋函令
 parent: 國外旅費
-title: （二）加入 WTO 後軍
+title: WTO 後仍應搭國籍航空
 tags:
 - 國外旅費
 related: []
