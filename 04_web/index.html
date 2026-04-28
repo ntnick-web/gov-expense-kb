@@ -637,6 +637,13 @@
     cursor: pointer; padding: 4px 8px; font-family: inherit;
   }
   .filter-pop-foot .reset:hover { color: var(--stop); }
+  /* rate_table 內 alias fallback 命中列 */
+  .rt-fallback-row td {
+    background: oklch(96% 0.04 220) !important;
+    border-left: 3px solid oklch(60% 0.13 220);
+  }
+  .rt-fallback-row td:first-child { border-left: 3px solid oklch(60% 0.13 220); }
+  [data-theme="dark"] .rt-fallback-row td { background: oklch(28% 0.05 220) !important; }
   .filter-toggle.has-filter::after {
     content: ""; display: inline-block;
     width: 6px; height: 6px;
@@ -1176,7 +1183,7 @@
 let compareList = [];
 
 /* ──────── 真實資料載入 (520 nodes from 03_index/) ──────── */
-const DATA_VERSION = '2026-04-28t';
+const DATA_VERSION = '2026-04-28u';
 let DATA = [];                 // 對外用的卡片資料 (mapped from nodes.json)
 let NODES_BY_ID = new Map();   // id → original node (含 file_path 等)
 let INCOMING_EDGES = new Map();// id → [from1, from2, ...] 反向引用
@@ -1197,13 +1204,16 @@ function splitTitle(rawTitle, id) {
   return { no: '', title: rawTitle };
 }
 
+let CITY_ALIASES = {};  // 未列載城市 → 國家中文主名 (city_aliases.json)
 async function loadAllData() {
   const v = '?v=' + DATA_VERSION;
-  const [nodes, edges, scenarios] = await Promise.all([
+  const [nodes, edges, scenarios, aliases] = await Promise.all([
     fetch('../03_index/nodes.json' + v).then(r => r.json()),
     fetch('../03_index/edges.json' + v).then(r => r.json()),
     fetch('data/scenarios.json' + v).then(r => r.json()).catch(() => ({ scenarios: [] })),
+    fetch('data/city_aliases.json' + v).then(r => r.ok ? r.json() : { aliases: {} }).catch(() => ({ aliases: {} })),
   ]);
+  CITY_ALIASES = aliases.aliases || {};
   // 建 NODES_BY_ID + 反向 edges
   for (const n of nodes) NODES_BY_ID.set(n.id, n);
   const edgeArr = edges.edges || edges;
@@ -1424,6 +1434,30 @@ function flashHint(msg) {
   hint.textContent = msg;
   hint.classList.add("show");
   setTimeout(()=>hint.classList.remove("show"), 1400);
+}
+
+/* 城市 alias fallback helper:輸入未列載城市 → 推測國家 → 找該國「其他」費率 */
+function inferCountryByAlias(q) {
+  if (!q) return null;
+  const ql = q.trim().toLowerCase();
+  if (!ql) return null;
+  for (const [k, country] of Object.entries(CITY_ALIASES)) {
+    const kl = k.toLowerCase();
+    if (kl === ql || kl.includes(ql) || ql.includes(kl)) {
+      return { aliasKey: k, country };
+    }
+  }
+  return null;
+}
+// 從 rows array (扁平 [編號, 國家, 城市, 數額]) 找指定國家的「其他」列
+function findOtherRowForCountry(rows, country) {
+  if (!Array.isArray(rows) || !country) return null;
+  const cl = country.toLowerCase();
+  return rows.find(r => {
+    const c = String((r && (r.country ?? r[1])) || '').toLowerCase();
+    const city = String((r && (r.city ?? r[2])) || '');
+    return c.includes(cl) && (city.includes('其他') || /Other/i.test(city));
+  });
 }
 
 /* 支出類別 (用於篩選與情境分組) — 與 tag 同名比對即可 */
@@ -1684,13 +1718,26 @@ function wireRateTableInteractions(scope) {
     });
     input.oninput = lookup;
   });
-  // 跨節 sticky 搜尋
+  // 跨節 sticky 搜尋 (0 命中時自動套 alias fallback,顯示該國「其他」列並 highlight)
   scope.querySelectorAll('.rt-search-global .rt-q').forEach(q => {
     const wrap = q.closest('.rt-wrap');
     if (!wrap) return;
     const sections = [...wrap.querySelectorAll('.rt-section')];
+    // banner 容器,放在搜尋框後
+    const searchWrap = q.closest('.rt-search-global');
+    let $banner = searchWrap?.parentElement?.querySelector('.rt-fallback-banner');
+    if (!$banner && searchWrap) {
+      $banner = document.createElement('div');
+      $banner.className = 'rt-fallback-banner';
+      $banner.style.cssText = 'display:none;margin:0 0 10px;padding:8px 12px;background:oklch(96% 0.04 220);border:1px solid oklch(72% 0.08 220);border-left:3px solid oklch(60% 0.13 220);border-radius:6px;font-size:12.5px;color:oklch(35% 0.06 220)';
+      searchWrap.insertAdjacentElement('afterend', $banner);
+    }
     q.oninput = () => {
-      const term = q.value.trim().toLowerCase();
+      const termRaw = q.value.trim();
+      const term = termRaw.toLowerCase();
+      // 清掉前次 highlight
+      wrap.querySelectorAll('tbody tr.rt-fallback-row').forEach(tr => tr.classList.remove('rt-fallback-row'));
+      let totalHits = 0;
       for (const sec of sections) {
         let visible = 0;
         const trs = sec.querySelectorAll('tbody tr');
@@ -1703,7 +1750,39 @@ function wireRateTableInteractions(scope) {
           }
         }
         sec.hidden = term !== '' && visible === 0;
+        totalHits += visible;
       }
+      // 0 命中 + 有輸入 → 嘗試 alias fallback
+      if (term && totalHits === 0) {
+        const info = inferCountryByAlias(termRaw);
+        if (info) {
+          // 在所有 sections 內找該國「其他」列(雙向 substring 比對 country 欄)
+          let matched = null;
+          for (const sec of sections) {
+            const trs = sec.querySelectorAll('tbody tr');
+            for (const tr of trs) {
+              const cells = tr.querySelectorAll('td');
+              if (cells.length < 4) continue;
+              const country = (cells[1]?.textContent || '').toLowerCase();
+              const city = cells[2]?.textContent || '';
+              if (country.includes(info.country.toLowerCase()) && (city.includes('其他') || /Other/i.test(city))) {
+                tr.hidden = false;
+                tr.classList.add('rt-fallback-row');
+                sec.hidden = false;
+                matched = { tr, country: cells[1]?.textContent || info.country, rate: cells[3]?.textContent || '' };
+                break;
+              }
+            }
+            if (matched) break;
+          }
+          if (matched && $banner) {
+            $banner.style.display = '';
+            $banner.innerHTML = `💡 推測「<strong>${termRaw}</strong>」屬 <strong>${info.country}</strong>(未列載) → 自動套 <strong>${matched.country} / 其他</strong> → <strong style="font-family:var(--font-mono)">${matched.rate}</strong>(政府附註 §1)`;
+            return;
+          }
+        }
+      }
+      if ($banner) $banner.style.display = 'none';
     };
   });
 }
@@ -2411,27 +2490,47 @@ function renderCalc() {
     </div>
   `;
 
-  // ── 生活費互動 (日支 + 月支同步顯示) ──
+  // ── 生活費互動 (日支 + 月支同步顯示, 含未列載城市 alias fallback) ──
   const $cityInput = document.getElementById('calc-city');
   const $livingResult = document.getElementById('calc-living-result');
   function lookupLiving() {
-    const q = ($cityInput.value || '').trim().toLowerCase();
+    const qRaw = ($cityInput.value || '').trim();
+    const q = qRaw.toLowerCase();
     if (!q) {
       $livingResult.className = 'calc-result';
       $livingResult.innerHTML = '<div class="calc-result-label">請輸入或選擇地區</div>';
       return;
     }
+    // 1) 直接命中:city / shortLabel substring 比對
     const exact = rows.find(r => r.city.toLowerCase() === q || r.shortLabel.toLowerCase() === q);
-    const partial = exact || rows.find(r => r.city.toLowerCase().includes(q) || r.shortLabel.toLowerCase().includes(q));
+    let partial = exact || rows.find(r => r.city.toLowerCase().includes(q) || r.shortLabel.toLowerCase().includes(q));
+    let isFallback = false;
+    let aliasInfo = null;
+    // 2) 找不到 → 走 alias fallback (推測國家 → 該國「其他」)
+    if (!partial) {
+      aliasInfo = inferCountryByAlias(qRaw);
+      if (aliasInfo) {
+        const otherRow = rows.find(r => r.country.toLowerCase().includes(aliasInfo.country.toLowerCase()) && (r.city.includes('其他') || /Other/i.test(r.city)));
+        if (otherRow) {
+          partial = otherRow;
+          isFallback = true;
+        }
+      }
+    }
     if (!partial) {
       $livingResult.className = 'calc-result';
-      $livingResult.innerHTML = `<div class="calc-result-label">查無「${q}」</div><div style="font-size:12px">試試輸入英文(Tokyo)、中文(東京)、或國家名(日本)</div>`;
+      $livingResult.innerHTML = `<div class="calc-result-label">查無「${qRaw}」</div><div style="font-size:12px">試試輸入英文(Tokyo)、中文(東京)、或國家名(日本)。本表收錄之 ~40 個未列載城市可自動 fallback 至該國「其他」費率。</div>`;
       return;
     }
     const dailyVal = parseInt(String(partial.value).replace(/,/g, ''), 10);
     const tier = monthlyTiers.length ? findMonthlyByDailyRate(dailyVal) : null;
-    $livingResult.className = 'calc-result hit';
+    const fallbackBanner = isFallback ? `
+      <div style="margin-bottom:8px;padding:8px 12px;background:oklch(96% 0.04 220);border:1px solid oklch(72% 0.08 220);border-left:3px solid oklch(60% 0.13 220);border-radius:6px;font-size:12.5px;color:oklch(35% 0.06 220)">
+        💡 推測「<strong>${qRaw}</strong>」屬<strong>${aliasInfo.country}</strong>(未列載於日支表),自動取該國「其他」費率(政府附註 §1)
+      </div>` : '';
+    $livingResult.className = 'calc-result hit' + (isFallback ? ' is-fallback' : '');
     $livingResult.innerHTML = `
+      ${fallbackBanner}
       <div class="calc-result-label">${partial.label}</div>
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:6px 0">
         <div style="padding:8px 10px;background:var(--surface);border:1px solid var(--brand-line);border-radius:6px">
