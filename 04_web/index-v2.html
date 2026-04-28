@@ -373,11 +373,121 @@
   @media (max-width: 880px) { .mobile-cats { display: flex; } }
 
   /* ───── 情境視圖 v2 ───── */
-  .scenarios-view {
+  .scenarios-view, .calc-view {
     display: none;
   }
-  .scenarios-view.active { display: block; }
+  .scenarios-view.active, .calc-view.active { display: block; }
   .library-view.hidden { display: none; }
+
+  /* ───── 試算表 view ───── */
+  .calc-grid {
+    display: grid;
+    gap: 18px;
+    grid-template-columns: repeat(auto-fit, minmax(380px, 1fr));
+    max-width: 1200px;
+  }
+  .calc-card {
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: var(--radius-lg);
+    padding: 22px;
+    display: flex; flex-direction: column; gap: 14px;
+  }
+  .calc-card h2 {
+    margin: 0; font-size: 17px; font-weight: 600;
+    display: flex; align-items: center; gap: 10px;
+  }
+  .calc-card h2 .calc-icon {
+    width: 32px; height: 32px;
+    background: var(--brand-soft);
+    color: var(--brand);
+    border-radius: 8px;
+    display: grid; place-items: center;
+    font-size: 18px;
+  }
+  .calc-card-desc {
+    margin: 0;
+    color: var(--ink-3);
+    font-size: 12.5px;
+  }
+  .calc-row {
+    display: flex; flex-direction: column; gap: 6px;
+  }
+  .calc-row label {
+    font-size: 12px; font-weight: 600; color: var(--ink-2);
+  }
+  .calc-row select, .calc-row input {
+    padding: 8px 12px;
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    font-family: var(--font-zh);
+    font-size: 14px;
+    background: var(--surface);
+    color: var(--ink);
+  }
+  .calc-row select:focus, .calc-row input:focus {
+    outline: none;
+    border-color: var(--brand-line);
+    box-shadow: 0 0 0 4px var(--brand-soft);
+  }
+  .calc-tabs {
+    display: flex; gap: 6px;
+    background: var(--surface-2);
+    padding: 4px;
+    border-radius: 8px;
+  }
+  .calc-tab {
+    flex: 1;
+    background: transparent;
+    border: 0;
+    padding: 6px 10px;
+    border-radius: 6px;
+    font-size: 13px;
+    color: var(--ink-2);
+    cursor: pointer;
+    font-family: var(--font-zh);
+  }
+  .calc-tab.active {
+    background: var(--surface);
+    color: var(--brand);
+    font-weight: 600;
+    box-shadow: var(--shadow-sm);
+  }
+  .calc-result {
+    margin-top: 8px;
+    padding: 16px;
+    background: var(--brand-soft);
+    border: 1px solid var(--brand-line);
+    border-radius: var(--radius);
+    text-align: center;
+    color: var(--ink-3);
+    font-size: 13px;
+    min-height: 60px;
+    display: flex; flex-direction: column; justify-content: center; gap: 4px;
+  }
+  .calc-result.hit {
+    background: var(--ok-soft);
+    border-color: var(--ok);
+  }
+  .calc-result-label {
+    font-size: 11px; color: var(--ink-3);
+    text-transform: uppercase; letter-spacing: .06em;
+  }
+  .calc-result-value {
+    font-size: 28px; font-weight: 700; color: var(--ok);
+    font-family: var(--font-mono);
+  }
+  .calc-result-meta {
+    font-size: 11.5px; color: var(--ink-3);
+    margin-top: 4px;
+  }
+  .calc-jump {
+    display: inline-flex; align-items: center; gap: 4px;
+    color: var(--brand); font-size: 12px;
+    cursor: pointer; text-decoration: none;
+    margin-top: 6px;
+  }
+  .calc-jump:hover { text-decoration: underline; }
 
   .sc-head {
     margin-bottom: 22px;
@@ -466,6 +576,26 @@
     border: 1px solid oklch(75% 0.1 25);
     padding: 1px 6px; border-radius: 999px;
   }
+  .sc-flow-start {
+    display: inline-flex; align-items: center; gap: 6px;
+    padding: 6px 12px;
+    background: oklch(60% 0.14 25);
+    border: 0;
+    border-radius: 8px;
+    color: white;
+    font-size: 12.5px; font-weight: 600;
+    font-family: var(--font-zh);
+    cursor: pointer;
+    transition: all .12s;
+    margin-top: 2px;
+    align-self: flex-start;
+  }
+  .sc-flow-start:hover {
+    background: oklch(55% 0.15 25);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px oklch(60% 0.14 25 / .3);
+  }
+  .sc-flow-start svg { width: 12px; height: 12px; }
   @media (prefers-color-scheme: dark) {
     .sc-flow-badge {
       background: oklch(28% 0.05 25); color: oklch(82% 0.1 25);
@@ -790,6 +920,15 @@
       <div class="filterbar"></div>
 
       <div class="grid" id="grid"></div>
+    </section>
+
+    <!-- 試算表 view -->
+    <section id="view-calc" class="calc-view">
+      <div class="sc-head">
+        <h1>試算表</h1>
+        <p>常用標準表互動查詢:輸入條件即知金額,並可一鍵跳到完整法源</p>
+      </div>
+      <div class="calc-grid" id="calc-grid"></div>
     </section>
 
     <!-- 情境檢索 view -->
@@ -1126,7 +1265,8 @@ function switchView(v) {
   currentView = v;
   document.getElementById('view-library').classList.toggle('hidden', v !== 'library');
   document.getElementById('view-scenarios').classList.toggle('active', v === 'scenarios');
-  // Sidebar 入口高亮 (情境 / 條文庫)
+  document.getElementById('view-calc').classList.toggle('active', v === 'calc');
+  // Sidebar 入口高亮 (情境 / 條文庫 / 試算表)
   document.querySelectorAll('.nav-item[data-entry]').forEach(it => {
     it.classList.toggle('active', it.dataset.entry === v);
   });
@@ -1580,6 +1720,12 @@ function renderSidebar() {
       <div class="nav-label">入口</div>
       <div class="nav-item${currentView === 'scenarios' ? ' active' : ''}" data-entry="scenarios"><span>🧭 情境檢索</span><span class="nav-count">${SCENARIOS.length}</span></div>
       <div class="nav-item${currentView === 'library' ? ' active' : ''}" data-entry="library"><span>📑 條文庫</span><span class="nav-count">${DATA.length}</span></div>
+      <div class="nav-item${currentView === 'calc' ? ' active' : ''}" data-entry="calc"><span>🧮 試算表</span><span class="nav-count">2</span></div>
+    </div>
+    <div class="nav-group">
+      <div class="nav-label">母題</div>
+      <div class="nav-item${filterState.parent === null ? ' active' : ''}" data-parent=""><span>全部</span><span class="nav-count">${DATA.length}</span></div>
+      ${PARENTS.map(p => `<div class="nav-item${filterState.parent === p ? ' active' : ''}" data-parent="${p}"><span>${p}</span><span class="nav-count">${byParent[p] || 0}</span></div>`).join('')}
     </div>
     <div class="nav-group">
       <div class="nav-label">類別</div>
@@ -1588,11 +1734,6 @@ function renderSidebar() {
       <div class="nav-item${filterState.type === 'B' ? ' active' : ''}" data-type="B"><span>📊 支出標準</span><span class="nav-count">${byType.B}</span></div>
       <div class="nav-item${filterState.type === 'C' ? ' active' : ''}" data-type="C"><span>📜 解釋函令</span><span class="nav-count">${byType.C}</span></div>
       <div class="nav-item${filterState.type === 'D' ? ' active' : ''}" data-type="D"><span>💬 問答集</span><span class="nav-count">${byType.D}</span></div>
-    </div>
-    <div class="nav-group">
-      <div class="nav-label">母題</div>
-      <div class="nav-item${filterState.parent === null ? ' active' : ''}" data-parent=""><span>全部</span><span class="nav-count">${DATA.length}</span></div>
-      ${PARENTS.map(p => `<div class="nav-item${filterState.parent === p ? ' active' : ''}" data-parent="${p}"><span>${p}</span><span class="nav-count">${byParent[p] || 0}</span></div>`).join('')}
     </div>
   `];
   // 替換 sidebar 內 nav-group
@@ -1612,6 +1753,7 @@ function renderSidebar() {
       if (it.dataset.entry) {
         switchView(it.dataset.entry);
         if (it.dataset.entry === 'scenarios') renderScenarios();
+        if (it.dataset.entry === 'calc') renderCalc();
         renderSidebar();
         return;
       }
@@ -1707,11 +1849,18 @@ function renderScenarios() {
             const hasFlow = s.flow && s.flow.start && s.flow.questions;
             const flowBadge = hasFlow ? '<span class="sc-flow-badge">🤔 條件問答</span>' : '';
             const matched = countScenarioMatches(s);
+            const flowBtn = hasFlow ? `
+              <button class="sc-flow-start" data-flow="${s.id}" type="button">
+                <svg class="icon" viewBox="0 0 24 24"><path d="M8 5v14l11-7z" fill="currentColor" stroke="none"/></svg>
+                開始問答
+              </button>
+            ` : '';
             return `
               <article class="sc-card${hasFlow ? ' has-flow' : ''}" data-sc="${s.id}" tabindex="0">
                 <div class="sc-icon">${s.icon || '📌'}</div>
                 <h3 class="sc-title">${s.title}${flowBadge}</h3>
                 <p class="sc-subtitle">${s.subtitle || ''}</p>
+                ${flowBtn}
                 <div class="sc-meta">
                   <span class="sc-meta-count">${matched} 張相關卡</span>
                   <span class="sc-meta-arrow">查看 →</span>
@@ -1724,13 +1873,20 @@ function renderScenarios() {
     `;
   }).join('');
 
-  // 綁 click
+  // 綁 click — flow 按鈕 → modal,卡片本身 → 套 filter
+  $list.querySelectorAll('[data-flow]').forEach(b => {
+    b.onclick = (ev) => {
+      ev.stopPropagation();
+      const sc = SCENARIOS.find(x => x.id === b.dataset.flow);
+      if (sc) openFlowModal(sc);
+    };
+  });
   $list.querySelectorAll('[data-sc]').forEach(c => {
-    c.onclick = () => {
+    c.onclick = (ev) => {
+      if (ev.target.closest('[data-flow]')) return;
       const id = c.dataset.sc;
       const sc = SCENARIOS.find(x => x.id === id);
       if (!sc) return;
-      // 套情境 + 切回 library view
       filterState.scenario = id;
       filterState.parent = sc.parent || null;
       filterState.type = null;
@@ -1739,7 +1895,6 @@ function renderScenarios() {
       renderSidebar();
       renderChips();
       renderCards();
-      // 顯示情境 banner
       flashHint(`套用情境:${sc.title} · ${currentList.length} 張相關卡`);
     };
   });
@@ -1767,6 +1922,303 @@ document.addEventListener('click', (e) => {
   const idx = currentList.findIndex(x => x.id === id);
   if (idx >= 0) openDrawer(idx);
 });
+
+/* ──────── 試算表 view (日支生活費 + 保險費) ──────── */
+function getRateTableNode(id) {
+  return DATA.find(d => d.id === id);
+}
+
+function renderCalc() {
+  const $g = document.getElementById('calc-grid');
+  if (!$g) return;
+  // 日支生活費資料來源:B-國外旅費-003 (全球 sectioned) + B-國外旅費-002 (大陸港澳 flat)
+  const global = getRateTableNode('B-國外旅費-003');
+  const mainland = getRateTableNode('B-國外旅費-002');
+  // 收集 (region, country, city, value) 給 select 用
+  const rows = [];
+  if (global?.rateTable?.sections) {
+    for (const sec of global.rateTable.sections) {
+      const region = sec.title || '';
+      if (Array.isArray(sec.rows)) {
+        for (const r of sec.rows) {
+          // [編號, 國家, 城市, 數額]
+          rows.push({
+            label: `${region} · ${r[1]} · ${r[2]}`,
+            shortLabel: `${r[1]} · ${r[2]}`,
+            value: r[3],
+            country: r[1],
+            city: r[2],
+            sourceId: 'B-國外旅費-003',
+            unit: global.rateTable.unit || '美元',
+          });
+        }
+      }
+    }
+  }
+  if (mainland?.rateTable?.rows) {
+    for (const r of mainland.rateTable.rows) {
+      rows.push({
+        label: `大陸港澳 · ${r[1]}`,
+        shortLabel: r[1],
+        value: r[2],
+        country: '大陸港澳',
+        city: r[1],
+        sourceId: 'B-國外旅費-002',
+        unit: mainland.rateTable.unit || '美元',
+      });
+    }
+  }
+
+  // 保險費資料 (B-國外旅費-006 一般險/申根險)
+  const insurance = getRateTableNode('B-國外旅費-006');
+  const insSections = insurance?.rateTable?.sections?.filter(s => Array.isArray(s.rows) && s.rows.length).map(s => ({
+    key: (s.title || '').replace(/\s*15足歲.*$/, '').trim(),
+    rows: s.rows,
+  })) || [];
+
+  $g.innerHTML = `
+    <div class="calc-card" id="calc-living">
+      <h2><span class="calc-icon">💰</span>日支生活費試算</h2>
+      <p class="calc-card-desc">查詢 國外 / 大陸港澳 各城市日支數額(現行版)。資料來源:B-國外-002 / 003</p>
+      <div class="calc-row">
+        <label for="calc-city">選擇地區 / 城市 (共 ${rows.length} 筆)</label>
+        <input type="search" id="calc-city" list="calc-city-list" placeholder="輸入城市,如 東京、Beijing、紐約、巴黎…">
+        <datalist id="calc-city-list">
+          ${rows.slice(0, 600).map(r => `<option value="${r.shortLabel}">`).join('')}
+        </datalist>
+      </div>
+      <div class="calc-result" id="calc-living-result">
+        <div class="calc-result-label">請輸入或選擇地區</div>
+      </div>
+    </div>
+
+    <div class="calc-card" id="calc-insurance">
+      <h2><span class="calc-icon">🛡️</span>外交部保險費試算</h2>
+      <p class="calc-card-desc">外交部因公赴國外出差綜合保險表(115 年版,15 足歲含以上)。資料來源:B-國外-006</p>
+      <div class="calc-row">
+        <label>險種</label>
+        <div class="calc-tabs" id="calc-ins-tabs">
+          ${insSections.map((s, i) => `<button class="calc-tab${i === 0 ? ' active' : ''}" data-ins-key="${s.key}">${s.key}</button>`).join('')}
+        </div>
+      </div>
+      <div class="calc-row">
+        <label for="calc-days">天數 (1-365)</label>
+        <input type="number" id="calc-days" min="1" max="365" placeholder="輸入天數,如 30">
+      </div>
+      <div class="calc-result" id="calc-ins-result">
+        <div class="calc-result-label">請選擇險種並輸入天數</div>
+      </div>
+    </div>
+  `;
+
+  // ── 日支生活費互動 ──
+  const $cityInput = document.getElementById('calc-city');
+  const $livingResult = document.getElementById('calc-living-result');
+  function lookupLiving() {
+    const q = ($cityInput.value || '').trim().toLowerCase();
+    if (!q) {
+      $livingResult.className = 'calc-result';
+      $livingResult.innerHTML = '<div class="calc-result-label">請輸入或選擇地區</div>';
+      return;
+    }
+    // 比對 city / country / shortLabel
+    const exact = rows.find(r => r.city.toLowerCase() === q || r.shortLabel.toLowerCase() === q);
+    const partial = exact || rows.find(r => r.city.toLowerCase().includes(q) || r.shortLabel.toLowerCase().includes(q));
+    if (!partial) {
+      $livingResult.className = 'calc-result';
+      $livingResult.innerHTML = `<div class="calc-result-label">查無「${q}」</div><div style="font-size:12px">試試輸入英文(Tokyo)、中文(東京)、或國家名(日本)</div>`;
+      return;
+    }
+    $livingResult.className = 'calc-result hit';
+    $livingResult.innerHTML = `
+      <div class="calc-result-label">${partial.label}</div>
+      <div class="calc-result-value">${partial.value} <span style="font-size:14px;color:var(--ink-2);font-family:var(--font-zh)">${partial.unit}/日</span></div>
+      <div class="calc-result-meta">每日全額支給上限 (出國 15 日內)</div>
+      <a class="calc-jump" data-jump-card="${partial.sourceId}">📑 查看完整法源 (${partial.sourceId}) →</a>
+    `;
+  }
+  $cityInput.addEventListener('input', lookupLiving);
+  $cityInput.addEventListener('change', lookupLiving);
+
+  // ── 保險費互動 ──
+  const $tabs = document.querySelectorAll('#calc-ins-tabs .calc-tab');
+  const $daysInput = document.getElementById('calc-days');
+  const $insResult = document.getElementById('calc-ins-result');
+  let activeInsKey = insSections[0]?.key || '';
+  function lookupIns() {
+    const days = parseInt($daysInput.value, 10);
+    if (!activeInsKey || !days) {
+      $insResult.className = 'calc-result';
+      $insResult.innerHTML = '<div class="calc-result-label">請選擇險種並輸入天數</div>';
+      return;
+    }
+    if (days < 1 || days > 365) {
+      $insResult.className = 'calc-result';
+      $insResult.innerHTML = '<div class="calc-result-label">天數請介於 1~365</div>';
+      return;
+    }
+    const sect = insSections.find(s => s.key === activeInsKey);
+    const found = sect?.rows.find(r => parseInt(r[0], 10) === days);
+    if (!found) {
+      $insResult.className = 'calc-result';
+      $insResult.innerHTML = `<div class="calc-result-label">${activeInsKey} ${days} 天:無對應費率</div>`;
+      return;
+    }
+    $insResult.className = 'calc-result hit';
+    $insResult.innerHTML = `
+      <div class="calc-result-label">${activeInsKey} · ${days} 天</div>
+      <div class="calc-result-value">NT$ ${found[1]}</div>
+      <div class="calc-result-meta">外交部共同供應契約費率 (115 年版)</div>
+      <a class="calc-jump" data-jump-card="B-國外旅費-006">📑 查看完整保險表 →</a>
+    `;
+  }
+  $tabs.forEach(t => t.onclick = () => {
+    $tabs.forEach(x => x.classList.toggle('active', x === t));
+    activeInsKey = t.dataset.insKey;
+    lookupIns();
+  });
+  $daysInput.addEventListener('input', lookupIns);
+
+  // 卡片內「查看完整法源」跳 drawer
+  $g.addEventListener('click', (ev) => {
+    const a = ev.target.closest('[data-jump-card]');
+    if (!a) return;
+    const id = a.dataset.jumpCard;
+    switchView('library');
+    renderSidebar(); renderCards();
+    const idx = currentList.findIndex(x => x.id === id);
+    if (idx >= 0) openDrawer(idx);
+  });
+}
+
+/* ──────── 條件問答 modal (flow decision tree) ──────── */
+function openFlowModal(scenario) {
+  if (!scenario.flow || !scenario.flow.start) return;
+  const flow = scenario.flow;
+  let modal = document.getElementById('flow-modal');
+  if (!modal) {
+    modal = document.createElement('div');
+    modal.id = 'flow-modal';
+    modal.className = 'cmp-modal';
+    modal.innerHTML = `
+      <div class="cmp-backdrop" data-flow-close></div>
+      <div class="cmp-panel" style="max-width:680px;height:auto;max-height:80vh">
+        <header class="cmp-head">
+          <h2 id="flow-title"></h2>
+          <button class="iconbtn" data-flow-close title="關閉"><svg class="icon" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6l-12 12"/></svg></button>
+        </header>
+        <div class="cmp-body" id="flow-body" style="padding:22px 24px;overflow-y:auto;display:block"></div>
+      </div>
+    `;
+    document.body.appendChild(modal);
+    modal.querySelectorAll('[data-flow-close]').forEach(el => el.onclick = () => modal.classList.remove('show'));
+  }
+  document.getElementById('flow-title').innerHTML = `<span style="font-size:18px">🤔</span> ${scenario.title}`;
+  const $body = document.getElementById('flow-body');
+
+  const answered = []; // [{q, optLabel}]
+  function renderStep(step) {
+    // step 可能是:
+    //   - 字串 qid (要顯示問題)
+    //   - opt 物件 {label, next} → 跳到 next
+    //   - opt 物件 {label, conclude} → 顯示結論
+    let html = '';
+    let conclusionId = null;
+    let questionQid = null;
+    if (typeof step === 'string') {
+      questionQid = step;
+    } else if (step && step.conclude) {
+      conclusionId = step.conclude;
+    } else if (step && step.next) {
+      questionQid = step.next;
+    }
+
+    // 已回答的問題
+    for (const a of answered) {
+      html += `<div style="margin-bottom:14px;padding:10px 14px;background:var(--surface-2);border-radius:8px;border-left:3px solid var(--ok)">
+        <div style="font-size:11px;color:var(--ink-3);margin-bottom:2px">已回答</div>
+        <div style="font-size:13px;color:var(--ink-2)">${a.q.label}</div>
+        <div style="margin-top:4px;display:inline-flex;align-items:center;gap:6px;font-size:13px;font-weight:600;color:var(--ok)">✓ ${a.optLabel}</div>
+      </div>`;
+    }
+    // 結論
+    if (conclusionId) {
+      const c = flow.conclusions?.[conclusionId];
+      if (c) {
+        html += `<div style="padding:18px;background:var(--brand-soft);border:2px solid var(--brand);border-radius:var(--radius);margin-top:8px">
+          <div style="font-size:11px;color:var(--brand);font-weight:600;text-transform:uppercase;letter-spacing:.06em;margin-bottom:6px">結論</div>
+          <div style="font-size:18px;font-weight:600;color:var(--ink);margin-bottom:6px">${c.title || ''}</div>
+          ${c.limit ? `<div style="font-size:14px;color:var(--ink-2);margin-bottom:6px">📋 ${c.limit}</div>` : ''}
+          ${c.note ? `<div style="font-size:12.5px;color:var(--ink-3);font-style:italic">${c.note}</div>` : ''}
+          ${(c.refs || []).length ? `
+            <div style="margin-top:14px;padding-top:12px;border-top:1px dashed var(--brand-line)">
+              <div style="font-size:11px;color:var(--ink-3);text-transform:uppercase;letter-spacing:.06em;margin-bottom:6px">📑 相關法源</div>
+              <div style="display:flex;flex-direction:column;gap:6px">
+                ${c.refs.map(r => {
+                  const node = NODES_BY_ID.get(r);
+                  return `<button class="btn" data-flow-jump="${r}" style="text-align:left;justify-content:flex-start"><span style="font-family:var(--font-mono);font-size:11px;background:var(--surface);padding:1px 6px;border-radius:4px;border:1px solid var(--line)">${r}</span> ${node?.title || ''}</button>`;
+                }).join('')}
+              </div>
+            </div>
+          ` : ''}
+        </div>
+        <div style="margin-top:14px;display:flex;gap:8px">
+          <button class="btn" data-flow-restart>↩ 重新開始</button>
+          <button class="btn primary" data-flow-close>關閉</button>
+        </div>`;
+      }
+    } else if (questionQid) {
+      // 顯示當前問題
+      const q = flow.questions?.[questionQid];
+      if (q) {
+        html += `<div style="padding:16px;background:var(--surface);border:1px solid var(--brand-line);border-radius:var(--radius)">
+          <div style="font-size:11px;color:var(--brand);font-weight:600;text-transform:uppercase;letter-spacing:.06em;margin-bottom:6px">問題 ${answered.length + 1}</div>
+          <div style="font-size:16px;font-weight:600;color:var(--ink);margin-bottom:4px">${q.label}</div>
+          ${q.hint ? `<div style="font-size:12.5px;color:var(--ink-3);margin-bottom:14px">💡 ${q.hint}</div>` : '<div style="height:8px"></div>'}
+          <div style="display:flex;flex-direction:column;gap:8px">
+            ${(q.options || []).map((opt, i) => `<button class="btn" data-flow-opt="${i}" style="text-align:left;justify-content:flex-start;padding:10px 14px;font-size:14px">${opt.label}</button>`).join('')}
+          </div>
+        </div>`;
+      }
+    }
+    $body.innerHTML = html;
+    // 綁 event
+    $body.querySelectorAll('[data-flow-opt]').forEach(b => {
+      b.onclick = () => {
+        const i = parseInt(b.dataset.flowOpt, 10);
+        const q = flow.questions?.[questionQid];
+        const opt = q?.options?.[i];
+        if (!opt) return;
+        answered.push({ q, optLabel: opt.label });
+        renderStep(opt);  // opt 含 next or conclude;renderStep 自己會解
+      };
+    });
+    $body.querySelectorAll('[data-flow-jump]').forEach(b => {
+      b.onclick = () => {
+        modal.classList.remove('show');
+        const id = b.dataset.flowJump;
+        switchView('library');
+        renderSidebar(); renderCards();
+        const idx = currentList.findIndex(x => x.id === id);
+        if (idx >= 0) openDrawer(idx);
+      };
+    });
+    $body.querySelectorAll('[data-flow-restart]').forEach(b => {
+      b.onclick = () => { answered.length = 0; renderStep(flow.start); };
+    });
+    $body.querySelectorAll('[data-flow-close]').forEach(b => {
+      b.onclick = () => modal.classList.remove('show');
+    });
+  }
+  // 將 currentQid 解讀為 q.next 或直接 string
+  function expandRef(ref) {
+    if (typeof ref === 'string') return ref;
+    return ref.next || (ref.conclude ? ref : null);
+  }
+  // start 是 string (qid)
+  renderStep(flow.start);
+  modal.classList.add('show');
+}
 
 /* ──────── init ──────── */
 async function init() {
