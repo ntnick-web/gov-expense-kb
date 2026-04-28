@@ -372,6 +372,173 @@
   }
   @media (max-width: 880px) { .mobile-cats { display: flex; } }
 
+  /* ───── 情境視圖 v2 ───── */
+  .scenarios-view {
+    display: none;
+  }
+  .scenarios-view.active { display: block; }
+  .library-view.hidden { display: none; }
+
+  .sc-head {
+    margin-bottom: 22px;
+    padding-bottom: 18px;
+    border-bottom: 1px solid var(--line);
+  }
+  .sc-head h1 { margin: 0 0 6px; font-size: 22px; font-weight: 600; letter-spacing: -.01em; }
+  .sc-head p { margin: 0; color: var(--ink-3); font-size: 13px; }
+
+  .sc-quick {
+    display: flex; align-items: center; gap: 10px; flex-wrap: wrap;
+    padding: 10px 14px;
+    background: var(--surface);
+    border: 1px solid var(--brand-line);
+    border-radius: var(--radius);
+    margin-bottom: 18px;
+  }
+  .sc-quick-label {
+    font-size: 12px; font-weight: 700; color: var(--brand);
+  }
+  .sc-quick-btn {
+    display: inline-flex; align-items: center; gap: 6px;
+    padding: 4px 12px;
+    background: var(--surface);
+    border: 1px solid var(--brand-line);
+    border-radius: 999px;
+    font-size: 12.5px; color: var(--brand);
+    cursor: pointer;
+    transition: background .12s;
+  }
+  .sc-quick-btn:hover { background: var(--brand-soft); }
+
+  .sc-group { margin-bottom: 28px; }
+  .sc-group-title {
+    display: flex; align-items: center; gap: 8px;
+    margin: 0 0 12px;
+    padding: 6px 12px;
+    background: var(--surface-2);
+    border-left: 3px solid var(--brand);
+    border-radius: 4px;
+    font-size: 13px; font-weight: 600;
+    color: var(--ink);
+  }
+  .sc-group-count {
+    font-size: 11px; color: var(--ink-3);
+    background: var(--surface);
+    padding: 1px 8px;
+    border-radius: 999px;
+    border: 1px solid var(--line);
+  }
+  .sc-grid {
+    display: grid; gap: 12px;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  }
+  .sc-card {
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    padding: 14px;
+    cursor: pointer;
+    transition: all .14s;
+    display: flex; flex-direction: column; gap: 6px;
+    position: relative;
+  }
+  .sc-card:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-md);
+    border-color: var(--brand-line);
+  }
+  .sc-card.has-flow {
+    border: 2px solid oklch(60% 0.14 25);
+    box-shadow: 0 0 0 1px oklch(60% 0.14 25), 2px 2px 0 oklch(60% 0.14 25 / .15);
+    border-radius: 12px 10px 11px 9px;
+  }
+  .sc-icon { font-size: 22px; line-height: 1; }
+  .sc-title {
+    font-size: 14px; font-weight: 600;
+    color: var(--ink);
+    line-height: 1.4;
+    margin: 0;
+    display: flex; align-items: center; gap: 6px; flex-wrap: wrap;
+  }
+  .sc-flow-badge {
+    font-size: 10px; font-weight: 600;
+    background: oklch(96% 0.03 25); color: oklch(50% 0.14 25);
+    border: 1px solid oklch(75% 0.1 25);
+    padding: 1px 6px; border-radius: 999px;
+  }
+  @media (prefers-color-scheme: dark) {
+    .sc-flow-badge {
+      background: oklch(28% 0.05 25); color: oklch(82% 0.1 25);
+    }
+  }
+  .sc-subtitle {
+    font-size: 12.5px; color: var(--ink-2); line-height: 1.5;
+    margin: 0;
+  }
+  .sc-meta {
+    margin-top: 4px;
+    display: flex; align-items: center; justify-content: space-between;
+    font-size: 11px; color: var(--ink-3);
+  }
+  .sc-meta-count {
+    background: var(--surface-2);
+    padding: 1px 7px; border-radius: 999px;
+  }
+  .sc-meta-arrow { color: var(--brand); font-weight: 600; }
+
+  /* 保險試算 widget tab */
+  .ins-tab {
+    background: var(--surface);
+    border: 1px solid var(--brand-line);
+    color: var(--brand);
+    padding: 4px 12px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 12.5px;
+    font-family: var(--font-zh);
+    transition: all .12s;
+  }
+  .ins-tab:hover { background: var(--brand-soft); }
+  .ins-tab.active {
+    background: var(--brand);
+    color: var(--bg);
+    border-color: var(--brand);
+  }
+
+  /* ───── Footer (v2 統一暱稱「核銷這樣做!!!」) ───── */
+  .v2-footer {
+    border-top: 1px solid var(--line);
+    padding: 24px 32px;
+    background: var(--surface-2);
+    margin-top: auto;
+    color: var(--ink-3);
+    font-size: 12.5px;
+  }
+  .v2-footer-row {
+    display: flex; flex-wrap: wrap; align-items: center;
+    gap: 12px; max-width: 1400px;
+  }
+  .v2-footer-brand {
+    display: inline-flex; align-items: center; gap: 8px;
+    color: var(--ink-2); font-weight: 600;
+  }
+  .v2-footer-brand .brand-mark {
+    width: 22px; height: 22px; font-size: 11px; border-radius: 6px;
+  }
+  .v2-footer-sep { color: var(--line-strong); }
+  .v2-footer a { color: var(--brand); text-decoration: none; }
+  .v2-footer a:hover { text-decoration: underline; }
+  .v2-footer-disclaimer {
+    margin-top: 8px;
+    font-style: italic;
+    color: var(--ink-3);
+    font-size: 11.5px;
+  }
+  @media (max-width: 720px) {
+    .v2-footer { padding: 18px 16px; }
+    .v2-footer-row { gap: 8px; }
+  }
+
   /* ───── Compare mode (按設計系統延伸) ───── */
   /* 卡片右上角「+ 比較」chip,hover 時顯示 */
   .card { position: relative; }
@@ -613,22 +780,34 @@
       <button class="btn"><svg class="icon" viewBox="0 0 24 24"><path d="M3 6h18M6 12h12M10 18h4"/></svg>篩選</button>
     </div>
 
-    <div class="pagehead">
-      <h1>條文庫</h1>
-      <p>核心法規 · 點擊任一卡片查看詳細條文與相關 Q&amp;A</p>
-    </div>
+    <!-- 條文庫 view -->
+    <section id="view-library" class="library-view">
+      <div class="pagehead">
+        <h1>條文庫</h1>
+        <p>核心法規 · 點擊任一卡片查看詳細條文與相關 Q&amp;A · <span id="grid-count" style="color:var(--brand);font-weight:600"></span></p>
+      </div>
 
-    <div class="filterbar">
-      <button class="chip on">全部 <span class="chip-count">61</span></button>
-      <button class="chip">交通費 <span class="chip-count">137</span></button>
-      <button class="chip">日支生活費 <span class="chip-count">66</span></button>
-      <button class="chip">住宿費 <span class="chip-count">80</span></button>
-      <button class="chip">公差派遣 <span class="chip-count">50</span></button>
-      <button class="chip">原條總組 <span class="chip-count">110</span></button>
-      <button class="chip">經費規定 <span class="chip-count">80</span></button>
-    </div>
+      <div class="filterbar"></div>
 
-    <div class="grid" id="grid"></div>
+      <div class="grid" id="grid"></div>
+    </section>
+
+    <!-- 情境檢索 view -->
+    <section id="view-scenarios" class="scenarios-view">
+      <div class="sc-head">
+        <h1>核銷情境</h1>
+        <p>用使用者語言列出實務常見問題,點選後直接帶到對應的條文與 Q&amp;A</p>
+      </div>
+
+      <div class="sc-quick">
+        <span class="sc-quick-label">🚀 最新標準表:</span>
+        <button class="sc-quick-btn" data-jump="B-國外旅費-003">💰 日支生活費(全球)</button>
+        <button class="sc-quick-btn" data-jump="B-國外旅費-002">🇨🇳 大陸港澳日支</button>
+        <button class="sc-quick-btn" data-jump="B-國外旅費-006">🛡️ 外交部保險表</button>
+      </div>
+
+      <div id="sc-list"></div>
+    </section>
   </main>
 </div>
 
@@ -662,6 +841,33 @@
     </div>
   </div>
 </aside>
+
+<!-- ───── Footer (品牌暱稱) ───── -->
+<footer class="v2-footer">
+  <div class="v2-footer-row">
+    <span class="v2-footer-brand">
+      <span class="brand-mark">支</span>
+      核銷這樣做!!!
+    </span>
+    <span class="v2-footer-sep">·</span>
+    <span>政府支出法規知識庫</span>
+    <span class="v2-footer-sep">·</span>
+    <span>程式 <a href="https://github.com/ntnick-web/gov-expense-kb/blob/main/LICENSE.md" target="_blank" rel="noopener">MIT</a></span>
+    <span class="v2-footer-sep">·</span>
+    <span>內容 <a href="https://creativecommons.org/licenses/by/4.0/" target="_blank" rel="noopener">CC BY 4.0</a></span>
+    <span class="v2-footer-sep">·</span>
+    <span>法規原文 屬政府公開資訊</span>
+    <span class="v2-footer-sep">·</span>
+    <a href="../" title="回舊版">↩ 切回舊版</a>
+    <span class="v2-footer-sep">·</span>
+    <a href="https://github.com/ntnick-web/gov-expense-kb" target="_blank" rel="noopener">GitHub</a>
+    <span class="v2-footer-sep">·</span>
+    <a href="https://forms.gle/R7F6x8v8UepfXgn4A" target="_blank" rel="noopener">問題回報或優化建議</a>
+  </div>
+  <div class="v2-footer-disclaimer">
+    本站僅供查詢輔助使用,正式引用請以主管機關公告版本為準。
+  </div>
+</footer>
 
 <!-- ───── Compare bar (浮動底部) ───── -->
 <div class="compare-bar" id="compare-bar" role="region" aria-label="比較項目">
@@ -907,12 +1113,24 @@ const _mock_data_removed_ = [
 ];
 
 /* ──────── filter / view state ──────── */
+let currentView = 'library';   // 'library' | 'scenarios'
 const filterState = {
   parent: null,   // 母題:國內旅費 / 國外旅費 / 支出憑證與結報 / null
   type: null,     // 類別代碼:A / B / C / D / null
   tag: null,      // 標籤
   query: '',      // 搜尋字
+  scenario: null, // 情境 ID (套後限定 primary_ids ∪ tags)
 };
+
+function switchView(v) {
+  currentView = v;
+  document.getElementById('view-library').classList.toggle('hidden', v !== 'library');
+  document.getElementById('view-scenarios').classList.toggle('active', v === 'scenarios');
+  // Sidebar 入口高亮 (情境 / 條文庫)
+  document.querySelectorAll('.nav-item[data-entry]').forEach(it => {
+    it.classList.toggle('active', it.dataset.entry === v);
+  });
+}
 let currentList = [];   // filteredNodes 結果
 let currentIdx = -1;    // 抽屜目前指到 currentList 的 index
 const grid = document.getElementById("grid");
@@ -935,10 +1153,19 @@ function flashHint(msg) {
 /* 套用 filter → 回傳符合的 DATA 子集 */
 function filteredData() {
   const q = filterState.query.trim().toLowerCase();
+  // scenario filter:取該情境的 primary_ids ∪ tag 命中
+  const sc = filterState.scenario ? SCENARIOS.find(s => s.id === filterState.scenario) : null;
+  const scPrimary = sc ? new Set(sc.primary_ids || []) : null;
+  const scTags = sc ? new Set(sc.tags || []) : null;
   return DATA.filter(d => {
     if (filterState.parent && d.cat !== filterState.parent) return false;
     if (filterState.type && d.id.split('-')[0] !== filterState.type) return false;
     if (filterState.tag && !d.tags.includes(filterState.tag)) return false;
+    if (sc) {
+      const inP = scPrimary.has(d.id);
+      const tagHit = (d.tags || []).some(t => scTags.has(t));
+      if (!inP && !tagHit) return false;
+    }
     if (q) {
       const hay = (d.id + ' ' + d.title + ' ' + d.summary + ' ' + d.tags.join(' ')).toLowerCase();
       if (!hay.includes(q)) return false;
@@ -1014,21 +1241,56 @@ function extractSection(md, heading) {
   return m ? m[1].trim() : '';
 }
 
-// 渲染 rate_table (B 類專用,簡化版)
+// 渲染 rate_table (B 類專用) — 含保險 widget + sticky 跨節搜尋
 function renderRateTableHtml(rt, node) {
   if (!rt) return '';
-  const html = ['<div style="background:var(--surface-2);border:1px solid var(--line);border-radius:var(--radius);padding:14px;margin-bottom:18px">'];
+  const wrapId = `rt-${node.id.replace(/[^a-z0-9]/gi, '_')}`;
+  const html = [`<div id="${wrapId}" class="rt-wrap" style="background:var(--surface-2);border:1px solid var(--line);border-radius:var(--radius);padding:14px;margin-bottom:18px">`];
+  // 已逾期 banner
   if (node.status === '已廢止' && node.effectivePeriod) {
     html.push(`<div style="background:var(--warn-soft);border:1px solid var(--warn);border-radius:6px;padding:8px 12px;margin-bottom:12px;font-size:13px;color:var(--warn)">⏰ <strong>此表已逾期</strong> · 適用 ${node.effectivePeriod}${node.supersededBy ? ` · 現行版本 <strong>${node.supersededBy}</strong>` : ''}</div>`);
   }
   if (rt.caption) html.push(`<div style="font-weight:600;font-size:14px;margin-bottom:4px">${rt.caption}</div>`);
   if (rt.unit || rt.effective) html.push(`<div style="font-size:12px;color:var(--ink-3);margin-bottom:10px">${rt.unit ? '單位: ' + rt.unit : ''}${rt.unit && rt.effective ? ' · ' : ''}${rt.effective ? '生效: ' + rt.effective : ''}</div>`);
-  // sections 模式:逐個 render (限制每節最多 8 列避免過長,完整看舊版)
+
+  const isInsurance = rt.lookup_type === 'insurance' && Array.isArray(rt.sections);
+  const isCrossSection = rt.searchable && Array.isArray(rt.sections) && rt.sections.length > 1;
+
+  // 保險試算 widget
+  if (isInsurance) {
+    const sections = rt.sections.filter(s => Array.isArray(s.rows) && s.rows.length);
+    const tabs = sections.map((s, i) => {
+      const key = (s.title || '').replace(/\s*15足歲.*$/, '').trim();
+      return `<button class="ins-tab${i === 0 ? ' active' : ''}" data-ins-key="${key}">${key}</button>`;
+    }).join('');
+    const payload = JSON.stringify(sections.map(s => ({ key: (s.title || '').replace(/\s*15足歲.*$/, '').trim(), rows: s.rows })));
+    html.push(`<div class="ins-widget" data-ins='${payload.replace(/'/g, "&#39;").replace(/</g, "&lt;")}' style="background:var(--brand-soft);border:1px solid var(--brand-line);border-radius:var(--radius);padding:12px 14px;margin-bottom:14px">
+      <div style="font-size:13px;font-weight:700;color:var(--brand);margin-bottom:8px">💰 保費試算</div>
+      <div class="ins-tabs" style="display:flex;gap:6px;margin-bottom:10px;flex-wrap:wrap">${tabs}</div>
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px">
+        <label style="font-size:12px;color:var(--ink-2);font-weight:500">天數 (1-365)</label>
+        <input type="number" class="ins-days" min="1" max="365" placeholder="輸入天數,如 30" style="flex:1;max-width:180px;padding:5px 10px;border:1px solid var(--brand-line);border-radius:6px;font-size:13px;background:var(--surface);color:var(--ink)">
+      </div>
+      <div class="ins-result" style="background:var(--surface);border:1px dashed var(--line-strong);border-radius:6px;padding:8px 12px;font-size:13px;color:var(--ink-3);text-align:center">請先選擇險種並輸入天數</div>
+    </div>`);
+  }
+
+  // 跨節 sticky 全域搜尋框
+  if (isCrossSection) {
+    html.push(`<div class="rt-search-global" style="position:sticky;top:0;z-index:5;background:var(--brand-soft);border:1px solid var(--brand-line);border-radius:6px;padding:6px 10px;margin-bottom:12px;display:flex;align-items:center;gap:8px">
+      <span style="font-size:11px;font-weight:700;color:var(--brand);white-space:nowrap">🔍 跨地區搜尋:</span>
+      <input type="search" class="rt-q" placeholder="${rt.search_placeholder || '搜尋…'}" style="flex:1;border:1px solid var(--line);border-radius:4px;padding:4px 8px;font-size:13px;background:var(--surface);color:var(--ink)">
+    </div>`);
+  }
+
+  // sections 模式
   if (Array.isArray(rt.sections)) {
-    for (const sec of rt.sections.slice(0, 4)) {
+    const limit = isCrossSection ? 999 : 8;  // 跨節搜尋時不限筆數,讓 filter 動作有效
+    for (const sec of rt.sections.slice(0, isCrossSection ? rt.sections.length : 4)) {
+      html.push(`<div class="rt-section" data-sec-title="${sec.title || ''}">`);
       if (sec.title) html.push(`<div style="font-weight:600;font-size:13px;margin:12px 0 6px;color:var(--ink-2)">${sec.title}</div>`);
       if (Array.isArray(sec.headers) && Array.isArray(sec.rows)) {
-        const rows = sec.rows.slice(0, 8);
+        const rows = isCrossSection ? sec.rows : sec.rows.slice(0, 8);
         html.push('<div style="overflow-x:auto"><table style="width:100%;border-collapse:collapse;font-size:12.5px"><thead><tr>');
         for (const h of sec.headers) html.push(`<th style="text-align:left;padding:4px 8px;border-bottom:1px solid var(--line);color:var(--ink-3);font-weight:600">${h}</th>`);
         html.push('</tr></thead><tbody>');
@@ -1038,15 +1300,16 @@ function renderRateTableHtml(rt, node) {
           html.push('</tr>');
         }
         html.push('</tbody></table></div>');
-        if (sec.rows.length > 8) html.push(`<div style="font-size:11px;color:var(--ink-3);margin-top:4px">…還有 ${sec.rows.length - 8} 列(請至條文庫舊版查看完整表格)</div>`);
+        if (!isCrossSection && sec.rows.length > 8) html.push(`<div style="font-size:11px;color:var(--ink-3);margin-top:4px">…還有 ${sec.rows.length - 8} 列</div>`);
       } else if (sec.summary) {
         html.push(`<div style="padding:8px 12px;background:var(--surface);border-radius:6px;font-size:13px">${sec.summary}</div>`);
       }
+      html.push('</div>');
     }
-    if (rt.sections.length > 4) html.push(`<div style="font-size:11px;color:var(--ink-3);margin-top:8px">…另有 ${rt.sections.length - 4} 個章節</div>`);
+    if (!isCrossSection && rt.sections.length > 4) html.push(`<div style="font-size:11px;color:var(--ink-3);margin-top:8px">…另有 ${rt.sections.length - 4} 個章節</div>`);
   } else if (Array.isArray(rt.headers) && Array.isArray(rt.rows)) {
     // flat 模式
-    const rows = rt.rows.slice(0, 12);
+    const rows = rt.rows.slice(0, 50);
     html.push('<div style="overflow-x:auto"><table style="width:100%;border-collapse:collapse;font-size:12.5px"><thead><tr>');
     for (const h of rt.headers) html.push(`<th style="text-align:left;padding:4px 8px;border-bottom:1px solid var(--line);color:var(--ink-3);font-weight:600">${h}</th>`);
     html.push('</tr></thead><tbody>');
@@ -1056,10 +1319,71 @@ function renderRateTableHtml(rt, node) {
       html.push('</tr>');
     }
     html.push('</tbody></table></div>');
-    if (rt.rows.length > 12) html.push(`<div style="font-size:11px;color:var(--ink-3);margin-top:4px">…還有 ${rt.rows.length - 12} 列</div>`);
+    if (rt.rows.length > 50) html.push(`<div style="font-size:11px;color:var(--ink-3);margin-top:4px">…還有 ${rt.rows.length - 50} 列</div>`);
   }
   html.push('</div>');
   return html.join('');
+}
+
+// 綁 rate_table 互動 (保險 widget + 跨節搜尋) — drawer 載入後呼叫
+function wireRateTableInteractions(scope) {
+  // 保險 widget
+  scope.querySelectorAll('.ins-widget').forEach(w => {
+    let payload;
+    try { payload = JSON.parse(w.getAttribute('data-ins').replace(/&#39;/g, "'").replace(/&lt;/g, '<')); }
+    catch { return; }
+    const tabs = [...w.querySelectorAll('.ins-tab')];
+    const input = w.querySelector('.ins-days');
+    const result = w.querySelector('.ins-result');
+    let activeKey = tabs[0]?.dataset.insKey;
+    function lookup() {
+      const days = parseInt(input.value, 10);
+      if (!days || days < 1 || days > 365) {
+        result.textContent = '請輸入 1~365 之間的整數天數';
+        result.style.background = 'var(--surface)';
+        return;
+      }
+      const sect = payload.find(s => s.key === activeKey);
+      const found = sect?.rows.find(r => parseInt(r[0], 10) === days);
+      if (!found) {
+        result.textContent = `${activeKey} ${days} 天:無對應費率`;
+        result.style.background = 'var(--surface)';
+        return;
+      }
+      result.innerHTML = `<span style="font-size:12px;color:var(--ink-3)">${activeKey} ${days} 天</span> &nbsp; <span style="font-size:18px;font-weight:700;color:var(--brand);font-family:var(--font-mono)">NT$ ${found[1]}</span>`;
+      result.style.background = 'var(--warn-soft)';
+      result.style.borderColor = 'var(--warn)';
+      result.style.borderStyle = 'solid';
+    }
+    tabs.forEach(t => t.onclick = () => {
+      tabs.forEach(x => x.classList.toggle('active', x === t));
+      activeKey = t.dataset.insKey;
+      lookup();
+    });
+    input.oninput = lookup;
+  });
+  // 跨節 sticky 搜尋
+  scope.querySelectorAll('.rt-search-global .rt-q').forEach(q => {
+    const wrap = q.closest('.rt-wrap');
+    if (!wrap) return;
+    const sections = [...wrap.querySelectorAll('.rt-section')];
+    q.oninput = () => {
+      const term = q.value.trim().toLowerCase();
+      for (const sec of sections) {
+        let visible = 0;
+        const trs = sec.querySelectorAll('tbody tr');
+        for (const tr of trs) {
+          if (!term) { tr.hidden = false; visible++; }
+          else {
+            const hit = tr.textContent.toLowerCase().includes(term);
+            tr.hidden = !hit;
+            if (hit) visible++;
+          }
+        }
+        sec.hidden = term !== '' && visible === 0;
+      }
+    };
+  });
 }
 
 async function openDrawer(idx) {
@@ -1144,6 +1468,8 @@ async function openDrawer(idx) {
 
     if (!bodyHtml) bodyHtml = '<p style="color:var(--ink-3)">(此節點無詳細內容)</p>';
     $body.innerHTML = bodyHtml;
+    // 綁 rate_table 互動 (保險 widget + 跨節搜尋)
+    wireRateTableInteractions($body);
     // 綁 related-item 跳轉
     $body.querySelectorAll('[data-jump]').forEach(el => {
       el.style.cursor = 'pointer';
@@ -1251,6 +1577,11 @@ function renderSidebar() {
 
   const sideItems = [`
     <div class="nav-group">
+      <div class="nav-label">入口</div>
+      <div class="nav-item${currentView === 'scenarios' ? ' active' : ''}" data-entry="scenarios"><span>🧭 情境檢索</span><span class="nav-count">${SCENARIOS.length}</span></div>
+      <div class="nav-item${currentView === 'library' ? ' active' : ''}" data-entry="library"><span>📑 條文庫</span><span class="nav-count">${DATA.length}</span></div>
+    </div>
+    <div class="nav-group">
       <div class="nav-label">類別</div>
       <div class="nav-item${filterState.type === null ? ' active' : ''}" data-type=""><span>全部</span><span class="nav-count">${DATA.length}</span></div>
       <div class="nav-item${filterState.type === 'A' ? ' active' : ''}" data-type="A"><span>📑 核心法規</span><span class="nav-count">${byType.A}</span></div>
@@ -1278,6 +1609,14 @@ function renderSidebar() {
   // 綁 click
   side.querySelectorAll('.nav-item').forEach(it => {
     it.onclick = () => {
+      if (it.dataset.entry) {
+        switchView(it.dataset.entry);
+        if (it.dataset.entry === 'scenarios') renderScenarios();
+        renderSidebar();
+        return;
+      }
+      // type / parent filter 點擊也要切回 library view
+      if (currentView !== 'library') switchView('library');
       if (it.dataset.type !== undefined) {
         filterState.type = it.dataset.type || null;
       }
@@ -1319,6 +1658,114 @@ document.getElementById('q').addEventListener('input', (ev) => {
   filterState.query = ev.target.value;
   renderChips();
   renderCards();
+});
+
+/* ──────── scenarios view ──────── */
+const PARENT_ORDER = ['國內旅費', '國外旅費', '支出憑證與結報'];
+const EXPENSE_ORDER = ['交通費','住宿費','雜費','出國進修','生活費','手續費','保險費','行政費','禮品交際及雜費','收據與發票','採購結報','系統化結報','補助與分攤','差旅費結報','酬勞與會議','通則與其他','大陸港澳','其他'];
+
+function countScenarioMatches(sc) {
+  const primary = new Set(sc.primary_ids || []);
+  const tags = new Set(sc.tags || []);
+  let n = 0;
+  for (const d of DATA) {
+    if (sc.parent && d.cat !== sc.parent) continue;
+    if (primary.has(d.id)) { n++; continue; }
+    if ((d.tags || []).some(t => tags.has(t))) n++;
+  }
+  return n;
+}
+
+function renderScenarios() {
+  const $list = document.getElementById('sc-list');
+  if (!$list) return;
+  // 分組 by parent → expense
+  const groups = new Map();
+  for (const sc of SCENARIOS) {
+    const key = `${sc.parent}|${sc.expense || '其他'}`;
+    if (!groups.has(key)) groups.set(key, []);
+    groups.get(key).push(sc);
+  }
+  const sortedKeys = [...groups.keys()].sort((a, b) => {
+    const [pa, ea] = a.split('|'); const [pb, eb] = b.split('|');
+    const pi = PARENT_ORDER.indexOf(pa) - PARENT_ORDER.indexOf(pb);
+    if (pi !== 0) return pi;
+    return EXPENSE_ORDER.indexOf(ea) - EXPENSE_ORDER.indexOf(eb);
+  });
+
+  $list.innerHTML = sortedKeys.map(key => {
+    const [parent, expense] = key.split('|');
+    const items = groups.get(key);
+    return `
+      <section class="sc-group">
+        <h3 class="sc-group-title">
+          <span>${parent} · ${expense}</span>
+          <span class="sc-group-count">${items.length}</span>
+        </h3>
+        <div class="sc-grid">
+          ${items.map(s => {
+            const hasFlow = s.flow && s.flow.start && s.flow.questions;
+            const flowBadge = hasFlow ? '<span class="sc-flow-badge">🤔 條件問答</span>' : '';
+            const matched = countScenarioMatches(s);
+            return `
+              <article class="sc-card${hasFlow ? ' has-flow' : ''}" data-sc="${s.id}" tabindex="0">
+                <div class="sc-icon">${s.icon || '📌'}</div>
+                <h3 class="sc-title">${s.title}${flowBadge}</h3>
+                <p class="sc-subtitle">${s.subtitle || ''}</p>
+                <div class="sc-meta">
+                  <span class="sc-meta-count">${matched} 張相關卡</span>
+                  <span class="sc-meta-arrow">查看 →</span>
+                </div>
+              </article>
+            `;
+          }).join('')}
+        </div>
+      </section>
+    `;
+  }).join('');
+
+  // 綁 click
+  $list.querySelectorAll('[data-sc]').forEach(c => {
+    c.onclick = () => {
+      const id = c.dataset.sc;
+      const sc = SCENARIOS.find(x => x.id === id);
+      if (!sc) return;
+      // 套情境 + 切回 library view
+      filterState.scenario = id;
+      filterState.parent = sc.parent || null;
+      filterState.type = null;
+      filterState.tag = null;
+      switchView('library');
+      renderSidebar();
+      renderChips();
+      renderCards();
+      // 顯示情境 banner
+      flashHint(`套用情境:${sc.title} · ${currentList.length} 張相關卡`);
+    };
+  });
+}
+
+// 快捷按鈕 (情境視圖頂部)
+document.addEventListener('click', (e) => {
+  const btn = e.target.closest('.sc-quick-btn[data-jump]');
+  if (!btn) return;
+  const id = btn.dataset.jump;
+  // 切到 library + 套對應母題 + 開抽屜
+  const node = NODES_BY_ID.get(id);
+  if (!node) return;
+  filterState.parent = node.parent || null;
+  filterState.type = null;
+  filterState.tag = null;
+  filterState.scenario = null;
+  filterState.query = '';
+  document.getElementById('q').value = '';
+  switchView('library');
+  renderSidebar();
+  renderChips();
+  renderCards();
+  // 開抽屜 (要等 currentList 更新後)
+  const idx = currentList.findIndex(x => x.id === id);
+  if (idx >= 0) openDrawer(idx);
 });
 
 /* ──────── init ──────── */
@@ -1487,6 +1934,7 @@ async function openCompareModal() {
       }
       if (!html) html = '<p style="color:var(--ink-3)">(無內容)</p>';
       $col.innerHTML = html;
+      wireRateTableInteractions($col);  // 比較欄裡的 rate_table 也綁互動
     } catch (e) {
       $col.innerHTML = `<p style="color:var(--stop);font-size:12px">載入失敗: ${e.message}</p>`;
     }
