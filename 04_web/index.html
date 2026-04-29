@@ -166,6 +166,12 @@
     background: var(--ink); color: var(--bg); border-color: var(--ink);
   }
   .chip-count { font-size: 11px; opacity: .65; font-variant-numeric: tabular-nums; }
+  .chip-toggle-more {
+    border-style: dashed !important;
+    color: var(--ink-3) !important;
+    background: transparent !important;
+  }
+  .chip-toggle-more:hover { color: var(--brand) !important; border-color: var(--brand-line) !important; }
 
   /* 情境視圖 chip filter — 兩排:母題 + 支出類別(2026-04-29 加)*/
   .sc-filterbar {
@@ -305,12 +311,19 @@
   .drawer-meta .sep { width: 3px; height: 3px; border-radius: 999px; background: var(--line-strong); }
   .drawer-actions { display: flex; gap: 4px; }
   .iconbtn {
-    width: 32px; height: 32px; border-radius: 8px;
+    height: 32px; padding: 0 8px; border-radius: 8px;
     border: 1px solid transparent; background: transparent; cursor: pointer;
-    display: grid; place-items: center; color: var(--ink-2);
+    display: inline-flex; align-items: center; gap: 4px;
+    color: var(--ink-2); font-size: 12px;
     transition: background .12s, border-color .12s;
   }
   .iconbtn:hover { background: var(--surface-2); border-color: var(--line); color: var(--ink); }
+  .iconbtn-label { line-height: 1; }
+  /* 窄螢幕 (≤520px) 隱藏 label,只顯示 icon 省空間 */
+  @media (max-width: 520px) {
+    .iconbtn { padding: 0; width: 32px; justify-content: center; }
+    .iconbtn-label { display: none; }
+  }
   .drawer-title { font-size: 22px; font-weight: 600; letter-spacing: -.01em; line-height: 1.3; margin: 2px 0; }
 
   .drawer-body {
@@ -442,7 +455,7 @@
   .calc-grid {
     display: grid;
     gap: 18px;
-    grid-template-columns: repeat(auto-fit, minmax(380px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
     max-width: 1200px;
   }
   .calc-card {
@@ -592,6 +605,27 @@
   }
   [data-theme="dark"] .sc-flow-strip { background: oklch(28% 0.04 25); border-color: oklch(40% 0.06 25); }
   .sc-flow-strip-label { font-size: 12px; font-weight: 700; color: var(--stop); }
+  /* 互動試算橫幅摺疊版(2026-04-29 加)*/
+  .sc-flow-details { margin: 0 0 16px; }
+  .sc-flow-summary {
+    cursor: pointer; user-select: none;
+    list-style: none;  /* 移除預設 ▶ */
+    padding: 8px 14px;
+    background: oklch(98% 0.02 25); border: 1px dashed oklch(80% 0.10 25);
+    border-radius: var(--radius);
+    display: flex; align-items: center; gap: 12px;
+    transition: background .12s;
+  }
+  .sc-flow-summary::-webkit-details-marker { display: none; }
+  .sc-flow-summary::before {
+    content: "▶"; font-size: 10px; color: var(--ink-3);
+    transition: transform .15s;
+  }
+  details[open] .sc-flow-summary::before { transform: rotate(90deg); }
+  .sc-flow-summary:hover { background: oklch(96% 0.04 25); }
+  .sc-flow-summary-hint { font-size: 11.5px; color: var(--ink-3); }
+  details[open] .sc-flow-strip { margin-top: 8px; }
+  [data-theme="dark"] .sc-flow-summary { background: oklch(28% 0.04 25); border-color: oklch(40% 0.06 25); }
   .sc-flow-strip button {
     display: inline-flex; align-items: center; gap: 6px;
     padding: 4px 12px;
@@ -655,6 +689,16 @@
     cursor: pointer;
   }
   .scope-banner-back:hover, .scope-banner-clear:hover { background: var(--brand); color: white; }
+  /* 搜尋命中高亮 */
+  mark.search-hit {
+    background: oklch(94% 0.10 95);
+    color: oklch(35% 0.13 70);
+    padding: 0 1px; border-radius: 3px;
+    font-weight: 600;
+  }
+  [data-theme="dark"] mark.search-hit {
+    background: oklch(40% 0.10 90); color: oklch(95% 0.05 90);
+  }
   /* rate_table 內 alias fallback 命中列 */
   .rt-fallback-row td {
     background: oklch(96% 0.04 220) !important;
@@ -1152,9 +1196,9 @@
     <div class="drawer-row">
       <div class="drawer-meta" id="d-meta">A-國內旅費-002 <span class="sep"></span> 2026-04-25 人工校對</div>
       <div class="drawer-actions">
-        <button class="iconbtn" title="複製條號" id="btn-copy"><svg class="icon" viewBox="0 0 24 24"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg></button>
-        <button class="iconbtn" title="原始出處" id="btn-source"><svg class="icon" viewBox="0 0 24 24"><path d="M14 4h6v6"/><path d="M20 4 10 14"/><path d="M20 14v5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V5a1 1 0 0 1 1-1h5"/></svg></button>
-        <button class="iconbtn" title="關閉 (Esc)" id="btn-close"><svg class="icon" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6l-12 12"/></svg></button>
+        <button class="iconbtn" title="複製條號到剪貼簿" aria-label="複製條號" id="btn-copy"><svg class="icon" viewBox="0 0 24 24"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg><span class="iconbtn-label">複製</span></button>
+        <button class="iconbtn" title="開新分頁前往主計總處原始出處" aria-label="原始出處" id="btn-source"><svg class="icon" viewBox="0 0 24 24"><path d="M14 4h6v6"/><path d="M20 4 10 14"/><path d="M20 14v5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V5a1 1 0 0 1 1-1h5"/></svg><span class="iconbtn-label">出處</span></button>
+        <button class="iconbtn" title="關閉抽屜 (Esc)" aria-label="關閉" id="btn-close"><svg class="icon" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6l-12 12"/></svg><span class="iconbtn-label">關閉</span></button>
       </div>
     </div>
     <h2 class="drawer-title" id="d-title">第二條 旅費項目</h2>
@@ -1243,7 +1287,7 @@
 let compareList = [];
 
 /* ──────── 真實資料載入 (520 nodes from 03_index/) ──────── */
-const DATA_VERSION = '2026-04-29h';
+const DATA_VERSION = '2026-04-30a';
 let DATA = [];                 // 對外用的卡片資料 (mapped from nodes.json)
 let NODES_BY_ID = new Map();   // id → original node (含 file_path 等)
 let INCOMING_EDGES = new Map();// id → [from1, from2, ...] 反向引用
@@ -1598,24 +1642,75 @@ function filteredData() {
   const sc = filterState.scenario ? SCENARIOS.find(s => s.id === filterState.scenario) : null;
   const scPrimary = sc ? new Set(sc.primary_ids || []) : null;
   const scTags = sc ? new Set(sc.tags || []) : null;
-  return DATA.filter(d => {
-    // 已廢止預設隱藏,但有 effective_period 的歷史費率表例外保留(供歷史核銷查找)
-    if (!filterState.showObsolete && d.status === '已廢止' && !d.effectivePeriod) return false;
-    if (filterState.parent && d.cat !== filterState.parent) return false;
-    if (filterState.type && d.id.split('-')[0] !== filterState.type) return false;
-    if (filterState.tag && !d.tags.includes(filterState.tag)) return false;
-    if (filterState.expense && !nodeMatchesExpense(d, filterState.expense)) return false;
+  // 含相關度分數,以便情境模式下排序:primary_ids 命中 > tag 多命中 > tag 少命中
+  const TAG_MATCH_THRESHOLD = 2;  // 純 tag 命中需 ≥ 2 個 tag 才視為相關
+  const scored = [];
+  for (const d of DATA) {
+    // 已廢止預設隱藏,但有 effective_period 的歷史費率表例外保留
+    if (!filterState.showObsolete && d.status === '已廢止' && !d.effectivePeriod) continue;
+    if (filterState.parent && d.cat !== filterState.parent) continue;
+    if (filterState.type && d.id.split('-')[0] !== filterState.type) continue;
+    if (filterState.tag && !d.tags.includes(filterState.tag)) continue;
+    if (filterState.expense && !nodeMatchesExpense(d, filterState.expense)) continue;
+    let scenarioRelevance = 0;
     if (sc) {
       const inP = scPrimary.has(d.id);
-      const tagHit = (d.tags || []).some(t => scTags.has(t));
-      if (!inP && !tagHit) return false;
+      const tagOverlap = (d.tags || []).filter(t => scTags.has(t)).length;
+      if (inP) {
+        scenarioRelevance = 1000 + tagOverlap;  // primary 永遠置頂
+      } else if (tagOverlap >= TAG_MATCH_THRESHOLD) {
+        scenarioRelevance = tagOverlap;          // ≥2 tag 才收(避免單 tag 撈太寬)
+      } else {
+        continue;  // 排除「只命中 1 個泛 tag」的雜訊
+      }
     }
+    let queryRelevance = 0;
     if (q) {
-      const hay = (d.id + ' ' + d.title + ' ' + d.summary + ' ' + d.tags.join(' ')).toLowerCase();
-      if (!hay.includes(q)) return false;
+      const titleL = (d.title || '').toLowerCase();
+      const tagsL = (d.tags || []).join(' ').toLowerCase();
+      const summaryL = (d.summary || '').toLowerCase();
+      const idL = d.id.toLowerCase();
+      // 各欄位命中加權:標題 100、ID 80、tag 60、摘要 30
+      let r = 0;
+      if (titleL.includes(q)) r += 100;
+      if (idL.includes(q)) r += 80;
+      if (tagsL.includes(q)) r += 60;
+      if (summaryL.includes(q)) r += 30;
+      if (r === 0) continue;  // 全部欄位都沒命中 → 排除
+      queryRelevance = r;
     }
-    return true;
-  });
+    scored.push({d, scenarioRelevance, queryRelevance});
+  }
+  // 排序優先序:scenario 相關度 > query 相關度 > 原始 ID 序
+  if (sc || q) {
+    scored.sort((a, b) => {
+      const s = b.scenarioRelevance - a.scenarioRelevance;
+      if (s !== 0) return s;
+      return b.queryRelevance - a.queryRelevance;
+    });
+  }
+  return scored.map(x => x.d);
+}
+
+/* 把 query 字詞用 <mark> 包起來高亮(html-safe)。多次呼叫不會疊套。 */
+function highlightQuery(html, q) {
+  if (!q) return html;
+  q = String(q).trim();
+  if (!q) return html;
+  // q 可能是純文字也可能是已編碼,只把 plain text 的 substring 替換
+  // 處理多個關鍵字以空白分隔
+  const terms = q.split(/\s+/).filter(t => t.length > 0);
+  if (!terms.length) return html;
+  for (const t of terms) {
+    // escape regex 特殊字元
+    const esc = t.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    // 不替換 HTML 標籤內的字串 — 用簡單 split-on-tags
+    html = html.replace(/(<[^>]+>)|([^<]+)/g, (_, tag, txt) => {
+      if (tag) return tag;
+      return txt.replace(new RegExp(esc, 'gi'), m => `<mark class="search-hit">${m}</mark>`);
+    });
+  }
+  return html;
 }
 
 /* ──────── 情境 banner (條文庫頂部, 套情境/有 filter 時顯示) ──────── */
@@ -1654,11 +1749,19 @@ function renderCards() {
     grid.innerHTML = `<div class="cmp-empty" style="grid-column:1/-1;padding:60px 24px"><strong>沒有符合條件的條文</strong>清除過濾條件再試試</div>`;
     return;
   }
+  const q = (filterState.query || '').trim();
   grid.innerHTML = currentList.map(d => {
     const inCmp = compareList.includes(d.id);
     const isQa = d.art === 'qa';
     const isRate = d.art === 'rate';
     const summary = d.summary || '<em style="color:var(--ink-3)">(摘要待補)</em>';
+    const titleObj = buildCardTitle(d);
+    const titleHtml = `${titleObj.prefix ? `<span style="color:var(--ink-3);font-weight:500;font-size:13px">${titleObj.prefix}</span> ` : ''}${titleObj.no ? `<span style="color:var(--ink-3);font-weight:500">${titleObj.no}</span> ` : ''}${titleObj.title}`;
+    const tagsHtml = (d.tags || []).slice(0,3).map(t=>`<span class="tag">${t}</span>`).join("");
+    // 套用搜尋字詞高亮(若有)
+    const titleHl = q ? highlightQuery(titleHtml, q) : titleHtml;
+    const summaryHl = q ? highlightQuery(summary, q) : summary;
+    const tagsHl = q ? highlightQuery(tagsHtml, q) : tagsHtml;
     return `
     <article class="card${inCmp ? ' compared' : ''}${isQa ? ' is-qa' : ''}${isRate ? ' is-rate' : ''}" data-id="${d.id}" tabindex="0">
       <button class="card-compare${inCmp ? ' on' : ''}" data-cmp-toggle title="${inCmp ? '已加入比較,點擊移除' : '加入並排比較 (最多 3 張)'}">
@@ -1669,10 +1772,10 @@ function renderCards() {
         ${d.certainty && d.certainty !== 'explicit' ? `<span class="badge-certainty ${d.certainty}" title="${d.certainty === 'contested' ? '實務見解不一,本站不提供判斷' : '法規無明文,屬推論'}">⚠ ${d.certainty === 'contested' ? '爭議' : '推論'}</span>` : ''}
         ${statusBadge(d.status)}
       </div>
-      <h3 class="card-title">${(() => { const t = buildCardTitle(d); return `${t.prefix ? `<span style="color:var(--ink-3);font-weight:500;font-size:13px">${t.prefix}</span> ` : ''}${t.no ? `<span style="color:var(--ink-3);font-weight:500">${t.no}</span> ` : ''}${t.title}`; })()}</h3>
-      <p class="card-summary">${summary}</p>
+      <h3 class="card-title">${titleHl}</h3>
+      <p class="card-summary">${summaryHl}</p>
       <div class="card-foot">
-        <div class="card-tags">${(d.tags || []).slice(0,3).map(t=>`<span class="tag">${t}</span>`).join("")}</div>
+        <div class="card-tags">${tagsHl}</div>
         <span>${d.updated}</span>
       </div>
     </article>
@@ -2005,29 +2108,38 @@ async function openDrawer(idx) {
       const heading = d.art === 'fn' ? '函釋全文' : (d.art === 'rate' ? '標準全文' : '條文全文');
       bodyHtml += `<div class="section"><h3>${heading}</h3><div class="article">${fullText.replace(/\n/g, '<br>')}</div></div>`;
     }
-    // 相關規定 (從 node.related + INCOMING_EDGES)
+    // 相關規定 (從 node.related + INCOMING_EDGES)— 分「引用」與「被引用」兩段加方向標題
     const node = NODES_BY_ID.get(d.id);
     const outgoing = (node?.related || []).map(rid => NODES_BY_ID.get(rid)).filter(Boolean);
     const incoming = (INCOMING_EDGES.get(d.id) || []).map(rid => NODES_BY_ID.get(rid)).filter(Boolean);
     if (outgoing.length || incoming.length) {
-      bodyHtml += `<div class="section"><h3>相關規定</h3><div class="related">`;
-      for (const r of outgoing) {
-        const cat = r.id.split('-')[0];
-        const kind = cat === 'D' ? 'qa' : 'fn';
-        bodyHtml += `<div class="related-item" data-jump="${r.id}">
-          <span class="related-kind ${kind}">→ ${CAT_LABEL[cat] || cat}</span>
-          <div class="related-text">${r.title}<small>${r.id} · ${r.parent}</small></div>
-        </div>`;
+      bodyHtml += `<div class="section"><h3>相關規定</h3>`;
+      if (outgoing.length) {
+        bodyHtml += `<div style="font-size:12px;color:var(--ink-3);font-weight:600;margin:6px 0 4px;letter-spacing:.04em">📤 本條引用了 <span style="color:var(--brand);font-weight:700">${outgoing.length}</span> 條</div><div class="related">`;
+        for (const r of outgoing) {
+          const cat = r.id.split('-')[0];
+          const kind = cat === 'D' ? 'qa' : 'fn';
+          bodyHtml += `<div class="related-item" data-jump="${r.id}">
+            <span class="related-kind ${kind}">→ ${CAT_LABEL[cat] || cat}</span>
+            <div class="related-text">${r.title}<small>${r.id} · ${r.parent}</small></div>
+          </div>`;
+        }
+        bodyHtml += `</div>`;
       }
-      for (const r of incoming.slice(0, 6)) {
-        const cat = r.id.split('-')[0];
-        const kind = cat === 'D' ? 'qa' : 'fn';
-        bodyHtml += `<div class="related-item" data-jump="${r.id}" style="border-left:3px solid var(--ok)">
-          <span class="related-kind ${kind}">← ${CAT_LABEL[cat] || cat}</span>
-          <div class="related-text">${r.title}<small>${r.id} · ${r.parent}</small></div>
-        </div>`;
+      if (incoming.length) {
+        const shownIncoming = incoming.slice(0, 6);
+        bodyHtml += `<div style="font-size:12px;color:var(--ink-3);font-weight:600;margin:14px 0 4px;letter-spacing:.04em">📥 本條被以下 <span style="color:var(--ok);font-weight:700">${incoming.length}</span> 條引用${incoming.length > 6 ? `(顯示前 6 條)` : ''}</div><div class="related">`;
+        for (const r of shownIncoming) {
+          const cat = r.id.split('-')[0];
+          const kind = cat === 'D' ? 'qa' : 'fn';
+          bodyHtml += `<div class="related-item" data-jump="${r.id}" style="border-left:3px solid var(--ok)">
+            <span class="related-kind ${kind}">← ${CAT_LABEL[cat] || cat}</span>
+            <div class="related-text">${r.title}<small>${r.id} · ${r.parent}</small></div>
+          </div>`;
+        }
+        bodyHtml += `</div>`;
       }
-      bodyHtml += `</div></div>`;
+      bodyHtml += `</div>`;
     }
     // 備註
     const note = extractSection(md, '備註');
@@ -2226,7 +2338,10 @@ function renderChips() {
   const $tagRow = document.getElementById('lib-tag-row');
   if (!$expRow || !$obsRow || !$tagRow) return;
 
-  /* 第一排:支出類別 chips(基準:忽略 expense filter 後其他條件下的命中)*/
+  /* 第一排:支出類別 chips(基準:忽略 expense filter 後其他條件下的命中)
+     scenario filter 用與 filteredData 相同的「primary 或 ≥2 tag」收緊邏輯,
+     避免 chip count 與實際卡片數字不一致。*/
+  const TAG_MATCH_THRESHOLD = 2;
   const baseline = DATA.filter(d => {
     if (!filterState.showObsolete && d.status === '已廢止' && !d.effectivePeriod) return false;
     if (filterState.parent && d.cat !== filterState.parent) return false;
@@ -2235,8 +2350,8 @@ function renderChips() {
       const sc = SCENARIOS.find(s => s.id === filterState.scenario);
       if (sc) {
         const inP = (sc.primary_ids || []).includes(d.id);
-        const tagHit = (d.tags || []).some(t => (sc.tags || []).includes(t));
-        if (!inP && !tagHit) return false;
+        const tagOverlap = (d.tags || []).filter(t => (sc.tags || []).includes(t)).length;
+        if (!inP && tagOverlap < TAG_MATCH_THRESHOLD) return false;
       }
     }
     return true;
@@ -2253,12 +2368,28 @@ function renderChips() {
     }
     if (!matched) expCount['程序與通則']++;
   }
+  /* 支出類別:預設只顯示 top 6 + 「+ N 類」展開按鈕(目前選中的也保留可見)*/
+  const visibleExpenses = EXPENSE_LIST.filter(e => expCount[e] > 0);
+  const TOP_EXP = 6;
+  const expanded = window._expExpanded === true;
+  let visibleSet;
+  if (expanded || visibleExpenses.length <= TOP_EXP) {
+    visibleSet = new Set(visibleExpenses);
+  } else {
+    // 取前 6 名(依命中數,但保證 selected 在內)
+    const sorted = [...visibleExpenses].sort((a,b) => expCount[b] - expCount[a]).slice(0, TOP_EXP);
+    visibleSet = new Set(sorted);
+    if (filterState.expense) visibleSet.add(filterState.expense);
+  }
+  const hiddenCount = visibleExpenses.length - visibleSet.size;
   $expRow.innerHTML = `
     <span class="filterrow-label">支出類別</span>
     <button class="chip${!filterState.expense ? ' on' : ''}" data-expense="">全部 <span class="chip-count">${baseline.length}</span></button>
-    ${EXPENSE_LIST.filter(e => expCount[e] > 0).map(e =>
+    ${visibleExpenses.filter(e => visibleSet.has(e)).map(e =>
       `<button class="chip${filterState.expense === e ? ' on' : ''}" data-expense="${e}">${e} <span class="chip-count">${expCount[e]}</span></button>`
     ).join('')}
+    ${hiddenCount > 0 ? `<button class="chip chip-toggle-more" data-toggle-exp="expand">+ ${hiddenCount} 類別 ▾</button>` : ''}
+    ${expanded && visibleExpenses.length > TOP_EXP ? `<button class="chip chip-toggle-more" data-toggle-exp="collapse">收起 ▴</button>` : ''}
   `;
 
   /* 第二排:顯示狀態(現行 / 含已廢止)— 對齊第一排起點 */
@@ -2279,11 +2410,21 @@ function renderChips() {
     .filter(([t]) => !EXPENSE_LIST.includes(t))   // 已是 expense 的不重複出現
     .sort((a, b) => b[1] - a[1]).slice(0, 8);
   if (topTags.length) {
-    $tagRow.innerHTML = `
-      <span class="filterrow-label">熱門標籤</span>
-      <button class="chip${!filterState.tag ? ' on' : ''}" data-tag="">全部</button>
-      ${topTags.map(([t, c]) => `<button class="chip${filterState.tag === t ? ' on' : ''}" data-tag="${t}">${t} <span class="chip-count">${c}</span></button>`).join('')}
-    `;
+    /* 熱門標籤:預設摺疊(除非已選中其中一個)以節省 first fold */
+    const tagExpanded = window._tagExpanded === true || !!filterState.tag;
+    if (tagExpanded) {
+      $tagRow.innerHTML = `
+        <span class="filterrow-label">熱門標籤</span>
+        <button class="chip${!filterState.tag ? ' on' : ''}" data-tag="">全部</button>
+        ${topTags.map(([t, c]) => `<button class="chip${filterState.tag === t ? ' on' : ''}" data-tag="${t}">${t} <span class="chip-count">${c}</span></button>`).join('')}
+        <button class="chip chip-toggle-more" data-toggle-tag="collapse">收起 ▴</button>
+      `;
+    } else {
+      $tagRow.innerHTML = `
+        <span class="filterrow-label">熱門標籤</span>
+        <button class="chip chip-toggle-more" data-toggle-tag="expand">展開 ${topTags.length} 個熱門標籤 ▾</button>
+      `;
+    }
   } else {
     $tagRow.innerHTML = '';
   }
@@ -2292,6 +2433,14 @@ function renderChips() {
   $expRow.querySelectorAll('[data-expense]').forEach(b => b.onclick = () => {
     filterState.expense = b.dataset.expense || null;
     renderChips(); renderCards();
+  });
+  $expRow.querySelectorAll('[data-toggle-exp]').forEach(b => b.onclick = () => {
+    window._expExpanded = b.dataset.toggleExp === 'expand';
+    renderChips();
+  });
+  $tagRow.querySelectorAll('[data-toggle-tag]').forEach(b => b.onclick = () => {
+    window._tagExpanded = b.dataset.toggleTag === 'expand';
+    renderChips();
   });
   $obsRow.querySelectorAll('[data-status]').forEach(b => b.onclick = () => {
     filterState.showObsolete = b.dataset.status === 'all';
@@ -2426,11 +2575,17 @@ function renderScenarios() {
     if (flowCards.length === 0) {
       $flowSlot.innerHTML = '';
     } else {
+      // 預設摺疊;使用者點 toggle 才展開(避免 7 個按鈕佔空間誤導)
       $flowSlot.innerHTML = `
-        <div class="sc-flow-strip">
-          <span class="sc-flow-strip-label">🤔 互動試算/條件問答(${flowCards.length}):</span>
-          ${flowCards.map(s => `<button data-flow-quick="${s.id}" type="button">${s.icon || ''} ${s.title}</button>`).join('')}
-        </div>`;
+        <details class="sc-flow-details">
+          <summary class="sc-flow-summary">
+            <span class="sc-flow-strip-label">🤔 互動試算 / 條件問答 ${flowCards.length} 張</span>
+            <span class="sc-flow-summary-hint">(僅 ${flowCards.length} 個情境提供互動式判斷,點擊展開)</span>
+          </summary>
+          <div class="sc-flow-strip">
+            ${flowCards.map(s => `<button data-flow-quick="${s.id}" type="button">${s.icon || ''} ${s.title}</button>`).join('')}
+          </div>
+        </details>`;
       $flowSlot.querySelectorAll('[data-flow-quick]').forEach(b => {
         b.onclick = () => {
           const sc = SCENARIOS.find(x => x.id === b.dataset.flowQuick);

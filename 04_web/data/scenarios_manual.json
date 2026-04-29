@@ -260,46 +260,44 @@
             "hint": "汽機車交通費依公里數覈計;不得另報油料、過路、停車費。",
             "options": [
               {
-                "label": "自用或租賃汽車",
-                "next": "necessary"
+                "label": "汽車(自用 / 租賃 / 共享)",
+                "next": "necessary_car"
               },
               {
                 "label": "機車",
-                "next": "necessary"
+                "next": "necessary_scooter"
               },
               {
                 "label": "自行車",
                 "conclude": "bike"
-              },
-              {
-                "label": "共享汽車(GoShare 等)",
-                "next": "necessary"
               }
             ]
           },
-          "necessary": {
+          "necessary_car": {
             "label": "是否符合「必要路程」(機關核處公里數)?",
+            "hint": "汽車交通費依公里數覈計,須有機關事先核處之必要路程。",
             "options": [
               {
                 "label": "是,有機關核處公里數",
-                "next": "rate"
+                "conclude": "car"
               },
               {
-                "label": "否,自由路徑",
+                "label": "否,自由路徑或無核處依據",
                 "conclude": "no_necessary"
               }
             ]
           },
-          "rate": {
-            "label": "車輛種類(再次確認)?",
+          "necessary_scooter": {
+            "label": "是否符合「必要路程」(機關核處公里數)?",
+            "hint": "機車交通費依公里數覈計,須有機關事先核處之必要路程。",
             "options": [
               {
-                "label": "汽車(含租賃 / 共享)",
-                "conclude": "car"
+                "label": "是,有機關核處公里數",
+                "conclude": "scooter"
               },
               {
-                "label": "機車",
-                "conclude": "scooter"
+                "label": "否,自由路徑或無核處依據",
+                "conclude": "no_necessary"
               }
             ]
           }
