@@ -142,8 +142,18 @@
   .pagehead p { margin: 0; color: var(--ink-3); font-size: 13px; }
 
   .filterbar {
-    display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 18px;
+    display: flex; flex-direction: column; gap: 8px; margin-bottom: 18px;
     padding-bottom: 18px; border-bottom: 1px solid var(--line);
+  }
+  .filterrow {
+    display: flex; gap: 8px; flex-wrap: wrap; align-items: center;
+  }
+  .filterrow:empty { display: none; }
+  .filterrow-label {
+    font-size: 12px; color: var(--ink-3); font-weight: 600;
+    letter-spacing: .04em;
+    min-width: 64px;     /* 4 中文字 + 間距,讓兩排 chip 對齊起始位置 */
+    flex-shrink: 0;
   }
   .chip {
     border: 1px solid var(--line); background: var(--surface);
@@ -164,7 +174,9 @@
   }
   .sc-filterbar-label {
     font-size: 12px; color: var(--ink-3); font-weight: 600;
-    letter-spacing: .04em; margin-right: 4px;
+    letter-spacing: .04em;
+    min-width: 64px;     /* 與 .filterrow-label 對齊,讓兩排 chip 起始位置一致 */
+    flex-shrink: 0;
   }
   .sc-filterbar-sub {
     margin-bottom: 18px;
@@ -643,49 +655,6 @@
     cursor: pointer;
   }
   .scope-banner-back:hover, .scope-banner-clear:hover { background: var(--brand); color: white; }
-  /* topbar 篩選下拉面板 */
-  .filter-pop-wrap { position: relative; }
-  .filter-pop {
-    position: absolute; top: calc(100% + 6px); right: 0;
-    width: 320px; max-width: 90vw;
-    background: var(--surface);
-    border: 1px solid var(--line-strong);
-    border-radius: var(--radius);
-    box-shadow: var(--shadow-lg);
-    padding: 14px;
-    z-index: 20;
-    display: none;
-  }
-  .filter-pop.show { display: block; }
-  .filter-pop h4 {
-    margin: 0 0 8px; font-size: 11px; font-weight: 700;
-    color: var(--ink-3); text-transform: uppercase; letter-spacing: .08em;
-  }
-  .filter-pop h4:not(:first-child) { margin-top: 14px; }
-  .filter-pop .opt-grid {
-    display: flex; flex-wrap: wrap; gap: 6px;
-  }
-  .filter-pop .opt {
-    border: 1px solid var(--line); background: var(--surface);
-    padding: 5px 11px; border-radius: 999px;
-    font-size: 12.5px; color: var(--ink-2);
-    cursor: pointer; transition: all .12s;
-    font-family: inherit;
-  }
-  .filter-pop .opt:hover { border-color: var(--line-strong); color: var(--ink); }
-  .filter-pop .opt.on {
-    background: var(--ink); color: var(--bg); border-color: var(--ink);
-  }
-  .filter-pop .opt-count { font-size: 11px; opacity: .65; margin-left: 4px; font-variant-numeric: tabular-nums; }
-  .filter-pop-foot {
-    display: flex; justify-content: space-between; align-items: center;
-    margin-top: 14px; padding-top: 12px; border-top: 1px dashed var(--line);
-  }
-  .filter-pop-foot .reset {
-    font-size: 12px; color: var(--ink-3); border: 0; background: 0;
-    cursor: pointer; padding: 4px 8px; font-family: inherit;
-  }
-  .filter-pop-foot .reset:hover { color: var(--stop); }
   /* rate_table 內 alias fallback 命中列 */
   .rt-fallback-row td {
     background: oklch(96% 0.04 220) !important;
@@ -693,12 +662,6 @@
   }
   .rt-fallback-row td:first-child { border-left: 3px solid oklch(60% 0.13 220); }
   [data-theme="dark"] .rt-fallback-row td { background: oklch(28% 0.05 220) !important; }
-  .filter-toggle.has-filter::after {
-    content: ""; display: inline-block;
-    width: 6px; height: 6px;
-    background: var(--brand); border-radius: 50%;
-    margin-left: 6px; vertical-align: middle;
-  }
   .sc-quick-label {
     font-size: 12px; font-weight: 700; color: var(--brand);
   }
@@ -1133,10 +1096,6 @@
         <input id="q" placeholder="搜尋條文、條號、關鍵字…例如：自用汽車 油資" autocomplete="off">
         <span class="kbd">⌘ K</span>
       </label>
-      <div class="filter-pop-wrap">
-        <button class="btn filter-toggle" id="filter-toggle" type="button" aria-expanded="false"><svg class="icon" viewBox="0 0 24 24"><path d="M3 6h18M6 12h12M10 18h4"/></svg>篩選</button>
-        <div class="filter-pop" id="filter-pop" role="dialog"></div>
-      </div>
     </div>
 
     <!-- 條文庫 view -->
@@ -1147,7 +1106,12 @@
       </div>
 
       <div id="scope-banner-slot"></div>
-      <div class="filterbar"></div>
+      <div class="filterbar">
+        <!-- 三排 chip 篩選(2026-04-29 起,取代 topbar 篩選 popup)-->
+        <div class="filterrow" id="lib-expense-row"></div>
+        <div class="filterrow" id="lib-obsolete-row"></div>
+        <div class="filterrow" id="lib-tag-row"></div>
+      </div>
 
       <div class="grid" id="grid"></div>
     </section>
@@ -1279,7 +1243,7 @@
 let compareList = [];
 
 /* ──────── 真實資料載入 (520 nodes from 03_index/) ──────── */
-const DATA_VERSION = '2026-04-29g';
+const DATA_VERSION = '2026-04-29h';
 let DATA = [];                 // 對外用的卡片資料 (mapped from nodes.json)
 let NODES_BY_ID = new Map();   // id → original node (含 file_path 等)
 let INCOMING_EDGES = new Map();// id → [from1, from2, ...] 反向引用
@@ -1685,7 +1649,6 @@ function renderScopeBanner() {
 /* ──────── render cards ──────── */
 function renderCards() {
   renderScopeBanner();
-  renderFilterPop();
   currentList = filteredData();
   if (currentList.length === 0) {
     grid.innerHTML = `<div class="cmp-empty" style="grid-column:1/-1;padding:60px 24px"><strong>沒有符合條件的條文</strong>清除過濾條件再試試</div>`;
@@ -2258,53 +2221,18 @@ function renderSidebar() {
 }
 
 function renderChips() {
-  // 由目前過濾後資料計算 top tags
-  const tagCount = new Map();
-  const filtered = filteredData();
-  for (const d of filtered) {
-    for (const t of (d.tags || [])) tagCount.set(t, (tagCount.get(t) || 0) + 1);
-  }
-  const topTags = [...tagCount.entries()].sort((a, b) => b[1] - a[1]).slice(0, 8);
-  const bar = document.querySelector('.filterbar');
-  if (!bar) return;
-  bar.innerHTML = `
-    <button class="chip${!filterState.tag ? ' on' : ''}" data-tag="">全部 <span class="chip-count">${filtered.length}</span></button>
-    ${topTags.map(([t, c]) => `<button class="chip${filterState.tag === t ? ' on' : ''}" data-tag="${t}">${t} <span class="chip-count">${c}</span></button>`).join('')}
-  `;
-  bar.querySelectorAll('.chip').forEach(c => {
-    c.onclick = () => {
-      filterState.tag = c.dataset.tag || null;
-      renderChips();
-      renderCards();
-    };
-  });
-}
+  const $expRow = document.getElementById('lib-expense-row');
+  const $obsRow = document.getElementById('lib-obsolete-row');
+  const $tagRow = document.getElementById('lib-tag-row');
+  if (!$expRow || !$obsRow || !$tagRow) return;
 
-// 搜尋 input(全站共用)— 打字時自動切到條文庫並過濾
-document.getElementById('q').addEventListener('input', (ev) => {
-  filterState.query = ev.target.value;
-  // 若在情境/試算表視圖,有搜尋字時自動切到條文庫
-  if (filterState.query.trim() && currentView !== 'library') {
-    switchView('library');
-    renderSidebar();
-  }
-  renderChips();
-  renderCards();
-});
-
-/* ──────── 篩選下拉 (狀態 toggle + 支出類別 pills) ──────── */
-function renderFilterPop() {
-  const $pop = document.getElementById('filter-pop');
-  const $btn = document.getElementById('filter-toggle');
-  if (!$pop || !$btn) return;
-  // 算每個 expense 在「忽略 expense filter 後」的命中數
-  const baselineFilter = { ...filterState, expense: null };
+  /* 第一排:支出類別 chips(基準:忽略 expense filter 後其他條件下的命中)*/
   const baseline = DATA.filter(d => {
-    if (!baselineFilter.showObsolete && d.status === '已廢止' && !d.effectivePeriod) return false;
-    if (baselineFilter.parent && d.cat !== baselineFilter.parent) return false;
-    if (baselineFilter.type && d.id.split('-')[0] !== baselineFilter.type) return false;
-    if (baselineFilter.scenario) {
-      const sc = SCENARIOS.find(s => s.id === baselineFilter.scenario);
+    if (!filterState.showObsolete && d.status === '已廢止' && !d.effectivePeriod) return false;
+    if (filterState.parent && d.cat !== filterState.parent) return false;
+    if (filterState.type && d.id.split('-')[0] !== filterState.type) return false;
+    if (filterState.scenario) {
+      const sc = SCENARIOS.find(s => s.id === filterState.scenario);
       if (sc) {
         const inP = (sc.primary_ids || []).includes(d.id);
         const tagHit = (d.tags || []).some(t => (sc.tags || []).includes(t));
@@ -2325,57 +2253,69 @@ function renderFilterPop() {
     }
     if (!matched) expCount['程序與通則']++;
   }
-  const obsoleteCount = DATA.filter(d => d.status === '已廢止').length;
-
-  $pop.innerHTML = `
-    <h4>顯示狀態</h4>
-    <div class="opt-grid">
-      <button class="opt${!filterState.showObsolete ? ' on' : ''}" data-status="current">✓ 只看現行 <span class="opt-count">${DATA.length - obsoleteCount}</span></button>
-      <button class="opt${filterState.showObsolete ? ' on' : ''}" data-status="all">含已廢止 <span class="opt-count">${DATA.length}</span></button>
-    </div>
-    <h4>支出類別</h4>
-    <div class="opt-grid">
-      <button class="opt${!filterState.expense ? ' on' : ''}" data-expense="">全部</button>
-      ${EXPENSE_LIST.filter(e => expCount[e] > 0).map(e =>
-        `<button class="opt${filterState.expense === e ? ' on' : ''}" data-expense="${e}">${e} <span class="opt-count">${expCount[e]}</span></button>`
-      ).join('')}
-    </div>
-    <div class="filter-pop-foot">
-      <button class="reset" data-filter-reset>重置全部</button>
-      <button class="opt on" data-filter-close>完成</button>
-    </div>
+  $expRow.innerHTML = `
+    <span class="filterrow-label">支出類別</span>
+    <button class="chip${!filterState.expense ? ' on' : ''}" data-expense="">全部 <span class="chip-count">${baseline.length}</span></button>
+    ${EXPENSE_LIST.filter(e => expCount[e] > 0).map(e =>
+      `<button class="chip${filterState.expense === e ? ' on' : ''}" data-expense="${e}">${e} <span class="chip-count">${expCount[e]}</span></button>`
+    ).join('')}
   `;
-  // 是否啟用過濾的視覺指示
-  const hasFilter = filterState.expense || filterState.showObsolete;
-  $btn.classList.toggle('has-filter', !!hasFilter);
 
-  $pop.querySelectorAll('[data-status]').forEach(b => b.onclick = () => {
-    filterState.showObsolete = b.dataset.status === 'all';
-    renderSidebar(); renderChips(); renderCards();
-  });
-  $pop.querySelectorAll('[data-expense]').forEach(b => b.onclick = () => {
+  /* 第二排:顯示狀態(現行 / 含已廢止)— 對齊第一排起點 */
+  const obsoleteCount = DATA.filter(d => d.status === '已廢止').length;
+  $obsRow.innerHTML = `
+    <span class="filterrow-label">顯示狀態</span>
+    <button class="chip${!filterState.showObsolete ? ' on' : ''}" data-status="current">✓ 只看現行 <span class="chip-count">${DATA.length - obsoleteCount}</span></button>
+    <button class="chip${filterState.showObsolete ? ' on' : ''}" data-status="all">含已廢止 <span class="chip-count">${DATA.length}</span></button>
+  `;
+
+  /* 第三排:依當前過濾後熱門 tags(動態) */
+  const tagCount = new Map();
+  const filtered = filteredData();
+  for (const d of filtered) {
+    for (const t of (d.tags || [])) tagCount.set(t, (tagCount.get(t) || 0) + 1);
+  }
+  const topTags = [...tagCount.entries()]
+    .filter(([t]) => !EXPENSE_LIST.includes(t))   // 已是 expense 的不重複出現
+    .sort((a, b) => b[1] - a[1]).slice(0, 8);
+  if (topTags.length) {
+    $tagRow.innerHTML = `
+      <span class="filterrow-label">熱門標籤</span>
+      <button class="chip${!filterState.tag ? ' on' : ''}" data-tag="">全部</button>
+      ${topTags.map(([t, c]) => `<button class="chip${filterState.tag === t ? ' on' : ''}" data-tag="${t}">${t} <span class="chip-count">${c}</span></button>`).join('')}
+    `;
+  } else {
+    $tagRow.innerHTML = '';
+  }
+
+  // 綁 click
+  $expRow.querySelectorAll('[data-expense]').forEach(b => b.onclick = () => {
     filterState.expense = b.dataset.expense || null;
     renderChips(); renderCards();
   });
-  $pop.querySelector('[data-filter-reset]').onclick = () => {
-    filterState.expense = null; filterState.showObsolete = false;
-    filterState.tag = null; filterState.type = null;
+  $obsRow.querySelectorAll('[data-status]').forEach(b => b.onclick = () => {
+    filterState.showObsolete = b.dataset.status === 'all';
     renderSidebar(); renderChips(); renderCards();
-  };
-  $pop.querySelector('[data-filter-close]').onclick = () => $pop.classList.remove('show');
+  });
+  $tagRow.querySelectorAll('[data-tag]').forEach(b => b.onclick = () => {
+    filterState.tag = b.dataset.tag || null;
+    renderChips(); renderCards();
+  });
 }
-document.getElementById('filter-toggle').addEventListener('click', (e) => {
-  e.stopPropagation();
-  const $pop = document.getElementById('filter-pop');
-  $pop.classList.toggle('show');
-  if ($pop.classList.contains('show')) renderFilterPop();
+
+// 搜尋 input(全站共用)— 打字時自動切到條文庫並過濾
+document.getElementById('q').addEventListener('input', (ev) => {
+  filterState.query = ev.target.value;
+  // 若在情境/試算表視圖,有搜尋字時自動切到條文庫
+  if (filterState.query.trim() && currentView !== 'library') {
+    switchView('library');
+    renderSidebar();
+  }
+  renderChips();
+  renderCards();
 });
-document.addEventListener('click', (e) => {
-  const $pop = document.getElementById('filter-pop');
-  if (!$pop?.classList.contains('show')) return;
-  if (e.target.closest('#filter-pop') || e.target.closest('#filter-toggle')) return;
-  $pop.classList.remove('show');
-});
+
+/* 2026-04-29:topbar 篩選 popup 已移除,改成 view-library 內的 inline 三排 chip(由 renderChips() 負責)。 */
 
 /* ──────── scenarios view ──────── */
 const PARENT_ORDER = ['國內旅費', '國外旅費', '支出憑證與結報'];
