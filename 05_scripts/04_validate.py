@@ -18,6 +18,7 @@ errors(阻擋,exit 2)
   E8  母題與所在子資料夾一致
   E9  related 內 ID 都實際存在於 nodes
   E10 tags 至少 1 個
+  E11 status: 被取代 必須配 superseded_by(2026-04-29 加)
 
 warnings(報告,不擋,--strict 才視為失敗)
   W1  version 為 ``TODO`` 或非 ISO 日期格式
@@ -26,6 +27,9 @@ warnings(報告,不擋,--strict 才視為失敗)
   W4  reviewed 缺(草稿狀態)
   W5  C 類缺 doc_no
   W6  title 含 TODO 後綴(02_parse fallback)
+  W7  status / review_level / certainty / disclaimer_level 不在列舉值內(2026-04-29 加)
+  W8  tags 超過上限 4 個(2026-04-29 加,期待 normalize 後降到 0)
+  W9  superseded_by 指向不存在或非 status: 現行 的節點(2026-04-29 加)
 
 合法母題清單來源
 ----------------
@@ -99,6 +103,13 @@ REQUIRED_FIELDS = ("id", "type", "parent", "title", "tags", "source", "version")
 ID_PATTERN = re.compile(r"^([ABCDN])-([一-龥]+)-(\d{3})$")
 ISO_DATE_PATTERN = re.compile(r"^\d{4}-\d{2}-\d{2}$")
 PLACEHOLDER_MARKERS = ("(待人工補)", "TODO", "待補")
+
+# 2026-04-29 起新增列舉值與上限規則(Phase 1)
+VALID_STATUS = {"現行", "被取代", "修正中", "已廢止"}
+VALID_REVIEW_LEVEL = {"人工", "llm精校", "自動初校", "草稿"}
+VALID_CERTAINTY = {"explicit", "inferred", "contested"}
+VALID_DISCLAIMER_LEVEL = {"standard", "strong"}
+TAGS_UPPER_LIMIT = 4
 
 
 # ─────────────────────────────────────────────
@@ -480,6 +491,82 @@ def check_title_todo(node: NodeRecord) -> list[Issue]:
     return []
 
 
+def check_enum_values(node: NodeRecord) -> list[Issue]:
+    """W7: status / review_level / certainty / disclaimer_level 不在列舉值內。"""
+    issues: list[Issue] = []
+    fm = node.fm
+    enum_checks = [
+        ("status", VALID_STATUS),
+        ("review_level", VALID_REVIEW_LEVEL),
+        ("certainty", VALID_CERTAINTY),
+        ("disclaimer_level", VALID_DISCLAIMER_LEVEL),
+    ]
+    for field_name, allowed in enum_checks:
+        v = fm.get(field_name)
+        if v is None:
+            continue  # 缺欄位由其他檢查處理
+        if str(v) not in allowed:
+            issues.append(Issue(
+                "W7",
+                node.rel_path,
+                f"{field_name}={v!r} 不在列舉值 {sorted(allowed)} 內",
+                "warning",
+            ))
+    return issues
+
+
+def check_tags_upper_limit(node: NodeRecord) -> list[Issue]:
+    """W8: tags 超過上限 4 個。"""
+    tags = node.fm.get("tags") or []
+    if isinstance(tags, list) and len(tags) > TAGS_UPPER_LIMIT:
+        return [Issue(
+            "W8",
+            node.rel_path,
+            f"tags {len(tags)} 個超過上限 {TAGS_UPPER_LIMIT}: {tags}",
+            "warning",
+        )]
+    return []
+
+
+def check_superseded_chain(
+    node: NodeRecord, all_ids_with_status: dict[str, str]
+) -> list[Issue]:
+    """E11: status:被取代 必須配 superseded_by。
+       W9: superseded_by 指向不存在或非 status:現行 的節點。
+    """
+    issues: list[Issue] = []
+    status = node.fm.get("status")
+    superseded_by = node.fm.get("superseded_by")
+    if status == "被取代":
+        if not superseded_by:
+            issues.append(Issue(
+                "E11",
+                node.rel_path,
+                "status: 被取代 必須配 superseded_by 欄(指向現行替代節點 ID)",
+                "error",
+            ))
+    if superseded_by:
+        sid = str(superseded_by)
+        if sid not in all_ids_with_status:
+            issues.append(Issue(
+                "W9",
+                node.rel_path,
+                f"superseded_by 指向不存在的 ID: {sid}",
+                "warning",
+            ))
+        elif all_ids_with_status[sid] not in {"現行", None}:
+            # 若指向的不是 現行(預設或顯式)的節點 → 警告
+            actual = all_ids_with_status[sid]
+            if actual not in (None, "現行"):
+                issues.append(Issue(
+                    "W9",
+                    node.rel_path,
+                    f"superseded_by 指向 {sid},但該節點 status={actual!r}(非現行)",
+                    "warning",
+                ))
+    return issues
+
+
 # ─────────────────────────────────────────────
 # 全檢查
 # ─────────────────────────────────────────────
@@ -496,6 +583,12 @@ def run_checks(
     # 全域檢查
     issues.extend(check_unique_ids(nodes))
     all_ids = {str(n.fm.get("id")) for n in nodes if n.fm.get("id")}
+    # status by id 表(供 superseded_by 鏈檢查)
+    all_ids_with_status: dict[str, str] = {}
+    for n in nodes:
+        nid = n.fm.get("id")
+        if nid:
+            all_ids_with_status[str(nid)] = str(n.fm.get("status") or "現行")
 
     # 逐節點檢查
     for n in nodes:
@@ -512,6 +605,10 @@ def run_checks(
         issues.extend(check_reviewed(n))
         issues.extend(check_doc_no_for_c(n))
         issues.extend(check_title_todo(n))
+        # 2026-04-29 加 (Phase 1)
+        issues.extend(check_enum_values(n))
+        issues.extend(check_tags_upper_limit(n))
+        issues.extend(check_superseded_chain(n, all_ids_with_status))
 
     return issues
 
