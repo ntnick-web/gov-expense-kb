@@ -231,15 +231,20 @@
   .topbar {
     display: flex; gap: 12px; align-items: center; margin-bottom: 22px;
     flex-wrap: wrap;
+    /* 桌面:搜尋框置頂不滑動,sticky 於 topnav 之下 */
+    position: sticky; top: 48px; z-index: 25;
+    background: var(--bg);
+    padding: 8px 0;
+    margin-left: -32px; margin-right: -32px;
+    padding-left: 32px; padding-right: 32px;
+    border-bottom: 1px solid var(--line);
   }
-  /* 行動版搜尋框 sticky 在頂部,捲到下方仍可隨手搜尋 */
+  /* 行動版搜尋框 sticky 在頂部(無 topnav,top:0)*/
   @media (max-width: 880px) {
     .topbar {
-      position: sticky; top: 0; z-index: 30;
-      background: var(--bg);
+      top: 0; z-index: 30;
       margin-left: -16px; margin-right: -16px;
-      padding: 8px 16px; margin-bottom: 12px;
-      border-bottom: 1px solid var(--line);
+      padding: 8px 16px;
     }
   }
   .search {
@@ -1323,12 +1328,13 @@
     <section id="view-library" class="library-view hidden">
       <div class="pagehead">
         <h1>條文庫</h1>
-        <p>核心法規 · 點擊任一卡片查看詳細條文與相關 Q&amp;A · <span id="grid-count" style="color:var(--brand);font-weight:600"></span></p>
+        <p>核心法規 · 支出標準 · 解釋函令 · 問答集 — 點擊任一卡片查看詳細條文與相關 Q&amp;A · <span id="grid-count" style="color:var(--brand);font-weight:600"></span></p>
       </div>
 
       <div id="scope-banner-slot"></div>
       <div class="filterbar">
-        <!-- 三排 chip 篩選(2026-04-29 起,取代 topbar 篩選 popup)-->
+        <!-- 四排 chip 篩選 -->
+        <div class="filterrow" id="lib-type-row"></div>
         <div class="filterrow" id="lib-expense-row"></div>
         <div class="filterrow" id="lib-obsolete-row"></div>
         <div class="filterrow" id="lib-tag-row"></div>
@@ -2526,6 +2532,7 @@ function renderSidebar() {
   `];
   // 替換 sidebar 內 nav-group
   const side = document.querySelector('.side');
+  if (!side) return;   // sidebar 已於 0623e9c 移除,以 topnav 取代;此函式保留邏輯但不渲染
   // 保留 brand,只替換之後的 nav-group
   const brand = side.querySelector('.brand');
   side.innerHTML = '';
@@ -2561,15 +2568,54 @@ function renderSidebar() {
 }
 
 function renderChips() {
+  const $typeRow = document.getElementById('lib-type-row');
   const $expRow = document.getElementById('lib-expense-row');
   const $obsRow = document.getElementById('lib-obsolete-row');
   const $tagRow = document.getElementById('lib-tag-row');
   if (!$expRow || !$obsRow || !$tagRow) return;
 
-  /* 第一排:支出類別 chips(基準:忽略 expense filter 後其他條件下的命中)
+  /* 第一排:類別 chips(A 核心法規 / B 支出標準 / C 解釋函令 / D 問答集)
+     基準:忽略 type filter 後其他條件下的命中,點擊即套用 filterState.type */
+  const TAG_MATCH_THRESHOLD = 2;
+  const passNonType = (d) => {
+    if (!filterState.showObsolete && d.status === '已廢止' && !d.effectivePeriod) return false;
+    if (filterState.parent && d.cat !== filterState.parent) return false;
+    if (filterState.expense && !nodeMatchesExpense(d, filterState.expense)) return false;
+    if (filterState.scenario) {
+      const sc = SCENARIOS.find(s => s.id === filterState.scenario);
+      if (sc) {
+        const inP = (sc.primary_ids || []).includes(d.id);
+        const tagOverlap = (d.tags || []).filter(t => (sc.tags || []).includes(t)).length;
+        if (!inP && tagOverlap < TAG_MATCH_THRESHOLD) return false;
+      }
+    }
+    return true;
+  };
+  const byType = { A: 0, B: 0, C: 0, D: 0 };
+  let typeAll = 0;
+  for (const d of DATA) {
+    if (!passNonType(d)) continue;
+    typeAll++;
+    const t = d.id.split('-')[0];
+    if (byType[t] !== undefined) byType[t]++;
+  }
+  if ($typeRow) {
+    const TYPES = [
+      { k: 'A', label: '核心法規', icon: '📑' },
+      { k: 'B', label: '支出標準', icon: '📊' },
+      { k: 'C', label: '解釋函令', icon: '📜' },
+      { k: 'D', label: '問答集',   icon: '💬' },
+    ];
+    $typeRow.innerHTML = `
+      <span class="filterrow-label">類別</span>
+      <button class="chip${!filterState.type ? ' on' : ''}" data-type="">全部 <span class="chip-count">${typeAll}</span></button>
+      ${TYPES.map(t => `<button class="chip${filterState.type === t.k ? ' on' : ''}" data-type="${t.k}">${t.icon} ${t.label} <span class="chip-count">${byType[t.k]}</span></button>`).join('')}
+    `;
+  }
+
+  /* 第二排:支出類別 chips(基準:忽略 expense filter 後其他條件下的命中)
      scenario filter 用與 filteredData 相同的「primary 或 ≥2 tag」收緊邏輯,
      避免 chip count 與實際卡片數字不一致。*/
-  const TAG_MATCH_THRESHOLD = 2;
   const baseline = DATA.filter(d => {
     if (!filterState.showObsolete && d.status === '已廢止' && !d.effectivePeriod) return false;
     if (filterState.parent && d.cat !== filterState.parent) return false;
@@ -2658,6 +2704,12 @@ function renderChips() {
   }
 
   // 綁 click
+  if ($typeRow) {
+    $typeRow.querySelectorAll('[data-type]').forEach(b => b.onclick = () => {
+      filterState.type = b.dataset.type || null;
+      renderChips(); renderCards();
+    });
+  }
   $expRow.querySelectorAll('[data-expense]').forEach(b => b.onclick = () => {
     filterState.expense = b.dataset.expense || null;
     renderChips(); renderCards();
