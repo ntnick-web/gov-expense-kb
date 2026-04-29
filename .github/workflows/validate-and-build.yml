@@ -1,0 +1,63 @@
+name: Validate and Build
+
+# 觸發:push 到 main 改動 02_markdown/ 或 build/index 腳本時自動驗證 + 重建索引。
+# 重建後 commit 回 main,GitHub Pages 接著自動部署。
+on:
+  push:
+    branches: [main]
+    paths:
+      - '02_markdown/**'
+      - '04_web/data/scenarios_manual.json'
+      - '05_scripts/03_build_index.py'
+      - '05_scripts/04_validate.py'
+      - '05_scripts/build_scenarios.py'
+  workflow_dispatch:  # 也支援手動觸發
+
+permissions:
+  contents: write   # commit 回 03_index/ 與 scenarios_auto.json
+
+jobs:
+  validate-and-build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install PyYAML
+
+      - name: Validate schema
+        # 04_validate.py:E1-E11 schema 一致性檢查;有 error 會 exit 2 阻擋
+        run: python 05_scripts/04_validate.py
+
+      - name: Rebuild index
+        # 03_build_index.py:重建 03_index/*.json
+        run: python 05_scripts/03_build_index.py
+
+      - name: Rebuild auto scenarios
+        # build_scenarios.py:從 02_markdown 規則式生成 scenarios_auto.json
+        run: python 05_scripts/build_scenarios.py --apply
+
+      - name: Commit rebuilt artifacts
+        # 若 03_index/ 或 scenarios_auto.json 有變,自動 commit 回 main
+        run: |
+          if [ -n "$(git status --porcelain 03_index/ 04_web/data/scenarios_auto.json)" ]; then
+            git config user.name 'github-actions[bot]'
+            git config user.email 'github-actions[bot]@users.noreply.github.com'
+            git add 03_index/ 04_web/data/scenarios_auto.json
+            git commit -m "chore(ci): 自動重建 03_index + scenarios_auto.json [skip ci]"
+            git push
+          else
+            echo "No changes in build outputs; skipping commit."
+          fi
