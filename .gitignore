@@ -33,6 +33,9 @@ desktop.ini
 files.zip
 *.zip
 
+# 設計交接包(一次性交付物,不進 git)
+design_handoff_*/
+
 # 暫存
 *.tmp
 *.bak

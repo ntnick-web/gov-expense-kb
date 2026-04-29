@@ -3,7 +3,17 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>核銷這樣做!!! — 政府支出法規知識庫</title>
+<title>核銷 Let's go!</title>
+<script>
+  /* Pre-paint:在 body 渲染前決定預設 view,避免行動版進站瞬間 flash 過 landing。
+     行動版預設 'scenarios';桌面預設 'landing'。 */
+  (function () {
+    try {
+      var isMobile = window.matchMedia && window.matchMedia('(max-width: 880px)').matches;
+      document.documentElement.dataset.initView = isMobile ? 'scenarios' : 'landing';
+    } catch (e) { document.documentElement.dataset.initView = 'landing'; }
+  })();
+</script>
 <style>
   :root {
     color-scheme: light;
@@ -108,6 +118,9 @@
   /* ───── Landing view(三大入口卡)───── */
   .landing-view { display: none; }
   .landing-view.active { display: flex; flex-direction: column; padding: 60px 24px 80px; }
+  /* Pre-paint flash 防護:行動版即使 HTML 預設 .active 也強制隱藏 landing,並讓 scenarios 立即可見 */
+  html[data-init-view="scenarios"] .landing-view.active { display: none; }
+  html[data-init-view="scenarios"] #view-scenarios { display: block; }
   .landing-hero {
     text-align: center; max-width: 720px; margin: 0 auto 50px;
   }
@@ -1259,7 +1272,7 @@
     <header class="topnav">
       <button class="topnav-brand" id="brand-home" title="回首頁">
         <span class="brand-mark">支</span>
-        <span class="brand-text-h">核銷這樣做<span style="color:var(--brand)">!!!</span></span>
+        <span class="brand-text-h">核銷 <span style="color:var(--brand)">Let's go!</span></span>
       </button>
       <nav class="topnav-tabs">
         <button class="topnav-tab" data-entry="scenarios"><span>🧭</span> 情境檢索</button>
@@ -1278,8 +1291,8 @@
     <!-- ───── Landing view(2026-04-30 加,首頁三選一)───── -->
     <section id="view-landing" class="landing-view active">
       <div class="landing-hero">
-        <h1>核銷這樣做<span class="brand-x">!!!</span></h1>
-        <p>政府支出法規知識庫 · 三種使用方式,選你需要的入口開始</p>
+        <h1>核銷 <span class="brand-x">Let's go!</span></h1>
+        <p>三種使用方式,選你需要的入口開始</p>
       </div>
       <div class="landing-grid">
         <button class="landing-card" data-entry="scenarios" type="button">
@@ -1387,10 +1400,8 @@
   <div class="v2-footer-row">
     <span class="v2-footer-brand">
       <span class="brand-mark">支</span>
-      核銷這樣做!!!
+      核銷 Let's go!
     </span>
-    <span class="v2-footer-sep">·</span>
-    <span>政府支出法規知識庫</span>
     <span class="v2-footer-sep">·</span>
     <span>程式 <a href="https://github.com/ntnick-web/gov-expense-kb/blob/main/LICENSE.md" target="_blank" rel="noopener">MIT</a></span>
     <span class="v2-footer-sep">·</span>
@@ -1398,7 +1409,9 @@
     <span class="v2-footer-sep">·</span>
     <span>法規原文 屬政府公開資訊</span>
     <span class="v2-footer-sep">·</span>
-    <a href="index-old.html" title="回舊版(凍結)">↩ 舊版(已凍結)</a>
+    <a href="index-v3.html" title="V3 候選版(vanilla,無 React/CDN)">✨ V3 候選</a>
+    <span class="v2-footer-sep">·</span>
+    <a href="design-preview/" title="編輯感馬卡龍試做版(React prototype)">🎨 設計試做</a>
     <span class="v2-footer-sep">·</span>
     <a href="https://github.com/ntnick-web/gov-expense-kb" target="_blank" rel="noopener">GitHub</a>
     <span class="v2-footer-sep">·</span>
@@ -1440,7 +1453,6 @@
 
 <!-- ───── Mobile bottom tabbar (≤880px 才顯示) ───── -->
 <nav class="mobile-tabbar" role="navigation" aria-label="主要導覽">
-  <button class="mobile-tab" data-entry="landing" type="button"><span class="tab-emoji">🏠</span><span>首頁</span></button>
   <button class="mobile-tab" data-entry="scenarios" type="button"><span class="tab-emoji">🧭</span><span>情境</span></button>
   <button class="mobile-tab" data-entry="library" type="button"><span class="tab-emoji">📑</span><span>條文庫</span></button>
   <button class="mobile-tab" data-entry="calc" type="button"><span class="tab-emoji">🧮</span><span>試算</span></button>
@@ -2520,7 +2532,7 @@ function renderSidebar() {
   side.appendChild(brand);
   // 更新節點數副標
   const brandText = brand.querySelector('.brand-text small');
-  if (brandText) brandText.textContent = `${DATA.length} 節點 · 政府支出法規知識庫`;
+  if (brandText) brandText.textContent = `${DATA.length} 節點`;
   side.insertAdjacentHTML('beforeend', sideItems.join(''));
 
   // 綁 click
@@ -3616,9 +3628,14 @@ document.getElementById('brand-home')?.addEventListener('click', () => {
   window.scrollTo({ top: 0, behavior: 'smooth' });
 });
 
-// 確保進站時為 landing(URL 帶 hash 也忽略,使用者必須主動選入口)
-switchView('landing');
-syncMobileTabbar();
+// 進站預設 view:行動版直接進「情境」(底部 tabbar 含三入口);桌面進 landing 三入口
+const _isMobileInit = window.matchMedia && window.matchMedia('(max-width: 880px)').matches;
+if (_isMobileInit) {
+  _enterView('scenarios');
+} else {
+  switchView('landing');
+  syncMobileTabbar();
+}
 </script>
 </body>
 </html>
