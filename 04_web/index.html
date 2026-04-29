@@ -65,18 +65,116 @@
   button { font: inherit; color: inherit; }
   ::selection { background: var(--brand-soft); color: var(--ink); }
 
-  /* ───── App shell ───── */
-  .app { display: grid; grid-template-columns: 240px 1fr; min-height: 100vh; }
-  @media (max-width: 880px) { .app { grid-template-columns: 1fr; } }
+  /* ───── App shell(2026-04-30 起:單欄,topbar 取代桌面 sidebar)───── */
+  .app { display: block; min-height: 100vh; }
+  /* 舊 .side 殘留 CSS 已停用,但保留 .side selector 因其他元件可能 reference */
+  .side { display: none !important; }
 
-  /* ───── Sidebar ───── */
-  .side {
-    border-right: 1px solid var(--line);
-    padding: 18px 14px;
-    position: sticky; top: 0; height: 100vh; overflow: auto;
+  /* ───── 桌面 topnav(brand + 3 tab)─────  */
+  .topnav {
+    display: flex; align-items: center; gap: 24px;
+    padding: 12px 24px; border-bottom: 1px solid var(--line);
     background: var(--bg);
+    position: sticky; top: 0; z-index: 30;
   }
-  @media (max-width: 880px) { .side { display: none; } }
+  .topnav-brand {
+    display: flex; align-items: center; gap: 10px;
+    background: 0; border: 0; cursor: pointer; padding: 0;
+    font-family: inherit;
+  }
+  .topnav-brand:hover .brand-text-h { color: var(--brand); }
+  .brand-text-h {
+    font-size: 16px; font-weight: 700; color: var(--ink);
+    letter-spacing: -.01em; transition: color .12s;
+  }
+  .topnav-tabs { display: flex; gap: 4px; flex: 1; }
+  .topnav-tab {
+    padding: 8px 14px; border-radius: 8px;
+    border: 0; background: transparent; cursor: pointer;
+    font-family: inherit; font-size: 14px; color: var(--ink-2);
+    display: inline-flex; align-items: center; gap: 6px;
+    transition: all .12s;
+  }
+  .topnav-tab:hover { background: var(--surface-2); color: var(--ink); }
+  .topnav-tab.active {
+    background: var(--brand-soft); color: var(--brand);
+    font-weight: 600;
+  }
+  /* 行動版桌面 topnav 隱藏(已有 mobile-tabbar 與 mobile topbar)*/
+  @media (max-width: 720px) {
+    .topnav { display: none; }
+  }
+
+  /* ───── Landing view(三大入口卡)───── */
+  .landing-view { display: none; }
+  .landing-view.active { display: flex; flex-direction: column; padding: 60px 24px 80px; }
+  .landing-hero {
+    text-align: center; max-width: 720px; margin: 0 auto 50px;
+  }
+  .landing-hero h1 {
+    font-size: 38px; font-weight: 700; margin: 0 0 14px;
+    letter-spacing: -.01em; line-height: 1.2;
+  }
+  .landing-hero h1 .brand-x { color: var(--brand); }
+  .landing-hero p {
+    color: var(--ink-3); font-size: 16px; line-height: 1.6;
+    margin: 0;
+  }
+  .landing-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 24px; max-width: 1100px; margin: 0 auto;
+    width: 100%;
+  }
+  .landing-card {
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: 18px;
+    padding: 44px 30px 36px;
+    cursor: pointer; text-align: center;
+    transition: all .2s cubic-bezier(.2,.8,.2,1);
+    display: flex; flex-direction: column;
+    align-items: center; gap: 14px;
+    font-family: inherit; color: var(--ink);
+    min-height: 280px;
+  }
+  .landing-card:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 20px 40px -10px oklch(20% 0.04 265 / .12);
+    border-color: var(--brand-line);
+  }
+  .landing-icon { font-size: 64px; line-height: 1; }
+  .landing-card h2 {
+    margin: 4px 0 0; font-size: 22px; font-weight: 700;
+    color: var(--ink);
+  }
+  .landing-card p {
+    color: var(--ink-3); font-size: 14px; line-height: 1.6;
+    margin: 0; flex: 1;
+  }
+  .landing-meta {
+    margin-top: 4px;
+    padding: 5px 14px; border-radius: 999px;
+    background: var(--brand-soft); color: var(--brand);
+    font-size: 12.5px; font-weight: 600;
+    letter-spacing: .02em;
+  }
+  .landing-foot {
+    text-align: center; margin: 50px auto 0; max-width: 600px;
+    color: var(--ink-3); font-size: 13px; line-height: 1.6;
+  }
+  /* 行動版:單欄堆疊 + padding 縮 */
+  @media (max-width: 720px) {
+    .landing-view.active { padding: 30px 16px 100px; }
+    .landing-hero { margin-bottom: 30px; }
+    .landing-hero h1 { font-size: 26px; }
+    .landing-hero p { font-size: 14px; }
+    .landing-grid { grid-template-columns: 1fr; gap: 14px; max-width: 360px; }
+    .landing-card { min-height: auto; padding: 24px 20px; gap: 10px; }
+    .landing-icon { font-size: 44px; }
+    .landing-card h2 { font-size: 18px; }
+    .landing-card p { font-size: 13px; }
+  }
   .brand {
     display: flex; align-items: center; gap: 10px;
     padding: 4px 8px 18px;
@@ -1155,32 +1253,20 @@
 <body>
 
 <div class="app">
-  <!-- ───── Sidebar ───── -->
-  <aside class="side">
-    <div class="brand">
-      <div class="brand-mark">支</div>
-      <div class="brand-text">核銷這樣做!!!<small>518 節點 · 政府支出法規知識庫</small></div>
-    </div>
-
-    <div class="nav-group">
-      <div class="nav-label">入口</div>
-      <div class="nav-item"><span>🧭 情境檢索</span></div>
-      <div class="nav-item active"><span>📑 條文庫</span><span class="nav-count">518</span></div>
-      <div class="nav-item"><span>💬 Q&amp;A</span><span class="nav-count">184</span></div>
-      <div class="nav-item"><span>📊 費率表</span><span class="nav-count">42</span></div>
-    </div>
-
-    <div class="nav-group">
-      <div class="nav-label">分類</div>
-      <div class="nav-item"><span>全部</span><span class="nav-count">518</span></div>
-      <div class="nav-item"><span>國內旅費</span><span class="nav-count">202</span></div>
-      <div class="nav-item"><span>國外旅費</span><span class="nav-count">215</span></div>
-      <div class="nav-item"><span>支出憑證與結報</span><span class="nav-count">101</span></div>
-    </div>
-  </aside>
-
   <!-- ───── Main ───── -->
   <main class="main">
+    <!-- ───── 桌面 topbar nav(2026-04-30 起取代 sidebar)───── -->
+    <header class="topnav">
+      <button class="topnav-brand" id="brand-home" title="回首頁">
+        <span class="brand-mark">支</span>
+        <span class="brand-text-h">核銷這樣做<span style="color:var(--brand)">!!!</span></span>
+      </button>
+      <nav class="topnav-tabs">
+        <button class="topnav-tab" data-entry="scenarios"><span>🧭</span> 情境檢索</button>
+        <button class="topnav-tab" data-entry="library"><span>📑</span> 條文庫</button>
+        <button class="topnav-tab" data-entry="calc"><span>🧮</span> 試算表</button>
+      </nav>
+    </header>
     <div class="topbar">
       <label class="search" for="q">
         <svg class="icon" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="m20 20-3-3"/></svg>
@@ -1188,6 +1274,37 @@
         <span class="kbd">⌘ K</span>
       </label>
     </div>
+
+    <!-- ───── Landing view(2026-04-30 加,首頁三選一)───── -->
+    <section id="view-landing" class="landing-view active">
+      <div class="landing-hero">
+        <h1>核銷這樣做<span class="brand-x">!!!</span></h1>
+        <p>政府支出法規知識庫 · 三種使用方式,選你需要的入口開始</p>
+      </div>
+      <div class="landing-grid">
+        <button class="landing-card" data-entry="scenarios" type="button">
+          <div class="landing-icon">🧭</div>
+          <h2>情境檢索</h2>
+          <p>用「我的狀況是 ...」找答案。<br>實務常見問題分組成 117 張情境卡,點選即跳對應條文與 Q&amp;A。</p>
+          <span class="landing-meta">117 個情境</span>
+        </button>
+        <button class="landing-card" data-entry="library" type="button">
+          <div class="landing-icon">📑</div>
+          <h2>條文庫</h2>
+          <p>核心法規 · 解釋函令 · 問答集,完整全文逐字保留。<br>支援關鍵字搜尋、支出類別過濾與並排比較。</p>
+          <span class="landing-meta">518 條規範</span>
+        </button>
+        <button class="landing-card" data-entry="calc" type="button">
+          <div class="landing-icon">🧮</div>
+          <h2>試算表</h2>
+          <p>輸入城市/天數即知金額,一鍵連到法源。<br>目前提供國外日支生活費 + 外交部保險費試算。</p>
+          <span class="landing-meta">2 個工具</span>
+        </button>
+      </div>
+      <div class="landing-foot">
+        ⚖️ 本站僅供查詢輔助使用,不構成行政核准依據;實際核銷以主計室審核為準。
+      </div>
+    </section>
 
     <!-- 條文庫 view -->
     <section id="view-library" class="library-view hidden">
@@ -1217,7 +1334,7 @@
     </section>
 
     <!-- 情境檢索 view -->
-    <section id="view-scenarios" class="scenarios-view active">
+    <section id="view-scenarios" class="scenarios-view">
       <div class="sc-head">
         <h1>核銷情境</h1>
         <p>用使用者語言列出實務常見問題,點選後直接帶到對應的條文與 Q&amp;A</p>
@@ -1323,9 +1440,10 @@
 
 <!-- ───── Mobile bottom tabbar (≤880px 才顯示) ───── -->
 <nav class="mobile-tabbar" role="navigation" aria-label="主要導覽">
-  <button class="mobile-tab" data-entry="scenarios" type="button"><span class="tab-emoji">🧭</span><span>情境檢索</span></button>
+  <button class="mobile-tab" data-entry="landing" type="button"><span class="tab-emoji">🏠</span><span>首頁</span></button>
+  <button class="mobile-tab" data-entry="scenarios" type="button"><span class="tab-emoji">🧭</span><span>情境</span></button>
   <button class="mobile-tab" data-entry="library" type="button"><span class="tab-emoji">📑</span><span>條文庫</span></button>
-  <button class="mobile-tab" data-entry="calc" type="button"><span class="tab-emoji">🧮</span><span>試算表</span></button>
+  <button class="mobile-tab" data-entry="calc" type="button"><span class="tab-emoji">🧮</span><span>試算</span></button>
 </nav>
 
 <script>
@@ -1333,7 +1451,7 @@
 let compareList = [];
 
 /* ──────── 真實資料載入 (520 nodes from 03_index/) ──────── */
-const DATA_VERSION = '2026-04-30c';
+const DATA_VERSION = '2026-04-30d';
 let DATA = [];                 // 對外用的卡片資料 (mapped from nodes.json)
 let NODES_BY_ID = new Map();   // id → original node (含 file_path 等)
 let INCOMING_EDGES = new Map();// id → [from1, from2, ...] 反向引用
@@ -1600,7 +1718,7 @@ const _mock_data_removed_ = [
 ];
 
 /* ──────── filter / view state ──────── */
-let currentView = 'scenarios';   // 'library' | 'scenarios' | 'calc'
+let currentView = 'landing';   // 'landing' | 'library' | 'scenarios' | 'calc'(每次進站都從 landing 開始)
 const filterState = {
   parent: null,   // 母題:國內旅費 / 國外旅費 / 支出憑證與結報 / null
   type: null,     // 類別代碼:A / B / C / D / null
@@ -1613,10 +1731,18 @@ const filterState = {
 
 function switchView(v) {
   currentView = v;
+  document.getElementById('view-landing')?.classList.toggle('active', v === 'landing');
   document.getElementById('view-library').classList.toggle('hidden', v !== 'library');
   document.getElementById('view-scenarios').classList.toggle('active', v === 'scenarios');
   document.getElementById('view-calc').classList.toggle('active', v === 'calc');
-  // Sidebar 入口高亮 (情境 / 條文庫 / 試算表)
+  // landing 時隱藏 topbar 搜尋(避免跟 hero 視覺打架)
+  const topbar = document.querySelector('.topbar');
+  if (topbar) topbar.style.display = (v === 'landing') ? 'none' : '';
+  // 桌面 topnav-tab 高亮 + landing 時 tab 不選中
+  document.querySelectorAll('.topnav-tab[data-entry]').forEach(it => {
+    it.classList.toggle('active', it.dataset.entry === v);
+  });
+  // Sidebar 殘留(已 display:none 但保留邏輯避免錯誤)
   document.querySelectorAll('.nav-item[data-entry]').forEach(it => {
     it.classList.toggle('active', it.dataset.entry === v);
   });
@@ -3446,25 +3572,52 @@ document.addEventListener("keydown", e => {
   }
 }, true);  // capture phase 搶在 drawer 之前
 
-// ───── Mobile bottom tabbar wiring ─────
+// ───── 通用 view 切換 wiring(2026-04-30 加 landing + 桌面 topnav)─────
+function _enterView(v) {
+  if (!v) return;
+  switchView(v);
+  if (v === 'scenarios') renderScenarios();
+  if (v === 'calc') renderCalc();
+  if (v === 'library') renderCards();   // 確保 library 切入時刷新
+  renderSidebar();
+  syncMobileTabbar();
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+// Mobile bottom tabbar
 document.querySelectorAll('.mobile-tabbar .mobile-tab').forEach(btn => {
-  btn.addEventListener('click', () => {
-    const v = btn.dataset.entry;
-    if (!v) return;
-    switchView(v);
-    if (v === 'scenarios') renderScenarios();
-    if (v === 'calc') renderCalc();
-    renderSidebar();
-    syncMobileTabbar();
-    // 切 view 後捲回頂端,避免使用者迷失
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-  });
+  btn.addEventListener('click', () => _enterView(btn.dataset.entry));
 });
 function syncMobileTabbar() {
   document.querySelectorAll('.mobile-tabbar .mobile-tab').forEach(it => {
     it.classList.toggle('active', it.dataset.entry === currentView);
   });
 }
+
+// 桌面 topnav-tab
+document.querySelectorAll('.topnav-tab').forEach(btn => {
+  btn.addEventListener('click', () => _enterView(btn.dataset.entry));
+});
+
+// Landing 卡片(三入口)
+document.querySelectorAll('.landing-card').forEach(card => {
+  card.addEventListener('click', () => _enterView(card.dataset.entry));
+});
+
+// 品牌名點擊 → 回 landing
+document.getElementById('brand-home')?.addEventListener('click', () => {
+  // 清掉 filters 與 scenario,確保新 session
+  filterState.scenario = null; filterState.parent = null;
+  filterState.tag = null; filterState.expense = null;
+  filterState.query = ''; filterState.type = null;
+  document.getElementById('q').value = '';
+  switchView('landing');
+  syncMobileTabbar();
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+});
+
+// 確保進站時為 landing(URL 帶 hash 也忽略,使用者必須主動選入口)
+switchView('landing');
 syncMobileTabbar();
 </script>
 </body>
