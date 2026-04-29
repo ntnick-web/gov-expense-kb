@@ -121,6 +121,16 @@
     display: flex; gap: 12px; align-items: center; margin-bottom: 22px;
     flex-wrap: wrap;
   }
+  /* 行動版搜尋框 sticky 在頂部,捲到下方仍可隨手搜尋 */
+  @media (max-width: 880px) {
+    .topbar {
+      position: sticky; top: 0; z-index: 30;
+      background: var(--bg);
+      margin-left: -16px; margin-right: -16px;
+      padding: 8px 16px; margin-bottom: 12px;
+      border-bottom: 1px solid var(--line);
+    }
+  }
   .search {
     flex: 1; min-width: 240px;
     display: flex; align-items: center; gap: 10px;
@@ -287,20 +297,37 @@
   .drawer.show { transform: translateX(0); }
   @media (max-width: 720px) {
     .drawer {
-      top: auto; bottom: 0; right: 0; left: 0;
-      width: 100%; height: 88vh;
+      top: auto !important; bottom: 0 !important; right: 0; left: 0;
+      width: 100% !important; height: 96vh !important;
       border-left: 0; border-top: 1px solid var(--line);
       border-radius: 16px 16px 0 0;
-      transform: translateY(100%);
+      transform: translateY(100%) !important;
     }
-    .drawer.show { transform: translateY(0); }
+    .drawer.show { transform: translateY(0) !important; }
     .drawer-grab {
       width: 40px; height: 4px; border-radius: 999px;
       background: var(--line-strong); margin: 8px auto 0;
     }
+    /* 抽屜開啟時隱藏 mobile-tabbar,避免 footer 與 tabbar 重疊擋住按鈕 */
+    body:has(.drawer.show) .mobile-tabbar { display: none; }
+    /* fallback for browsers without :has() */
+    body.drawer-open .mobile-tabbar { display: none !important; }
+    /* drawer-body 留底部 padding 避免被輸入鍵盤 / safe-area 遮 */
+    .drawer-body { padding-bottom: max(env(safe-area-inset-bottom, 8px), 8px); }
   }
   .drawer-grab { display: none; }
-  @media (max-width: 720px) { .drawer-grab { display: block; } }
+  @media (max-width: 720px) {
+    .drawer-grab { display: block; }
+    /* 抽屜 header 行動版瘦身:減 padding、字級、隱藏 tags 區(改在 body 內顯示)*/
+    .drawer-head { padding: 6px 16px 12px; gap: 6px; }
+    .drawer-title { font-size: 17px !important; line-height: 1.35; }
+    .drawer-meta { font-size: 11px; }
+    .drawer-head .card-tags { display: none; }    /* tags 在 body 內已顯示,header 隱藏節省空間 */
+    .iconbtn { height: 28px; padding: 0 6px; font-size: 11px; }
+    .iconbtn .icon { width: 14px; height: 14px; }
+    .toolbar-foot { padding: 8px 14px; }
+    .toolbar-foot > div:first-child { font-size: 10px; }
+  }
 
   .drawer-head {
     padding: 18px 22px 16px; border-bottom: 1px solid var(--line);
@@ -411,6 +438,19 @@
   }
   @media (max-width: 880px) { .mobile-cats { display: flex; } }
 
+  /* 行動版卡片密度減(2026-04-30):縮 padding 與字級提高首屏可見卡片數 */
+  @media (max-width: 480px) {
+    .card { min-height: 140px; padding: 12px 14px 10px; gap: 6px; }
+    .card-title { font-size: 15px; line-height: 1.35; }
+    .card-summary { font-size: 12px; }
+    .card-foot { font-size: 10.5px; padding-top: 6px; }
+    .sc-card { padding: 10px 12px; gap: 4px; }
+    .sc-icon { font-size: 18px; }
+    .sc-title { font-size: 13.5px; }
+    .sc-subtitle { font-size: 12px; }
+    .sc-flow-strip { gap: 4px; padding: 0 0 4px; margin: -2px 0 4px; }
+  }
+
   /* ───── Mobile bottom tabbar (≤880px) ───── */
   .mobile-tabbar {
     display: none;
@@ -457,6 +497,11 @@
     gap: 18px;
     grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
     max-width: 1200px;
+  }
+  /* 行動版強制單欄,避免容器尺寸異常導致 2 欄擠壓切到 */
+  @media (max-width: 720px) {
+    .calc-grid { grid-template-columns: 1fr !important; }
+    .calc-card { min-width: 0; }   /* 解 grid item min-width: auto 預設,讓子元素能 shrink */
   }
   .calc-card {
     background: var(--surface);
@@ -605,16 +650,17 @@
   }
   [data-theme="dark"] .sc-flow-strip { background: oklch(28% 0.04 25); border-color: oklch(40% 0.06 25); }
   .sc-flow-strip-label { font-size: 12px; font-weight: 700; color: var(--stop); }
-  /* 互動試算橫幅摺疊版(2026-04-29 加)*/
+  /* 互動試算橫幅摺疊版(2026-04-29 加,2026-04-30 降權:灰底而非橘色 dashed)*/
   .sc-flow-details { margin: 0 0 16px; }
   .sc-flow-summary {
     cursor: pointer; user-select: none;
     list-style: none;  /* 移除預設 ▶ */
-    padding: 8px 14px;
-    background: oklch(98% 0.02 25); border: 1px dashed oklch(80% 0.10 25);
+    padding: 6px 12px;
+    background: var(--surface-2); border: 1px solid var(--line);
     border-radius: var(--radius);
-    display: flex; align-items: center; gap: 12px;
+    display: flex; align-items: center; gap: 10px;
     transition: background .12s;
+    font-size: 12px; color: var(--ink-3);
   }
   .sc-flow-summary::-webkit-details-marker { display: none; }
   .sc-flow-summary::before {
@@ -622,10 +668,11 @@
     transition: transform .15s;
   }
   details[open] .sc-flow-summary::before { transform: rotate(90deg); }
-  .sc-flow-summary:hover { background: oklch(96% 0.04 25); }
-  .sc-flow-summary-hint { font-size: 11.5px; color: var(--ink-3); }
+  .sc-flow-summary:hover { background: var(--surface); border-color: var(--line-strong); }
+  .sc-flow-strip-label { color: var(--ink-2) !important; }   /* 改弱化色,匹配 banner 降權後文案 */
+  .sc-flow-summary-hint { font-size: 11px; color: var(--ink-3); }
   details[open] .sc-flow-strip { margin-top: 8px; }
-  [data-theme="dark"] .sc-flow-summary { background: oklch(28% 0.04 25); border-color: oklch(40% 0.06 25); }
+  [data-theme="dark"] .sc-flow-summary { background: var(--surface-2); border-color: var(--line); }
   .sc-flow-strip button {
     display: inline-flex; align-items: center; gap: 6px;
     padding: 4px 12px;
@@ -1182,7 +1229,6 @@
 
       <div id="sc-flow-strip-slot"></div>
 
-      <nav class="sc-toc" id="sc-toc" hidden></nav>
       <div id="sc-list"></div>
     </section>
   </main>
@@ -1287,7 +1333,7 @@
 let compareList = [];
 
 /* ──────── 真實資料載入 (520 nodes from 03_index/) ──────── */
-const DATA_VERSION = '2026-04-30a';
+const DATA_VERSION = '2026-04-30b';
 let DATA = [];                 // 對外用的卡片資料 (mapped from nodes.json)
 let NODES_BY_ID = new Map();   // id → original node (含 file_path 等)
 let INCOMING_EDGES = new Map();// id → [from1, from2, ...] 反向引用
@@ -2040,6 +2086,7 @@ async function openDrawer(idx) {
   drawer.classList.add("show");
   scrim.classList.add("show");
   drawer.setAttribute("aria-hidden","false");
+  document.body.classList.add("drawer-open");  // for browsers without :has()
 
   try {
     const r = await fetch(MD_BASE + d.filePath);
@@ -2185,6 +2232,7 @@ function closeDrawer() {
   drawer.classList.remove("show");
   scrim.classList.remove("show");
   drawer.setAttribute("aria-hidden","true");
+  document.body.classList.remove("drawer-open");
   document.querySelectorAll(".card.active").forEach(c => c.classList.remove("active"));
   currentIdx = -1;
 }
@@ -2478,13 +2526,17 @@ let scenarioFilterParent = null;   // null = 全部
 let scenarioFilterExpense = null;  // null = 全部
 
 function countScenarioMatches(sc) {
+  // 與 filteredData 同步:primary_ids 命中 + 純 tag 命中要 ≥2 tag overlap
+  // 避免「卡片預覽顯示 111 張、點開只剩 44 張」的不一致
   const primary = new Set(sc.primary_ids || []);
   const tags = new Set(sc.tags || []);
+  const TAG_MATCH_THRESHOLD = 2;
   let n = 0;
   for (const d of DATA) {
     if (sc.parent && d.cat !== sc.parent) continue;
     if (primary.has(d.id)) { n++; continue; }
-    if ((d.tags || []).some(t => tags.has(t))) n++;
+    const overlap = (d.tags || []).filter(t => tags.has(t)).length;
+    if (overlap >= TAG_MATCH_THRESHOLD) n++;
   }
   return n;
 }
@@ -2527,12 +2579,30 @@ function renderScenarioChips() {
     // 只有一類或無資料 → 隱藏支出類別列
     $expBar.innerHTML = '';
   } else {
+    /* 預設顯示 top 6(依命中數)+「+N 類別 ▾」展開按鈕,選中的也保留可見 */
+    const TOP_EXP = 6;
+    const allExpenses = EXPENSE_ORDER.filter(e => expenseCount.has(e));
+    const expanded = window._scExpExpanded === true;
+    let visibleSet;
+    if (expanded || allExpenses.length <= TOP_EXP) {
+      visibleSet = new Set(allExpenses);
+    } else {
+      const sorted = [...allExpenses].sort((a, b) => expenseCount.get(b) - expenseCount.get(a)).slice(0, TOP_EXP);
+      visibleSet = new Set(sorted);
+      if (scenarioFilterExpense) visibleSet.add(scenarioFilterExpense);
+    }
+    const hiddenCount = allExpenses.length - visibleSet.size;
     const expChips = [
       `<button class="chip${!scenarioFilterExpense ? ' on' : ''}" data-sc-exp="">全部 <span class="chip-count">${inScope.length}</span></button>`,
-      ...EXPENSE_ORDER.filter(e => expenseCount.has(e)).map(e =>
+      ...allExpenses.filter(e => visibleSet.has(e)).map(e =>
         `<button class="chip${scenarioFilterExpense === e ? ' on' : ''}" data-sc-exp="${e}">${e} <span class="chip-count">${expenseCount.get(e)}</span></button>`
       ),
     ];
+    if (hiddenCount > 0) {
+      expChips.push(`<button class="chip chip-toggle-more" data-toggle-sc-exp="expand">+ ${hiddenCount} 類別 ▾</button>`);
+    } else if (expanded && allExpenses.length > TOP_EXP) {
+      expChips.push(`<button class="chip chip-toggle-more" data-toggle-sc-exp="collapse">收起 ▴</button>`);
+    }
     $expBar.innerHTML = `<span class="sc-filterbar-label">支出類別</span>${expChips.join('')}`;
   }
 
@@ -2548,6 +2618,12 @@ function renderScenarioChips() {
     b.onclick = () => {
       scenarioFilterExpense = b.dataset.scExp || null;
       renderScenarios();
+    };
+  });
+  $expBar.querySelectorAll('[data-toggle-sc-exp]').forEach(b => {
+    b.onclick = () => {
+      window._scExpExpanded = b.dataset.toggleScExp === 'expand';
+      renderScenarioChips();
     };
   });
 }
@@ -2575,12 +2651,12 @@ function renderScenarios() {
     if (flowCards.length === 0) {
       $flowSlot.innerHTML = '';
     } else {
-      // 預設摺疊;使用者點 toggle 才展開(避免 7 個按鈕佔空間誤導)
+      // 預設摺疊 + 文案降權:讓使用者明白「直接看卡片即可,Q&A 是少數情境的選用工具」
       $flowSlot.innerHTML = `
         <details class="sc-flow-details">
           <summary class="sc-flow-summary">
-            <span class="sc-flow-strip-label">🤔 互動試算 / 條件問答 ${flowCards.length} 張</span>
-            <span class="sc-flow-summary-hint">(僅 ${flowCards.length} 個情境提供互動式判斷,點擊展開)</span>
+            <span class="sc-flow-strip-label">🤔 ${flowCards.length} 張情境另提供互動 Q&A</span>
+            <span class="sc-flow-summary-hint">(其餘卡片直接顯示對應條文,可略過此區)</span>
           </summary>
           <div class="sc-flow-strip">
             ${flowCards.map(s => `<button data-flow-quick="${s.id}" type="button">${s.icon || ''} ${s.title}</button>`).join('')}
@@ -2611,30 +2687,7 @@ function renderScenarios() {
     return EXPENSE_ORDER.indexOf(ea) - EXPENSE_ORDER.indexOf(eb);
   });
 
-  // TOC: 母題分組為單位
-  if ($toc) {
-    if (sortedKeys.length === 0) {
-      $toc.hidden = true;
-      $toc.innerHTML = '';
-    } else {
-      const byParent = new Map();
-      for (const k of sortedKeys) {
-        const [p] = k.split('|');
-        byParent.set(p, (byParent.get(p) || 0) + groups.get(k).length);
-      }
-      $toc.hidden = false;
-      $toc.innerHTML = [...byParent.entries()].map(([p, n]) =>
-        `<a class="sc-toc-link" href="#sc-anchor-${encodeURIComponent(p)}" data-toc="${p}"><strong>${p}</strong><em>${n}</em></a>`
-      ).join('');
-      $toc.querySelectorAll('[data-toc]').forEach(a => {
-        a.onclick = (ev) => {
-          ev.preventDefault();
-          const target = document.getElementById(`sc-anchor-${a.dataset.toc}`);
-          if (target) target.scrollIntoView({ behavior: 'smooth', block: 'start' });
-        };
-      });
-    }
-  }
+  // sc-toc 已移除(2026-04-30):功能與母題 chip 100% 重複,改用 chip 即可
 
   // 空結果
   if (sortedKeys.length === 0) {
