@@ -754,6 +754,26 @@
     border: 1px solid oklch(75% 0.1 25);
     padding: 1px 6px; border-radius: 999px;
   }
+  /* Phase 4 信度系統 — inferred/contested 卡片小徽章 */
+  .badge-certainty {
+    font-size: 10px; font-weight: 600;
+    padding: 1px 7px; border-radius: 999px;
+    cursor: help;
+  }
+  .badge-certainty.inferred {
+    background: oklch(94% 0.06 60); color: oklch(38% 0.13 60);
+    border: 1px solid oklch(72% 0.13 60);
+  }
+  .badge-certainty.contested {
+    background: oklch(94% 0.06 25); color: oklch(38% 0.15 25);
+    border: 1px solid oklch(70% 0.15 25);
+  }
+  [data-theme="dark"] .badge-certainty.inferred {
+    background: oklch(28% 0.05 60); color: oklch(82% 0.10 60);
+  }
+  [data-theme="dark"] .badge-certainty.contested {
+    background: oklch(28% 0.05 25); color: oklch(82% 0.10 25);
+  }
   /* 自動產生情境徽章 — 灰色低飽和,告訴使用者「來源較弱」 */
   .sc-auto-badge {
     font-size: 10px; font-weight: 500;
@@ -1239,7 +1259,7 @@
 let compareList = [];
 
 /* ──────── 真實資料載入 (520 nodes from 03_index/) ──────── */
-const DATA_VERSION = '2026-04-29d';
+const DATA_VERSION = '2026-04-29e';
 let DATA = [];                 // 對外用的卡片資料 (mapped from nodes.json)
 let NODES_BY_ID = new Map();   // id → original node (含 file_path 等)
 let INCOMING_EDGES = new Map();// id → [from1, from2, ...] 反向引用
@@ -1354,6 +1374,10 @@ async function loadAllData() {
         rateTable: n.rate_table || null,
         effectivePeriod: n.effective_period || '',
         supersededBy: n.superseded_by || '',
+        // Phase 4 信度系統(2026-04-29)
+        certainty: n.certainty || 'explicit',
+        disclaimerLevel: n.disclaimer_level || 'standard',
+        noInferenceNote: n.no_inference_note || '',
       };
     });
   return DATA;
@@ -1659,6 +1683,7 @@ function renderCards() {
       </button>
       <div class="card-eyebrow">
         <span class="card-no"><span class="card-art ${dotClass(d.art)}"></span>&nbsp;&nbsp;${d.id}</span>
+        ${d.certainty && d.certainty !== 'explicit' ? `<span class="badge-certainty ${d.certainty}" title="${d.certainty === 'contested' ? '實務見解不一,本站不提供判斷' : '法規無明文,屬推論'}">⚠ ${d.certainty === 'contested' ? '爭議' : '推論'}</span>` : ''}
         ${statusBadge(d.status)}
       </div>
       <h3 class="card-title">${(() => { const t = buildCardTitle(d); return `${t.prefix ? `<span style="color:var(--ink-3);font-weight:500;font-size:13px">${t.prefix}</span> ` : ''}${t.no ? `<span style="color:var(--ink-3);font-weight:500">${t.no}</span> ` : ''}${t.title}`; })()}</h3>
@@ -1936,6 +1961,19 @@ async function openDrawer(idx) {
     const md = await r.text();
 
     let bodyHtml = '';
+    // Phase 4 信度系統強警示(2026-04-29):inferred / contested 節點頂部 banner
+    if (d.certainty && d.certainty !== 'explicit') {
+      const isContested = d.certainty === 'contested';
+      const tag = isContested ? '⚠ 實務見解不一' : '⚠ 法規未明文,屬推論';
+      const body = d.noInferenceNote || (isContested
+        ? '此情形實務見解不一或法規未明確規範,本站不提供判斷,請逕洽主計室確認。'
+        : '此情形依機關權責或實務認定,本站僅彙整法規條文,實際結果以主計室認定為準。');
+      bodyHtml += `<div style="margin-bottom:14px;padding:12px 14px;background:oklch(94% 0.05 25);border:1px solid oklch(72% 0.13 25);border-radius:var(--radius);color:oklch(35% 0.13 25);font-size:13px;line-height:1.6">
+        <div style="font-weight:600;margin-bottom:4px">${tag}</div>
+        <div>${body}</div>
+        <div style="margin-top:6px;font-size:11.5px;color:oklch(45% 0.1 25)">📞 請勿以本站查詢結果作為報銷依據;如有疑義請逕洽主計室確認。</div>
+      </div>`;
+    }
     // 原始出處明顯連結 (放在 body 頂部, 比小 icon btn-source 更易發現)
     const srcUrl = resolveSourceUrl(d);
     if (srcUrl) {
@@ -2013,6 +2051,11 @@ async function openDrawer(idx) {
     if (note && note.trim()) {
       bodyHtml += `<div class="section"><h3>備註</h3><div style="font-size:13px;color:var(--ink-2);padding:8px 12px;background:var(--surface-2);border-radius:6px">${note.replace(/\n/g, '<br>')}</div></div>`;
     }
+
+    // Phase 4 標準免責(2026-04-29):每張卡都顯示,40 字版,常駐
+    bodyHtml += `<div style="margin-top:18px;padding:10px 12px;background:var(--surface-2);border-left:3px solid var(--ink-3);border-radius:4px;font-size:12px;color:var(--ink-3);line-height:1.6">
+      ⚖️ 本回答依現行法規及函釋整理,僅供查詢輔助使用,不構成行政核准依據。實際核銷以主計室審核為準,如有疑義請逕洽主計室確認。
+    </div>`;
 
     if (!bodyHtml) bodyHtml = '<p style="color:var(--ink-3)">(此節點無詳細內容)</p>';
     $body.innerHTML = bodyHtml;

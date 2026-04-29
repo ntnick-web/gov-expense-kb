@@ -85,13 +85,17 @@ class Node:
     agency: Optional[str] = None
     doc_no: Optional[str] = None
     reviewed: Optional[str] = None
-    review_level: Optional[str] = None  # 人工 / 自動初校 / llm精校
-    status: str = "現行"          # 現行 / 部分修正 / 已廢止
+    review_level: Optional[str] = None  # 人工 / 自動初校 / llm精校 / 草稿
+    status: str = "現行"          # 現行 / 被取代 / 修正中 / 已廢止
     source_url: Optional[str] = None
     summary_pending: bool = False
     rate_table: Optional[dict] = None  # 結構化費率表(B 類標準表用)
     effective_period: Optional[str] = None  # 適用期間(已廢止費率表用)
     superseded_by: Optional[str] = None  # 被哪個節點取代
+    # Phase 4 加(2026-04-29):信度系統
+    certainty: str = "explicit"   # explicit / inferred / contested
+    disclaimer_level: str = "standard"  # standard / strong
+    no_inference_note: Optional[str] = None
     body_plain: str = field(default="", repr=False)
 
 
@@ -309,9 +313,20 @@ def load_nodes(
             body_plain = body_plain[:SEARCH_BODY_LIMIT]
 
         status_val = str(fm.get("status") or "現行")
-        if status_val not in ("現行", "部分修正", "已廢止"):
+        # 2026-04-29 起 4 值制(原「部分修正」拆兩值);舊值兼容
+        if status_val not in ("現行", "被取代", "修正中", "已廢止", "部分修正"):
             warnings.append(f"{rel}: status='{status_val}' 不在允許值內,視為「現行」")
             status_val = "現行"
+
+        # Phase 4 加(2026-04-29):certainty / disclaimer_level / no_inference_note
+        certainty_val = str(fm.get("certainty") or "explicit")
+        if certainty_val not in ("explicit", "inferred", "contested"):
+            warnings.append(f"{rel}: certainty='{certainty_val}' 不在允許值內,視為 explicit")
+            certainty_val = "explicit"
+        disclaimer_val = str(fm.get("disclaimer_level") or
+                             ("standard" if certainty_val == "explicit" else "strong"))
+        if disclaimer_val not in ("standard", "strong"):
+            disclaimer_val = "standard" if certainty_val == "explicit" else "strong"
 
         node = Node(
             id=node_id,
@@ -333,6 +348,9 @@ def load_nodes(
             rate_table=fm["rate_table"] if isinstance(fm.get("rate_table"), dict) else None,
             effective_period=str(fm["effective_period"]) if fm.get("effective_period") else None,
             superseded_by=str(fm["superseded_by"]) if fm.get("superseded_by") else None,
+            certainty=certainty_val,
+            disclaimer_level=disclaimer_val,
+            no_inference_note=str(fm["no_inference_note"]) if fm.get("no_inference_note") else None,
             body_plain=body_plain,
         )
         nodes.append(node)
@@ -378,6 +396,13 @@ def build_nodes_json(nodes: list[Node]) -> list[dict]:
             d["effective_period"] = n.effective_period
         if n.superseded_by:
             d["superseded_by"] = n.superseded_by
+        # Phase 4 信度系統(2026-04-29):前端會用來顯示免責層級
+        if n.certainty and n.certainty != "explicit":
+            d["certainty"] = n.certainty
+        if n.disclaimer_level and n.disclaimer_level != "standard":
+            d["disclaimer_level"] = n.disclaimer_level
+        if n.no_inference_note:
+            d["no_inference_note"] = n.no_inference_note
         out.append(d)
     return out
 

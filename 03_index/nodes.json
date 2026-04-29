@@ -104,7 +104,10 @@
     "agency": "行政院主計總處",
     "reviewed": "2026-04-25",
     "review_level": "人工",
-    "source_url": "https://law.dgbas.gov.tw/LawContent.aspx?id=FL017585"
+    "source_url": "https://law.dgbas.gov.tw/LawContent.aspx?id=FL017585",
+    "certainty": "inferred",
+    "disclaimer_level": "strong",
+    "no_inference_note": "此情形依機關權責或實務認定,本站僅彙整法規條文,實際結果以主計室認定為準。"
   },
   {
     "id": "A-國內旅費-005",
@@ -472,7 +475,10 @@
         "各級地方政府派赴國外進修、研究、實習人員之補助，準用本表規定報支。",
         "本表修正生效後，出國期間跨越新、舊規定者，其於舊規定出國期間適用舊規定，於新規定出國期間適用新規定，但於新規定出國期間適用新規定之補助總額低於適用舊規定者，得適用舊規定。"
       ]
-    }
+    },
+    "certainty": "inferred",
+    "disclaimer_level": "strong",
+    "no_inference_note": "此情形依機關權責或實務認定,本站僅彙整法規條文,實際結果以主計室認定為準。"
   },
   {
     "id": "A-國外旅費-001",
@@ -1019,7 +1025,10 @@
     "agency": "行政院主計總處",
     "reviewed": "2026-04-25",
     "review_level": "自動初校",
-    "source_url": "https://law.dgbas.gov.tw/LawContent.aspx?id=FL017556"
+    "source_url": "https://law.dgbas.gov.tw/LawContent.aspx?id=FL017556",
+    "certainty": "inferred",
+    "disclaimer_level": "strong",
+    "no_inference_note": "此情形依機關權責或實務認定,本站僅彙整法規條文,實際結果以主計室認定為準。"
   },
   {
     "id": "A-支出憑證與結報-005",
@@ -1396,7 +1405,10 @@
     "agency": "行政院主計總處",
     "reviewed": "2026-04-25",
     "review_level": "自動初校",
-    "source_url": "https://law.dgbas.gov.tw/LawContent.aspx?id=FL017556"
+    "source_url": "https://law.dgbas.gov.tw/LawContent.aspx?id=FL017556",
+    "certainty": "inferred",
+    "disclaimer_level": "strong",
+    "no_inference_note": "此情形依機關權責或實務認定,本站僅彙整法規條文,實際結果以主計室認定為準。"
   },
   {
     "id": "B-國內旅費-001",
@@ -15186,7 +15198,10 @@
     "agency": "行政院主計總處",
     "reviewed": "2026-04-25",
     "review_level": "自動初校",
-    "source_url": "https://www.dgbas.gov.tw/News.aspx?n=1522&sms=10692"
+    "source_url": "https://www.dgbas.gov.tw/News.aspx?n=1522&sms=10692",
+    "certainty": "inferred",
+    "disclaimer_level": "strong",
+    "no_inference_note": "此情形依機關權責或實務認定,本站僅彙整法規條文,實際結果以主計室認定為準。"
   },
   {
     "id": "C-國內旅費-060",
@@ -15569,7 +15584,10 @@
     "agency": "行政院主計總處",
     "reviewed": "2026-04-25",
     "review_level": "自動初校",
-    "source_url": "https://www.dgbas.gov.tw/News.aspx?n=1522&sms=10692"
+    "source_url": "https://www.dgbas.gov.tw/News.aspx?n=1522&sms=10692",
+    "certainty": "inferred",
+    "disclaimer_level": "strong",
+    "no_inference_note": "此情形依機關權責或實務認定,本站僅彙整法規條文,實際結果以主計室認定為準。"
   },
   {
     "id": "C-國內旅費-088",
@@ -15846,7 +15864,10 @@
     "agency": "行政院主計總處",
     "reviewed": "2026-04-25",
     "review_level": "自動初校",
-    "source_url": "https://www.dgbas.gov.tw/News.aspx?n=1522&sms=10692"
+    "source_url": "https://www.dgbas.gov.tw/News.aspx?n=1522&sms=10692",
+    "certainty": "inferred",
+    "disclaimer_level": "strong",
+    "no_inference_note": "此情形依機關權責或實務認定,本站僅彙整法規條文,實際結果以主計室認定為準。"
   },
   {
     "id": "C-國內旅費-102",
@@ -16902,7 +16923,10 @@
     "agency": "行政院主計總處",
     "reviewed": "2026-04-25",
     "review_level": "自動初校",
-    "source_url": "https://www.dgbas.gov.tw/News.aspx?n=1522&sms=10692"
+    "source_url": "https://www.dgbas.gov.tw/News.aspx?n=1522&sms=10692",
+    "certainty": "inferred",
+    "disclaimer_level": "strong",
+    "no_inference_note": "此情形依機關權責或實務認定,本站僅彙整法規條文,實際結果以主計室認定為準。"
   },
   {
     "id": "C-國內旅費-154",
@@ -17107,7 +17131,10 @@
     "agency": "行政院主計總處",
     "reviewed": "2026-04-25",
     "review_level": "自動初校",
-    "source_url": "https://www.dgbas.gov.tw/News.aspx?n=1522&sms=10692"
+    "source_url": "https://www.dgbas.gov.tw/News.aspx?n=1522&sms=10692",
+    "certainty": "inferred",
+    "disclaimer_level": "strong",
+    "no_inference_note": "此情形依機關權責或實務認定,本站僅彙整法規條文,實際結果以主計室認定為準。"
   },
   {
     "id": "C-國內旅費-167",
@@ -18004,7 +18031,10 @@
     "agency": "行政院主計總處",
     "reviewed": "2026-04-25",
     "review_level": "自動初校",
-    "source_url": "https://www.dgbas.gov.tw/News.aspx?n=1522&sms=10692"
+    "source_url": "https://www.dgbas.gov.tw/News.aspx?n=1522&sms=10692",
+    "certainty": "inferred",
+    "disclaimer_level": "strong",
+    "no_inference_note": "此情形依機關權責或實務認定,本站僅彙整法規條文,實際結果以主計室認定為準。"
   },
   {
     "id": "C-國內旅費-271",
@@ -18434,7 +18464,10 @@
     "agency": "行政院主計總處",
     "reviewed": "2026-04-25",
     "review_level": "自動初校",
-    "source_url": "https://www.dgbas.gov.tw/News.aspx?n=1522&sms=10692"
+    "source_url": "https://www.dgbas.gov.tw/News.aspx?n=1522&sms=10692",
+    "certainty": "inferred",
+    "disclaimer_level": "strong",
+    "no_inference_note": "此情形依機關權責或實務認定,本站僅彙整法規條文,實際結果以主計室認定為準。"
   },
   {
     "id": "C-國外旅費-004",
@@ -18802,7 +18835,10 @@
     "agency": "行政院主計總處",
     "reviewed": "2026-04-25",
     "review_level": "自動初校",
-    "source_url": "https://www.dgbas.gov.tw/News.aspx?n=1522&sms=10692"
+    "source_url": "https://www.dgbas.gov.tw/News.aspx?n=1522&sms=10692",
+    "certainty": "inferred",
+    "disclaimer_level": "strong",
+    "no_inference_note": "此情形依機關權責或實務認定,本站僅彙整法規條文,實際結果以主計室認定為準。"
   },
   {
     "id": "C-國外旅費-023",
@@ -19065,7 +19101,10 @@
     "agency": "行政院主計總處",
     "reviewed": "2026-04-25",
     "review_level": "自動初校",
-    "source_url": "https://www.dgbas.gov.tw/News.aspx?n=1522&sms=10692"
+    "source_url": "https://www.dgbas.gov.tw/News.aspx?n=1522&sms=10692",
+    "certainty": "inferred",
+    "disclaimer_level": "strong",
+    "no_inference_note": "此情形依機關權責或實務認定,本站僅彙整法規條文,實際結果以主計室認定為準。"
   },
   {
     "id": "C-國外旅費-036",
@@ -19230,7 +19269,10 @@
     "agency": "行政院主計總處",
     "reviewed": "2026-04-25",
     "review_level": "自動初校",
-    "source_url": "https://www.dgbas.gov.tw/News.aspx?n=1522&sms=10692"
+    "source_url": "https://www.dgbas.gov.tw/News.aspx?n=1522&sms=10692",
+    "certainty": "inferred",
+    "disclaimer_level": "strong",
+    "no_inference_note": "此情形依機關權責或實務認定,本站僅彙整法規條文,實際結果以主計室認定為準。"
   },
   {
     "id": "C-國外旅費-044",
@@ -22365,7 +22407,10 @@
     "agency": "行政院主計總處",
     "reviewed": "2026-04-25",
     "review_level": "人工",
-    "source_url": "https://www.dgbas.gov.tw/cp.aspx?n=4342"
+    "source_url": "https://www.dgbas.gov.tw/cp.aspx?n=4342",
+    "certainty": "inferred",
+    "disclaimer_level": "strong",
+    "no_inference_note": "此情形依機關權責或實務認定,本站僅彙整法規條文,實際結果以主計室認定為準。"
   },
   {
     "id": "D-國內旅費-008",
@@ -22394,7 +22439,10 @@
     "agency": "行政院主計總處",
     "reviewed": "2026-04-25",
     "review_level": "人工",
-    "source_url": "https://www.dgbas.gov.tw/cp.aspx?n=4342"
+    "source_url": "https://www.dgbas.gov.tw/cp.aspx?n=4342",
+    "certainty": "inferred",
+    "disclaimer_level": "strong",
+    "no_inference_note": "此情形依機關權責或實務認定,本站僅彙整法規條文,實際結果以主計室認定為準。"
   },
   {
     "id": "D-國內旅費-009",
@@ -22421,7 +22469,10 @@
     "agency": "行政院主計總處",
     "reviewed": "2026-04-25",
     "review_level": "人工",
-    "source_url": "https://www.dgbas.gov.tw/cp.aspx?n=4342"
+    "source_url": "https://www.dgbas.gov.tw/cp.aspx?n=4342",
+    "certainty": "inferred",
+    "disclaimer_level": "strong",
+    "no_inference_note": "此情形依機關權責或實務認定,本站僅彙整法規條文,實際結果以主計室認定為準。"
   },
   {
     "id": "D-國內旅費-010",
@@ -22644,7 +22695,10 @@
     "agency": "行政院主計總處（成大適用版）",
     "reviewed": "2026-04-25",
     "review_level": "自動初校",
-    "source_url": "https://www.dgbas.gov.tw/cp.aspx?n=4322"
+    "source_url": "https://www.dgbas.gov.tw/cp.aspx?n=4322",
+    "certainty": "inferred",
+    "disclaimer_level": "strong",
+    "no_inference_note": "此情形依機關權責或實務認定,本站僅彙整法規條文,實際結果以主計室認定為準。"
   },
   {
     "id": "D-支出憑證與結報-003",
@@ -22664,7 +22718,10 @@
     "agency": "行政院主計總處（成大適用版）",
     "reviewed": "2026-04-25",
     "review_level": "自動初校",
-    "source_url": "https://www.dgbas.gov.tw/cp.aspx?n=4322"
+    "source_url": "https://www.dgbas.gov.tw/cp.aspx?n=4322",
+    "certainty": "inferred",
+    "disclaimer_level": "strong",
+    "no_inference_note": "此情形依機關權責或實務認定,本站僅彙整法規條文,實際結果以主計室認定為準。"
   },
   {
     "id": "D-支出憑證與結報-004",
@@ -23356,7 +23413,10 @@
     "agency": "行政院主計總處（成大適用版）",
     "reviewed": "2026-04-25",
     "review_level": "自動初校",
-    "source_url": "https://www.dgbas.gov.tw/cp.aspx?n=4322"
+    "source_url": "https://www.dgbas.gov.tw/cp.aspx?n=4322",
+    "certainty": "contested",
+    "disclaimer_level": "strong",
+    "no_inference_note": "此情形實務見解不一或法規未明確規範,本站不提供判斷,請逕洽主計室確認。"
   },
   {
     "id": "D-支出憑證與結報-034",
@@ -23374,7 +23434,10 @@
     "agency": "行政院主計總處（成大適用版）",
     "reviewed": "2026-04-25",
     "review_level": "自動初校",
-    "source_url": "https://www.dgbas.gov.tw/cp.aspx?n=4322"
+    "source_url": "https://www.dgbas.gov.tw/cp.aspx?n=4322",
+    "certainty": "contested",
+    "disclaimer_level": "strong",
+    "no_inference_note": "此情形實務見解不一或法規未明確規範,本站不提供判斷,請逕洽主計室確認。"
   },
   {
     "id": "D-支出憑證與結報-035",
@@ -23481,7 +23544,10 @@
     "agency": "行政院主計總處（成大適用版）",
     "reviewed": "2026-04-25",
     "review_level": "自動初校",
-    "source_url": "https://www.dgbas.gov.tw/cp.aspx?n=4322"
+    "source_url": "https://www.dgbas.gov.tw/cp.aspx?n=4322",
+    "certainty": "inferred",
+    "disclaimer_level": "strong",
+    "no_inference_note": "此情形依機關權責或實務認定,本站僅彙整法規條文,實際結果以主計室認定為準。"
   },
   {
     "id": "D-支出憑證與結報-040",
@@ -23640,7 +23706,10 @@
     "agency": "行政院主計總處（成大適用版）",
     "reviewed": "2026-04-25",
     "review_level": "自動初校",
-    "source_url": "https://www.dgbas.gov.tw/cp.aspx?n=4322"
+    "source_url": "https://www.dgbas.gov.tw/cp.aspx?n=4322",
+    "certainty": "contested",
+    "disclaimer_level": "strong",
+    "no_inference_note": "此情形實務見解不一或法規未明確規範,本站不提供判斷,請逕洽主計室確認。"
   },
   {
     "id": "D-支出憑證與結報-048",
@@ -24181,7 +24250,10 @@
     "agency": "行政院主計總處（成大適用版）",
     "reviewed": "2026-04-25",
     "review_level": "自動初校",
-    "source_url": "https://www.dgbas.gov.tw/cp.aspx?n=4322"
+    "source_url": "https://www.dgbas.gov.tw/cp.aspx?n=4322",
+    "certainty": "inferred",
+    "disclaimer_level": "strong",
+    "no_inference_note": "此情形依機關權責或實務認定,本站僅彙整法規條文,實際結果以主計室認定為準。"
   },
   {
     "id": "D-支出憑證與結報-075",
