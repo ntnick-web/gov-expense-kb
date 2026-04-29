@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>條文庫 — 重新設計 Demo</title>
+<title>核銷這樣做!!! — 政府支出法規知識庫</title>
 <style>
   :root {
     color-scheme: light;
@@ -1089,7 +1089,7 @@
   <aside class="side">
     <div class="brand">
       <div class="brand-mark">支</div>
-      <div class="brand-text">支出法規庫<small>518 節點 · v2 預覽</small></div>
+      <div class="brand-text">核銷這樣做!!!<small>518 節點 · 政府支出法規知識庫</small></div>
     </div>
 
     <div class="nav-group">
@@ -1259,7 +1259,7 @@
 let compareList = [];
 
 /* ──────── 真實資料載入 (520 nodes from 03_index/) ──────── */
-const DATA_VERSION = '2026-04-29e';
+const DATA_VERSION = '2026-04-29f';
 let DATA = [];                 // 對外用的卡片資料 (mapped from nodes.json)
 let NODES_BY_ID = new Map();   // id → original node (含 file_path 等)
 let INCOMING_EDGES = new Map();// id → [from1, from2, ...] 反向引用
@@ -2209,7 +2209,7 @@ function renderSidebar() {
   side.appendChild(brand);
   // 更新節點數副標
   const brandText = brand.querySelector('.brand-text small');
-  if (brandText) brandText.textContent = `${DATA.length} 節點 · v2 預覽`;
+  if (brandText) brandText.textContent = `${DATA.length} 節點 · 政府支出法規知識庫`;
   side.insertAdjacentHTML('beforeend', sideItems.join(''));
 
   // 綁 click
