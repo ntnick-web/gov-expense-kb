@@ -1333,7 +1333,7 @@
 let compareList = [];
 
 /* ──────── 真實資料載入 (520 nodes from 03_index/) ──────── */
-const DATA_VERSION = '2026-04-30b';
+const DATA_VERSION = '2026-04-30c';
 let DATA = [];                 // 對外用的卡片資料 (mapped from nodes.json)
 let NODES_BY_ID = new Map();   // id → original node (含 file_path 等)
 let INCOMING_EDGES = new Map();// id → [from1, from2, ...] 反向引用
@@ -1787,28 +1787,23 @@ function renderScopeBanner() {
   }
 }
 
-/* ──────── render cards ──────── */
-function renderCards() {
-  renderScopeBanner();
-  currentList = filteredData();
-  if (currentList.length === 0) {
-    grid.innerHTML = `<div class="cmp-empty" style="grid-column:1/-1;padding:60px 24px"><strong>沒有符合條件的條文</strong>清除過濾條件再試試</div>`;
-    return;
-  }
-  const q = (filterState.query || '').trim();
-  grid.innerHTML = currentList.map(d => {
-    const inCmp = compareList.includes(d.id);
-    const isQa = d.art === 'qa';
-    const isRate = d.art === 'rate';
-    const summary = d.summary || '<em style="color:var(--ink-3)">(摘要待補)</em>';
-    const titleObj = buildCardTitle(d);
-    const titleHtml = `${titleObj.prefix ? `<span style="color:var(--ink-3);font-weight:500;font-size:13px">${titleObj.prefix}</span> ` : ''}${titleObj.no ? `<span style="color:var(--ink-3);font-weight:500">${titleObj.no}</span> ` : ''}${titleObj.title}`;
-    const tagsHtml = (d.tags || []).slice(0,3).map(t=>`<span class="tag">${t}</span>`).join("");
-    // 套用搜尋字詞高亮(若有)
-    const titleHl = q ? highlightQuery(titleHtml, q) : titleHtml;
-    const summaryHl = q ? highlightQuery(summary, q) : summary;
-    const tagsHl = q ? highlightQuery(tagsHtml, q) : tagsHtml;
-    return `
+/* ──────── render cards (chunked lazy-render) ──────── */
+const _LIB_CHUNK_SIZE = 30;
+let _libRenderedCount = 0;
+let _libObserver = null;
+
+function _renderCardHtml(d, q) {
+  const inCmp = compareList.includes(d.id);
+  const isQa = d.art === 'qa';
+  const isRate = d.art === 'rate';
+  const summary = d.summary || '<em style="color:var(--ink-3)">(摘要待補)</em>';
+  const titleObj = buildCardTitle(d);
+  const titleHtml = `${titleObj.prefix ? `<span style="color:var(--ink-3);font-weight:500;font-size:13px">${titleObj.prefix}</span> ` : ''}${titleObj.no ? `<span style="color:var(--ink-3);font-weight:500">${titleObj.no}</span> ` : ''}${titleObj.title}`;
+  const tagsHtml = (d.tags || []).slice(0,3).map(t=>`<span class="tag">${t}</span>`).join("");
+  const titleHl = q ? highlightQuery(titleHtml, q) : titleHtml;
+  const summaryHl = q ? highlightQuery(summary, q) : summary;
+  const tagsHl = q ? highlightQuery(tagsHtml, q) : tagsHtml;
+  return `
     <article class="card${inCmp ? ' compared' : ''}${isQa ? ' is-qa' : ''}${isRate ? ' is-rate' : ''}" data-id="${d.id}" tabindex="0">
       <button class="card-compare${inCmp ? ' on' : ''}" data-cmp-toggle title="${inCmp ? '已加入比較,點擊移除' : '加入並排比較 (最多 3 張)'}">
         ${inCmp ? '✓ 已加入' : '+ 比較'}
@@ -1825,11 +1820,58 @@ function renderCards() {
         <span>${d.updated}</span>
       </div>
     </article>
-    `;
-  }).join("");
+  `;
+}
+
+function renderCards() {
+  renderScopeBanner();
+  currentList = filteredData();
+  // 重置 lazy-render state
+  if (_libObserver) { _libObserver.disconnect(); _libObserver = null; }
+  _libRenderedCount = 0;
+
+  if (currentList.length === 0) {
+    grid.innerHTML = `<div class="cmp-empty" style="grid-column:1/-1;padding:60px 24px"><strong>沒有符合條件的條文</strong>清除過濾條件再試試</div>`;
+    const $count = document.getElementById('grid-count');
+    if ($count) $count.textContent = `0 筆`;
+    return;
+  }
+  grid.innerHTML = '';
+  appendLibraryChunk();
   // 計數
   const $count = document.getElementById('grid-count');
   if ($count) $count.textContent = `${currentList.length} 筆`;
+}
+
+function appendLibraryChunk() {
+  if (_libRenderedCount >= currentList.length) return;
+  const start = _libRenderedCount;
+  const end = Math.min(start + _LIB_CHUNK_SIZE, currentList.length);
+  const q = (filterState.query || '').trim();
+  // 移除舊 sentinel 再 append
+  grid.querySelector('.lazy-sentinel')?.remove();
+  const html = currentList.slice(start, end).map(d => _renderCardHtml(d, q)).join('');
+  grid.insertAdjacentHTML('beforeend', html);
+  _libRenderedCount = end;
+
+  // 還有未 render 的就放 sentinel
+  if (_libRenderedCount < currentList.length) {
+    const sentinel = document.createElement('div');
+    sentinel.className = 'lazy-sentinel';
+    sentinel.style.gridColumn = '1/-1';
+    sentinel.innerHTML = `<button class="btn lazy-loadmore" type="button" style="width:100%;padding:14px;color:var(--ink-3);background:var(--surface-2);border:1px dashed var(--line-strong)">載入更多 ↓ <span style="opacity:.7;margin-left:6px">已顯示 ${_libRenderedCount} / ${currentList.length}</span></button>`;
+    grid.appendChild(sentinel);
+    sentinel.querySelector('.lazy-loadmore').onclick = () => appendLibraryChunk();
+    // IntersectionObserver 自動載入(scroll 接近 sentinel 時)
+    _libObserver = new IntersectionObserver(entries => {
+      if (entries[0].isIntersecting) {
+        _libObserver?.disconnect();
+        _libObserver = null;
+        appendLibraryChunk();
+      }
+    }, { rootMargin: '400px' });
+    _libObserver.observe(sentinel);
+  }
 }
 
 /* ──────── drawer (動態 fetch MD) ──────── */
@@ -2525,6 +2567,85 @@ let scenarioQuery = '';
 let scenarioFilterParent = null;   // null = 全部
 let scenarioFilterExpense = null;  // null = 全部
 
+/* ─── 情境 lazy-render state(2026-04-30 加,行動版避免一次 render 117 卡)─── */
+const _SCN_INITIAL_SECTIONS = 3;   // 首屏 render 的 section 數
+const _SCN_CHUNK_SECTIONS = 3;     // 每次補幾個 section
+let _scnSortedKeys = [];
+let _scnGroups = new Map();
+let _scnSeenParent = new Set();
+let _scnSectionsRendered = 0;
+let _scnObserver = null;
+
+function _renderScenarioSectionHtml(key) {
+  const [parent, expense] = key.split('|');
+  const items = _scnGroups.get(key) || [];
+  let anchorHtml = '';
+  if (!_scnSeenParent.has(parent)) {
+    _scnSeenParent.add(parent);
+    anchorHtml = `<div id="sc-anchor-${parent}" style="position:relative;top:-60px"></div>`;
+  }
+  return `${anchorHtml}
+    <section class="sc-group">
+      <h3 class="sc-group-title">
+        <span>${parent} · ${expense}</span>
+        <span class="sc-group-count">${items.length}</span>
+      </h3>
+      <div class="sc-grid">
+        ${items.map(s => {
+          const hasFlow = s.flow && s.flow.start && s.flow.questions;
+          const flowBadge = hasFlow ? '<span class="sc-flow-badge">🤔 條件問答</span>' : '';
+          const isAuto = s.source === 'auto';
+          const autoBadge = isAuto ? '<span class="sc-auto-badge" title="此情境由 build_scenarios.py 自動生成,建議核對原文">🤖 自動產生</span>' : '';
+          const matched = countScenarioMatches(s);
+          const flowBtn = hasFlow ? `<button class="sc-flow-start" data-flow="${s.id}" type="button"><svg class="icon" viewBox="0 0 24 24"><path d="M8 5v14l11-7z" fill="currentColor" stroke="none"/></svg>開始問答</button>` : '';
+          return `
+            <article class="sc-card${hasFlow ? ' has-flow' : ''}${isAuto ? ' is-auto' : ''}" data-sc="${s.id}" tabindex="0">
+              <div class="sc-icon">${s.icon || '📌'}</div>
+              <h3 class="sc-title">${s.title}${flowBadge}${autoBadge}</h3>
+              <p class="sc-subtitle">${s.subtitle || ''}</p>
+              ${flowBtn}
+              <div class="sc-meta">
+                <span class="sc-meta-count">${matched} 張相關卡</span>
+                <span class="sc-meta-arrow">查看 →</span>
+              </div>
+            </article>
+          `;
+        }).join('')}
+      </div>
+    </section>`;
+}
+
+function appendScenarioChunk() {
+  const $list = document.getElementById('sc-list');
+  if (!$list || _scnSectionsRendered >= _scnSortedKeys.length) return;
+  const start = _scnSectionsRendered;
+  const chunkSize = _scnSectionsRendered === 0 ? _SCN_INITIAL_SECTIONS : _SCN_CHUNK_SECTIONS;
+  const end = Math.min(start + chunkSize, _scnSortedKeys.length);
+  // 移除舊 sentinel
+  $list.querySelector('.lazy-sentinel-scn')?.remove();
+  let html = '';
+  for (let i = start; i < end; i++) html += _renderScenarioSectionHtml(_scnSortedKeys[i]);
+  $list.insertAdjacentHTML('beforeend', html);
+  _scnSectionsRendered = end;
+  // 還有未渲染的 section → 放 sentinel
+  if (_scnSectionsRendered < _scnSortedKeys.length) {
+    const remaining = _scnSortedKeys.length - _scnSectionsRendered;
+    const sentinel = document.createElement('div');
+    sentinel.className = 'lazy-sentinel-scn';
+    sentinel.innerHTML = `<button class="btn lazy-loadmore" type="button" style="width:100%;padding:14px;color:var(--ink-3);background:var(--surface-2);border:1px dashed var(--line-strong);margin:8px 0">載入更多情境分組 ↓ <span style="opacity:.7;margin-left:6px">(還有 ${remaining} 組)</span></button>`;
+    $list.appendChild(sentinel);
+    sentinel.querySelector('.lazy-loadmore').onclick = () => appendScenarioChunk();
+    _scnObserver = new IntersectionObserver(entries => {
+      if (entries[0].isIntersecting) {
+        _scnObserver?.disconnect();
+        _scnObserver = null;
+        appendScenarioChunk();
+      }
+    }, { rootMargin: '600px' });
+    _scnObserver.observe(sentinel);
+  }
+}
+
 function countScenarioMatches(sc) {
   // 與 filteredData 同步:primary_ids 命中 + 純 tag 命中要 ≥2 tag overlap
   // 避免「卡片預覽顯示 111 張、點開只剩 44 張」的不一致
@@ -2701,80 +2822,40 @@ function renderScenarios() {
     return;
   }
 
-  // anchors:每個 parent 第一次出現處放 anchor div
-  const seenParent = new Set();
-  $list.innerHTML = sortedKeys.map(key => {
-    const [parent, expense] = key.split('|');
-    const items = groups.get(key);
-    let anchorHtml = '';
-    if (!seenParent.has(parent)) {
-      seenParent.add(parent);
-      anchorHtml = `<div id="sc-anchor-${parent}" style="position:relative;top:-60px"></div>`;
-    }
-    return `
-      ${anchorHtml}
-      <section class="sc-group">
-        <h3 class="sc-group-title">
-          <span>${parent} · ${expense}</span>
-          <span class="sc-group-count">${items.length}</span>
-        </h3>
-        <div class="sc-grid">
-          ${items.map(s => {
-            const hasFlow = s.flow && s.flow.start && s.flow.questions;
-            const flowBadge = hasFlow ? '<span class="sc-flow-badge">🤔 條件問答</span>' : '';
-            const isAuto = s.source === 'auto';
-            const autoBadge = isAuto ? '<span class="sc-auto-badge" title="此情境由 build_scenarios.py 自動生成,建議核對原文">🤖 自動產生</span>' : '';
-            const matched = countScenarioMatches(s);
-            const flowBtn = hasFlow ? `
-              <button class="sc-flow-start" data-flow="${s.id}" type="button">
-                <svg class="icon" viewBox="0 0 24 24"><path d="M8 5v14l11-7z" fill="currentColor" stroke="none"/></svg>
-                開始問答
-              </button>
-            ` : '';
-            return `
-              <article class="sc-card${hasFlow ? ' has-flow' : ''}${isAuto ? ' is-auto' : ''}" data-sc="${s.id}" tabindex="0">
-                <div class="sc-icon">${s.icon || '📌'}</div>
-                <h3 class="sc-title">${s.title}${flowBadge}${autoBadge}</h3>
-                <p class="sc-subtitle">${s.subtitle || ''}</p>
-                ${flowBtn}
-                <div class="sc-meta">
-                  <span class="sc-meta-count">${matched} 張相關卡</span>
-                  <span class="sc-meta-arrow">查看 →</span>
-                </div>
-              </article>
-            `;
-          }).join('')}
-        </div>
-      </section>
-    `;
-  }).join('');
+  // 延遲渲染:先 render 前 N section,捲到底再補
+  _scnSortedKeys = sortedKeys;
+  _scnGroups = groups;
+  _scnSeenParent = new Set();
+  _scnSectionsRendered = 0;
+  if (_scnObserver) { _scnObserver.disconnect(); _scnObserver = null; }
+  $list.innerHTML = '';
+  appendScenarioChunk();
 
-  // 綁 click — flow 按鈕 → modal,卡片本身 → 套 filter
-  $list.querySelectorAll('[data-flow]').forEach(b => {
-    b.onclick = (ev) => {
+  // 用事件委派(在 $list 一次綁,後續 lazy-render 不需重綁)
+  $list.onclick = (ev) => {
+    const flowBtn = ev.target.closest('[data-flow]');
+    if (flowBtn) {
       ev.stopPropagation();
-      const sc = SCENARIOS.find(x => x.id === b.dataset.flow);
+      const sc = SCENARIOS.find(x => x.id === flowBtn.dataset.flow);
       if (sc) openFlowModal(sc);
-    };
-  });
-  $list.querySelectorAll('[data-sc]').forEach(c => {
-    c.onclick = (ev) => {
-      if (ev.target.closest('[data-flow]')) return;
-      const id = c.dataset.sc;
-      const sc = SCENARIOS.find(x => x.id === id);
-      if (!sc) return;
-      filterState.scenario = id;
-      filterState.parent = sc.parent || null;
-      filterState.type = null;
-      filterState.tag = null;
-      filterState.expense = null;
-      switchView('library');
-      renderSidebar();
-      renderChips();
-      renderCards();
-      flashHint(`套用情境:${sc.title} · ${currentList.length} 張相關卡`);
-    };
-  });
+      return;
+    }
+    const card = ev.target.closest('[data-sc]');
+    if (!card) return;
+    const id = card.dataset.sc;
+    const sc = SCENARIOS.find(x => x.id === id);
+    if (!sc) return;
+    filterState.scenario = id;
+    filterState.parent = sc.parent || null;
+    filterState.type = null;
+    filterState.tag = null;
+    filterState.expense = null;
+    switchView('library');
+    renderSidebar();
+    renderChips();
+    renderCards();
+    flashHint(`套用情境:${sc.title} · ${currentList.length} 張相關卡`);
+  };
 }
 
 
