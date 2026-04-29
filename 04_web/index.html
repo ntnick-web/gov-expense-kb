@@ -754,6 +754,22 @@
     border: 1px solid oklch(75% 0.1 25);
     padding: 1px 6px; border-radius: 999px;
   }
+  /* 自動產生情境徽章 — 灰色低飽和,告訴使用者「來源較弱」 */
+  .sc-auto-badge {
+    font-size: 10px; font-weight: 500;
+    background: oklch(96% 0 0); color: oklch(45% 0 0);
+    border: 1px dashed oklch(75% 0 0);
+    padding: 1px 6px; border-radius: 999px;
+    margin-left: 6px;
+    cursor: help;
+  }
+  [data-theme="dark"] .sc-auto-badge {
+    background: oklch(28% 0 0); color: oklch(70% 0 0);
+    border-color: oklch(45% 0 0);
+  }
+  /* 自動產生卡:微微透明降權 */
+  .sc-card.is-auto { opacity: .82; }
+  .sc-card.is-auto:hover { opacity: 1; }
   .sc-flow-start {
     display: inline-flex; align-items: center; gap: 6px;
     padding: 6px 12px;
@@ -1223,7 +1239,7 @@
 let compareList = [];
 
 /* ──────── 真實資料載入 (520 nodes from 03_index/) ──────── */
-const DATA_VERSION = '2026-04-29c';
+const DATA_VERSION = '2026-04-29d';
 let DATA = [];                 // 對外用的卡片資料 (mapped from nodes.json)
 let NODES_BY_ID = new Map();   // id → original node (含 file_path 等)
 let INCOMING_EDGES = new Map();// id → [from1, from2, ...] 反向引用
@@ -1271,10 +1287,13 @@ function buildCardTitleText(d, mode = 'short') {
 let CITY_ALIASES = {};  // 未列載城市 → 國家中文主名 (city_aliases.json)
 async function loadAllData() {
   const v = '?v=' + DATA_VERSION;
-  const [nodes, edges, scenarios, aliases] = await Promise.all([
+  // scenarios 拆 manual + auto 兩份合併;舊版 scenarios.json 仍保留作 fallback
+  const [nodes, edges, scnManual, scnAuto, scnLegacy, aliases] = await Promise.all([
     fetch('../03_index/nodes.json' + v).then(r => r.json()),
     fetch('../03_index/edges.json' + v).then(r => r.json()),
-    fetch('data/scenarios.json' + v).then(r => r.json()).catch(() => ({ scenarios: [] })),
+    fetch('data/scenarios_manual.json' + v).then(r => r.ok ? r.json() : null).catch(() => null),
+    fetch('data/scenarios_auto.json' + v).then(r => r.ok ? r.json() : null).catch(() => null),
+    fetch('data/scenarios.json' + v).then(r => r.ok ? r.json() : { scenarios: [] }).catch(() => ({ scenarios: [] })),
     fetch('data/city_aliases.json' + v).then(r => r.ok ? r.json() : { aliases: {} }).catch(() => ({ aliases: {} })),
   ]);
   CITY_ALIASES = aliases.aliases || {};
@@ -1285,7 +1304,14 @@ async function loadAllData() {
     if (!INCOMING_EDGES.has(e.to)) INCOMING_EDGES.set(e.to, []);
     INCOMING_EDGES.get(e.to).push(e.from);
   }
-  SCENARIOS = scenarios.scenarios || scenarios;
+  // 優先載入 manual + auto;若兩者都沒抓到才 fallback 到舊 scenarios.json
+  if (scnManual || scnAuto) {
+    const m = (scnManual && (scnManual.scenarios || scnManual)) || [];
+    const a = (scnAuto && (scnAuto.scenarios || scnAuto)) || [];
+    SCENARIOS = [...m, ...a];
+  } else {
+    SCENARIOS = scnLegacy.scenarios || scnLegacy;
+  }
   // map nodes → DATA (隱藏已廢止節點,但保留有 effective_period 的歷史費率表)
   DATA = nodes
     .filter(n => {
@@ -2413,6 +2439,8 @@ function renderScenarios() {
           ${items.map(s => {
             const hasFlow = s.flow && s.flow.start && s.flow.questions;
             const flowBadge = hasFlow ? '<span class="sc-flow-badge">🤔 條件問答</span>' : '';
+            const isAuto = s.source === 'auto';
+            const autoBadge = isAuto ? '<span class="sc-auto-badge" title="此情境由 build_scenarios.py 自動生成,建議核對原文">🤖 自動產生</span>' : '';
             const matched = countScenarioMatches(s);
             const flowBtn = hasFlow ? `
               <button class="sc-flow-start" data-flow="${s.id}" type="button">
@@ -2421,9 +2449,9 @@ function renderScenarios() {
               </button>
             ` : '';
             return `
-              <article class="sc-card${hasFlow ? ' has-flow' : ''}" data-sc="${s.id}" tabindex="0">
+              <article class="sc-card${hasFlow ? ' has-flow' : ''}${isAuto ? ' is-auto' : ''}" data-sc="${s.id}" tabindex="0">
                 <div class="sc-icon">${s.icon || '📌'}</div>
-                <h3 class="sc-title">${s.title}${flowBadge}</h3>
+                <h3 class="sc-title">${s.title}${flowBadge}${autoBadge}</h3>
                 <p class="sc-subtitle">${s.subtitle || ''}</p>
                 ${flowBtn}
                 <div class="sc-meta">
