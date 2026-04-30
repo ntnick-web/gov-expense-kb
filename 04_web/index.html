@@ -1648,10 +1648,10 @@
 
       <div id="scope-banner-slot"></div>
       <div class="filterbar">
-        <!-- 四排 chip 篩選 -->
+        <!-- 四排 chip 篩選:母題 / 類別 / 支出類別 / 熱門標籤 -->
+        <div class="filterrow" id="lib-parent-row"></div>
         <div class="filterrow" id="lib-type-row"></div>
         <div class="filterrow" id="lib-expense-row"></div>
-        <div class="filterrow" id="lib-obsolete-row"></div>
         <div class="filterrow" id="lib-tag-row"></div>
       </div>
 
@@ -3296,15 +3296,49 @@ function renderSidebar() {
 }
 
 function renderChips() {
+  const $parentRow = document.getElementById('lib-parent-row');
   const $typeRow = document.getElementById('lib-type-row');
   const $expRow = document.getElementById('lib-expense-row');
-  const $obsRow = document.getElementById('lib-obsolete-row');
   const $tagRow = document.getElementById('lib-tag-row');
-  if (!$expRow || !$obsRow || !$tagRow) return;
+  if (!$expRow || !$tagRow) return;
 
-  /* 第一排:類別 chips(A 核心法規 / B 支出標準 / C 解釋函令 / D 問答集)
-     基準:忽略 type filter 後其他條件下的命中,點擊即套用 filterState.type */
   const TAG_MATCH_THRESHOLD = 2;
+
+  /* 第一排:母題 chips(國內旅費 / 國外旅費 / 支出憑證與結報)
+     基準:忽略 parent filter 後其他條件下的命中,點擊即套用 filterState.parent */
+  const passNonParent = (d) => {
+    if (!filterState.showObsolete && d.status === '已廢止' && !d.effectivePeriod) return false;
+    if (filterState.type && d.id.split('-')[0] !== filterState.type) return false;
+    if (filterState.expense && !nodeMatchesExpense(d, filterState.expense)) return false;
+    if (filterState.scenario) {
+      const sc = SCENARIOS.find(s => s.id === filterState.scenario);
+      if (sc) {
+        const inP = (sc.primary_ids || []).includes(d.id);
+        const tagOverlap = (d.tags || []).filter(t => (sc.tags || []).includes(t)).length;
+        if (!inP && tagOverlap < TAG_MATCH_THRESHOLD) return false;
+      }
+    }
+    return true;
+  };
+  const byParent = new Map();
+  let parentAll = 0;
+  for (const d of DATA) {
+    if (!passNonParent(d)) continue;
+    parentAll++;
+    const p = d.cat || '其他';
+    byParent.set(p, (byParent.get(p) || 0) + 1);
+  }
+  if ($parentRow) {
+    const visibleParents = PARENTS.filter(p => byParent.has(p));
+    $parentRow.innerHTML = `
+      <span class="filterrow-label">母題</span>
+      <button class="chip${!filterState.parent ? ' on' : ''}" data-parent="">全部 <span class="chip-count">${parentAll}</span></button>
+      ${visibleParents.map(p => `<button class="chip${filterState.parent === p ? ' on' : ''}" data-parent="${p}">${p} <span class="chip-count">${byParent.get(p)}</span></button>`).join('')}
+    `;
+  }
+
+  /* 第二排:類別 chips(A 核心法規 / B 支出標準 / C 解釋函令 / D 問答集)
+     基準:忽略 type filter 後其他條件下的命中,點擊即套用 filterState.type */
   const passNonType = (d) => {
     if (!filterState.showObsolete && d.status === '已廢止' && !d.effectivePeriod) return false;
     if (filterState.parent && d.cat !== filterState.parent) return false;
@@ -3394,14 +3428,6 @@ function renderChips() {
     ${expanded && visibleExpenses.length > TOP_EXP ? `<button class="chip chip-toggle-more" data-toggle-exp="collapse">收起 ▴</button>` : ''}
   `;
 
-  /* 第二排:顯示狀態(現行 / 含已廢止)— 對齊第一排起點 */
-  const obsoleteCount = DATA.filter(d => d.status === '已廢止').length;
-  $obsRow.innerHTML = `
-    <span class="filterrow-label">顯示狀態</span>
-    <button class="chip${!filterState.showObsolete ? ' on' : ''}" data-status="current">✓ 只看現行 <span class="chip-count">${DATA.length - obsoleteCount}</span></button>
-    <button class="chip${filterState.showObsolete ? ' on' : ''}" data-status="all">含已廢止 <span class="chip-count">${DATA.length}</span></button>
-  `;
-
   /* 第三排:依當前過濾後熱門 tags(動態) */
   const tagCount = new Map();
   const filtered = filteredData();
@@ -3432,6 +3458,15 @@ function renderChips() {
   }
 
   // 綁 click
+  if ($parentRow) {
+    $parentRow.querySelectorAll('[data-parent]').forEach(b => b.onclick = () => {
+      filterState.parent = b.dataset.parent || null;
+      // 切換母題時清掉支出類別與類別 filter,避免空集合
+      filterState.expense = null;
+      filterState.type = null;
+      renderSidebar?.(); renderChips(); renderCards();
+    });
+  }
   if ($typeRow) {
     $typeRow.querySelectorAll('[data-type]').forEach(b => b.onclick = () => {
       filterState.type = b.dataset.type || null;
@@ -3449,10 +3484,6 @@ function renderChips() {
   $tagRow.querySelectorAll('[data-toggle-tag]').forEach(b => b.onclick = () => {
     window._tagExpanded = b.dataset.toggleTag === 'expand';
     renderChips();
-  });
-  $obsRow.querySelectorAll('[data-status]').forEach(b => b.onclick = () => {
-    filterState.showObsolete = b.dataset.status === 'all';
-    renderSidebar(); renderChips(); renderCards();
   });
   $tagRow.querySelectorAll('[data-tag]').forEach(b => b.onclick = () => {
     filterState.tag = b.dataset.tag || null;
