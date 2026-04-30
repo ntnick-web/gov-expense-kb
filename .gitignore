@@ -35,6 +35,10 @@ files.zip
 
 # 設計交接包(一次性交付物,不進 git)
 design_handoff_*/
+design_bundle_*/
+
+# 一次性 docx / pdf 報告解壓暫存
+_report_unpacked/
 
 # 暫存
 *.tmp
