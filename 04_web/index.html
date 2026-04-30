@@ -17,26 +17,48 @@
 <style>
   :root {
     color-scheme: light;
-    --bg: oklch(99% 0.004 90);
+    /* ───── 馬卡龍色票系統(2026-04-30 起)─────
+       畫布為奶白底,馬卡龍色僅用於 chip / banner / dot / 邊框。
+       每個馬卡龍底色配套一個深 ink 文字色,確保 WCAG AA。 */
+    --bg: oklch(98.5% 0.008 75);            /* 奶白 */
     --surface: oklch(100% 0 0);
-    --surface-2: oklch(97.2% 0.005 90);
-    --line: oklch(91% 0.006 90);
-    --line-strong: oklch(85% 0.008 90);
-    --ink: oklch(22% 0.012 265);
-    --ink-2: oklch(40% 0.012 265);
-    --ink-3: oklch(56% 0.012 265);
-    --brand: oklch(55% 0.15 265);
-    --brand-soft: oklch(96% 0.025 265);
-    --brand-line: oklch(85% 0.06 265);
-    --ok: oklch(58% 0.13 155);
-    --ok-soft: oklch(95% 0.03 155);
-    --warn: oklch(68% 0.14 75);
-    --warn-soft: oklch(96% 0.04 75);
-    --stop: oklch(60% 0.14 25);
-    --stop-soft: oklch(96% 0.03 25);
-    --shadow-sm: 0 1px 2px oklch(20% 0.02 265 / .04), 0 1px 1px oklch(20% 0.02 265 / .03);
-    --shadow-md: 0 4px 12px oklch(20% 0.02 265 / .06), 0 2px 4px oklch(20% 0.02 265 / .04);
-    --shadow-lg: 0 24px 60px oklch(20% 0.02 265 / .14), 0 8px 20px oklch(20% 0.02 265 / .08);
+    --surface-2: oklch(96.5% 0.012 75);     /* 帶一點米色暖意 */
+    --line: oklch(91% 0.012 75);
+    --line-strong: oklch(84% 0.018 75);
+    --ink: oklch(28% 0.02 305);             /* 深紫灰文字,搭薰衣草系統 */
+    --ink-2: oklch(46% 0.018 305);
+    --ink-3: oklch(60% 0.014 305);
+    /* 主品牌色 = 薰衣草(馬卡龍主色,飽和略提) */
+    --brand: oklch(62% 0.10 295);           /* 薰衣草 */
+    --brand-soft: oklch(92% 0.04 295);
+    --brand-line: oklch(80% 0.06 295);
+    /* 狀態色 — 全部馬卡龍化(L 提到 88%、C 降到 .05 內) */
+    --ok: oklch(50% 0.08 150);              /* 深抹茶字 */
+    --ok-soft: oklch(92% 0.05 150);         /* 抹茶綠底 */
+    --warn: oklch(48% 0.07 78);             /* 深香草字 */
+    --warn-soft: oklch(94% 0.06 85);        /* 香草黃底 */
+    --stop: oklch(50% 0.08 18);             /* 深玫瑰字 */
+    --stop-soft: oklch(93% 0.05 18);        /* 草莓粉底 */
+    /* 馬卡龍 7 色 token(供卡片裝飾、母題 dot、徽章用)*/
+    --pastel-lavender: oklch(88% 0.05 295);  /* 🍇 主品牌系 */
+    --pastel-peach:    oklch(90% 0.06 50);   /* 🍑 暖點綴 */
+    --pastel-strawberry: oklch(89% 0.05 18); /* 🌸 紅色情境 */
+    --pastel-vanilla:  oklch(94% 0.06 85);   /* 🍋 警告 / 已逾期 */
+    --pastel-matcha:   oklch(91% 0.05 150);  /* 🍵 通過 / 現行 */
+    --pastel-sky:      oklch(91% 0.04 230);  /* ☁️ 資訊 */
+    --pastel-rose-taupe: oklch(86% 0.03 20); /* 🌹 已廢止 / 中性 */
+    /* 對應深 ink(用於文字 / 邊框,均 ≥ 4.5 對比)*/
+    --ink-lavender: oklch(42% 0.10 295);
+    --ink-peach:    oklch(45% 0.10 50);
+    --ink-strawberry: oklch(45% 0.10 18);
+    --ink-vanilla:  oklch(40% 0.08 85);
+    --ink-matcha:   oklch(42% 0.09 150);
+    --ink-sky:      oklch(42% 0.08 230);
+    --ink-taupe:    oklch(45% 0.04 20);
+
+    --shadow-sm: 0 1px 2px oklch(28% 0.02 305 / .05), 0 1px 1px oklch(28% 0.02 305 / .04);
+    --shadow-md: 0 4px 12px oklch(28% 0.02 305 / .07), 0 2px 4px oklch(28% 0.02 305 / .05);
+    --shadow-lg: 0 24px 60px oklch(28% 0.02 305 / .15), 0 8px 20px oklch(28% 0.02 305 / .08);
     --radius: 10px;
     --radius-lg: 14px;
     --font-zh: "Noto Sans TC", "Noto Sans CJK TC", "PingFang TC", "Microsoft JhengHei", sans-serif;
@@ -44,20 +66,38 @@
   }
   :root[data-theme="dark"] {
     color-scheme: dark;
-    --bg: oklch(16% 0.012 265);
-    --surface: oklch(20% 0.014 265);
-    --surface-2: oklch(23% 0.014 265);
-    --line: oklch(28% 0.014 265);
-    --line-strong: oklch(34% 0.016 265);
-    --ink: oklch(96% 0.005 265);
-    --ink-2: oklch(78% 0.01 265);
-    --ink-3: oklch(60% 0.012 265);
-    --brand: oklch(72% 0.14 265);
-    --brand-soft: oklch(28% 0.05 265);
-    --brand-line: oklch(40% 0.08 265);
-    --ok-soft: oklch(28% 0.04 155);
-    --warn-soft: oklch(28% 0.05 75);
-    --stop-soft: oklch(28% 0.04 25);
+    /* 深色模式:把馬卡龍色 L 從 ~88% 降到 ~30%,保留 hue 不變 */
+    --bg: oklch(18% 0.014 305);
+    --surface: oklch(22% 0.016 305);
+    --surface-2: oklch(25% 0.016 305);
+    --line: oklch(30% 0.018 305);
+    --line-strong: oklch(36% 0.02 305);
+    --ink: oklch(95% 0.008 305);
+    --ink-2: oklch(78% 0.012 305);
+    --ink-3: oklch(60% 0.014 305);
+    --brand: oklch(78% 0.10 295);
+    --brand-soft: oklch(30% 0.05 295);
+    --brand-line: oklch(42% 0.08 295);
+    --ok: oklch(78% 0.08 150);
+    --ok-soft: oklch(30% 0.04 150);
+    --warn: oklch(80% 0.08 85);
+    --warn-soft: oklch(30% 0.05 85);
+    --stop: oklch(78% 0.08 18);
+    --stop-soft: oklch(30% 0.04 18);
+    --pastel-lavender: oklch(32% 0.05 295);
+    --pastel-peach:    oklch(34% 0.06 50);
+    --pastel-strawberry: oklch(33% 0.05 18);
+    --pastel-vanilla:  oklch(34% 0.06 85);
+    --pastel-matcha:   oklch(33% 0.05 150);
+    --pastel-sky:      oklch(33% 0.04 230);
+    --pastel-rose-taupe: oklch(32% 0.03 20);
+    --ink-lavender: oklch(82% 0.08 295);
+    --ink-peach:    oklch(82% 0.08 50);
+    --ink-strawberry: oklch(82% 0.08 18);
+    --ink-vanilla:  oklch(82% 0.07 85);
+    --ink-matcha:   oklch(82% 0.07 150);
+    --ink-sky:      oklch(82% 0.07 230);
+    --ink-taupe:    oklch(80% 0.03 20);
     --shadow-md: 0 4px 12px #0007;
     --shadow-lg: 0 24px 60px #000a;
   }
@@ -153,7 +193,7 @@
   }
   .landing-card:hover {
     transform: translateY(-6px);
-    box-shadow: 0 20px 40px -10px oklch(20% 0.04 265 / .12);
+    box-shadow: 0 20px 40px -10px oklch(28% 0.04 305 / .12);
     border-color: var(--brand-line);
   }
   .landing-icon { font-size: 64px; line-height: 1; }
@@ -194,9 +234,9 @@
   }
   .brand-mark {
     width: 26px; height: 26px; border-radius: 7px;
-    background: linear-gradient(135deg, var(--brand), oklch(60% 0.15 295));
+    background: linear-gradient(135deg, var(--pastel-lavender), var(--pastel-peach));
     display: grid; place-items: center;
-    color: white; font-weight: 700; font-size: 13px;
+    color: var(--ink-lavender); font-weight: 700; font-size: 13px;
     box-shadow: var(--shadow-sm);
   }
   .brand-text { font-weight: 600; font-size: 14px; letter-spacing: .01em; }
@@ -263,6 +303,133 @@
   }
   .icon { width: 16px; height: 16px; flex-shrink: 0; stroke: currentColor; fill: none; stroke-width: 1.75; stroke-linecap: round; stroke-linejoin: round; }
 
+  /* ───── Spotlight Command Palette (⌘K)───── */
+  .cmdk-overlay {
+    position: fixed; inset: 0;
+    background: oklch(28% 0.02 305 / .42);
+    backdrop-filter: blur(3px);
+    z-index: 80;
+    display: none;
+    align-items: flex-start; justify-content: center;
+    padding-top: 12vh;
+  }
+  .cmdk-overlay.show { display: flex; }
+  .cmdk-panel {
+    width: min(640px, calc(100vw - 32px));
+    max-height: 70vh;
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    box-shadow: var(--shadow-lg);
+    display: flex; flex-direction: column;
+    overflow: hidden;
+  }
+  .cmdk-head {
+    display: flex; align-items: center; gap: 10px;
+    padding: 16px 18px;
+    border-bottom: 1px solid var(--line);
+  }
+  .cmdk-icon { font-size: 16px; opacity: .7; }
+  .cmdk-head input {
+    flex: 1; border: 0; outline: none; background: transparent;
+    font-size: 17px; color: var(--ink); font-family: inherit;
+  }
+  .cmdk-head input::placeholder { color: var(--ink-3); }
+  .cmdk-esc, .cmdk-foot kbd {
+    font-family: var(--font-mono); font-size: 11px;
+    padding: 2px 7px; border-radius: 5px;
+    background: var(--surface-2); color: var(--ink-3);
+    border: 1px solid var(--line-strong);
+  }
+  .cmdk-list {
+    flex: 1; overflow-y: auto;
+    padding: 6px;
+  }
+  .cmdk-group-h {
+    padding: 8px 12px 4px;
+    font-size: 10.5px; font-weight: 700; letter-spacing: .08em;
+    color: var(--ink-3); text-transform: uppercase;
+  }
+  .cmdk-item {
+    display: grid; grid-template-columns: 56px 1fr auto; gap: 10px;
+    align-items: center;
+    padding: 10px 12px; border-radius: 8px;
+    cursor: pointer; border: 0; background: transparent;
+    width: 100%; text-align: left;
+    font-family: inherit; color: var(--ink);
+    transition: background .1s;
+  }
+  .cmdk-item:hover, .cmdk-item.on {
+    background: var(--brand-soft);
+  }
+  .cmdk-kind {
+    font-family: var(--font-mono); font-size: 10.5px;
+    padding: 2px 7px; border-radius: 4px;
+    background: var(--surface-2); color: var(--ink-2);
+    border: 1px solid var(--line);
+    text-align: center;
+    letter-spacing: .04em;
+  }
+  .cmdk-item.kind-scenario .cmdk-kind { background: var(--pastel-peach); color: var(--ink-peach); border-color: var(--ink-peach); }
+  .cmdk-item.kind-node .cmdk-kind { background: var(--pastel-lavender); color: var(--ink-lavender); border-color: var(--ink-lavender); }
+  .cmdk-item.kind-view .cmdk-kind { background: var(--pastel-sky); color: var(--ink-sky); border-color: var(--ink-sky); }
+  .cmdk-item.kind-tag .cmdk-kind { background: var(--pastel-matcha); color: var(--ink-matcha); border-color: var(--ink-matcha); }
+  .cmdk-label {
+    display: flex; flex-direction: column; gap: 2px;
+    min-width: 0;
+  }
+  .cmdk-label-main {
+    font-size: 14px; color: var(--ink); font-weight: 500;
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  }
+  .cmdk-label-sub {
+    font-size: 11.5px; color: var(--ink-3);
+    font-family: var(--font-mono);
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  }
+  .cmdk-arrow { font-size: 14px; color: var(--ink-3); padding: 0 4px; }
+  .cmdk-empty {
+    padding: 40px 24px; text-align: center;
+    color: var(--ink-3); font-size: 13px;
+  }
+  .cmdk-foot {
+    display: flex; align-items: center; gap: 14px;
+    padding: 10px 18px;
+    border-top: 1px solid var(--line);
+    font-size: 11.5px; color: var(--ink-3);
+    flex-wrap: wrap;
+  }
+  .cmdk-foot-spacer { flex: 1; }
+  .cmdk-tip { color: var(--ink-2); }
+  /* 行動版:full-screen 上面對齊 */
+  @media (max-width: 720px) {
+    .cmdk-overlay { padding-top: 0; align-items: stretch; }
+    .cmdk-panel { width: 100%; max-height: 100vh; border-radius: 0; }
+    .cmdk-foot .cmdk-tip { display: none; }
+  }
+
+  /* 麵包屑(條文庫頂部:全部 › 母題 › 支出類別 › 類別 › #tag)*/
+  .breadcrumb {
+    display: flex; flex-wrap: wrap; align-items: center; gap: 4px;
+    margin: 0 0 14px; padding: 0;
+    font-size: 12.5px;
+    color: var(--ink-3);
+  }
+  .breadcrumb-item {
+    border: 0; background: transparent; cursor: pointer;
+    padding: 3px 8px; border-radius: 6px;
+    color: var(--ink-2); font-family: inherit; font-size: inherit;
+    transition: all .12s;
+  }
+  .breadcrumb-item:hover { background: var(--surface-2); color: var(--ink); }
+  .breadcrumb-item.is-current {
+    color: var(--ink); font-weight: 600;
+    cursor: default; pointer-events: none;
+  }
+  .breadcrumb-sep {
+    color: var(--ink-3); font-size: 11px;
+    user-select: none;
+  }
   .pagehead { margin-bottom: 20px; }
   .pagehead h1 { margin: 0 0 4px; font-size: 22px; font-weight: 600; letter-spacing: -.01em; }
   .pagehead p { margin: 0; color: var(--ink-3); font-size: 13px; }
@@ -351,10 +518,11 @@
     width: 6px; height: 6px; border-radius: 999px;
     background: var(--ink-3);
   }
-  .card-art.dot-travel { background: oklch(60% 0.13 240); }
-  .card-art.dot-food { background: oklch(65% 0.13 75); }
-  .card-art.dot-overseas { background: oklch(60% 0.13 320); }
-  .card-art.dot-rate { background: oklch(58% 0.13 155); }
+  /* 母題 dot:馬卡龍色 + 深 ink 邊框,辨識度比純 hue 飽和色高 */
+  .card-art.dot-travel { background: var(--pastel-sky); box-shadow: 0 0 0 1px var(--ink-sky); }
+  .card-art.dot-food { background: var(--pastel-vanilla); box-shadow: 0 0 0 1px var(--ink-vanilla); }
+  .card-art.dot-overseas { background: var(--pastel-lavender); box-shadow: 0 0 0 1px var(--ink-lavender); }
+  .card-art.dot-rate { background: var(--pastel-matcha); box-shadow: 0 0 0 1px var(--ink-matcha); }
 
   .card-no { font-weight: 500; color: var(--ink-2); }
   .card-title {
@@ -364,8 +532,8 @@
     overflow: hidden;
   }
   .card-summary {
-    color: var(--ink-2); font-size: 13.5px; line-height: 1.55;
-    display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical;
+    color: var(--ink-2); font-size: 13.5px; line-height: 1.6;
+    display: -webkit-box; -webkit-line-clamp: 4; -webkit-box-orient: vertical;
     overflow: hidden;
     flex: 1;
   }
@@ -394,7 +562,7 @@
 
   /* ───── Drawer ───── */
   .scrim {
-    position: fixed; inset: 0; background: oklch(20% 0.02 265 / .35);
+    position: fixed; inset: 0; background: oklch(28% 0.02 305 / .35);
     opacity: 0; pointer-events: none; transition: opacity .2s;
     z-index: 40;
     backdrop-filter: blur(2px);
@@ -436,6 +604,18 @@
     .drawer-grab { display: block; }
     /* 抽屜 header 行動版瘦身:減 padding、字級、隱藏 tags 區(改在 body 內顯示)*/
     .drawer-head { padding: 6px 16px 12px; gap: 6px; }
+    /* drawer-row 改 column:meta 一行、actions 一行,避免互相擠斷字 */
+    .drawer-head .drawer-row:first-child {
+      flex-direction: column; align-items: stretch; gap: 6px;
+    }
+    .drawer-head .drawer-row:first-child .drawer-meta {
+      order: 2;  /* meta 顯示在 actions 下方 */
+      flex-wrap: wrap;
+      display: flex; align-items: center;
+    }
+    .drawer-head .drawer-row:first-child .drawer-actions {
+      order: 1; justify-content: flex-end;
+    }
     .drawer-title { font-size: 17px !important; line-height: 1.35; }
     .drawer-meta { font-size: 11px; }
     .drawer-head .card-tags { display: none; }    /* tags 在 body 內已顯示,header 隱藏節省空間 */
@@ -452,7 +632,38 @@
   .drawer-row { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
   .drawer-meta { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; font-family: var(--font-mono); font-size: 11.5px; color: var(--ink-3); }
   .drawer-meta .sep { width: 3px; height: 3px; border-radius: 999px; background: var(--line-strong); }
-  .drawer-actions { display: flex; gap: 4px; }
+  .drawer-actions { display: flex; gap: 4px; align-items: center; }
+  .drawer-nav {
+    display: inline-flex; align-items: center; gap: 2px;
+    padding: 2px 6px; border-radius: 999px;
+    background: var(--surface-2); border: 1px solid var(--line);
+    font-family: var(--font-mono); font-size: 11.5px;
+    color: var(--ink-2); margin-right: 4px;
+  }
+  .drawer-nav-btn {
+    border: 0; background: transparent; cursor: pointer;
+    color: var(--ink-2); font-size: 16px; line-height: 1;
+    padding: 2px 6px; border-radius: 4px;
+    font-family: inherit;
+    transition: color .12s, background .12s;
+  }
+  .drawer-nav-btn:hover:not(:disabled) { color: var(--brand); background: var(--brand-soft); }
+  .drawer-nav-btn:disabled { opacity: .28; cursor: default; }
+  .drawer-nav-counter {
+    padding: 0 4px; min-width: 50px; text-align: center;
+    font-variant-numeric: tabular-nums;
+    white-space: nowrap;
+  }
+  /* 行動版:nav 縮小但 hit area 至少 28px,避免手指點偏 */
+  @media (max-width: 720px) {
+    .drawer-nav { padding: 0 2px; font-size: 10.5px; }
+    .drawer-nav-btn {
+      padding: 0; font-size: 18px; line-height: 1;
+      min-width: 28px; min-height: 28px;
+      display: inline-flex; align-items: center; justify-content: center;
+    }
+    .drawer-nav-counter { min-width: 56px; padding: 0 4px; }
+  }
   .iconbtn {
     height: 32px; padding: 0 8px; border-radius: 8px;
     border: 1px solid transparent; background: transparent; cursor: pointer;
@@ -512,10 +723,10 @@
     background: var(--surface-2); color: var(--ink-2);
     flex-shrink: 0; margin-top: 1px;
   }
-  .related-kind.qa { background: oklch(96% 0.03 200); color: oklch(45% 0.13 220); }
-  .related-kind.fn { background: oklch(96% 0.03 295); color: oklch(45% 0.13 295); }
-  [data-theme="dark"] .related-kind.qa { background: oklch(28% 0.05 220); color: oklch(82% 0.1 220); }
-  [data-theme="dark"] .related-kind.fn { background: oklch(28% 0.05 295); color: oklch(82% 0.1 295); }
+  .related-kind.qa { background: var(--pastel-sky); color: var(--ink-sky); }
+  .related-kind.fn { background: var(--pastel-lavender); color: var(--ink-lavender); }
+  [data-theme="dark"] .related-kind.qa { background: var(--pastel-sky); color: var(--ink-sky); }
+  [data-theme="dark"] .related-kind.fn { background: var(--pastel-lavender); color: var(--ink-lavender); }
   .related-text { font-size: 13.5px; line-height: 1.5; color: var(--ink); }
   .related-text small { display: block; color: var(--ink-3); font-size: 11.5px; margin-top: 2px; }
 
@@ -721,6 +932,38 @@
     margin-top: 6px;
   }
   .calc-jump:hover { text-decoration: underline; }
+  /* 計算公式拆解(2026-04-30 加)— 顯示「日費 × 天 × % = 總額」 */
+  .calc-formula {
+    margin: 8px auto 4px;
+    padding: 8px 14px;
+    background: var(--surface);
+    border: 1px dashed var(--ink-matcha);
+    border-radius: 8px;
+    display: inline-flex; align-items: center; gap: 8px; flex-wrap: wrap;
+    justify-content: center;
+    font-family: var(--font-mono);
+    font-size: 13px;
+    color: var(--ink-2);
+  }
+  .calc-formula.calc-formula-hint {
+    border-style: solid;
+    border-color: var(--line);
+    color: var(--ink-3);
+    font-family: var(--font-zh);
+    font-size: 12.5px;
+  }
+  .calc-formula-arrow { color: var(--ink-3); font-weight: 700; }
+  .calc-formula-eq { color: var(--ink-2); }
+  .calc-formula-total {
+    color: var(--ink-matcha); font-weight: 700; font-size: 15px;
+  }
+  .calc-formula-aux {
+    margin: 4px 0 0;
+    font-size: 11.5px; color: var(--ink-3);
+    font-style: italic;
+  }
+  .calc-row.calc-row-aux { margin-top: 8px; }
+  .calc-row.calc-row-aux label { font-size: 12px; color: var(--ink-3); }
 
   .sc-head {
     margin-bottom: 22px;
@@ -759,13 +1002,13 @@
   .sc-flow-strip {
     display: flex; align-items: center; gap: 8px; flex-wrap: wrap;
     padding: 10px 14px;
-    background: oklch(97% 0.025 25);
-    border: 1px solid oklch(82% 0.07 25);
+    background: var(--pastel-strawberry);
+    border: 1px solid var(--ink-strawberry);
     border-radius: var(--radius);
     margin-bottom: 18px;
   }
-  [data-theme="dark"] .sc-flow-strip { background: oklch(28% 0.04 25); border-color: oklch(40% 0.06 25); }
-  .sc-flow-strip-label { font-size: 12px; font-weight: 700; color: var(--stop); }
+  [data-theme="dark"] .sc-flow-strip { background: var(--pastel-strawberry); border-color: var(--ink-strawberry); }
+  .sc-flow-strip-label { font-size: 12px; font-weight: 700; color: var(--ink-strawberry); }
   /* 互動試算橫幅摺疊版(2026-04-29 加,2026-04-30 降權:灰底而非橘色 dashed)*/
   .sc-flow-details { margin: 0 0 16px; }
   .sc-flow-summary {
@@ -793,13 +1036,13 @@
     display: inline-flex; align-items: center; gap: 6px;
     padding: 4px 12px;
     background: var(--surface);
-    border: 1px solid oklch(82% 0.07 25);
+    border: 1px solid var(--ink-strawberry);
     border-radius: 999px;
-    font-size: 12.5px; color: var(--stop);
+    font-size: 12.5px; color: var(--ink-strawberry);
     cursor: pointer; transition: background .12s;
   }
-  .sc-flow-strip button:hover { background: oklch(96% 0.03 25); }
-  [data-theme="dark"] .sc-flow-strip button { background: var(--surface); border-color: oklch(40% 0.06 25); }
+  .sc-flow-strip button:hover { background: var(--pastel-strawberry); }
+  [data-theme="dark"] .sc-flow-strip button { background: var(--surface); border-color: var(--ink-strawberry); }
   /* 情境分組 TOC (sticky 浮在 sc-grid 上方) */
   .sc-toc {
     position: sticky; top: 0; z-index: 8;
@@ -851,24 +1094,95 @@
     font-size: 12px; font-weight: 600;
     cursor: pointer;
   }
-  .scope-banner-back:hover, .scope-banner-clear:hover { background: var(--brand); color: white; }
-  /* 搜尋命中高亮 */
+  .scope-banner-back:hover, .scope-banner-clear:hover { background: var(--brand); color: var(--bg); }
+  /* 行動版:scope-banner 改 column,避免 text + 3 按鈕擠成一行讓中文一字一行 */
+  @media (max-width: 720px) {
+    .scope-banner {
+      flex-direction: column;
+      align-items: stretch;
+      gap: 8px;
+    }
+    .scope-banner-text { font-size: 13.5px; line-height: 1.5; }
+    .scope-banner > .scope-banner-text { padding-right: 4px; }
+    /* 按鈕擺在第二行,左右並列 */
+    .scope-banner > .scope-banner-icon { display: none; }   /* 行動版省空間 */
+    .scope-flow-btn,
+    .scope-banner-back,
+    .scope-banner-clear { font-size: 11.5px; padding: 5px 10px; }
+  }
+  /* 條件問答快捷按鈕 — 草莓色,跟 has-flow 卡片視覺一致 */
+  .scope-flow-btn {
+    display: inline-flex; align-items: center; gap: 4px;
+    border: 1px solid var(--ink-strawberry);
+    background: var(--pastel-strawberry);
+    color: var(--ink-strawberry);
+    padding: 4px 12px;
+    border-radius: 999px;
+    font-size: 12px; font-weight: 600;
+    cursor: pointer;
+    font-family: inherit;
+  }
+  .scope-flow-btn:hover { background: var(--ink-strawberry); color: var(--bg); }
+  /* 需附單據清單(scope-banner 下方) */
+  .scope-attachments {
+    margin: -6px 0 14px;
+    padding: 12px 14px 10px;
+    background: var(--pastel-peach);
+    border: 1px solid var(--ink-peach);
+    border-top: 0;
+    border-radius: 0 0 var(--radius) var(--radius);
+    color: var(--ink-peach);
+  }
+  .scope-attachments-h {
+    font-size: 12px; font-weight: 700; letter-spacing: .04em;
+    margin-bottom: 6px;
+  }
+  .scope-attachments-list {
+    margin: 0; padding: 0; list-style: none;
+    display: flex; flex-direction: column; gap: 4px;
+  }
+  .scope-attachments-list li {
+    display: flex; gap: 8px; align-items: flex-start;
+    font-size: 13px; color: var(--ink); line-height: 1.5;
+  }
+  .scope-att-num {
+    font-family: var(--font-mono); font-size: 11px;
+    color: var(--ink-peach); font-weight: 700;
+    flex-shrink: 0; padding-top: 1px;
+    min-width: 22px;
+  }
+  /* 行動版:padding 縮 */
+  @media (max-width: 720px) {
+    .scope-attachments { margin: -4px 0 10px; padding: 10px 12px 8px; }
+    .scope-attachments-list li { font-size: 12.5px; }
+  }
+  /* 同義詞命中徽章(≈ 自用汽車)— 灰色提示,告訴使用者為什麼這條會跑出來 */
+  .syn-badge {
+    display: inline-block; margin-left: 6px;
+    font-size: 10.5px; font-weight: 500;
+    padding: 1px 7px; border-radius: 999px;
+    background: var(--pastel-rose-taupe); color: var(--ink-taupe);
+    border: 1px dashed var(--ink-taupe);
+    vertical-align: middle;
+    letter-spacing: .02em;
+  }
+  /* 搜尋命中高亮 — 香草黃 */
   mark.search-hit {
-    background: oklch(94% 0.10 95);
-    color: oklch(35% 0.13 70);
+    background: var(--pastel-vanilla);
+    color: var(--ink-vanilla);
     padding: 0 1px; border-radius: 3px;
     font-weight: 600;
   }
   [data-theme="dark"] mark.search-hit {
-    background: oklch(40% 0.10 90); color: oklch(95% 0.05 90);
+    background: var(--pastel-vanilla); color: var(--ink-vanilla);
   }
-  /* rate_table 內 alias fallback 命中列 */
+  /* rate_table 內 alias fallback 命中列 — 天空藍 */
   .rt-fallback-row td {
-    background: oklch(96% 0.04 220) !important;
-    border-left: 3px solid oklch(60% 0.13 220);
+    background: var(--pastel-sky) !important;
+    border-left: 3px solid var(--ink-sky);
   }
-  .rt-fallback-row td:first-child { border-left: 3px solid oklch(60% 0.13 220); }
-  [data-theme="dark"] .rt-fallback-row td { background: oklch(28% 0.05 220) !important; }
+  .rt-fallback-row td:first-child { border-left: 3px solid var(--ink-sky); }
+  [data-theme="dark"] .rt-fallback-row td { background: var(--pastel-sky) !important; }
   .sc-quick-label {
     font-size: 12px; font-weight: 700; color: var(--brand);
   }
@@ -922,8 +1236,8 @@
     border-color: var(--brand-line);
   }
   .sc-card.has-flow {
-    border: 2px solid oklch(60% 0.14 25);
-    box-shadow: 0 0 0 1px oklch(60% 0.14 25), 2px 2px 0 oklch(60% 0.14 25 / .15);
+    border: 2px solid var(--ink-strawberry);
+    box-shadow: 0 0 0 1px var(--ink-strawberry), 2px 2px 0 oklch(from var(--ink-strawberry) l c h / .15);
     border-radius: 12px 10px 11px 9px;
   }
   .sc-icon { font-size: 22px; line-height: 1; }
@@ -936,42 +1250,42 @@
   }
   .sc-flow-badge {
     font-size: 10px; font-weight: 600;
-    background: oklch(96% 0.03 25); color: oklch(50% 0.14 25);
-    border: 1px solid oklch(75% 0.1 25);
+    background: var(--pastel-strawberry); color: var(--ink-strawberry);
+    border: 1px solid var(--ink-strawberry);
     padding: 1px 6px; border-radius: 999px;
   }
-  /* Phase 4 信度系統 — inferred/contested 卡片小徽章 */
+  /* Phase 4 信度系統 — inferred/contested 卡片小徽章(馬卡龍化)*/
   .badge-certainty {
     font-size: 10px; font-weight: 600;
     padding: 1px 7px; border-radius: 999px;
     cursor: help;
   }
   .badge-certainty.inferred {
-    background: oklch(94% 0.06 60); color: oklch(38% 0.13 60);
-    border: 1px solid oklch(72% 0.13 60);
+    background: var(--pastel-peach); color: var(--ink-peach);
+    border: 1px solid var(--ink-peach);
   }
   .badge-certainty.contested {
-    background: oklch(94% 0.06 25); color: oklch(38% 0.15 25);
-    border: 1px solid oklch(70% 0.15 25);
+    background: var(--pastel-strawberry); color: var(--ink-strawberry);
+    border: 1px solid var(--ink-strawberry);
   }
   [data-theme="dark"] .badge-certainty.inferred {
-    background: oklch(28% 0.05 60); color: oklch(82% 0.10 60);
+    background: var(--pastel-peach); color: var(--ink-peach);
   }
   [data-theme="dark"] .badge-certainty.contested {
-    background: oklch(28% 0.05 25); color: oklch(82% 0.10 25);
+    background: var(--pastel-strawberry); color: var(--ink-strawberry);
   }
-  /* 自動產生情境徽章 — 灰色低飽和,告訴使用者「來源較弱」 */
+  /* 自動產生情境徽章 — 藕色,告訴使用者「來源較弱」 */
   .sc-auto-badge {
     font-size: 10px; font-weight: 500;
-    background: oklch(96% 0 0); color: oklch(45% 0 0);
-    border: 1px dashed oklch(75% 0 0);
+    background: var(--pastel-rose-taupe); color: var(--ink-taupe);
+    border: 1px dashed var(--ink-taupe);
     padding: 1px 6px; border-radius: 999px;
     margin-left: 6px;
     cursor: help;
   }
   [data-theme="dark"] .sc-auto-badge {
-    background: oklch(28% 0 0); color: oklch(70% 0 0);
-    border-color: oklch(45% 0 0);
+    background: var(--pastel-rose-taupe); color: var(--ink-taupe);
+    border-color: var(--ink-taupe);
   }
   /* 自動產生卡:微微透明降權 */
   .sc-card.is-auto { opacity: .82; }
@@ -979,10 +1293,10 @@
   .sc-flow-start {
     display: inline-flex; align-items: center; gap: 6px;
     padding: 6px 12px;
-    background: oklch(60% 0.14 25);
+    background: var(--ink-strawberry);
     border: 0;
     border-radius: 8px;
-    color: white;
+    color: var(--bg);
     font-size: 12.5px; font-weight: 600;
     font-family: var(--font-zh);
     cursor: pointer;
@@ -991,13 +1305,13 @@
     align-self: flex-start;
   }
   .sc-flow-start:hover {
-    background: oklch(55% 0.15 25);
+    background: oklch(from var(--ink-strawberry) calc(l - 0.05) c h);
     transform: translateY(-1px);
-    box-shadow: 0 4px 12px oklch(60% 0.14 25 / .3);
+    box-shadow: 0 4px 12px oklch(from var(--ink-strawberry) l c h / .3);
   }
   .sc-flow-start svg { width: 12px; height: 12px; }
   [data-theme="dark"] .sc-flow-badge {
-    background: oklch(28% 0.05 25); color: oklch(82% 0.1 25);
+    background: var(--pastel-strawberry); color: var(--ink-strawberry);
   }
   .sc-subtitle {
     font-size: 12.5px; color: var(--ink-2); line-height: 1.5;
@@ -1149,7 +1463,7 @@
   .cmp-modal.show { display: flex; }
   .cmp-backdrop {
     position: absolute; inset: 0;
-    background: oklch(20% 0.02 265 / .45);
+    background: oklch(28% 0.02 305 / .45);
     backdrop-filter: blur(3px);
   }
   .cmp-panel {
@@ -1230,9 +1544,9 @@
   }
   .cmp-meta-row:first-child { border-top: 0; }
   .cmp-meta-row.diff {
-    background: var(--warn-soft); color: oklch(35% 0.06 75);
+    background: var(--pastel-vanilla); color: var(--ink-vanilla);
   }
-  [data-theme="dark"] .cmp-meta-row.diff { color: oklch(85% 0.1 75); }
+  [data-theme="dark"] .cmp-meta-row.diff { color: var(--ink-vanilla); }
   .cmp-meta-k { color: var(--ink-3); font-weight: 600; }
   .cmp-meta-row.diff .cmp-meta-k { color: inherit; }
   .cmp-meta-v { word-break: break-word; }
@@ -1326,6 +1640,7 @@
 
     <!-- 條文庫 view -->
     <section id="view-library" class="library-view hidden">
+      <nav class="breadcrumb" id="lib-breadcrumb" aria-label="麵包屑導覽"></nav>
       <div class="pagehead">
         <h1>條文庫</h1>
         <p>核心法規 · 支出標準 · 解釋函令 · 問答集 — 點擊任一卡片查看詳細條文與相關 Q&amp;A · <span id="grid-count" style="color:var(--brand);font-weight:600"></span></p>
@@ -1370,6 +1685,25 @@
   </main>
 </div>
 
+<!-- ───── Spotlight Command Palette (⌘K / Ctrl+K) ───── -->
+<div class="cmdk-overlay" id="cmdk-overlay" aria-hidden="true">
+  <div class="cmdk-panel" role="dialog" aria-label="搜尋情境、條文、試算表">
+    <div class="cmdk-head">
+      <span class="cmdk-icon">🔍</span>
+      <input type="search" id="cmdk-input" placeholder="搜尋情境、條文、城市…" autocomplete="off" spellcheck="false">
+      <kbd class="cmdk-esc">Esc</kbd>
+    </div>
+    <div class="cmdk-list" id="cmdk-list" role="listbox"></div>
+    <div class="cmdk-foot">
+      <span><kbd>↑</kbd><kbd>↓</kbd> 選擇</span>
+      <span><kbd>Enter</kbd> 開啟</span>
+      <span><kbd>Esc</kbd> 關閉</span>
+      <span class="cmdk-foot-spacer"></span>
+      <span class="cmdk-tip">💡 同義詞自動展開(自駕 ≈ 自用汽車)</span>
+    </div>
+  </div>
+</div>
+
 <!-- ───── Drawer ───── -->
 <div class="scrim" id="scrim"></div>
 <aside class="drawer" id="drawer" aria-hidden="true">
@@ -1378,6 +1712,11 @@
     <div class="drawer-row">
       <div class="drawer-meta" id="d-meta">A-國內旅費-002 <span class="sep"></span> 2026-04-25 人工校對</div>
       <div class="drawer-actions">
+        <span class="drawer-nav" id="d-nav" title="上一張(←) / 下一張(→)">
+          <button class="drawer-nav-btn" id="btn-prev" aria-label="上一張" type="button">‹</button>
+          <span class="drawer-nav-counter" id="d-nav-counter">— / —</span>
+          <button class="drawer-nav-btn" id="btn-next" aria-label="下一張" type="button">›</button>
+        </span>
         <button class="iconbtn" title="複製條號到剪貼簿" aria-label="複製條號" id="btn-copy"><svg class="icon" viewBox="0 0 24 24"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg><span class="iconbtn-label">複製</span></button>
         <button class="iconbtn" title="開新分頁前往主計總處原始出處" aria-label="原始出處" id="btn-source"><svg class="icon" viewBox="0 0 24 24"><path d="M14 4h6v6"/><path d="M20 4 10 14"/><path d="M20 14v5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V5a1 1 0 0 1 1-1h5"/></svg><span class="iconbtn-label">出處</span></button>
         <button class="iconbtn" title="關閉抽屜 (Esc)" aria-label="關閉" id="btn-close"><svg class="icon" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6l-12 12"/></svg><span class="iconbtn-label">關閉</span></button>
@@ -1469,7 +1808,7 @@
 let compareList = [];
 
 /* ──────── 真實資料載入 (520 nodes from 03_index/) ──────── */
-const DATA_VERSION = '2026-04-30d';
+const DATA_VERSION = '2026-04-30e';
 let DATA = [];                 // 對外用的卡片資料 (mapped from nodes.json)
 let NODES_BY_ID = new Map();   // id → original node (含 file_path 等)
 let INCOMING_EDGES = new Map();// id → [from1, from2, ...] 反向引用
@@ -1515,18 +1854,30 @@ function buildCardTitleText(d, mode = 'short') {
 }
 
 let CITY_ALIASES = {};  // 未列載城市 → 國家中文主名 (city_aliases.json)
+let SYNONYMS = [];       // [{canonical, aliases:[...]}, ...] (synonyms.json)
+let SYNONYM_INDEX = new Map();  // 任一詞 → 該組所有詞 (含 canonical),供 expandSynonyms 用
 async function loadAllData() {
   const v = '?v=' + DATA_VERSION;
   // scenarios 拆 manual + auto 兩份合併;舊版 scenarios.json 仍保留作 fallback
-  const [nodes, edges, scnManual, scnAuto, scnLegacy, aliases] = await Promise.all([
+  const [nodes, edges, scnManual, scnAuto, scnLegacy, aliases, synonyms] = await Promise.all([
     fetch('../03_index/nodes.json' + v).then(r => r.json()),
     fetch('../03_index/edges.json' + v).then(r => r.json()),
     fetch('data/scenarios_manual.json' + v).then(r => r.ok ? r.json() : null).catch(() => null),
     fetch('data/scenarios_auto.json' + v).then(r => r.ok ? r.json() : null).catch(() => null),
     fetch('data/scenarios.json' + v).then(r => r.ok ? r.json() : { scenarios: [] }).catch(() => ({ scenarios: [] })),
     fetch('data/city_aliases.json' + v).then(r => r.ok ? r.json() : { aliases: {} }).catch(() => ({ aliases: {} })),
+    fetch('data/synonyms.json' + v).then(r => r.ok ? r.json() : { groups: [] }).catch(() => ({ groups: [] })),
   ]);
   CITY_ALIASES = aliases.aliases || {};
+  SYNONYMS = synonyms.groups || [];
+  // 建反查表:每個詞(canonical + aliases)指向該組所有詞
+  SYNONYM_INDEX = new Map();
+  for (const g of SYNONYMS) {
+    const all = [g.canonical, ...(g.aliases || [])];
+    for (const w of all) {
+      SYNONYM_INDEX.set(w.toLowerCase(), all);
+    }
+  }
   // 建 NODES_BY_ID + 反向 edges
   for (const n of nodes) NODES_BY_ID.set(n.id, n);
   const edgeArr = edges.edges || edges;
@@ -1748,6 +2099,10 @@ const filterState = {
 };
 
 function switchView(v) {
+  // 第一次切 view 後拿掉 pre-paint flash 防護屬性,
+  // 否則 html[data-init-view="scenarios"] #view-scenarios{display:block} 會永久蓋過 .active 切換,
+  // 導致從情境切到試算 / 條文庫時舊 view 內容仍堆在新 view 下方。
+  document.documentElement.removeAttribute('data-init-view');
   currentView = v;
   document.getElementById('view-landing')?.classList.toggle('active', v === 'landing');
   document.getElementById('view-library').classList.toggle('hidden', v !== 'library');
@@ -1825,9 +2180,32 @@ function nodeMatchesExpense(d, expense) {
   return (d.tags || []).includes(expense);
 }
 
+/* 取得 query 的同義詞展開集合(含原 query)。
+   例:輸入「自駕」→ ["自駕", "自用汽車", "自駕租賃", "共享汽車", "租賃汽車"]
+   匹配規則:① 完全等於 alias/canonical → 整組 OR  ② substring 命中任一 alias → 也展開 */
+function expandSynonyms(q) {
+  const ql = q.toLowerCase().trim();
+  if (!ql) return [ql];
+  const expanded = new Set([ql]);
+  // 1) 完全相等的快速路徑
+  const exact = SYNONYM_INDEX.get(ql);
+  if (exact) for (const w of exact) expanded.add(w.toLowerCase());
+  // 2) substring 命中任一詞:展開該組(讓「自用」也能撈到「自駕」)
+  for (const [w, group] of SYNONYM_INDEX.entries()) {
+    if (w === ql) continue;
+    if (w.includes(ql) || ql.includes(w)) {
+      for (const x of group) expanded.add(x.toLowerCase());
+    }
+  }
+  return [...expanded];
+}
+
 /* 套用 filter → 回傳符合的 DATA 子集 */
 function filteredData() {
-  const q = filterState.query.trim().toLowerCase();
+  const qRaw = filterState.query.trim();
+  const q = qRaw.toLowerCase();
+  // 同義詞展開:多詞 OR 比對(查命中時也記錄是哪一個 alias 命中,供 UI 標示)
+  const queryTerms = q ? expandSynonyms(q) : [];
   // scenario filter:取該情境的 primary_ids ∪ tag 命中
   const sc = filterState.scenario ? SCENARIOS.find(s => s.id === filterState.scenario) : null;
   const scPrimary = sc ? new Set(sc.primary_ids || []) : null;
@@ -1855,20 +2233,32 @@ function filteredData() {
       }
     }
     let queryRelevance = 0;
+    let matchedSynonym = null;  // 若是同義詞命中(非原 query 字面),記下實際命中詞
     if (q) {
       const titleL = (d.title || '').toLowerCase();
       const tagsL = (d.tags || []).join(' ').toLowerCase();
       const summaryL = (d.summary || '').toLowerCase();
       const idL = d.id.toLowerCase();
-      // 各欄位命中加權:標題 100、ID 80、tag 60、摘要 30
       let r = 0;
-      if (titleL.includes(q)) r += 100;
-      if (idL.includes(q)) r += 80;
-      if (tagsL.includes(q)) r += 60;
-      if (summaryL.includes(q)) r += 30;
-      if (r === 0) continue;  // 全部欄位都沒命中 → 排除
+      // 跑全部 queryTerms 一輪,任一命中即計分(原詞權重 + 30%,讓直接命中優先排序)
+      for (let i = 0; i < queryTerms.length; i++) {
+        const term = queryTerms[i];
+        const isOriginal = (i === 0);  // queryTerms[0] 永遠是原 query
+        let termR = 0;
+        if (titleL.includes(term)) termR += 100;
+        if (idL.includes(term)) termR += 80;
+        if (tagsL.includes(term)) termR += 60;
+        if (summaryL.includes(term)) termR += 30;
+        if (termR > 0) {
+          r += isOriginal ? termR : Math.floor(termR * 0.7);  // 同義詞命中權重 70%
+          if (!isOriginal && !matchedSynonym) matchedSynonym = term;
+        }
+      }
+      if (r === 0) continue;
       queryRelevance = r;
     }
+    // 把 matchedSynonym 暫存到 d 物件給卡片渲染用(下輪 render 會 reset)
+    d._matchedSynonym = matchedSynonym;
     scored.push({d, scenarioRelevance, queryRelevance});
   }
   // 排序優先序:scenario 相關度 > query 相關度 > 原始 ID 序
@@ -1903,6 +2293,89 @@ function highlightQuery(html, q) {
   return html;
 }
 
+/* ──────── 麵包屑導覽 (條文庫頂部) ──────── */
+function renderBreadcrumb() {
+  const $bc = document.getElementById('lib-breadcrumb');
+  if (!$bc) return;
+  const parts = [];
+  // 永遠先有「全部」
+  parts.push({ label: '全部', action: 'all' });
+  if (filterState.scenario) {
+    const sc = SCENARIOS.find(s => s.id === filterState.scenario);
+    if (sc) parts.push({ label: `情境 · ${sc.title}`, action: 'scenario' });
+  }
+  if (filterState.parent) parts.push({ label: filterState.parent, action: 'parent' });
+  if (filterState.expense) {
+    // 拆 expense__parent 複合 key 顯示乾淨的中文(若為複合 key 則只取前段)
+    const exp = String(filterState.expense).split('__')[0];
+    parts.push({ label: exp, action: 'expense' });
+  }
+  if (filterState.type) {
+    const typeLabel = (typeof CAT_LABEL !== 'undefined' && CAT_LABEL[filterState.type]) || filterState.type;
+    parts.push({ label: typeLabel, action: 'type' });
+  }
+  if (filterState.tag) parts.push({ label: `#${filterState.tag}`, action: 'tag' });
+  if (filterState.query && filterState.query.trim()) parts.push({ label: `🔍 「${filterState.query.trim()}」`, action: 'query' });
+  // 若只有「全部」一層,不顯示麵包屑
+  if (parts.length <= 1) {
+    $bc.innerHTML = '';
+    $bc.style.display = 'none';
+    return;
+  }
+  $bc.style.display = 'flex';
+  $bc.innerHTML = parts.map((p, i) => {
+    const isLast = i === parts.length - 1;
+    const sep = i < parts.length - 1 ? '<span class="breadcrumb-sep">›</span>' : '';
+    return `<button class="breadcrumb-item${isLast ? ' is-current' : ''}" data-bc="${p.action}" type="button">${escapeHtml(p.label)}</button>${sep}`;
+  }).join('');
+  // 綁 click — 點任一層 → 把該層之後的 filter 全部清掉
+  $bc.querySelectorAll('.breadcrumb-item').forEach(btn => {
+    btn.onclick = () => {
+      const action = btn.dataset.bc;
+      // 從該層往下逐層清(由內到外)
+      switch (action) {
+        case 'all':
+          filterState.scenario = null;
+          filterState.parent = null;
+          filterState.expense = null;
+          filterState.type = null;
+          filterState.tag = null;
+          filterState.query = '';
+          { const $q = document.getElementById('q'); if ($q) $q.value = ''; }
+          break;
+        case 'scenario':
+          filterState.expense = null; filterState.type = null;
+          filterState.tag = null; filterState.query = '';
+          { const $q = document.getElementById('q'); if ($q) $q.value = ''; }
+          break;
+        case 'parent':
+          filterState.scenario = null;
+          filterState.expense = null; filterState.type = null;
+          filterState.tag = null; filterState.query = '';
+          { const $q = document.getElementById('q'); if ($q) $q.value = ''; }
+          break;
+        case 'expense':
+          filterState.type = null; filterState.tag = null;
+          filterState.query = '';
+          { const $q = document.getElementById('q'); if ($q) $q.value = ''; }
+          break;
+        case 'type':
+          filterState.tag = null; filterState.query = '';
+          { const $q = document.getElementById('q'); if ($q) $q.value = ''; }
+          break;
+        case 'tag':
+          filterState.query = '';
+          { const $q = document.getElementById('q'); if ($q) $q.value = ''; }
+          break;
+        case 'query':
+          // 點當前層相當於不變;放著也無妨
+          return;
+      }
+      renderSidebar?.(); renderChips?.(); renderCards();
+    };
+  });
+}
+
 /* ──────── 情境 banner (條文庫頂部, 套情境/有 filter 時顯示) ──────── */
 function renderScopeBanner() {
   const $slot = document.getElementById('scope-banner-slot');
@@ -1910,13 +2383,26 @@ function renderScopeBanner() {
   if (filterState.scenario) {
     const sc = SCENARIOS.find(s => s.id === filterState.scenario);
     if (!sc) { $slot.innerHTML = ''; return; }
+    // 需附單據清單(若 scenario 有 attachments 欄位)
+    const attachments = Array.isArray(sc.attachments) ? sc.attachments : [];
+    const attHtml = attachments.length ? `
+      <div class="scope-attachments">
+        <div class="scope-attachments-h">📎 需附單據</div>
+        <ol class="scope-attachments-list">
+          ${attachments.map((a, i) => `<li><span class="scope-att-num">${String(i + 1).padStart(2, '0')}</span><span>${escapeHtml(a)}</span></li>`).join('')}
+        </ol>
+      </div>` : '';
+    // 條件問答按鈕(若 scenario 有 flow)
+    const flowBtnHtml = (sc.flow && sc.flow.start) ? `<button class="scope-flow-btn" data-banner-flow>🤔 開始條件問答</button>` : '';
     $slot.innerHTML = `
       <div class="scope-banner">
         <span class="scope-banner-icon">${sc.icon || '🧭'}</span>
         <div class="scope-banner-text">情境:<strong>${sc.title}</strong>${sc.subtitle ? ` · <span style="color:var(--ink-3)">${sc.subtitle}</span>` : ''}</div>
+        ${flowBtnHtml}
         <button class="scope-banner-back" data-banner-back>← 回情境列表</button>
         <button class="scope-banner-clear" data-banner-clear>✕ 清除情境</button>
-      </div>`;
+      </div>
+      ${attHtml}`;
     $slot.querySelector('[data-banner-back]').onclick = () => {
       filterState.scenario = null; filterState.parent = null;
       filterState.tag = null; filterState.expense = null;
@@ -1926,9 +2412,17 @@ function renderScopeBanner() {
       filterState.scenario = null;
       renderScopeBanner(); renderSidebar(); renderChips(); renderCards();
     };
+    const $flowBtn = $slot.querySelector('[data-banner-flow]');
+    if ($flowBtn) $flowBtn.onclick = () => openFlowModal(sc);
   } else {
     $slot.innerHTML = '';
   }
+}
+
+function escapeHtml(s) {
+  return String(s == null ? '' : s)
+    .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;').replace(/'/g, '&#39;');
 }
 
 /* ──────── render cards (chunked lazy-render) ──────── */
@@ -1944,9 +2438,13 @@ function _renderCardHtml(d, q) {
   const titleObj = buildCardTitle(d);
   const titleHtml = `${titleObj.prefix ? `<span style="color:var(--ink-3);font-weight:500;font-size:13px">${titleObj.prefix}</span> ` : ''}${titleObj.no ? `<span style="color:var(--ink-3);font-weight:500">${titleObj.no}</span> ` : ''}${titleObj.title}`;
   const tagsHtml = (d.tags || []).slice(0,3).map(t=>`<span class="tag">${t}</span>`).join("");
-  const titleHl = q ? highlightQuery(titleHtml, q) : titleHtml;
-  const summaryHl = q ? highlightQuery(summary, q) : summary;
-  const tagsHl = q ? highlightQuery(tagsHtml, q) : tagsHtml;
+  // 高亮:除原 query 外,同義詞命中也高亮(讓使用者看到實際命中的詞)
+  const hlTerms = q ? [q, ...(d._matchedSynonym ? [d._matchedSynonym] : [])] : [];
+  const titleHl = q ? highlightTerms(titleHtml, hlTerms) : titleHtml;
+  const summaryHl = q ? highlightTerms(summary, hlTerms) : summary;
+  const tagsHl = q ? highlightTerms(tagsHtml, hlTerms) : tagsHtml;
+  // 若是同義詞命中,在標題後加灰色「≈ 命中詞」徽章告訴使用者為什麼跑出來
+  const synBadge = d._matchedSynonym ? `<span class="syn-badge" title="同義詞展開命中">≈ ${escapeHtml(d._matchedSynonym)}</span>` : '';
   return `
     <article class="card${inCmp ? ' compared' : ''}${isQa ? ' is-qa' : ''}${isRate ? ' is-rate' : ''}" data-id="${d.id}" tabindex="0">
       <button class="card-compare${inCmp ? ' on' : ''}" data-cmp-toggle title="${inCmp ? '已加入比較,點擊移除' : '加入並排比較 (最多 3 張)'}">
@@ -1957,7 +2455,7 @@ function _renderCardHtml(d, q) {
         ${d.certainty && d.certainty !== 'explicit' ? `<span class="badge-certainty ${d.certainty}" title="${d.certainty === 'contested' ? '實務見解不一,本站不提供判斷' : '法規無明文,屬推論'}">⚠ ${d.certainty === 'contested' ? '爭議' : '推論'}</span>` : ''}
         ${statusBadge(d.status)}
       </div>
-      <h3 class="card-title">${titleHl}</h3>
+      <h3 class="card-title">${titleHl}${synBadge}</h3>
       <p class="card-summary">${summaryHl}</p>
       <div class="card-foot">
         <div class="card-tags">${tagsHl}</div>
@@ -1967,7 +2465,17 @@ function _renderCardHtml(d, q) {
   `;
 }
 
+/* 對多個 term 都做 highlightQuery(供同義詞展開命中用)*/
+function highlightTerms(html, terms) {
+  if (!terms || !terms.length) return html;
+  for (const t of terms) {
+    if (t) html = highlightQuery(html, t);
+  }
+  return html;
+}
+
 function renderCards() {
+  renderBreadcrumb();
   renderScopeBanner();
   currentList = filteredData();
   // 重置 lazy-render state
@@ -2193,7 +2701,7 @@ function wireRateTableInteractions(scope) {
     if (!$banner && searchWrap) {
       $banner = document.createElement('div');
       $banner.className = 'rt-fallback-banner';
-      $banner.style.cssText = 'display:none;margin:0 0 10px;padding:8px 12px;background:oklch(96% 0.04 220);border:1px solid oklch(72% 0.08 220);border-left:3px solid oklch(60% 0.13 220);border-radius:6px;font-size:12.5px;color:oklch(35% 0.06 220)';
+      $banner.style.cssText = 'display:none;margin:0 0 10px;padding:8px 12px;background:var(--pastel-sky);border:1px solid var(--ink-sky);border-left:3px solid var(--ink-sky);border-radius:6px;font-size:12.5px;color:var(--ink-sky)';
       searchWrap.insertAdjacentElement('afterend', $banner);
     }
     q.oninput = () => {
@@ -2254,8 +2762,15 @@ function wireRateTableInteractions(scope) {
 async function openDrawer(idx) {
   const d = currentList[idx];
   if (!d) return;
+  // 第一次開啟前記下卡片網格的 scroll 位置(關抽屜時還原,避免跳回頂端)
+  if (currentIdx < 0) {
+    const $main = document.querySelector('.main') || document.scrollingElement || document.documentElement;
+    window._cardsScrollTop = $main?.scrollTop || window.scrollY || 0;
+  }
   currentIdx = idx;
   document.querySelectorAll(".card").forEach(c => c.classList.toggle("active", c.dataset.id === d.id));
+  // 更新翻頁 counter + disabled 狀態
+  updateDrawerNav();
   // metadata 行 + 類別膠囊
   const reviewMeta = d.reviewLevel ? ` ${d.reviewLevel}` : '';
   document.getElementById("d-meta").innerHTML = `${d.id} <span class="sep"></span> ${d.updated || '尚未校對'}${reviewMeta} <span class="sep"></span> ${d.cat} · ${d.catLabel}`;
@@ -2287,10 +2802,10 @@ async function openDrawer(idx) {
       const body = d.noInferenceNote || (isContested
         ? '此情形實務見解不一或法規未明確規範,本站不提供判斷,請逕洽主計室確認。'
         : '此情形依機關權責或實務認定,本站僅彙整法規條文,實際結果以主計室認定為準。');
-      bodyHtml += `<div style="margin-bottom:14px;padding:12px 14px;background:oklch(94% 0.05 25);border:1px solid oklch(72% 0.13 25);border-radius:var(--radius);color:oklch(35% 0.13 25);font-size:13px;line-height:1.6">
+      bodyHtml += `<div style="margin-bottom:14px;padding:12px 14px;background:var(--pastel-strawberry);border:1px solid var(--ink-strawberry);border-radius:var(--radius);color:var(--ink-strawberry);font-size:13px;line-height:1.6">
         <div style="font-weight:600;margin-bottom:4px">${tag}</div>
         <div>${body}</div>
-        <div style="margin-top:6px;font-size:11.5px;color:oklch(45% 0.1 25)">📞 請勿以本站查詢結果作為報銷依據;如有疑義請逕洽主計室確認。</div>
+        <div style="margin-top:6px;font-size:11.5px;color:var(--ink-strawberry);opacity:.85">📞 請勿以本站查詢結果作為報銷依據;如有疑義請逕洽主計室確認。</div>
       </div>`;
     }
     // 原始出處明顯連結 (放在 body 頂部, 比小 icon btn-source 更易發現)
@@ -2421,13 +2936,37 @@ function closeDrawer() {
   document.body.classList.remove("drawer-open");
   document.querySelectorAll(".card.active").forEach(c => c.classList.remove("active"));
   currentIdx = -1;
+  // 還原卡片網格 scrollTop(避免關抽屜時跳回頂端)
+  if (typeof window._cardsScrollTop === 'number') {
+    const $main = document.querySelector('.main') || document.scrollingElement || document.documentElement;
+    if ($main) $main.scrollTop = window._cardsScrollTop;
+    else window.scrollTo({ top: window._cardsScrollTop });
+    window._cardsScrollTop = undefined;
+  }
+}
+
+function updateDrawerNav() {
+  const $counter = document.getElementById('d-nav-counter');
+  const $prev = document.getElementById('btn-prev');
+  const $next = document.getElementById('btn-next');
+  if (!$counter || !$prev || !$next) return;
+  const total = currentList.length;
+  if (currentIdx < 0 || total === 0) {
+    $counter.textContent = '— / —';
+    $prev.disabled = true;
+    $next.disabled = true;
+    return;
+  }
+  $counter.textContent = `${currentIdx + 1} / ${total}`;
+  $prev.disabled = currentIdx === 0;
+  $next.disabled = currentIdx === total - 1;
 }
 
 function move(delta) {
   if (currentIdx < 0) return;
-  let n = currentIdx + delta;
-  if (n < 0) n = currentList.length - 1;
-  if (n >= currentList.length) n = 0;
+  const n = currentIdx + delta;
+  // 到頭 / 到尾就不再循環(配合 disabled 按鈕)
+  if (n < 0 || n >= currentList.length) return;
   openDrawer(n);
   const card = document.querySelector(`.card[data-id="${currentList[n].id}"]`);
   card?.scrollIntoView({ block: "nearest", behavior: "smooth" });
@@ -2455,6 +2994,8 @@ grid.addEventListener("keydown", e => {
   }
 });
 
+document.getElementById("btn-prev").addEventListener("click", () => move(-1));
+document.getElementById("btn-next").addEventListener("click", () => move(1));
 document.getElementById("btn-close").addEventListener("click", closeDrawer);
 scrim.addEventListener("click", closeDrawer);
 
@@ -2466,8 +3007,195 @@ document.addEventListener("keydown", e => {
   }
   if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === "k") {
     e.preventDefault();
-    document.getElementById("q").focus();
+    openCmdK();
   }
+});
+
+/* ──────── Spotlight Command Palette (⌘K) ──────── */
+const CMDK_LIMIT = 60;
+let _cmdkActiveIdx = 0;
+
+function openCmdK() {
+  const $ov = document.getElementById('cmdk-overlay');
+  if (!$ov) return;
+  $ov.classList.add('show');
+  $ov.setAttribute('aria-hidden', 'false');
+  const $input = document.getElementById('cmdk-input');
+  if ($input) {
+    $input.value = '';
+    setTimeout(() => $input.focus(), 50);
+  }
+  _cmdkActiveIdx = 0;
+  renderCmdK('');
+}
+function closeCmdK() {
+  const $ov = document.getElementById('cmdk-overlay');
+  if (!$ov) return;
+  $ov.classList.remove('show');
+  $ov.setAttribute('aria-hidden', 'true');
+}
+
+/* 取得目前所有可選項目(view + scenarios + nodes)*/
+function _cmdkAllItems() {
+  const items = [];
+  // 三個主 view
+  items.push({ kind: 'view', kindLabel: '頁面', label: '前往 · 情境檢索', sub: '依情境快速找對應規定', action: () => { closeCmdK(); switchView('scenarios'); renderScenarios?.(); } });
+  items.push({ kind: 'view', kindLabel: '頁面', label: '前往 · 條文庫', sub: '所有條文與函釋', action: () => { closeCmdK(); switchView('library'); renderCards?.(); } });
+  items.push({ kind: 'view', kindLabel: '頁面', label: '前往 · 試算表', sub: '生活費 + 保險費試算', action: () => { closeCmdK(); switchView('calc'); renderCalc?.(); } });
+  // scenarios
+  for (const s of (SCENARIOS || [])) {
+    items.push({
+      kind: 'scenario', kindLabel: '情境',
+      label: `${s.icon || '🧭'} ${s.title}`,
+      sub: s.subtitle || '',
+      action: () => { closeCmdK(); applyScenarioFromCmdK(s); }
+    });
+  }
+  // nodes
+  for (const d of (DATA || [])) {
+    items.push({
+      kind: 'node', kindLabel: d.id.split('-')[0],
+      label: d.title || d.id,
+      sub: `${d.id} · ${d.parent || ''}`,
+      action: () => { closeCmdK(); jumpToCard(d.id); }
+    });
+  }
+  return items;
+}
+
+function applyScenarioFromCmdK(sc) {
+  filterState.scenario = sc.id;
+  filterState.parent = sc.parent || null;
+  filterState.type = null; filterState.tag = null; filterState.expense = null;
+  filterState.query = '';
+  const $q = document.getElementById('q'); if ($q) $q.value = '';
+  switchView('library');
+  renderSidebar?.(); renderChips?.(); renderCards?.();
+  if (typeof flashHint === 'function') flashHint(`套用情境:${sc.title}`);
+}
+
+function _cmdkFilter(items, q) {
+  if (!q) {
+    // 空 query:常用情境置頂(前 3 view + 前 8 scenarios)
+    const out = [];
+    out.push(...items.filter(it => it.kind === 'view'));
+    out.push(...items.filter(it => it.kind === 'scenario').slice(0, 12));
+    return out.slice(0, CMDK_LIMIT);
+  }
+  const ql = q.toLowerCase().trim();
+  // 同義詞展開
+  const expanded = (typeof expandSynonyms === 'function') ? expandSynonyms(ql) : [ql];
+  return items
+    .map(it => {
+      const hay = (it.label + ' ' + (it.sub || '')).toLowerCase();
+      // 檢查任一展開詞是否命中,記下實際命中的詞
+      let hit = false; let matchedSyn = null;
+      for (let i = 0; i < expanded.length; i++) {
+        if (hay.includes(expanded[i])) {
+          hit = true;
+          if (i > 0 && !matchedSyn) matchedSyn = expanded[i];
+          break;
+        }
+      }
+      if (!hit) return null;
+      // 排序:view > scenario > node;同分內標題命中優先
+      const score = (it.kind === 'view' ? 30 : it.kind === 'scenario' ? 20 : 10)
+        + (it.label.toLowerCase().includes(ql) ? 50 : 0);
+      return { it, score, matchedSyn };
+    })
+    .filter(Boolean)
+    .sort((a, b) => b.score - a.score)
+    .slice(0, CMDK_LIMIT)
+    .map(x => ({ ...x.it, matchedSyn: x.matchedSyn }));
+}
+
+function renderCmdK(q) {
+  const $list = document.getElementById('cmdk-list');
+  if (!$list) return;
+  const all = _cmdkAllItems();
+  const filtered = _cmdkFilter(all, q);
+  if (!filtered.length) {
+    $list.innerHTML = `<div class="cmdk-empty">沒有結果。試試更短的關鍵字,或空白看常用情境清單。</div>`;
+    return;
+  }
+  // 分組顯示:view / scenario / node 各一段
+  const groups = [
+    { kind: 'view', title: '頁面' },
+    { kind: 'scenario', title: '情境' },
+    { kind: 'node', title: '條文 / 函釋 / 標準 / 問答' },
+  ];
+  let html = '';
+  let runningIdx = 0;
+  for (const g of groups) {
+    const items = filtered.filter(it => it.kind === g.kind);
+    if (!items.length) continue;
+    html += `<div class="cmdk-group-h">${g.title}</div>`;
+    for (const it of items) {
+      const synSuffix = it.matchedSyn ? ` <span class="syn-badge" style="vertical-align:baseline">≈ ${escapeHtml(it.matchedSyn)}</span>` : '';
+      const idx = runningIdx++;
+      html += `<button class="cmdk-item kind-${it.kind} ${idx === _cmdkActiveIdx ? 'on' : ''}" data-cmdk-i="${idx}" type="button">
+        <span class="cmdk-kind">${escapeHtml(it.kindLabel)}</span>
+        <span class="cmdk-label">
+          <span class="cmdk-label-main">${escapeHtml(it.label)}${synSuffix}</span>
+          ${it.sub ? `<span class="cmdk-label-sub">${escapeHtml(it.sub)}</span>` : ''}
+        </span>
+        <span class="cmdk-arrow">↵</span>
+      </button>`;
+    }
+  }
+  $list.innerHTML = html;
+  // 暫存平展後的順序給 keyboard nav 用
+  $list._items = filtered;
+  // click handlers
+  $list.querySelectorAll('[data-cmdk-i]').forEach(el => {
+    el.onclick = () => {
+      const i = parseInt(el.dataset.cmdkI, 10);
+      filtered[i]?.action?.();
+    };
+    el.onmouseenter = () => {
+      _cmdkActiveIdx = parseInt(el.dataset.cmdkI, 10);
+      $list.querySelectorAll('.cmdk-item').forEach((b, j) => b.classList.toggle('on', j === _cmdkActiveIdx));
+    };
+  });
+  // 若 active idx 超出範圍,reset
+  if (_cmdkActiveIdx >= filtered.length) _cmdkActiveIdx = 0;
+}
+
+/* 鍵盤事件:input + window 雙層 */
+document.addEventListener('input', (e) => {
+  if (e.target?.id === 'cmdk-input') {
+    _cmdkActiveIdx = 0;
+    renderCmdK(e.target.value);
+  }
+});
+document.addEventListener('keydown', (e) => {
+  const $ov = document.getElementById('cmdk-overlay');
+  if (!$ov || !$ov.classList.contains('show')) return;
+  const $list = document.getElementById('cmdk-list');
+  const items = $list?._items || [];
+  if (e.key === 'Escape') {
+    e.preventDefault(); closeCmdK(); return;
+  }
+  if (e.key === 'ArrowDown') {
+    e.preventDefault();
+    _cmdkActiveIdx = Math.min(items.length - 1, _cmdkActiveIdx + 1);
+    $list.querySelectorAll('.cmdk-item').forEach((b, j) => b.classList.toggle('on', j === _cmdkActiveIdx));
+    $list.querySelector('.cmdk-item.on')?.scrollIntoView({ block: 'nearest' });
+  }
+  if (e.key === 'ArrowUp') {
+    e.preventDefault();
+    _cmdkActiveIdx = Math.max(0, _cmdkActiveIdx - 1);
+    $list.querySelectorAll('.cmdk-item').forEach((b, j) => b.classList.toggle('on', j === _cmdkActiveIdx));
+    $list.querySelector('.cmdk-item.on')?.scrollIntoView({ block: 'nearest' });
+  }
+  if (e.key === 'Enter') {
+    e.preventDefault();
+    items[_cmdkActiveIdx]?.action?.();
+  }
+});
+/* 點 backdrop 關閉 */
+document.getElementById('cmdk-overlay')?.addEventListener('click', (e) => {
+  if (e.target.id === 'cmdk-overlay') closeCmdK();
 });
 
 document.getElementById("btn-copy").addEventListener("click", () => {
@@ -3137,6 +3865,21 @@ function renderCalc() {
           ${rows.slice(0, 600).map(r => `<option value="${r.shortLabel}">`).join('')}
         </datalist>
       </div>
+      <div class="calc-row calc-row-aux">
+        <label for="calc-living-days">出差天數(可選 · 用於計算總額)</label>
+        <input type="number" id="calc-living-days" min="1" max="365" placeholder="例如 7">
+      </div>
+      <div class="calc-row calc-row-aux">
+        <label for="calc-living-pct">供膳宿情形</label>
+        <div class="calc-tabs" id="calc-living-pct-tabs">
+          ${[
+            { v: 100, label: '100% 自理' },
+            { v: 80,  label: '80% 供膳' },
+            { v: 30,  label: '30% 供膳宿' },
+            { v: 10,  label: '10% 全包' },
+          ].map((o, i) => `<button class="calc-tab${i === 0 ? ' active' : ''}" data-pct="${o.v}" title="${o.label}">${o.v}%</button>`).join('')}
+        </div>
+      </div>
       <div class="calc-result" id="calc-living-result">
         <div class="calc-result-label">請輸入或選擇地區</div>
       </div>
@@ -3173,6 +3916,14 @@ function renderCalc() {
   // ── 生活費互動 (日支 + 月支同步顯示, 含未列載城市 alias fallback) ──
   const $cityInput = document.getElementById('calc-city');
   const $livingResult = document.getElementById('calc-living-result');
+  const $livingDays = document.getElementById('calc-living-days');
+  const $livingPctTabs = document.querySelectorAll('#calc-living-pct-tabs .calc-tab');
+  let livingPct = 100;
+  $livingPctTabs.forEach(t => t.onclick = () => {
+    $livingPctTabs.forEach(x => x.classList.toggle('active', x === t));
+    livingPct = parseInt(t.dataset.pct, 10);
+    lookupLiving();
+  });
   function lookupLiving() {
     const qRaw = ($cityInput.value || '').trim();
     const q = qRaw.toLowerCase();
@@ -3205,9 +3956,26 @@ function renderCalc() {
     const dailyVal = parseInt(String(partial.value).replace(/,/g, ''), 10);
     const tier = monthlyTiers.length ? findMonthlyByDailyRate(dailyVal) : null;
     const fallbackBanner = isFallback ? `
-      <div style="margin-bottom:8px;padding:8px 12px;background:oklch(96% 0.04 220);border:1px solid oklch(72% 0.08 220);border-left:3px solid oklch(60% 0.13 220);border-radius:6px;font-size:12.5px;color:oklch(35% 0.06 220)">
+      <div style="margin-bottom:8px;padding:8px 12px;background:var(--pastel-sky);border:1px solid var(--ink-sky);border-left:3px solid var(--ink-sky);border-radius:6px;font-size:12.5px;color:var(--ink-sky)">
         💡 推測「<strong>${qRaw}</strong>」屬<strong>${aliasInfo.country}</strong>(未列載於日支表),自動取該國「其他」費率(政府附註 §1)
       </div>` : '';
+    // 計算總額(若使用者輸入了天數)
+    const daysVal = parseInt($livingDays?.value, 10);
+    const hasDays = Number.isFinite(daysVal) && daysVal > 0;
+    let formulaHtml = '';
+    if (hasDays) {
+      const dailyEffective = Math.round(dailyVal * livingPct / 100);
+      const total = dailyEffective * daysVal;
+      const pctNote = livingPct === 100 ? '' : ` × ${livingPct}%`;
+      formulaHtml = `
+        <div class="calc-formula">
+          <span class="calc-formula-eq">${partial.value} ${partial.unit}/日${pctNote} × ${daysVal} 天</span>
+          <span class="calc-formula-arrow">=</span>
+          <span class="calc-formula-total">${total.toLocaleString()} ${partial.unit}</span>
+        </div>`;
+    } else {
+      formulaHtml = `<div class="calc-formula calc-formula-hint">💡 輸入天數即可自動算總額</div>`;
+    }
     $livingResult.className = 'calc-result hit' + (isFallback ? ' is-fallback' : '');
     $livingResult.innerHTML = `
       ${fallbackBanner}
@@ -3230,11 +3998,13 @@ function renderCalc() {
           `}
         </div>
       </div>
+      ${formulaHtml}
       <div class="calc-result-meta">日支為每日全額上限;月支適用派外進修/研究/實習 ≥31 日</div>
     `;
   }
   $cityInput.addEventListener('input', lookupLiving);
   $cityInput.addEventListener('change', lookupLiving);
+  if ($livingDays) $livingDays.addEventListener('input', lookupLiving);
 
   // ── 保險費互動 ──
   const $tabs = document.querySelectorAll('#calc-ins-tabs .calc-tab');
@@ -3260,10 +4030,19 @@ function renderCalc() {
       $insResult.innerHTML = `<div class="calc-result-label">${activeInsKey} ${days} 天:無對應費率</div>`;
       return;
     }
+    // 計算每日均價(顯示用)— 從查表值 ÷ 天數
+    const totalNum = parseInt(String(found[1]).replace(/,/g, ''), 10);
+    const perDay = Number.isFinite(totalNum) && days > 0 ? (totalNum / days) : null;
     $insResult.className = 'calc-result hit';
     $insResult.innerHTML = `
       <div class="calc-result-label">${activeInsKey} · ${days} 天</div>
       <div class="calc-result-value">NT$ ${found[1]}</div>
+      <div class="calc-formula">
+        <span class="calc-formula-eq">${activeInsKey} 共同供應契約費率表(${days} 天)</span>
+        <span class="calc-formula-arrow">=</span>
+        <span class="calc-formula-total">NT$ ${found[1]}</span>
+      </div>
+      ${perDay !== null ? `<div class="calc-formula-aux">≈ NT$ ${perDay.toFixed(2)}/天(費率為原表查得,非按日線性計算)</div>` : ''}
       <div class="calc-result-meta">外交部共同供應契約費率 (115 年版)</div>
       <a class="calc-jump" data-jump-card="B-國外旅費-006">📑 查看完整保險表 →</a>
     `;
