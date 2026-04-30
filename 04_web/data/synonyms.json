@@ -1,6 +1,6 @@
 {
-  "version": "2026-04-27",
-  "note": "搜尋同義詞展開表。canonical → [aliases]。前端搜尋輸入命中任一 alias 時,自動 OR 展開比對 canonical 與其他 aliases。資料源同步自 05_scripts/_normalize_tags.py:SYNONYMS,新增請兩處同步。",
+  "version": "2026-05-XX",
+  "note": "搜尋同義詞展開表。canonical → [aliases]。前端搜尋輸入命中任一 alias 時,自動 OR 展開比對 canonical 與其他 aliases。資料源同步自 05_scripts/_normalize_tags.py:SYNONYMS,新增請兩處同步。2026-05-XX 加 12 組實務口語包(報帳/退件/簽核/採購…)。",
   "groups": [
     { "canonical": "大陸港澳",     "aliases": ["大陸港澳旅費", "大陸地區", "港澳", "香港", "澳門"] },
     { "canonical": "簽證費",       "aliases": ["護照簽證", "護照規費", "護照費"] },
@@ -15,13 +15,25 @@
     { "canonical": "報支上限",     "aliases": ["上限內", "報支限額"] },
     { "canonical": "覈實報支",     "aliases": ["核實報支", "實支實付"] },
     { "canonical": "鐘點費",       "aliases": ["講座鐘點費", "授課鐘點費", "演講費"] },
-    { "canonical": "出席費",       "aliases": ["列席費", "與會費"] },
+    { "canonical": "出席費",       "aliases": ["列席費", "與會費", "出席"] },
     { "canonical": "稿費",         "aliases": ["翻譯費", "編輯費", "撰稿費"] },
     { "canonical": "教育訓練費",   "aliases": ["訓練費", "講習費", "研習費"] },
-    { "canonical": "原始憑證",     "aliases": ["統一發票", "發票", "收據", "單據"] },
+    { "canonical": "原始憑證",     "aliases": ["統一發票", "發票", "收據", "單據", "影本", "副本", "抄本"] },
     { "canonical": "電子憑證",     "aliases": ["電子發票", "電子簽章", "電子收據"] },
-    { "canonical": "經費結報",     "aliases": ["結報", "結算", "核銷"] },
-    { "canonical": "出差",         "aliases": ["公差", "公差派遣", "奉派出差"] },
-    { "canonical": "保險費",       "aliases": ["旅平險", "平安保險", "旅遊平安險"] }
+    { "canonical": "經費結報",     "aliases": ["結報", "結算", "核銷", "報帳", "請款", "撥款", "撥付", "跑單", "跑流程"] },
+    { "canonical": "出差",         "aliases": ["公差", "公差派遣", "奉派出差", "因公出差"] },
+    { "canonical": "保險費",       "aliases": ["旅平險", "平安保險", "旅遊平安險"] },
+    { "canonical": "業務需要",     "aliases": ["公務必要", "因公", "因業務", "業務必要", "公務需要"] },
+    { "canonical": "簽核",         "aliases": ["核章", "用印", "蓋章", "會辦", "簽章", "陳核"] },
+    { "canonical": "退件",         "aliases": ["退單", "補件", "不予核銷", "駁回", "補正"] },
+    { "canonical": "彈性支用",     "aliases": ["彈性支應", "計畫支用", "彈性運用"] },
+    { "canonical": "採購",         "aliases": ["採買", "進貨", "訂購", "議價", "比價", "詢價", "報價", "招標"] },
+    { "canonical": "雜費",         "aliases": ["零用", "零星", "雜支", "其他費用"] },
+    { "canonical": "計程車",       "aliases": ["計程車費", "招呼車", "Taxi", "taxi", "小黃", "排班車"] },
+    { "canonical": "超支",         "aliases": ["超過上限", "逾額", "超額", "超出標準", "超出"] },
+    { "canonical": "檢據",         "aliases": ["檢附", "附憑證", "附單據", "附證明", "附票根"] },
+    { "canonical": "日支",         "aliases": ["日支生活費", "每日生活費", "日支數額", "每日上限"] },
+    { "canonical": "住宿費",       "aliases": ["旅館費", "飯店費", "住宿", "住房費"] },
+    { "canonical": "公務車",       "aliases": ["公務車輛", "機關車輛", "公車"] }
   ]
 }

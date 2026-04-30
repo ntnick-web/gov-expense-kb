@@ -1310,6 +1310,84 @@
     color: var(--ink); white-space: pre-wrap; word-break: break-word;
     margin: 0; padding: 0; line-height: 1.6; max-height: 320px; overflow: auto;
   }
+  /* ── 採購流程圖(2026-05-XX 加,P1-9 voucher-procurement 專用)── */
+  .proc-flow {
+    margin: 0 0 14px;
+    background: var(--surface);
+    border: 1px solid var(--brand-line);
+    border-radius: var(--radius);
+    padding: 12px 14px;
+  }
+  .proc-flow-h {
+    font-size: 13px; font-weight: 700; color: var(--ink);
+    margin-bottom: 10px;
+  }
+  .proc-flow-body {
+    display: grid; grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+  }
+  @media (max-width: 720px) {
+    .proc-flow-body { grid-template-columns: 1fr; gap: 6px; }
+  }
+  .proc-tier {
+    border: 2px solid var(--line-strong);
+    border-radius: 10px;
+    overflow: hidden;
+    background: var(--surface);
+    transition: all .15s;
+  }
+  .proc-tier-matcha { border-color: var(--ink-matcha); background: var(--pastel-matcha); }
+  .proc-tier-sky { border-color: var(--ink-sky); background: var(--pastel-sky); }
+  .proc-tier-strawberry { border-color: var(--ink-strawberry); background: var(--pastel-strawberry); }
+  [data-theme="dark"] .proc-tier-matcha,
+  [data-theme="dark"] .proc-tier-sky,
+  [data-theme="dark"] .proc-tier-strawberry { background: var(--surface); }
+  .proc-tier-h {
+    cursor: pointer; user-select: none;
+    list-style: none;
+    padding: 12px 14px;
+    display: flex; align-items: center; flex-wrap: wrap; gap: 8px;
+    font-size: 13px;
+  }
+  .proc-tier-h::-webkit-details-marker { display: none; }
+  .proc-tier-icon { font-size: 16px; }
+  .proc-tier-label { font-weight: 700; color: var(--ink); flex: 0 1 auto; }
+  .proc-tier-range {
+    font-family: var(--font-mono); font-size: 12px;
+    background: var(--surface); padding: 2px 8px; border-radius: 999px;
+    border: 1px solid var(--line-strong);
+    color: var(--ink-2);
+    margin-left: auto;
+  }
+  .proc-tier-arrow { font-size: 9px; color: var(--ink-3); transition: transform .15s; }
+  .proc-tier[open] .proc-tier-arrow { transform: rotate(90deg); }
+  .proc-tier-body {
+    background: var(--surface);
+    padding: 12px 14px;
+    border-top: 1px dashed var(--line-strong);
+    display: grid; grid-template-columns: 1fr 1fr; gap: 10px 14px;
+  }
+  @media (max-width: 720px) { .proc-tier-body { grid-template-columns: 1fr; } }
+  .proc-block { font-size: 12.5px; }
+  .proc-block-h {
+    font-size: 11.5px; font-weight: 700;
+    color: var(--ink-2);
+    margin-bottom: 4px;
+    letter-spacing: .02em;
+  }
+  .proc-block-list {
+    margin: 0; padding-left: 18px;
+    color: var(--ink); line-height: 1.65;
+  }
+  .proc-block-list li { margin-bottom: 2px; }
+  .proc-block-warn .proc-block-h { color: var(--ink-strawberry); }
+  .proc-block-warn { grid-column: 1 / -1; padding-top: 6px; border-top: 1px dashed var(--line); margin-top: 2px; }
+  .proc-flow-foot {
+    margin-top: 10px; padding-top: 10px;
+    border-top: 1px dashed var(--line);
+    font-size: 11px; color: var(--ink-3);
+    line-height: 1.6;
+  }
   /* ── 子情境連結 sub_scenarios(2026-05-01 加,P2-D)── */
   .scope-subs {
     margin: 0 0 14px;
@@ -1530,6 +1608,28 @@
     box-shadow: 0 4px 12px oklch(from var(--ink-strawberry) l c h / .3);
   }
   .sc-flow-start svg { width: 12px; height: 12px; }
+  /* has-flow 卡的雙按鈕容器 + 看條文次按鈕(2026-05-XX 加,P0-6)*/
+  .sc-actions {
+    display: flex; gap: 6px; flex-wrap: wrap;
+    margin-top: 2px; align-self: flex-start;
+  }
+  .sc-view-lib {
+    display: inline-flex; align-items: center; gap: 5px;
+    padding: 6px 11px;
+    background: var(--surface); color: var(--ink-2);
+    border: 1px solid var(--brand-line);
+    border-radius: 8px;
+    font-size: 12px; font-weight: 600;
+    font-family: var(--font-zh);
+    cursor: pointer;
+    transition: all .12s;
+  }
+  .sc-view-lib:hover {
+    background: var(--brand-soft);
+    color: var(--brand);
+    border-color: var(--brand);
+    transform: translateY(-1px);
+  }
   [data-theme="dark"] .sc-flow-badge {
     background: var(--pastel-strawberry); color: var(--ink-strawberry);
   }
@@ -1825,9 +1925,254 @@
     .compare-bar.show { transform: none; }
     .compare-chips { max-width: none; }
   }
+
+  /* ═══════════════════════════════════════════════════════════
+     Splash 啟動畫面(2026-05-XX 加,取代 landing 三入口)
+     — 全版面、無 nav、1.8s 自動消失、點擊/任意鍵跳過
+     — 主體:「將『法律語言』變成『使用者的語言』」
+     — 小標:「核銷 Let's go!」
+     ═══════════════════════════════════════════════════════════ */
+  .splash {
+    position: fixed; inset: 0; z-index: 99999;
+    display: flex; align-items: center; justify-content: center;
+    background:
+      radial-gradient(ellipse at 30% 30%, oklch(96% 0.04 295 / .85) 0%, transparent 55%),
+      radial-gradient(ellipse at 70% 70%, oklch(95% 0.05 35 / .60) 0%, transparent 50%),
+      var(--bg);
+    cursor: pointer;
+    opacity: 0;
+    animation: splashIn .42s cubic-bezier(.2,.8,.2,1) forwards;
+    overflow: hidden;
+    user-select: none;
+  }
+  [data-theme="dark"] .splash {
+    background:
+      radial-gradient(ellipse at 30% 30%, oklch(28% 0.06 295 / .55) 0%, transparent 55%),
+      radial-gradient(ellipse at 70% 70%, oklch(25% 0.05 35 / .40) 0%, transparent 50%),
+      var(--bg);
+  }
+  .splash.fading-out { animation: splashOut .42s cubic-bezier(.6,.0,.4,1) forwards; }
+  @keyframes splashIn  { from { opacity: 0;  transform: scale(1.02); } to { opacity: 1; transform: scale(1); } }
+  @keyframes splashOut { to   { opacity: 0;  transform: scale(.985); } }
+
+  /* 背景漂浮裝飾(條文編號感) */
+  .splash::before, .splash::after {
+    content: '';
+    position: absolute; inset: 0;
+    background-image:
+      radial-gradient(circle at 12% 22%, var(--brand-line) 0.5px, transparent 1px),
+      radial-gradient(circle at 88% 78%, var(--brand-line) 0.5px, transparent 1px);
+    background-size: 240px 240px, 200px 200px;
+    opacity: .35;
+    pointer-events: none;
+  }
+  .splash::after {
+    background:
+      linear-gradient(180deg, transparent 0%, transparent 60%, var(--bg) 100%);
+    opacity: 1;
+  }
+
+  .splash-stage {
+    position: relative; z-index: 2;
+    text-align: center;
+    max-width: 92vw;
+    padding: 40px 20px;
+  }
+
+  /* 條文小品(主標上方的「§」修飾) */
+  .splash-mark {
+    display: inline-flex; align-items: center; gap: 10px;
+    font-family: var(--font-serif), 'Noto Serif TC', ui-serif, serif;
+    font-size: 13px; letter-spacing: .35em;
+    color: var(--ink-3);
+    margin-bottom: 24px;
+    opacity: 0; transform: translateY(-6px);
+    animation: splashMark .55s cubic-bezier(.2,.8,.2,1) .15s forwards;
+  }
+  .splash-mark .mark-line { display: inline-block; width: 32px; height: 1px; background: var(--brand-line); }
+  @keyframes splashMark { to { opacity: 1; transform: translateY(0); } }
+
+  /* 主標 — 兩行對照 */
+  .splash-headline {
+    font-size: clamp(28px, 5.2vw, 56px);
+    font-weight: 700;
+    line-height: 1.45;
+    letter-spacing: -.005em;
+    color: var(--ink);
+    margin: 0 0 28px;
+  }
+  .splash-headline .h-conjunction { color: var(--ink-3); font-weight: 500; padding: 0 .15em; }
+  .splash-headline .legal-term,
+  .splash-headline .human-term {
+    display: inline-block;
+    position: relative;
+    padding: 0 .25em;
+    white-space: nowrap;
+  }
+  /* 「法律語言」— 冷襯線、灰、有引號裝飾 */
+  .splash-headline .legal-term {
+    font-family: var(--font-serif), 'Noto Serif TC', ui-serif, serif;
+    color: var(--ink-2);
+    font-weight: 500;
+    opacity: 0; transform: translateY(10px) scale(.96);
+    animation: legalIn .65s cubic-bezier(.2,.8,.2,1) .35s forwards;
+  }
+  .splash-headline .legal-term::before,
+  .splash-headline .legal-term::after {
+    content: ''; position: absolute;
+    width: 14px; height: 14px;
+    border: 1.5px solid var(--ink-3);
+    opacity: .5;
+  }
+  .splash-headline .legal-term::before { top: -6px; left: -8px; border-right: 0; border-bottom: 0; }
+  .splash-headline .legal-term::after  { bottom: -6px; right: -8px; border-left: 0; border-top: 0; }
+  @keyframes legalIn { to { opacity: 1; transform: translateY(0) scale(1); } }
+
+  /* 「使用者的語言」— 暖、薰衣草漸層、加粗 */
+  .splash-headline .human-term {
+    color: var(--brand);
+    font-weight: 800;
+    background: linear-gradient(120deg,
+      var(--ink-lavender) 0%,
+      var(--ink-peach) 70%,
+      var(--ink-strawberry) 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    opacity: 0; transform: translateY(10px) scale(.94);
+    animation: humanIn .7s cubic-bezier(.2,.85,.25,1.05) .85s forwards;
+  }
+  /* 「使用者的語言」底下的 highlight 滑動 */
+  .splash-headline .human-term::after {
+    content: '';
+    position: absolute; left: 6%; right: 6%; bottom: 4px;
+    height: 6px; border-radius: 3px;
+    background: linear-gradient(90deg, var(--pastel-lavender), var(--pastel-peach));
+    opacity: .55; z-index: -1;
+    transform: scaleX(0); transform-origin: left center;
+    animation: humanUnderline .55s cubic-bezier(.2,.8,.2,1) 1.15s forwards;
+  }
+  @keyframes humanIn { to { opacity: 1; transform: translateY(0) scale(1); } }
+  @keyframes humanUnderline { to { transform: scaleX(1); } }
+
+  /* 主標前後 conjunction「將 ⋯ 變成 ⋯」 */
+  .splash-headline .h-conjunction.cj-1 {
+    opacity: 0;
+    animation: cjIn .5s ease-out .2s forwards;
+  }
+  .splash-headline .h-conjunction.cj-2 {
+    opacity: 0;
+    animation: cjIn .5s ease-out .65s forwards;
+  }
+  @keyframes cjIn { to { opacity: 1; } }
+
+  /* 連接箭頭 */
+  .splash-arrow {
+    display: block; margin: 0 auto 28px;
+    width: 48px; height: 2px;
+    background: linear-gradient(90deg, var(--ink-3) 0%, var(--brand) 100%);
+    position: relative;
+    opacity: 0;
+    animation: arrowIn .5s ease-out 1.0s forwards;
+  }
+  .splash-arrow::after {
+    content: ''; position: absolute; right: -2px; top: -4px;
+    border: 5px solid transparent;
+    border-left-color: var(--brand);
+    border-right: 0;
+  }
+  @keyframes arrowIn { to { opacity: 1; } }
+
+  /* 小標品牌 */
+  .splash-brand {
+    display: inline-flex; align-items: center; gap: 12px;
+    font-family: inherit;
+    font-size: clamp(15px, 1.8vw, 19px);
+    font-weight: 600;
+    color: var(--ink-2);
+    letter-spacing: .05em;
+    margin-top: 8px;
+    opacity: 0; transform: translateY(8px);
+    animation: brandIn .55s cubic-bezier(.2,.8,.2,1) 1.3s forwards;
+  }
+  .splash-brand .b-mark {
+    display: inline-grid; place-items: center;
+    width: 30px; height: 30px; border-radius: 9px;
+    background: linear-gradient(135deg, var(--pastel-lavender), var(--pastel-peach));
+    color: var(--ink-lavender);
+    font-weight: 800; font-size: 14px;
+    letter-spacing: 0;
+    box-shadow: 0 4px 12px -4px var(--brand-line);
+  }
+  .splash-brand .b-text strong { color: var(--brand); font-weight: 800; }
+  .splash-brand .b-go {
+    color: var(--ink-peach);
+    font-style: italic; font-weight: 700;
+    margin-left: 2px;
+  }
+  @keyframes brandIn { to { opacity: 1; transform: translateY(0); } }
+
+  /* 「點任意處跳過」提示 */
+  .splash-skip {
+    position: absolute; bottom: 28px; left: 50%; transform: translateX(-50%);
+    font-size: 11.5px; color: var(--ink-3);
+    letter-spacing: .12em;
+    opacity: 0;
+    animation: skipIn .5s ease-out 1.6s forwards;
+  }
+  .splash-skip kbd {
+    display: inline-block; padding: 1px 6px; margin: 0 3px;
+    border: 1px solid var(--line-strong); border-radius: 4px;
+    font-family: var(--font-mono);
+    font-size: 10.5px;
+    background: var(--surface);
+    color: var(--ink-2);
+  }
+  @keyframes skipIn { to { opacity: 1; } }
+
+  /* 行動版微調 */
+  @media (max-width: 720px) {
+    .splash-headline { font-size: clamp(22px, 7vw, 32px); line-height: 1.55; }
+    .splash-mark { font-size: 11px; letter-spacing: .25em; margin-bottom: 18px; }
+    .splash-arrow { margin-bottom: 22px; }
+    .splash-brand { font-size: 14px; }
+    .splash-brand .b-mark { width: 26px; height: 26px; font-size: 12px; }
+    .splash-skip { font-size: 10.5px; bottom: 20px; }
+    /* 行動版讓「將法律語言」「變成」「使用者的語言」可換行 */
+    .splash-headline .legal-term,
+    .splash-headline .human-term { white-space: normal; }
+  }
+
+  /* 防動畫:對 prefers-reduced-motion 友善 */
+  @media (prefers-reduced-motion: reduce) {
+    .splash, .splash *,
+    .splash-headline .legal-term,
+    .splash-headline .human-term,
+    .splash-headline .human-term::after,
+    .splash-mark, .splash-arrow, .splash-brand, .splash-skip {
+      animation-duration: .15s !important;
+      animation-delay: 0s !important;
+    }
+  }
 </style>
 </head>
 <body>
+
+<!-- ═══ Splash 啟動畫面(每次進站顯示 ~1.8s,點擊/按鍵跳過) ═══ -->
+<div id="splash" class="splash" role="status" aria-label="網站啟動畫面">
+  <div class="splash-stage">
+    <div class="splash-mark"><span class="mark-line"></span><span>§ 政府支出規定知識庫</span><span class="mark-line"></span></div>
+    <h1 class="splash-headline">
+      <span class="h-conjunction cj-1">將</span><span class="legal-term">「法律語言」</span><span class="h-conjunction cj-2">變成</span><span class="human-term">「使用者的語言」</span>
+    </h1>
+    <div class="splash-arrow" aria-hidden="true"></div>
+    <div class="splash-brand">
+      <span class="b-mark">支</span>
+      <span class="b-text"><strong>核銷</strong> <span class="b-go">Let's go!</span></span>
+    </div>
+  </div>
+  <div class="splash-skip">點任意處 · 按 <kbd>Esc</kbd> · <kbd>Enter</kbd> 立即進入</div>
+</div>
 
 <div class="app">
   <!-- ───── Main ───── -->
@@ -1852,36 +2197,37 @@
       </label>
     </div>
 
-    <!-- ───── Landing view(2026-04-30 加,首頁三選一)───── -->
-    <section id="view-landing" class="landing-view active">
-      <div class="landing-hero">
-        <h1>核銷 <span class="brand-x">Let's go!</span></h1>
-        <p>三種使用方式,選你需要的入口開始</p>
-      </div>
-      <div class="landing-grid">
-        <button class="landing-card" data-entry="scenarios" type="button">
-          <div class="landing-icon">🧭</div>
-          <h2>情境檢索</h2>
-          <p>用「我的狀況是 ...」找答案。<br>實務常見問題分組成 117 張情境卡,點選即跳對應條文與 Q&amp;A。</p>
-          <span class="landing-meta">117 個情境</span>
-        </button>
-        <button class="landing-card" data-entry="library" type="button">
-          <div class="landing-icon">📑</div>
-          <h2>條文庫</h2>
-          <p>核心法規 · 解釋函令 · 問答集,完整全文逐字保留。<br>支援關鍵字搜尋、支出類別過濾與並排比較。</p>
-          <span class="landing-meta">518 條規範</span>
-        </button>
-        <button class="landing-card" data-entry="calc" type="button">
-          <div class="landing-icon">🧮</div>
-          <h2>試算表</h2>
-          <p>輸入城市/天數即知金額,一鍵連到法源。<br>目前提供國外日支生活費 + 外交部保險費試算。</p>
-          <span class="landing-meta">2 個工具</span>
-        </button>
-      </div>
-      <div class="landing-foot">
-        ⚖️ 本站僅供查詢輔助使用,不構成行政核准依據;實際核銷以主計室審核為準。
-      </div>
-    </section>
+    <!-- ───── Landing view(2026-04-30 加,首頁三選一)─────
+         2026-05-XX 封存:改用啟動 splash + 預設進情境視圖。
+         保留 HTML 為 <template> 形式,需要時可恢復(把 <template> 換回 <section> 並還原 init 預設值)。 -->
+    <template id="archived-landing-view">
+      <section id="view-landing" class="landing-view">
+        <div class="landing-hero">
+          <h1>核銷 <span class="brand-x">Let's go!</span></h1>
+          <p>三種使用方式,選你需要的入口開始</p>
+        </div>
+        <div class="landing-grid">
+          <button class="landing-card" data-entry="scenarios" type="button">
+            <div class="landing-icon">🧭</div>
+            <h2>情境檢索</h2>
+            <p>用「我的狀況是 ...」找答案。</p>
+          </button>
+          <button class="landing-card" data-entry="library" type="button">
+            <div class="landing-icon">📑</div>
+            <h2>條文庫</h2>
+            <p>核心法規 · 解釋函令 · 問答集,完整全文逐字保留。</p>
+          </button>
+          <button class="landing-card" data-entry="calc" type="button">
+            <div class="landing-icon">🧮</div>
+            <h2>試算表</h2>
+            <p>輸入城市/天數即知金額,一鍵連到法源。</p>
+          </button>
+        </div>
+        <div class="landing-foot">
+          ⚖️ 本站僅供查詢輔助使用,不構成行政核准依據;實際核銷以主計室審核為準。
+        </div>
+      </section>
+    </template>
 
     <!-- 條文庫 view -->
     <section id="view-library" class="library-view hidden">
@@ -2058,7 +2404,7 @@
 let compareList = [];
 
 /* ──────── 真實資料載入 (520 nodes from 03_index/) ──────── */
-const DATA_VERSION = '2026-05-01a';
+const DATA_VERSION = '2026-05-02a';  // splash + 試算台幣 + 同義詞口語包 + flow 上一步 + has-flow 雙按鈕 + 採購流程圖(15萬)
 let DATA = [];                 // 對外用的卡片資料 (mapped from nodes.json)
 let NODES_BY_ID = new Map();   // id → original node (含 file_path 等)
 let INCOMING_EDGES = new Map();// id → [from1, from2, ...] 反向引用
@@ -2342,7 +2688,7 @@ const _mock_data_removed_ = [
 ];
 
 /* ──────── filter / view state ──────── */
-let currentView = 'landing';   // 'landing' | 'library' | 'scenarios' | 'calc'(每次進站都從 landing 開始)
+let currentView = 'scenarios'; // 'library' | 'scenarios' | 'calc'(2026-05-XX 起 splash 後直接進 scenarios;landing 已封存)
 const filterState = {
   parent: null,   // 母題:國內旅費 / 國外旅費 / 支出憑證與結報 / null
   type: null,     // 類別代碼:A / B / C / D / null
@@ -2639,6 +2985,78 @@ function renderBreadcrumb() {
   });
 }
 
+/* ──────── 採購流程圖(2026-05-XX 加,P1-9)
+    依《政府採購法》§22 公告金額(150 萬)+ §49 (10 萬)+ 中央機關小額採購共通供應契約
+    級距 → 程序 → 憑證 → 簽核層級 — 4 層橫向流程圖 ──────── */
+function renderProcurementFlowChart() {
+  const tiers = [
+    {
+      label: '小額採購',
+      range: '≤ NT$ 150,000',
+      color: 'matcha',
+      icon: '🟢',
+      procedure: ['可指定廠商或詢價 1 家以上', '無公開比價要求', '採購法 §49(小額採購為公告金額 1/10)'],
+      vouchers: ['統一發票或收據', '簽核單', '驗收紀錄(實物)'],
+      sign: ['承辦人 → 主管 → 出納', '機關首長依授權層級'],
+      pitfalls: ['切勿拆單規避公告金額', '同性質連續採購視為一案'],
+    },
+    {
+      label: '未達公告金額',
+      range: 'NT$ 150,001 – 1,500,000',
+      color: 'sky',
+      icon: '🟡',
+      procedure: ['公開取得書面報價或企劃書 ≥ 3 家', '比價或議價', '採購法 §49'],
+      vouchers: ['公開取得邀標公告', '3 家以上報價單', '比價/議價紀錄', '決標紀錄', '統一發票或收據', '驗收紀錄'],
+      sign: ['承辦 → 採購承辦 → 政風(高風險)', '主管 → 機關首長'],
+      pitfalls: ['未滿 3 家須說明原因', '比價廠商家數 ≥ 3 為原則'],
+    },
+    {
+      label: '公開招標',
+      range: '≥ NT$ 1,500,000',
+      color: 'strawberry',
+      icon: '🔴',
+      procedure: ['政府電子採購網公告', '招標公告期 ≥ 14 日', '開標 → 評選 → 決標'],
+      vouchers: ['招標公告', '招標文件 / 規範書', '投標文件 / 廠商資格', '開標決標紀錄', '契約', '履約 / 驗收紀錄', '統一發票'],
+      sign: ['採購工作小組 / 評選委員會', '機關首長 + 主計核章'],
+      pitfalls: ['超過巨額採購(2 億)需上網公告招標方式', '評選委員迴避規定'],
+    },
+  ];
+  const blocks = tiers.map(t => `
+    <details class="proc-tier proc-tier-${t.color}">
+      <summary class="proc-tier-h">
+        <span class="proc-tier-icon">${t.icon}</span>
+        <span class="proc-tier-label">${t.label}</span>
+        <span class="proc-tier-range">${t.range}</span>
+        <span class="proc-tier-arrow">▶</span>
+      </summary>
+      <div class="proc-tier-body">
+        <div class="proc-block">
+          <div class="proc-block-h">📋 程序</div>
+          <ol class="proc-block-list">${t.procedure.map(x => `<li>${x}</li>`).join('')}</ol>
+        </div>
+        <div class="proc-block">
+          <div class="proc-block-h">📎 必備憑證</div>
+          <ol class="proc-block-list">${t.vouchers.map(x => `<li>${x}</li>`).join('')}</ol>
+        </div>
+        <div class="proc-block">
+          <div class="proc-block-h">✍️ 簽核層級</div>
+          <ol class="proc-block-list">${t.sign.map(x => `<li>${x}</li>`).join('')}</ol>
+        </div>
+        <div class="proc-block proc-block-warn">
+          <div class="proc-block-h">⚠ 常見陷阱</div>
+          <ol class="proc-block-list">${t.pitfalls.map(x => `<li>${x}</li>`).join('')}</ol>
+        </div>
+      </div>
+    </details>
+  `).join('');
+  return `
+    <div class="proc-flow">
+      <div class="proc-flow-h">📊 採購金額決策樹 — 點任一級距展開「程序 / 憑證 / 簽核 / 陷阱」</div>
+      <div class="proc-flow-body">${blocks}</div>
+      <div class="proc-flow-foot">⚖️ 金額級距以《政府採購法》§22、§49 為準。<strong>公告金額 = NT$ 1,500,000;小額採購 = 公告金額之 1/10 = NT$ 150,000</strong>(行政院公告)。實際以主計室審核為準。</div>
+    </div>`;
+}
+
 /* ──────── 情境 banner (條文庫頂部, 套情境/有 filter 時顯示) ──────── */
 function renderScopeBanner() {
   const $slot = document.getElementById('scope-banner-slot');
@@ -2727,6 +3145,8 @@ function renderScopeBanner() {
     // 試算表聯動(2026-05-01 加,P4-32)— 若 scenario 含 calc_link 或 expense ∈ {生活費, 住宿費, 保險費},顯示「🧮 開啟試算」
     const linkToCalc = sc.calc_link === true || ['生活費', '保險費'].includes(sc.expense || '') || (sc.parent === '國外旅費' && ['住宿費'].includes(sc.expense || ''));
     const calcBtnHtml = linkToCalc ? `<button class="scope-calc-btn" data-banner-calc title="跳到試算表查具體金額">🧮 開啟試算</button>` : '';
+    // 採購流程圖(2026-05-XX 加,P1-9)— 僅 voucher-procurement 顯示
+    const procurementFlowHtml = sc.id === 'voucher-procurement' ? renderProcurementFlowChart() : '';
     $slot.innerHTML = `
       <div class="scope-banner">
         <span class="scope-banner-icon">${sc.icon || '🧭'}</span>
@@ -2737,6 +3157,7 @@ function renderScopeBanner() {
         <button class="scope-banner-clear" data-banner-clear>✕ 清除情境</button>
       </div>
       ${caveatsHtml}
+      ${procurementFlowHtml}
       ${baselineHtml}
       ${subHtml}
       ${attHtml}
@@ -3919,13 +4340,18 @@ function _renderScenarioSectionHtml(key) {
           const isRoot = s.flow_root === true && Array.isArray(s.sub_scenarios) && s.sub_scenarios.length > 0;
           const rootBadge = isRoot ? `<span class="sc-root-badge" title="此為情境樹根節點 — 整合 ${s.sub_scenarios.length} 個子情境">🗂 ${s.sub_scenarios.length} 子情境</span>` : '';
           const matched = countScenarioMatches(s);
-          const flowBtn = hasFlow ? `<button class="sc-flow-start" data-flow="${s.id}" type="button"><svg class="icon" viewBox="0 0 24 24"><path d="M8 5v14l11-7z" fill="currentColor" stroke="none"/></svg>開始問答</button>` : '';
+          // 2026-05-XX:has-flow 卡加雙按鈕「開始問答」+「📑 看條文」(P0-6),讓不想走問答的人也能直跳法源
+          const actionsHtml = hasFlow ? `
+            <div class="sc-actions">
+              <button class="sc-flow-start" data-flow="${s.id}" type="button"><svg class="icon" viewBox="0 0 24 24"><path d="M8 5v14l11-7z" fill="currentColor" stroke="none"/></svg>開始問答</button>
+              <button class="sc-view-lib" data-view-lib="${s.id}" type="button" title="跳到條文庫,看相關法源(不走問答)">📑 看條文</button>
+            </div>` : '';
           return `
             <article class="sc-card${hasFlow ? ' has-flow' : ''}${isRoot ? ' is-root' : ''}" data-sc="${s.id}" tabindex="0">
               <div class="sc-icon">${s.icon || '📌'}</div>
               <h3 class="sc-title">${s.title}${flowBadge}${rootBadge}</h3>
               <p class="sc-subtitle">${s.subtitle || ''}</p>
-              ${flowBtn}
+              ${actionsHtml}
               <div class="sc-meta">
                 <span class="sc-meta-count">${matched} 張相關卡</span>
                 <span class="sc-meta-arrow">查看 →</span>
@@ -4159,6 +4585,22 @@ function renderScenarios() {
       if (sc) openFlowModal(sc);
       return;
     }
+    // 2026-05-XX:「📑 看條文」次按鈕(P0-6)— 行為等同點卡片本體,但避免被 [data-flow] 攔截
+    const viewLibBtn = ev.target.closest('[data-view-lib]');
+    if (viewLibBtn) {
+      ev.stopPropagation();
+      // fallthrough 走下面卡片邏輯,但用 dataset.viewLib 當 id
+      const id = viewLibBtn.dataset.viewLib;
+      const sc = SCENARIOS.find(x => x.id === id);
+      if (!sc) return;
+      filterState.scenario = id;
+      filterState.parent = sc.parent || null;
+      filterState.type = null; filterState.tag = null; filterState.expense = null;
+      switchView('library');
+      renderSidebar(); renderChips(); renderCards();
+      flashHint(`套用情境:${sc.title} · ${currentList.length} 張相關卡`);
+      return;
+    }
     const card = ev.target.closest('[data-sc]');
     if (!card) return;
     const id = card.dataset.sc;
@@ -4281,6 +4723,10 @@ function renderCalc() {
           ].map((o, i) => `<button class="calc-tab${i === 0 ? ' active' : ''}" data-pct="${o.v}" title="${o.label}">${o.v}%</button>`).join('')}
         </div>
       </div>
+      <div class="calc-row calc-row-aux">
+        <label for="calc-living-rate">💱 換算匯率(USD → NTD,可調整;預設 30)</label>
+        <input type="number" id="calc-living-rate" min="20" max="40" step="0.1" value="30" inputmode="decimal" style="max-width:120px">
+      </div>
       <div class="calc-result" id="calc-living-result">
         <div class="calc-result-label">請輸入或選擇地區</div>
       </div>
@@ -4363,19 +4809,33 @@ function renderCalc() {
     // 計算總額(若使用者輸入了天數)
     const daysVal = parseInt($livingDays?.value, 10);
     const hasDays = Number.isFinite(daysVal) && daysVal > 0;
+    // 匯率(預設 30,使用者可調整)— 僅 USD 適用
+    const $rateInput = document.getElementById('calc-living-rate');
+    const rawRate = parseFloat($rateInput?.value);
+    const rate = Number.isFinite(rawRate) && rawRate > 0 ? rawRate : 30;
+    const isUSD = /美元|USD/i.test(partial.unit);
     let formulaHtml = '';
     if (hasDays) {
       const dailyEffective = Math.round(dailyVal * livingPct / 100);
       const total = dailyEffective * daysVal;
       const pctNote = livingPct === 100 ? '' : ` × ${livingPct}%`;
+      const ntdLine = isUSD ? `
+        <div class="calc-formula-aux" style="margin-top:6px;display:flex;align-items:baseline;gap:6px;flex-wrap:wrap">
+          <span style="color:var(--ink-3);font-size:12px">≈</span>
+          <strong style="font-family:var(--font-mono);color:var(--ink-strawberry);font-size:16px">NT$ ${Math.round(total * rate).toLocaleString()}</strong>
+          <span style="color:var(--ink-3);font-size:11.5px">(匯率 ${rate}${rawRate === 30 || !Number.isFinite(rawRate) ? ' · 預設' : ''} · 僅供估算,實際以核銷時銀行匯率為準)</span>
+        </div>` : '';
       formulaHtml = `
         <div class="calc-formula">
           <span class="calc-formula-eq">${partial.value} ${partial.unit}/日${pctNote} × ${daysVal} 天</span>
           <span class="calc-formula-arrow">=</span>
           <span class="calc-formula-total">${total.toLocaleString()} ${partial.unit}</span>
-        </div>`;
+        </div>
+        ${ntdLine}`;
     } else {
-      formulaHtml = `<div class="calc-formula calc-formula-hint">💡 輸入天數即可自動算總額</div>`;
+      // 無天數 — 只顯示單日換算
+      const ntdHint = isUSD ? `<div class="calc-formula-aux" style="margin-top:4px;color:var(--ink-3);font-size:12px">💱 單日 ≈ <strong style="color:var(--ink-strawberry);font-family:var(--font-mono)">NT$ ${Math.round(dailyVal * rate).toLocaleString()}</strong>(匯率 ${rate})</div>` : '';
+      formulaHtml = `<div class="calc-formula calc-formula-hint">💡 輸入天數即可自動算總額</div>${ntdHint}`;
     }
     $livingResult.className = 'calc-result hit' + (isFallback ? ' is-fallback' : '');
     $livingResult.innerHTML = `
@@ -4406,6 +4866,9 @@ function renderCalc() {
   $cityInput.addEventListener('input', lookupLiving);
   $cityInput.addEventListener('change', lookupLiving);
   if ($livingDays) $livingDays.addEventListener('input', lookupLiving);
+  // 匯率變動即時重算(2026-05-XX 加,P1-8 台幣換算)
+  const $livingRate = document.getElementById('calc-living-rate');
+  if ($livingRate) $livingRate.addEventListener('input', lookupLiving);
 
   // ── 保險費互動 ──
   const $tabs = document.querySelectorAll('#calc-ins-tabs .calc-tab');
@@ -4487,6 +4950,12 @@ function jumpToCard(id) {
 /* ──────── 條件問答 modal (flow decision tree) ──────── */
 function openFlowModal(scenario) {
   if (!scenario.flow || !scenario.flow.start) return;
+  // 2026-05-XX:防止抽屜疊在 flow modal 之上(P0-5)— flow 開啟時關掉所有 overlay
+  const $drawer = document.querySelector('.drawer.show');
+  if ($drawer) $drawer.classList.remove('show');
+  const $scrim = document.querySelector('.scrim.show');
+  if ($scrim) $scrim.classList.remove('show');
+  document.body.classList.remove('drawer-open');
   const flow = scenario.flow;
   let modal = document.getElementById('flow-modal');
   if (!modal) {
@@ -4509,7 +4978,7 @@ function openFlowModal(scenario) {
   document.getElementById('flow-title').innerHTML = `<span style="font-size:18px">🤔</span> ${scenario.title}`;
   const $body = document.getElementById('flow-body');
 
-  const answered = []; // [{q, optLabel}]
+  const answered = []; // [{qid, q, optLabel}] — 加 qid 以支援「上一步」回溯
   function renderStep(step) {
     // step 可能是:
     //   - 字串 qid (要顯示問題)
@@ -4555,9 +5024,10 @@ function openFlowModal(scenario) {
             </div>
           ` : ''}
         </div>
-        <div style="margin-top:14px;display:flex;gap:8px">
+        <div style="margin-top:14px;display:flex;gap:8px;flex-wrap:wrap">
+          ${answered.length > 0 ? `<button class="btn" data-flow-back>← 上一步</button>` : ''}
           <button class="btn" data-flow-restart>↩ 重新開始</button>
-          <button class="btn primary" data-flow-close>關閉</button>
+          <button class="btn primary" data-flow-close style="margin-left:auto">關閉</button>
         </div>`;
       }
     } else if (questionQid) {
@@ -4571,7 +5041,13 @@ function openFlowModal(scenario) {
           <div style="display:flex;flex-direction:column;gap:8px">
             ${(q.options || []).map((opt, i) => `<button class="btn" data-flow-opt="${i}" style="text-align:left;justify-content:flex-start;padding:10px 14px;font-size:14px">${opt.label}</button>`).join('')}
           </div>
-        </div>`;
+        </div>
+        ${answered.length > 0 ? `
+          <div style="margin-top:12px;display:flex;gap:8px">
+            <button class="btn" data-flow-back style="font-size:13px">← 上一步</button>
+            <button class="btn" data-flow-restart style="font-size:13px">↩ 從頭開始</button>
+          </div>
+        ` : ''}`;
       }
     }
     $body.innerHTML = html;
@@ -4582,8 +5058,16 @@ function openFlowModal(scenario) {
         const q = flow.questions?.[questionQid];
         const opt = q?.options?.[i];
         if (!opt) return;
-        answered.push({ q, optLabel: opt.label });
-        renderStep(opt);  // opt 含 next or conclude;renderStep 自己會解
+        answered.push({ qid: questionQid, q, optLabel: opt.label });  // 記 qid 以支援上一步
+        renderStep(opt);
+      };
+    });
+    // ← 上一步:pop 最後一筆 answered,回該題未答狀態
+    $body.querySelectorAll('[data-flow-back]').forEach(b => {
+      b.onclick = () => {
+        if (answered.length === 0) return;
+        const last = answered.pop();
+        renderStep(last.qid);
       };
     });
     $body.querySelectorAll('[data-flow-jump]').forEach(b => {
@@ -4598,6 +5082,17 @@ function openFlowModal(scenario) {
     $body.querySelectorAll('[data-flow-close]').forEach(b => {
       b.onclick = () => modal.classList.remove('show');
     });
+    // 鍵盤:← 觸發上一步;Esc 由 modal 既有監聽器處理
+    if (!modal.dataset.kbWired) {
+      modal.dataset.kbWired = '1';
+      modal.addEventListener('keydown', (e) => {
+        if (!modal.classList.contains('show')) return;
+        if (e.key === 'ArrowLeft') {
+          const $back = $body.querySelector('[data-flow-back]');
+          if ($back) { $back.click(); e.preventDefault(); }
+        }
+      });
+    }
   }
   // 將 currentQid 解讀為 q.next 或直接 string
   function expandRef(ref) {
@@ -4609,6 +5104,34 @@ function openFlowModal(scenario) {
   modal.classList.add('show');
 }
 
+/* ──────── Splash 啟動畫面控制(2026-05-XX 加)──────── */
+function dismissSplash(immediate = false) {
+  const $sp = document.getElementById('splash');
+  if (!$sp || $sp.dataset.dismissed === '1') return;
+  $sp.dataset.dismissed = '1';
+  $sp.classList.add('fading-out');
+  // 等 fade-out 動畫(0.42s)結束再 remove,避免 flash
+  setTimeout(() => { $sp.remove(); }, immediate ? 200 : 420);
+}
+(function wireSplash() {
+  const $sp = document.getElementById('splash');
+  if (!$sp) return;
+  // 點擊任意處跳過
+  $sp.addEventListener('click', () => dismissSplash(true));
+  // 按鍵跳過(Esc / Enter / Space)
+  const onKey = (e) => {
+    if (e.key === 'Escape' || e.key === 'Enter' || e.key === ' ') {
+      dismissSplash(true);
+      window.removeEventListener('keydown', onKey);
+    }
+  };
+  window.addEventListener('keydown', onKey);
+  // 自動消失時長(2026-05-XX 從 1800 → 3000):動畫進場到 brand 浮現約 1.85s,
+  // 給 ~1.15s 駐留呼吸感讓使用者讀完「將法律語言變成使用者的語言」+ fade 0.42s
+  const splashHold = sessionStorage.getItem('verifyMode') === '1' ? 60000 : 3000;
+  setTimeout(() => dismissSplash(false), splashHold);
+})();
+
 /* ──────── init ──────── */
 async function init() {
   try {
@@ -4616,11 +5139,11 @@ async function init() {
     renderSidebar();
     renderChips();
     renderCards();
-    // 2026-05-01:預設入口改回 Landing 三入口卡(原本誤切到 scenarios)
-    switchView('landing');
-    // 預先 render 一次 scenarios,讓使用者切到情境視圖時不延遲
+    // 2026-05-XX:landing 已封存,進站預設 scenarios(splash 期間使用者不會感受到延遲)
+    switchView('scenarios');
     renderScenarios();
     wireScenarioSearch();
+    syncMobileTabbar?.();
   } catch (e) {
     grid.innerHTML = `<div style="color:var(--stop);padding:40px">資料載入失敗: ${e.message}</div>`;
     console.error(e);
@@ -4877,31 +5400,25 @@ document.querySelectorAll('.topnav-tab').forEach(btn => {
   btn.addEventListener('click', () => _enterView(btn.dataset.entry));
 });
 
-// Landing 卡片(三入口)
+// Landing 卡片(已封存,但保留 wiring 以防將來恢復 — querySelector 找不到時 forEach 為空)
 document.querySelectorAll('.landing-card').forEach(card => {
   card.addEventListener('click', () => _enterView(card.dataset.entry));
 });
 
-// 品牌名點擊 → 回 landing
+// 品牌名點擊 → 重置 filter + 回情境視圖(2026-05-XX 起 landing 已封存,brand 等同「重新開始」)
 document.getElementById('brand-home')?.addEventListener('click', () => {
-  // 清掉 filters 與 scenario,確保新 session
   filterState.scenario = null; filterState.parent = null;
   filterState.tag = null; filterState.expense = null;
   filterState.query = ''; filterState.type = null;
-  document.getElementById('q').value = '';
-  switchView('landing');
-  syncMobileTabbar();
-  window.scrollTo({ top: 0, behavior: 'smooth' });
+  const $q = document.getElementById('q'); if ($q) $q.value = '';
+  const $scq = document.getElementById('sc-q'); if ($scq) $scq.value = '';
+  if (typeof scenarioQuery !== 'undefined') scenarioQuery = '';
+  if (typeof scenarioFilterParent !== 'undefined') scenarioFilterParent = null;
+  if (typeof scenarioFilterExpense !== 'undefined') scenarioFilterExpense = null;
+  _enterView('scenarios');
 });
 
-// 進站預設 view:行動版直接進「情境」(底部 tabbar 含三入口);桌面進 landing 三入口
-const _isMobileInit = window.matchMedia && window.matchMedia('(max-width: 880px)').matches;
-if (_isMobileInit) {
-  _enterView('scenarios');
-} else {
-  switchView('landing');
-  syncMobileTabbar();
-}
+// 進站預設 view 已由 init() 處理(scenarios)
 </script>
 </body>
 </html>
