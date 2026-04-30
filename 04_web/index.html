@@ -3988,7 +3988,7 @@ function renderCalc() {
           <a class="calc-jump" data-jump-card="${partial.sourceId}" style="font-size:11px;margin-top:4px;display:inline-block">📑 ${partial.sourceId}</a>
         </div>
         <div style="padding:8px 10px;background:var(--surface);border:1px solid ${tier ? 'var(--brand-line)' : 'var(--line)'};border-radius:6px${tier ? '' : ';opacity:.55'}">
-          <div style="font-size:11px;color:var(--ink-3);font-weight:600;margin-bottom:2px">月支(進修/實習 ≥31 日)</div>
+          <div style="font-size:11px;color:var(--ink-3);font-weight:600;margin-bottom:2px">月支(進修/實習 &gt;15 日)</div>
           ${tier ? `
             <div style="font-size:20px;font-weight:700;color:var(--brand);font-family:var(--font-mono);line-height:1.2">${tier.monthly.toLocaleString()}</div>
             <div style="font-size:11px;color:var(--ink-2)">美元/月 · 級距 ${tier.range}</div>
@@ -3999,7 +3999,7 @@ function renderCalc() {
         </div>
       </div>
       ${formulaHtml}
-      <div class="calc-result-meta">日支為每日全額上限;月支適用派外進修/研究/實習 ≥31 日</div>
+      <div class="calc-result-meta">日支為每日全額上限;月支適用派外進修/研究/實習 &gt;15 日</div>
     `;
   }
   $cityInput.addEventListener('input', lookupLiving);
