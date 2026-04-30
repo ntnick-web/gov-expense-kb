@@ -483,6 +483,25 @@
     border-bottom: 1px solid var(--line);
   }
   .sc-filterbar:empty { display: none; }
+  /* 行動版:支出類別 chip 改水平 scroll,避免折成 4-5 列堆疊吃首屏(2026-05-01 加,P4-28)*/
+  @media (max-width: 720px) {
+    .sc-filterbar {
+      flex-wrap: nowrap;
+      overflow-x: auto;
+      scroll-snap-type: x proximity;
+      -webkit-overflow-scrolling: touch;
+      padding-bottom: 4px;
+      margin-bottom: 8px;
+    }
+    .sc-filterbar::-webkit-scrollbar { height: 4px; }
+    .sc-filterbar::-webkit-scrollbar-thumb { background: var(--line-strong); border-radius: 2px; }
+    .sc-filterbar > * { flex-shrink: 0; scroll-snap-align: start; }
+    .sc-filterbar-sub { margin-bottom: 12px; padding-bottom: 10px; }
+    /* 標題 + 副標折成單行 + 縮小,留出更多卡片空間 */
+    .sc-head { margin-bottom: 12px; }
+    .sc-head h1 { font-size: 19px; margin-bottom: 2px; }
+    .sc-head p { font-size: 12px; line-height: 1.4; }
+  }
 
   /* ───── Cards grid ───── */
   .grid {
@@ -1123,6 +1142,19 @@
     font-family: inherit;
   }
   .scope-flow-btn:hover { background: var(--ink-strawberry); color: var(--bg); }
+  /* 試算表聯動按鈕 — 抹茶色,跟試算表 view 視覺一致(2026-05-01 加,P4-32)*/
+  .scope-calc-btn {
+    display: inline-flex; align-items: center; gap: 4px;
+    border: 1px solid var(--ink-matcha);
+    background: var(--pastel-matcha);
+    color: var(--ink-matcha);
+    padding: 4px 12px;
+    border-radius: 999px;
+    font-size: 12px; font-weight: 600;
+    cursor: pointer;
+    font-family: inherit;
+  }
+  .scope-calc-btn:hover { background: var(--ink-matcha); color: var(--bg); }
   /* 需附單據清單(scope-banner 下方) */
   .scope-attachments {
     margin: -6px 0 14px;
@@ -1155,6 +1187,180 @@
   @media (max-width: 720px) {
     .scope-attachments { margin: -4px 0 10px; padding: 10px 12px 8px; }
     .scope-attachments-list li { font-size: 12.5px; }
+  }
+  /* ── 紅線 caveats(2026-05-01 加,P1-13)── */
+  .scope-caveats {
+    margin: -6px 0 14px;
+    padding: 12px 14px 10px;
+    background: var(--pastel-strawberry);
+    border: 1px solid var(--ink-strawberry);
+    border-top: 0;
+    border-radius: 0 0 var(--radius) var(--radius);
+    color: var(--ink-strawberry);
+  }
+  [data-theme="dark"] .scope-caveats { background: var(--pastel-strawberry); }
+  .scope-caveats-h {
+    font-size: 12px; font-weight: 700; letter-spacing: .04em;
+    margin-bottom: 6px;
+    text-transform: none;
+  }
+  .scope-caveats-list {
+    margin: 0; padding: 0 0 0 18px; list-style: none;
+    display: flex; flex-direction: column; gap: 5px;
+  }
+  .scope-caveats-list li {
+    font-size: 13px; line-height: 1.5; color: var(--ink);
+    position: relative; padding-left: 6px;
+  }
+  .scope-caveats-list li::before {
+    content: '⛔'; position: absolute; left: -16px; top: 1px;
+    font-size: 12px;
+  }
+  .scope-caveats-list li.caveat-warn::before { content: '⚠'; }
+  .scope-caveats-list li.caveat-info::before { content: 'ℹ'; }
+  .caveat-ref {
+    display: inline-block; margin-left: 6px;
+    font-family: var(--font-mono); font-size: 11px;
+    background: var(--surface); border: 1px solid var(--line);
+    padding: 1px 6px; border-radius: 4px; color: var(--ink-3);
+  }
+  /* ── baseline 標配憑證(2026-05-01 加,P1-13)── */
+  .scope-baseline {
+    margin: 0 0 10px;
+    background: var(--surface-2); border: 1px solid var(--line);
+    border-radius: var(--radius);
+    padding: 0;
+  }
+  .scope-baseline[open] { padding: 0 14px 10px; }
+  .scope-baseline-h {
+    cursor: pointer; user-select: none;
+    list-style: none;
+    padding: 8px 14px;
+    font-size: 12.5px; font-weight: 600; color: var(--ink-2);
+    display: flex; align-items: center; justify-content: space-between;
+    gap: 10px;
+  }
+  .scope-baseline-h::-webkit-details-marker { display: none; }
+  .scope-baseline-h::before { content: '▶'; font-size: 9px; color: var(--ink-3); margin-right: 4px; transition: transform .15s; }
+  .scope-baseline[open] .scope-baseline-h::before { transform: rotate(90deg); }
+  .scope-baseline-list {
+    margin: 4px 0 0; padding: 0; list-style: none;
+    display: flex; flex-direction: column; gap: 4px;
+  }
+  .scope-baseline-list li {
+    display: flex; gap: 8px; align-items: flex-start;
+    font-size: 13px; color: var(--ink-2); line-height: 1.5;
+  }
+  /* ── 計算範例 example(2026-05-01 加,P1-13)── */
+  .scope-examples {
+    margin: 0 0 14px;
+    padding: 12px 14px;
+    background: var(--pastel-matcha);
+    border: 1px solid var(--ink-matcha);
+    border-radius: var(--radius);
+  }
+  [data-theme="dark"] .scope-examples { background: var(--pastel-matcha); }
+  .scope-examples-h {
+    font-size: 12px; font-weight: 700; letter-spacing: .04em;
+    color: var(--ink-matcha); margin-bottom: 8px;
+  }
+  .scope-example {
+    background: var(--surface); border: 1px solid var(--ink-matcha);
+    border-radius: 6px; padding: 8px 12px; margin-bottom: 6px;
+  }
+  .scope-example:last-child { margin-bottom: 0; }
+  .scope-example-case { font-size: 12.5px; color: var(--ink-2); margin-bottom: 4px; }
+  .scope-example-formula { margin: 4px 0; }
+  .scope-example-formula code {
+    font-family: var(--font-mono); font-size: 12.5px;
+    background: var(--surface-2); padding: 2px 8px; border-radius: 4px;
+    color: var(--ink); display: inline-block;
+  }
+  .scope-example-total { font-size: 13px; color: var(--ink); margin-top: 4px; }
+  .scope-example-total strong { color: var(--ink-matcha); font-size: 14px; font-family: var(--font-mono); }
+  /* ── 簽呈樣張 template(2026-05-01 加,P1-13)── */
+  .scope-template {
+    margin: 0 0 14px;
+    background: var(--pastel-sky); border: 1px solid var(--ink-sky);
+    border-radius: var(--radius);
+    padding: 0;
+  }
+  [data-theme="dark"] .scope-template { background: var(--pastel-sky); }
+  .scope-template[open] { padding: 0 14px 12px; }
+  .scope-template-h {
+    cursor: pointer; user-select: none;
+    list-style: none;
+    padding: 10px 14px;
+    font-size: 12.5px; font-weight: 700; color: var(--ink-sky);
+  }
+  .scope-template-h::-webkit-details-marker { display: none; }
+  .scope-template-h::before { content: '▶'; font-size: 9px; color: var(--ink-sky); margin-right: 6px; transition: transform .15s; }
+  .scope-template[open] .scope-template-h::before { transform: rotate(90deg); }
+  .scope-template-item {
+    background: var(--surface); border: 1px solid var(--ink-sky);
+    border-radius: 6px; padding: 8px 12px; margin-top: 6px;
+    position: relative;
+  }
+  .scope-template-type {
+    font-size: 11px; font-weight: 700; color: var(--ink-sky);
+    text-transform: uppercase; letter-spacing: .04em; margin-bottom: 4px;
+  }
+  .scope-template-body {
+    font-family: var(--font-mono); font-size: 12.5px;
+    color: var(--ink); white-space: pre-wrap; word-break: break-word;
+    margin: 0; padding: 0; line-height: 1.6; max-height: 320px; overflow: auto;
+  }
+  /* ── 子情境連結 sub_scenarios(2026-05-01 加,P2-D)── */
+  .scope-subs {
+    margin: 0 0 14px;
+    background: var(--pastel-lavender);
+    border: 1px solid var(--brand-line);
+    border-radius: var(--radius);
+    padding: 0;
+  }
+  [data-theme="dark"] .scope-subs { background: var(--pastel-lavender); }
+  .scope-subs[open] { padding: 0 14px 12px; }
+  .scope-subs-h {
+    cursor: pointer; user-select: none;
+    list-style: none;
+    padding: 10px 14px;
+    font-size: 12.5px; font-weight: 700; color: var(--brand);
+  }
+  .scope-subs-h::-webkit-details-marker { display: none; }
+  .scope-subs-h::before { content: '▶'; font-size: 9px; color: var(--brand); margin-right: 6px; transition: transform .15s; }
+  .scope-subs[open] .scope-subs-h::before { transform: rotate(90deg); }
+  .scope-subs-grid {
+    display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 6px; margin-top: 4px;
+  }
+  .scope-sub-chip {
+    display: flex; align-items: flex-start; gap: 8px;
+    padding: 8px 10px;
+    background: var(--surface);
+    border: 1px solid var(--brand-line);
+    border-radius: 6px;
+    cursor: pointer;
+    text-align: left;
+    font: inherit;
+    color: var(--ink);
+    transition: all .12s;
+  }
+  .scope-sub-chip:hover {
+    background: var(--brand-soft);
+    border-color: var(--brand);
+    transform: translateY(-1px);
+  }
+  .scope-sub-icon { font-size: 14px; flex-shrink: 0; padding-top: 1px; }
+  .scope-sub-text { font-size: 12.5px; line-height: 1.4; flex: 1; min-width: 0; }
+  .scope-sub-text strong { color: var(--ink); font-weight: 600; }
+  .scope-sub-sub { color: var(--ink-3); font-size: 11px; }
+  @media (max-width: 720px) {
+    .scope-caveats { margin: -4px 0 10px; padding: 10px 12px 8px; }
+    .scope-examples { padding: 10px 12px; }
+    .scope-template[open] { padding: 0 10px 10px; }
+    .scope-baseline-h, .scope-template-h { padding: 8px 12px; }
+    .scope-subs[open] { padding: 0 10px 10px; }
+    .scope-subs-grid { grid-template-columns: 1fr; }
   }
   /* 同義詞命中徽章(≈ 自用汽車)— 灰色提示,告訴使用者為什麼這條會跑出來 */
   .syn-badge {
@@ -1290,6 +1496,20 @@
   /* 自動產生卡:微微透明降權 */
   .sc-card.is-auto { opacity: .82; }
   .sc-card.is-auto:hover { opacity: 1; }
+  /* 根節點卡(2026-05-01 加,P2-D)— 標示為情境樹 root */
+  .sc-card.is-root {
+    background: linear-gradient(180deg, var(--pastel-lavender) 0%, var(--surface) 60%);
+    border: 2px solid var(--brand);
+    box-shadow: 0 2px 8px oklch(from var(--brand) l c h / .12);
+  }
+  .sc-card.is-root:hover { transform: translateY(-2px); box-shadow: 0 6px 16px oklch(from var(--brand) l c h / .2); }
+  .sc-root-badge {
+    font-size: 10px; font-weight: 700;
+    background: var(--brand); color: var(--bg);
+    padding: 1px 7px; border-radius: 999px;
+    margin-left: 6px;
+    letter-spacing: .04em;
+  }
   .sc-flow-start {
     display: inline-flex; align-items: center; gap: 6px;
     padding: 6px 12px;
@@ -1567,6 +1787,31 @@
   }
   .cmp-empty strong { color: var(--ink); display: block; font-size: 16px; margin-bottom: 6px; }
 
+  /* Flow modal — mobile bottom sheet 變體(2026-05-01 加,P4-27)*/
+  @media (max-width: 720px) {
+    /* 把 flow modal 改成從底部上滑的 sheet:全寬、上圓角、占螢幕 90% 高、底部貼齊 */
+    #flow-modal { align-items: flex-end !important; justify-content: stretch !important; }
+    #flow-modal .cmp-panel {
+      width: 100vw !important;
+      max-width: 100vw !important;
+      height: 90vh !important;
+      max-height: 90vh !important;
+      border-radius: 16px 16px 0 0 !important;
+      animation: flow-slide-up .22s ease-out;
+    }
+    @keyframes flow-slide-up {
+      from { transform: translateY(100%); }
+      to   { transform: translateY(0); }
+    }
+    /* sheet 頂部加握把指示器 */
+    #flow-modal .cmp-panel::before {
+      content: '';
+      position: absolute; top: 6px; left: 50%; transform: translateX(-50%);
+      width: 36px; height: 4px;
+      background: var(--line-strong); border-radius: 2px;
+    }
+    #flow-modal .cmp-head { padding-top: 18px; }
+  }
   @media (max-width: 880px) {
     .cmp-panel { width: 100vw; height: 100vh; border-radius: 0; }
     .cmp-cols-2, .cmp-cols-3 {
@@ -1674,11 +1919,16 @@
         <p>用使用者語言列出實務常見問題,點選後直接帶到對應的條文與 Q&amp;A</p>
       </div>
 
+      <!-- 情境內關鍵字搜尋(2026-05-01 加)-->
+      <div class="sc-search">
+        <span aria-hidden="true">🔍</span>
+        <input type="search" id="sc-q" placeholder="情境內搜尋:標題、副標、標籤、母題、支出類別…(含同義詞)" autocomplete="off" spellcheck="false">
+        <button class="sc-search-clear" id="sc-q-clear" hidden type="button" aria-label="清除搜尋">✕ 清除</button>
+      </div>
+
       <!-- 兩排 chip 篩選:母題 + 支出類別(2026-04-29 加)-->
       <div class="sc-filterbar" id="sc-parent-chips"></div>
       <div class="sc-filterbar sc-filterbar-sub" id="sc-expense-chips"></div>
-
-      <div id="sc-flow-strip-slot"></div>
 
       <div id="sc-list"></div>
     </section>
@@ -1808,7 +2058,7 @@
 let compareList = [];
 
 /* ──────── 真實資料載入 (520 nodes from 03_index/) ──────── */
-const DATA_VERSION = '2026-04-30e';
+const DATA_VERSION = '2026-05-01a';
 let DATA = [];                 // 對外用的卡片資料 (mapped from nodes.json)
 let NODES_BY_ID = new Map();   // id → original node (含 file_path 等)
 let INCOMING_EDGES = new Map();// id → [from1, from2, ...] 反向引用
@@ -1855,19 +2105,23 @@ function buildCardTitleText(d, mode = 'short') {
 
 let CITY_ALIASES = {};  // 未列載城市 → 國家中文主名 (city_aliases.json)
 let SYNONYMS = [];       // [{canonical, aliases:[...]}, ...] (synonyms.json)
+let BASELINE_ATTACHMENTS = {};  // 情境共通標配憑證 (baseline_attachments.json) — 2026-05-01 加
 let SYNONYM_INDEX = new Map();  // 任一詞 → 該組所有詞 (含 canonical),供 expandSynonyms 用
 async function loadAllData() {
   const v = '?v=' + DATA_VERSION;
-  // scenarios 拆 manual + auto 兩份合併;舊版 scenarios.json 仍保留作 fallback
-  const [nodes, edges, scnManual, scnAuto, scnLegacy, aliases, synonyms] = await Promise.all([
+  // 2026-05-01 (A1):auto 卡完全停用 — 情境視圖只載手寫 manual 卡。
+  //                 scenarios_auto.json 仍保留在 repo 供未來重啟或法條索引分頁參考,但前端不 fetch。
+  const [nodes, edges, scnManual, scnLegacy, aliases, synonyms, baseline] = await Promise.all([
     fetch('../03_index/nodes.json' + v).then(r => r.json()),
     fetch('../03_index/edges.json' + v).then(r => r.json()),
     fetch('data/scenarios_manual.json' + v).then(r => r.ok ? r.json() : null).catch(() => null),
-    fetch('data/scenarios_auto.json' + v).then(r => r.ok ? r.json() : null).catch(() => null),
     fetch('data/scenarios.json' + v).then(r => r.ok ? r.json() : { scenarios: [] }).catch(() => ({ scenarios: [] })),
     fetch('data/city_aliases.json' + v).then(r => r.ok ? r.json() : { aliases: {} }).catch(() => ({ aliases: {} })),
     fetch('data/synonyms.json' + v).then(r => r.ok ? r.json() : { groups: [] }).catch(() => ({ groups: [] })),
+    fetch('data/baseline_attachments.json' + v).then(r => r.ok ? r.json() : { groups: {} }).catch(() => ({ groups: {} })),
   ]);
+  const scnAuto = null;  // 已停用
+  BASELINE_ATTACHMENTS = baseline.groups || {};
   CITY_ALIASES = aliases.aliases || {};
   SYNONYMS = synonyms.groups || [];
   // 建反查表:每個詞(canonical + aliases)指向該組所有詞
@@ -1885,14 +2139,15 @@ async function loadAllData() {
     if (!INCOMING_EDGES.has(e.to)) INCOMING_EDGES.set(e.to, []);
     INCOMING_EDGES.get(e.to).push(e.from);
   }
-  // 優先載入 manual + auto;若兩者都沒抓到才 fallback 到舊 scenarios.json
-  if (scnManual || scnAuto) {
-    const m = (scnManual && (scnManual.scenarios || scnManual)) || [];
-    const a = (scnAuto && (scnAuto.scenarios || scnAuto)) || [];
-    SCENARIOS = [...m, ...a];
+  // 2026-05-01:只載 manual;auto 卡停用(見上)
+  if (scnManual) {
+    const m = (scnManual.scenarios || scnManual) || [];
+    SCENARIOS = m;
   } else {
     SCENARIOS = scnLegacy.scenarios || scnLegacy;
   }
+  // 防呆:過濾掉任何殘留 source==='auto' 卡(理論上 manual 不會有,但保險)
+  SCENARIOS = SCENARIOS.filter(s => s.source !== 'auto');
   // map nodes → DATA (隱藏已廢止節點,但保留有 effective_period 的歷史費率表)
   DATA = nodes
     .filter(n => {
@@ -2223,13 +2478,21 @@ function filteredData() {
     let scenarioRelevance = 0;
     if (sc) {
       const inP = scPrimary.has(d.id);
+      // 2026-05-01 (P4-29) 收緊:泛 tag 不單獨支撐 ≥2 命中、必須有具體 tag 1+,並要求節點含同 expense
+      const GENERIC_TAGS = new Set(['報支上限', '覈實報支', '結報核銷', '出差規定', '原始憑證', '誠信原則']);
+      const concreteScTags = new Set([...scTags].filter(t => !GENERIC_TAGS.has(t)));
       const tagOverlap = (d.tags || []).filter(t => scTags.has(t)).length;
+      const concreteOverlap = (d.tags || []).filter(t => concreteScTags.has(t)).length;
       if (inP) {
         scenarioRelevance = 1000 + tagOverlap;  // primary 永遠置頂
-      } else if (tagOverlap >= TAG_MATCH_THRESHOLD) {
-        scenarioRelevance = tagOverlap;          // ≥2 tag 才收(避免單 tag 撈太寬)
+      } else if (tagOverlap >= TAG_MATCH_THRESHOLD && concreteOverlap >= 1) {
+        // 進一步若 sc.expense 存在於 EXPENSE_LIST,節點 tag 也須含同 expense
+        if (sc.expense && EXPENSE_LIST.includes(sc.expense) && !(d.tags || []).includes(sc.expense)) {
+          continue;
+        }
+        scenarioRelevance = tagOverlap + concreteOverlap;  // 具體 tag 加權
       } else {
-        continue;  // 排除「只命中 1 個泛 tag」的雜訊
+        continue;  // 排除「只命中泛 tag」的雜訊
       }
     }
     let queryRelevance = 0;
@@ -2383,30 +2646,133 @@ function renderScopeBanner() {
   if (filterState.scenario) {
     const sc = SCENARIOS.find(s => s.id === filterState.scenario);
     if (!sc) { $slot.innerHTML = ''; return; }
+    // ── 紅線 caveats(2026-05-01 加)— 最高優先,放最頂部紅色 banner ──
+    const caveats = Array.isArray(sc.caveats) ? sc.caveats : [];
+    const caveatsHtml = caveats.length ? `
+      <div class="scope-caveats">
+        <div class="scope-caveats-h">⚠ 紅線 — 容易被退件 / 審計糾正</div>
+        <ul class="scope-caveats-list">
+          ${caveats.map(c => {
+            const text = (typeof c === 'string') ? c : (c.text || '');
+            const ref = (typeof c === 'object' && c.legal_ref) ? c.legal_ref : '';
+            const sev = (typeof c === 'object' && c.severity) ? c.severity : 'stop';
+            return `<li class="caveat-${sev}">${escapeHtml(text)}${ref ? ` <code class="caveat-ref">[${escapeHtml(ref)}]</code>` : ''}</li>`;
+          }).join('')}
+        </ul>
+      </div>` : '';
+    // ── baseline 標配憑證(2026-05-01 加)— 條文卡只列差異,共通項拉到 banner ──
+    const baselineId = sc.baseline_attachments_id;
+    const baseline = baselineId ? BASELINE_ATTACHMENTS[baselineId] : null;
+    const baselineHtml = baseline ? `
+      <details class="scope-baseline">
+        <summary class="scope-baseline-h">${baseline.icon || '✅'} ${escapeHtml(baseline.title)}(共通標配,${baseline.items.length} 項) <span style="font-size:11px;color:var(--ink-3)">— 點擊展開</span></summary>
+        <ol class="scope-baseline-list">
+          ${baseline.items.map((it, i) => `<li><span class="scope-att-num">${String(i + 1).padStart(2, '0')}</span><span>${escapeHtml(it)}</span></li>`).join('')}
+        </ol>
+      </details>` : '';
+    // ── 計算範例 example(2026-05-01 加)──
+    const examples = Array.isArray(sc.example) ? sc.example : [];
+    const exampleHtml = examples.length ? `
+      <div class="scope-examples">
+        <div class="scope-examples-h">🧮 計算範例</div>
+        ${examples.map(e => {
+          const caseTxt = (typeof e === 'string') ? e : (e.case || '');
+          const formula = (typeof e === 'object') ? (e.formula || '') : '';
+          const total = (typeof e === 'object') ? (e.total || '') : '';
+          return `<div class="scope-example">
+            ${caseTxt ? `<div class="scope-example-case">情境:${escapeHtml(caseTxt)}</div>` : ''}
+            ${formula ? `<div class="scope-example-formula"><code>${escapeHtml(formula)}</code></div>` : ''}
+            ${total ? `<div class="scope-example-total">合計:<strong>${escapeHtml(total)}</strong></div>` : ''}
+          </div>`;
+        }).join('')}
+      </div>` : '';
+    // ── 子情境連結 sub_scenarios(2026-05-01 加,P2-D)──
+    const subScenarios = Array.isArray(sc.sub_scenarios) ? sc.sub_scenarios : [];
+    const subItems = subScenarios.map(id => SCENARIOS.find(x => x.id === id)).filter(Boolean);
+    const subHtml = subItems.length ? `
+      <details class="scope-subs" open>
+        <summary class="scope-subs-h">🗂 子情境(${subItems.length} 項)— 點擊跳到對應情境</summary>
+        <div class="scope-subs-grid">
+          ${subItems.map(sub => `<button class="scope-sub-chip" data-sub-jump="${sub.id}" type="button">
+            <span class="scope-sub-icon">${sub.icon || '•'}</span>
+            <span class="scope-sub-text"><strong>${escapeHtml(sub.title)}</strong>${sub.subtitle ? `<br><span class="scope-sub-sub">${escapeHtml(sub.subtitle)}</span>` : ''}</span>
+          </button>`).join('')}
+        </div>
+      </details>` : '';
+    // ── 簽呈樣張 template(2026-05-01 加)──
+    const templates = Array.isArray(sc.template) ? sc.template : (sc.template ? [sc.template] : []);
+    const templateHtml = templates.length ? `
+      <details class="scope-template">
+        <summary class="scope-template-h">📝 簽呈核准事由樣張(${templates.length} 份)— 點擊展開可複製</summary>
+        ${templates.map((t, i) => {
+          const ttype = (typeof t === 'object') ? (t.type || '') : '';
+          const tbody = (typeof t === 'object') ? (t.body || '') : t;
+          return `<div class="scope-template-item">
+            ${ttype ? `<div class="scope-template-type">${escapeHtml(ttype === 'approval_memo' ? '簽呈' : ttype === 'request_letter' ? '請示函' : ttype)}</div>` : ''}
+            <pre class="scope-template-body" data-template-idx="${i}">${escapeHtml(tbody)}</pre>
+          </div>`;
+        }).join('')}
+      </details>` : '';
     // 需附單據清單(若 scenario 有 attachments 欄位)
     const attachments = Array.isArray(sc.attachments) ? sc.attachments : [];
     const attHtml = attachments.length ? `
       <div class="scope-attachments">
-        <div class="scope-attachments-h">📎 需附單據</div>
+        <div class="scope-attachments-h">📎 需附單據${baseline ? '(本情境差異 / 額外附件)' : ''}</div>
         <ol class="scope-attachments-list">
           ${attachments.map((a, i) => `<li><span class="scope-att-num">${String(i + 1).padStart(2, '0')}</span><span>${escapeHtml(a)}</span></li>`).join('')}
         </ol>
       </div>` : '';
     // 條件問答按鈕(若 scenario 有 flow)
     const flowBtnHtml = (sc.flow && sc.flow.start) ? `<button class="scope-flow-btn" data-banner-flow>🤔 開始條件問答</button>` : '';
+    // 試算表聯動(2026-05-01 加,P4-32)— 若 scenario 含 calc_link 或 expense ∈ {生活費, 住宿費, 保險費},顯示「🧮 開啟試算」
+    const linkToCalc = sc.calc_link === true || ['生活費', '保險費'].includes(sc.expense || '') || (sc.parent === '國外旅費' && ['住宿費'].includes(sc.expense || ''));
+    const calcBtnHtml = linkToCalc ? `<button class="scope-calc-btn" data-banner-calc title="跳到試算表查具體金額">🧮 開啟試算</button>` : '';
     $slot.innerHTML = `
       <div class="scope-banner">
         <span class="scope-banner-icon">${sc.icon || '🧭'}</span>
         <div class="scope-banner-text">情境:<strong>${sc.title}</strong>${sc.subtitle ? ` · <span style="color:var(--ink-3)">${sc.subtitle}</span>` : ''}</div>
         ${flowBtnHtml}
+        ${calcBtnHtml}
         <button class="scope-banner-back" data-banner-back>← 回情境列表</button>
         <button class="scope-banner-clear" data-banner-clear>✕ 清除情境</button>
       </div>
-      ${attHtml}`;
+      ${caveatsHtml}
+      ${baselineHtml}
+      ${subHtml}
+      ${attHtml}
+      ${exampleHtml}
+      ${templateHtml}`;
+    // 子情境跳轉 — 套用該子情境並滾頂
+    $slot.querySelectorAll('[data-sub-jump]').forEach(b => {
+      b.onclick = () => {
+        const subId = b.dataset.subJump;
+        const sub = SCENARIOS.find(x => x.id === subId);
+        if (!sub) return;
+        filterState.scenario = subId;
+        filterState.parent = sub.parent || null;
+        filterState.type = null; filterState.tag = null; filterState.expense = null;
+        renderScopeBanner(); renderSidebar(); renderChips(); renderCards();
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+        flashHint(`套用子情境:${sub.title}`);
+      };
+    });
     $slot.querySelector('[data-banner-back]').onclick = () => {
+      // 2026-05-01:完整清除所有 filter,確保「回情境列表」回到全集情境檢索
       filterState.scenario = null; filterState.parent = null;
-      filterState.tag = null; filterState.expense = null;
+      filterState.type = null; filterState.tag = null;
+      filterState.expense = null; filterState.query = '';
+      // 同步清空 topbar 搜尋框
+      const $topQ = document.getElementById('q'); if ($topQ) $topQ.value = '';
+      // 重置情境視圖內的 chip filter state
+      if (typeof scenarioFilterParent !== 'undefined') scenarioFilterParent = null;
+      if (typeof scenarioFilterExpense !== 'undefined') scenarioFilterExpense = null;
+      // 同步清空情境視圖內的關鍵字搜尋框
+      const $scQ = document.getElementById('sc-q'); const $scQClear = document.getElementById('sc-q-clear');
+      if ($scQ) $scQ.value = '';
+      if ($scQClear) $scQClear.hidden = true;
+      if (typeof scenarioQuery !== 'undefined') scenarioQuery = '';
       switchView('scenarios'); renderScenarios(); renderSidebar();
+      window.scrollTo({ top: 0, behavior: 'instant' });
     };
     $slot.querySelector('[data-banner-clear]').onclick = () => {
       filterState.scenario = null;
@@ -2414,6 +2780,13 @@ function renderScopeBanner() {
     };
     const $flowBtn = $slot.querySelector('[data-banner-flow]');
     if ($flowBtn) $flowBtn.onclick = () => openFlowModal(sc);
+    const $calcBtn = $slot.querySelector('[data-banner-calc]');
+    if ($calcBtn) $calcBtn.onclick = () => {
+      switchView('calc');
+      if (typeof renderCalc === 'function') renderCalc();
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+      flashHint('已切到試算表 — 輸入城市/天數即可查上限');
+    };
   } else {
     $slot.innerHTML = '';
   }
@@ -3543,14 +3916,14 @@ function _renderScenarioSectionHtml(key) {
         ${items.map(s => {
           const hasFlow = s.flow && s.flow.start && s.flow.questions;
           const flowBadge = hasFlow ? '<span class="sc-flow-badge">🤔 條件問答</span>' : '';
-          const isAuto = s.source === 'auto';
-          const autoBadge = isAuto ? '<span class="sc-auto-badge" title="此情境由 build_scenarios.py 自動生成,建議核對原文">🤖 自動產生</span>' : '';
+          const isRoot = s.flow_root === true && Array.isArray(s.sub_scenarios) && s.sub_scenarios.length > 0;
+          const rootBadge = isRoot ? `<span class="sc-root-badge" title="此為情境樹根節點 — 整合 ${s.sub_scenarios.length} 個子情境">🗂 ${s.sub_scenarios.length} 子情境</span>` : '';
           const matched = countScenarioMatches(s);
           const flowBtn = hasFlow ? `<button class="sc-flow-start" data-flow="${s.id}" type="button"><svg class="icon" viewBox="0 0 24 24"><path d="M8 5v14l11-7z" fill="currentColor" stroke="none"/></svg>開始問答</button>` : '';
           return `
-            <article class="sc-card${hasFlow ? ' has-flow' : ''}${isAuto ? ' is-auto' : ''}" data-sc="${s.id}" tabindex="0">
+            <article class="sc-card${hasFlow ? ' has-flow' : ''}${isRoot ? ' is-root' : ''}" data-sc="${s.id}" tabindex="0">
               <div class="sc-icon">${s.icon || '📌'}</div>
-              <h3 class="sc-title">${s.title}${flowBadge}${autoBadge}</h3>
+              <h3 class="sc-title">${s.title}${flowBadge}${rootBadge}</h3>
               <p class="sc-subtitle">${s.subtitle || ''}</p>
               ${flowBtn}
               <div class="sc-meta">
@@ -3596,17 +3969,32 @@ function appendScenarioChunk() {
 }
 
 function countScenarioMatches(sc) {
-  // 與 filteredData 同步:primary_ids 命中 + 純 tag 命中要 ≥2 tag overlap
-  // 避免「卡片預覽顯示 111 張、點開只剩 44 張」的不一致
+  // 2026-05-01 (P4-29) 計數收緊:
+  // - primary_ids 命中(權威)→ 計入
+  // - 純 tag 命中要 ≥2 tag AND 有具體支出類別 tag 重疊(避免「報支上限/覈實報支」泛 tag 誤命中)
+  // - 若 scenario 有 expense,該節點 tag 中也要含同 expense(進一步收緊)
+  // 結果:從原本 ~44 張誤命中收斂到 5-15 張真實相關
   const primary = new Set(sc.primary_ids || []);
   const tags = new Set(sc.tags || []);
+  // 泛 tag(過於通用,不應單獨支撐 ≥2 命中)
+  const GENERIC_TAGS = new Set(['報支上限', '覈實報支', '結報核銷', '出差規定', '原始憑證', '誠信原則']);
+  const concreteTags = new Set([...tags].filter(t => !GENERIC_TAGS.has(t)));
   const TAG_MATCH_THRESHOLD = 2;
   let n = 0;
   for (const d of DATA) {
     if (sc.parent && d.cat !== sc.parent) continue;
     if (primary.has(d.id)) { n++; continue; }
-    const overlap = (d.tags || []).filter(t => tags.has(t)).length;
-    if (overlap >= TAG_MATCH_THRESHOLD) n++;
+    // 通泛 tag 不計入 overlap
+    const overlapAll = (d.tags || []).filter(t => tags.has(t)).length;
+    const overlapConcrete = (d.tags || []).filter(t => concreteTags.has(t)).length;
+    // 必須:全 tag overlap ≥2 + 至少 1 個具體 tag(非全是泛 tag)
+    if (overlapAll < TAG_MATCH_THRESHOLD || overlapConcrete < 1) continue;
+    // 若 scenario 有 expense,節點也須含同 expense tag(若 expense 不在 EXPENSE_LIST 中視為跳過此檢)
+    if (sc.expense && EXPENSE_LIST.includes(sc.expense)) {
+      const hasExp = (d.tags || []).includes(sc.expense);
+      if (!hasExp) continue;
+    }
+    n++;
   }
   return n;
 }
@@ -3623,8 +4011,8 @@ function renderScenarioChips() {
   const $expBar = document.getElementById('sc-expense-chips');
   if (!$parentBar || !$expBar) return;
 
-  // 母題 chip 列(基於 query-filtered 集合計數)
-  const queryFiltered = SCENARIOS.filter(s => matchScenarioQuery(s, scenarioQuery));
+  // 母題 chip 列(基於 query-filtered 集合計數;deprecated 卡不計)
+  const queryFiltered = SCENARIOS.filter(s => !s.deprecated && matchScenarioQuery(s, scenarioQuery));
   const parentCount = new Map();
   for (const s of queryFiltered) {
     const p = s.parent || '其他';
@@ -3700,8 +4088,6 @@ function renderScenarioChips() {
 
 function renderScenarios() {
   const $list = document.getElementById('sc-list');
-  const $toc = document.getElementById('sc-toc');
-  const $flowSlot = document.getElementById('sc-flow-strip-slot');
   if (!$list) return;
 
   // 先 render 兩排 chip
@@ -3709,37 +4095,16 @@ function renderScenarios() {
 
   // 套用 in-view query + chip filters
   const filtered = SCENARIOS.filter(s => {
+    // 2026-05-01 (P2):deprecated 卡(被整併入 root flow)從主清單隱藏;
+    // 仍可透過 hash 深 link 或 root 卡的 sub_scenarios 進入。
+    if (s.deprecated) return false;
     if (!matchScenarioQuery(s, scenarioQuery)) return false;
     if (scenarioFilterParent && s.parent !== scenarioFilterParent) return false;
     if (scenarioFilterExpense && renameExpense(s.expense || '其他') !== scenarioFilterExpense) return false;
     return true;
   });
 
-  // 互動試算情境 (has flow) 置頂列 — 不受搜尋影響時顯示全部, 受搜尋時也照搜尋過濾
-  const flowCards = filtered.filter(s => s.flow && s.flow.start && s.flow.questions);
-  if ($flowSlot) {
-    if (flowCards.length === 0) {
-      $flowSlot.innerHTML = '';
-    } else {
-      // 預設摺疊 + 文案降權:讓使用者明白「直接看卡片即可,Q&A 是少數情境的選用工具」
-      $flowSlot.innerHTML = `
-        <details class="sc-flow-details">
-          <summary class="sc-flow-summary">
-            <span class="sc-flow-strip-label">🤔 ${flowCards.length} 張情境另提供互動 Q&A</span>
-            <span class="sc-flow-summary-hint">(其餘卡片直接顯示對應條文,可略過此區)</span>
-          </summary>
-          <div class="sc-flow-strip">
-            ${flowCards.map(s => `<button data-flow-quick="${s.id}" type="button">${s.icon || ''} ${s.title}</button>`).join('')}
-          </div>
-        </details>`;
-      $flowSlot.querySelectorAll('[data-flow-quick]').forEach(b => {
-        b.onclick = () => {
-          const sc = SCENARIOS.find(x => x.id === b.dataset.flowQuick);
-          if (sc) openFlowModal(sc);
-        };
-      });
-    }
-  }
+  // 2026-05-01:Q&A strip 已移除(冗餘 — has-flow 卡本身已有「🤔 條件問答」徽章與「▶ 開始問答」按鈕)
 
   // 分組 by parent → expense
   const groups = new Map();
@@ -3761,11 +4126,16 @@ function renderScenarios() {
 
   // 空結果
   if (sortedKeys.length === 0) {
-    $list.innerHTML = `<div class="sc-empty"><strong>找不到符合「${scenarioQuery}」的情境</strong><br><span style="font-size:13px">改用更短關鍵字,或<button class="sc-search-clear" data-clear-q style="margin-left:6px">清除搜尋</button></span></div>`;
+    const queryHint = scenarioQuery ? `「${scenarioQuery}」` : '目前條件';
+    $list.innerHTML = `<div class="sc-empty"><strong>找不到符合${queryHint}的情境</strong><br><span style="font-size:13px;color:var(--ink-3)">請改用更短關鍵字、清除搜尋,或切換母題 / 支出類別 chip</span><br><button class="btn" data-clear-q style="margin-top:10px">清除所有條件</button></div>`;
     $list.querySelector('[data-clear-q]')?.addEventListener('click', () => {
-      document.getElementById('sc-q').value = '';
+      const $input = document.getElementById('sc-q');
+      const $clear = document.getElementById('sc-q-clear');
+      if ($input) $input.value = '';
+      if ($clear) $clear.hidden = true;
       scenarioQuery = '';
-      document.getElementById('sc-q-clear').hidden = true;
+      scenarioFilterParent = null;
+      scenarioFilterExpense = null;
       renderScenarios();
     });
     return;
@@ -4246,15 +4616,49 @@ async function init() {
     renderSidebar();
     renderChips();
     renderCards();
-    // 預設入口:情境檢索
-    switchView('scenarios');
+    // 2026-05-01:預設入口改回 Landing 三入口卡(原本誤切到 scenarios)
+    switchView('landing');
+    // 預先 render 一次 scenarios,讓使用者切到情境視圖時不延遲
     renderScenarios();
+    wireScenarioSearch();
   } catch (e) {
     grid.innerHTML = `<div style="color:var(--stop);padding:40px">資料載入失敗: ${e.message}</div>`;
     console.error(e);
   }
 }
 init();
+
+/* 情境視圖內關鍵字搜尋(2026-05-01 加)— 接通 sc-q input 與 scenarioQuery 變數 */
+function wireScenarioSearch() {
+  const $input = document.getElementById('sc-q');
+  const $clear = document.getElementById('sc-q-clear');
+  if (!$input || !$clear) return;
+  // 防抖,避免每按一鍵就跑全 117 張卡的 filter
+  let _scQDebounce = null;
+  $input.addEventListener('input', () => {
+    const v = $input.value || '';
+    $clear.hidden = !v.trim();
+    clearTimeout(_scQDebounce);
+    _scQDebounce = setTimeout(() => {
+      scenarioQuery = v.trim();
+      renderScenarios();
+    }, 120);
+  });
+  $clear.addEventListener('click', () => {
+    $input.value = '';
+    scenarioQuery = '';
+    $clear.hidden = true;
+    renderScenarios();
+    $input.focus();
+  });
+  // Esc 清空
+  $input.addEventListener('keydown', (ev) => {
+    if (ev.key === 'Escape' && $input.value) {
+      ev.preventDefault();
+      $clear.click();
+    }
+  });
+}
 
 /* ──────── compare mode (compareList declared at top of script) ──────── */
 function toggleCompare(id) {

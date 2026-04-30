@@ -1,7 +1,77 @@
 {
-  "version": "2026-04-27",
-  "note": "人工維護的核銷情境(_augment_scenarios.py 累積)。新增情境改腳本 dict 後 --apply,或直接編輯本檔。",
+  "version": "2026-05-01",
+  "note": "人工維護的核銷情境。2026-05-01 加 schema 欄位:caveats / example / template / baseline_attachments_id / flow_root / sub_scenarios / deprecated / parent_scenario。新增情境直接編輯本檔(_augment_scenarios.py 為早期工具)。",
   "scenarios": [
+    {
+      "id": "domestic-trip-overview",
+      "title": "🧭 國內出差總覽",
+      "icon": "🗺️",
+      "subtitle": "從派遣 → 行程 → 交通工具 → 住宿 → 雜費 → 結報的完整動線(整合下列子情境)",
+      "parent": "國內旅費",
+      "expense": "通則與其他",
+      "flow_root": true,
+      "sub_scenarios": [
+        "day-trip", "overnight",
+        "premium-class", "self-drive", "taxi", "discount-ticket", "change-transport",
+        "senior-premium", "transport-substitute", "car-rental", "period-pass",
+        "from-home", "advance-postpone", "holiday-via-office", "station-choice", "holiday-temporary",
+        "necessary-distance", "package-tour", "incidental", "training"
+      ],
+      "primary_ids": [
+        "A-國內旅費-002",
+        "A-國內旅費-003",
+        "A-國內旅費-004",
+        "B-國內旅費-001"
+      ],
+      "tags": [
+        "公差派遣",
+        "出差行程",
+        "結報核銷"
+      ],
+      "baseline_attachments_id": "domestic_trip",
+      "attachments": [
+        "依下列子情境檢附對應憑證(展開「✅ 國內出差核銷標配」查共通項)"
+      ],
+      "caveats": [
+        { "text": "完整動線:派令 → 出差 → 票據蒐集 → 15 日內檢具附表二《出差旅費報告表》結報", "severity": "info", "legal_ref": "A-國內旅費-004" },
+        { "text": "起訖點以「機關所在地」計算上限;由居住地直接出發者,實付低於上限以實付為準", "severity": "warn", "legal_ref": "D-國內旅費-002" }
+      ]
+    },
+    {
+      "id": "transport-choice-overview",
+      "title": "🚦 交通工具選擇總覽",
+      "icon": "🚦",
+      "subtitle": "依使用情形決定:大眾運輸 / 自駕 / 計程車 / 套裝行程 / 變更工具",
+      "parent": "國內旅費",
+      "expense": "交通費",
+      "flow_root": true,
+      "sub_scenarios": [
+        "premium-class", "discount-ticket", "senior-premium",
+        "self-drive", "car-rental", "period-pass",
+        "taxi",
+        "change-transport", "transport-substitute",
+        "package-tour"
+      ],
+      "primary_ids": [
+        "A-國內旅費-005",
+        "B-國內旅費-001"
+      ],
+      "tags": [
+        "交通費",
+        "報支上限",
+        "覈實報支"
+      ],
+      "baseline_attachments_id": "domestic_trip",
+      "attachments": [
+        "搭乘證明:車票/票根/購票證明/電子車票截圖(任一)",
+        "依工具別另附:身分證明(優惠票)、行照影本(自駕)、必要性說明(計程車)等"
+      ],
+      "caveats": [
+        { "text": "搭乘商務艙/車廂須為部會及相當部會以上首長 / 副首長,或經主管機關核准上提", "severity": "warn", "legal_ref": "A-國內旅費-005" },
+        { "text": "公民營客運可達區之計程車費原則不得報支(業務需要 + 核准例外)", "severity": "stop", "legal_ref": "D-國內旅費-011" },
+        { "text": "自駕者每公里 3 元(汽車)/ 2 元(機車),不得另報油料、過路、停車費", "severity": "stop", "legal_ref": "A-國內旅費-005" }
+      ]
+    },
     {
       "id": "day-trip",
       "title": "當日往返出差",
@@ -38,6 +108,8 @@
       "subtitle": "需報住宿費,平日 3,500 假日 4,500 上限",
       "parent": "國內旅費",
       "expense": "住宿費",
+      "flow_root": true,
+      "sub_scenarios": ["lodging-distance-60km", "lodging-weekday-holiday", "lodging-long-discount"],
       "primary_ids": [
         "A-國內旅費-009",
         "A-國內旅費-011",
@@ -48,11 +120,21 @@
         "住宿費",
         "覈實報支"
       ],
+      "baseline_attachments_id": "domestic_trip",
       "attachments": [
-        "住宿發票或收據(必須有住宿事實)",
-        "出差行程表 / 派令",
+        "住宿發票或收據(必須有住宿事實 — 沒實際投宿不得報支)",
         "若 < 60 公里:事前機關核准之簽呈或核准函",
         "若購買含住宿之套裝行程:行程憑證且加計後不超過住宿費 + 交通費規定數額"
+      ],
+      "caveats": [
+        { "text": "< 60 公里原則不得報支住宿費,須事前機關核准之業務需要", "severity": "stop", "legal_ref": "A-國內旅費-009" },
+        { "text": "假日含放假日「前一天」,不含放假日「最後一天」", "severity": "warn", "legal_ref": "B-國內旅費-001" },
+        { "text": "同一地點超過 1 個月自第 2 月起 8 折、超過 2 個月自第 3 月起 7 折", "severity": "warn", "legal_ref": "A-國內旅費-011" },
+        { "text": "無住宿事實(如借宿親友家)不得報住宿費", "severity": "stop" }
+      ],
+      "example": [
+        { "case": "2 平日 + 1 假日(含放假日前一天)跨夜出差", "formula": "3,500 × 2 + 4,500 × 1 = 11,500", "total": "11,500 元(住宿費上限)" },
+        { "case": "同地連續派駐 35 天(平日),前 30 天全額,第 31~35 天 8 折", "formula": "3,500 × 30 + 2,800 × 5 = 119,000", "total": "119,000 元(住宿費上限)" }
       ],
       "approvers": [
         "出差人員填表",
@@ -137,6 +219,7 @@
           "wk_normal": {
             "title": "平日,1 個月內 — 可報住宿費",
             "limit": "上限 3,500 元/夜,覈實報支",
+            "note": "範例:平日 3 夜 → 3,500 × 3 = 10,500 元(若實付低於上限,以實付為準)。",
             "refs": [
               "A-國內旅費-009",
               "B-國內旅費-001"
@@ -240,11 +323,19 @@
         "必要路程",
         "公里數"
       ],
+      "baseline_attachments_id": "domestic_trip",
       "attachments": [
-        "出差行程表(列必要路程公里數與起訖點)",
         "公里數計算依據(地圖軟體截圖、機關核處表)",
-        "車輛行照影本(初次申請或更換時)",
-        "不得另檢附油料費、過路費、停車費收據"
+        "車輛行照影本(初次申請或更換時)"
+      ],
+      "caveats": [
+        { "text": "不得另報油料費、過路費、停車費(已含於公里計費中)", "severity": "stop", "legal_ref": "A-國內旅費-005" },
+        { "text": "公里數須由機關事先核處;無核處依據不得逕報", "severity": "stop", "legal_ref": "D-國內旅費-009" },
+        { "text": "自行車不另計交通費(現行要點未訂報支標準)", "severity": "info" }
+      ],
+      "example": [
+        { "case": "汽車自駕,核處必要路程 60 公里(單程),來回 120 公里", "formula": "120 公里 × 3 元/公里 = 360 元", "total": "360 元(交通費)" },
+        { "case": "機車自駕,核處必要路程 30 公里(單程),來回 60 公里", "formula": "60 公里 × 2 元/公里 = 120 元", "total": "120 元(交通費)" }
       ],
       "approvers": [
         "申請/出差人員填表",
@@ -305,7 +396,8 @@
         "conclusions": {
           "car": {
             "title": "汽車 — 依公里數報支",
-            "limit": "每公里 3 元,以機關核處之必要路程為準;不得另報油料、過路、停車費",
+            "limit": "3 元/公里;以機關核處必要路程為準",
+            "note": "範例:核處 60 公里(單程)來回 120 公里 → 120 × 3 = 360 元。不得另報油料、過路、停車費。",
             "refs": [
               "A-國內旅費-005",
               "D-國內旅費-009",
@@ -314,7 +406,8 @@
           },
           "scooter": {
             "title": "機車 — 依公里數報支",
-            "limit": "每公里 2 元,以機關核處之必要路程為準;不得另報油料、過路、停車費",
+            "limit": "2 元/公里;以機關核處必要路程為準",
+            "note": "範例:核處 30 公里(單程)來回 60 公里 → 60 × 2 = 120 元。不得另報油料、過路、停車費。",
             "refs": [
               "A-國內旅費-005",
               "D-國內旅費-009",
@@ -472,10 +565,21 @@
         "公民營客運汽車",
         "業務需要"
       ],
+      "baseline_attachments_id": "domestic_trip",
       "attachments": [
-        "計程車收據或發票(載明日期、金額)",
-        "搭乘原因說明(載重物、夜間無大眾運輸、出差地點偏遠等)",
-        "出差行程表"
+        "計程車收據或發票(載明日期、金額、起訖點)",
+        "搭乘原因說明(載重物、夜間無大眾運輸、出差地點偏遠、接送外賓等)"
+      ],
+      "caveats": [
+        { "text": "有公民營客運可達之地點,計程車費原則不得報支", "severity": "stop", "legal_ref": "A-國內旅費-005" },
+        { "text": "搭乘需事前簽核或事後補簽說明業務必要性,無說明者必退件", "severity": "warn", "legal_ref": "D-國內旅費-011" },
+        { "text": "計程車收據必須載明日期、金額;手寫收據要有司機簽名", "severity": "warn" }
+      ],
+      "template": [
+        {
+          "type": "approval_memo",
+          "body": "簽呈\n\n主旨:○○○於○年○月○日因公至○○出差,因[業務必要事由,例:攜帶大量公務物品/夜間客運停駛/接送長官併行]搭乘計程車自○○至○○,計程車費新臺幣○○○元,簽請核可。\n\n說明:\n一、○○○奉派出差至○○辦理○○業務(派令字號:○○字第○○○號)。\n二、因[請具體說明:1. 攜帶 ○○○等公務物品共○件,大眾運輸不便 / 2. 出差結束時間為○時○分,當地公車及高鐵已收班 / 3. 接送外賓○人併行至會場 / 4. 出差地點○○距最近大眾運輸站○公里以上,無客運可達],爰搭乘計程車。\n三、檢附計程車收據乙紙,計新臺幣○○○元整。\n四、依「國內出差旅費報支要點」第五條第四款規定,因業務需要經機關核准者得覈實報支計程車費,簽請鑒核。\n\n承辦人:○○○\n單位主管:○○○"
+        }
       ],
       "approvers": [
         "申請/出差人員填表",
@@ -488,32 +592,29 @@
         "questions": {
           "public-transit": {
             "label": "出差目的地可搭乘公民營客運(包含捷運、公車等)抵達？",
-            "hint": "原則上有公共交通可達者,不得報支計程車費。",
+            "hint": "原則上有公共交通可達者,不得報支計程車費(A-國內旅費-005 第四款)。",
             "options": [
               {
                 "label": "是,可搭乘公共交通",
-                "conclude": "not-reimbursable"
+                "next": "any-exception"
               },
               {
                 "label": "否,無公共交通可達(地點偏遠/深夜/假日停駛)",
-                "next": "reason"
+                "conclude": "approved"
               }
             ]
           },
-          "reason": {
-            "label": "搭乘計程車之業務原因?",
+          "any-exception": {
+            "label": "是否符合下列任一例外情形(可複選思考,有任一即可)?",
+            "hint": "勾選任一即視為符合業務需要;均不符合則不得報支。",
             "options": [
               {
-                "label": "攜帶大量公務物品或採購品無法搭大眾運輸",
+                "label": "符合至少一項:① 攜帶大量公務物品/採購品  ② 夜間或假日無客運服務(急要公務)  ③ 接送外賓/長官併行",
                 "conclude": "approved"
               },
               {
-                "label": "夜間或假日無客運服務(急要公務)",
-                "conclude": "approved"
-              },
-              {
-                "label": "出差地點偏遠或當地無公共交通",
-                "conclude": "approved"
+                "label": "都不符合 — 純為個人便利或時間不足",
+                "conclude": "not-reimbursable"
               }
             ]
           }
@@ -582,10 +683,16 @@
       "tags": [
         "雜費"
       ],
+      "baseline_attachments_id": "domestic_trip",
       "attachments": [
-        "出差行程表(列出差日數)",
-        "雜費採定額報支:每日上限 400 元,毋須逐項提供收據(D-國內旅費-013)",
-        "注意:自駕者之停車費、過路費已含於公里計費中,不得另報(A-國內旅費-005)"
+        "雜費採定額報支:每日上限 400 元,毋須逐項提供收據(D-國內旅費-013)"
+      ],
+      "caveats": [
+        { "text": "自駕者之停車費、過路費已含於公里計費中,不得另列雜費", "severity": "stop", "legal_ref": "A-國內旅費-005" },
+        { "text": "雜費為「定額」報支,當日無雜費支出仍可定額報;但機關得另訂公里/小時計支辦法", "severity": "info" }
+      ],
+      "example": [
+        { "case": "5 日國內出差,雜費定額報支", "formula": "400 × 5 = 2,000", "total": "2,000 元(雜費上限)" }
       ],
       "approvers": [
         "申請/出差人員填表",
@@ -632,6 +739,17 @@
       "subtitle": "派遣→艙等→生活費→保險→銷差,40 日內結報",
       "parent": "國外旅費",
       "expense": "通則與其他",
+      "flow_root": true,
+      "sub_scenarios": [
+        "abroad-airfare", "abroad-airfare-receipts", "low-cost-carrier",
+        "abroad-living", "abroad-lodging-over-cap", "onboard-overnight-living", "return-day-living-30",
+        "abroad-insurance", "passport-photo-fee", "passport-rush-fee",
+        "abroad-meeting", "registration-credit-card",
+        "abroad-incidental-receipts", "abroad-taxi-classification",
+        "abroad-china",
+        "exchange-rate-no-receipt", "foreign-receipt-translate", "foreign-receipt-payee",
+        "international-date-line", "abroad-incident", "illness-delay-return"
+      ],
       "primary_ids": [
         "A-國外旅費-002",
         "A-國外旅費-003",
@@ -937,6 +1055,16 @@
       "subtitle": "統一發票、收據、證明文件之定義與要件",
       "parent": "支出憑證與結報",
       "expense": "通則與其他",
+      "flow_root": true,
+      "sub_scenarios": [
+        "voucher-receipts", "voucher-receipt", "voucher-electronic",
+        "invoice-tax-id-missing", "invoice-payee-wrong", "agency-abbreviation",
+        "e-invoice-tax-id-missing", "e-invoice-no-stamp", "online-tx-no-receipt",
+        "item-name-code-only", "amount-correction", "stamp-tax-missing",
+        "handwritten-correction", "receipt-no-quantity",
+        "voucher-foreign", "foreign-receipt-no-payee",
+        "voucher-lost"
+      ],
       "primary_ids": [
         "A-支出憑證與結報-002",
         "A-支出憑證與結報-004",
@@ -1023,6 +1151,8 @@
       "subtitle": "三聯式發票、多項採購、決標履約之憑證要求",
       "parent": "支出憑證與結報",
       "expense": "採購結報",
+      "flow_root": true,
+      "sub_scenarios": ["procurement-detail", "personal-credit-card-payment"],
       "primary_ids": [
         "A-支出憑證與結報-007",
         "D-支出憑證與結報-007",
@@ -1033,11 +1163,21 @@
         "採購",
         "原始憑證"
       ],
+      "baseline_attachments_id": "procurement",
       "attachments": [
-        "決標公告或契約",
-        "驗收紀錄 / 履約確認單",
-        "原始憑證(發票或請款單)",
-        "若涉政府採購法第 105/106 條:加附情形說明"
+        "若涉政府採購法第 105/106 條:加附情形說明 + 政風會辦"
+      ],
+      "caveats": [
+        { "text": "未達公告金額之小額採購仍應符合內部會計控制與財物管理規定", "severity": "warn", "legal_ref": "A-支出憑證與結報-007" },
+        { "text": "公告金額以上必須完成招標、決標、簽約、驗收完整程序,缺一不可", "severity": "stop", "legal_ref": "A-支出憑證與結報-007" },
+        { "text": "三聯式發票必須含扣抵聯;發票買受人必須是機關全銜或統編", "severity": "warn", "legal_ref": "D-支出憑證與結報-007" },
+        { "text": "公告金額(2026 年):工程 / 財物 / 勞務皆為新臺幣 150 萬元(以行政院最新公告為準)", "severity": "info" }
+      ],
+      "template": [
+        {
+          "type": "approval_memo",
+          "body": "簽呈\n\n主旨:辦理「○○○○」採購案,採購金額新臺幣○○○元整,簽請核可採購方式並依程序辦理。\n\n說明:\n一、採購事由:[請說明業務需求,例:本機關○○業務需採購○○設備供○○使用]\n二、預算來源:○○年度○○科目第○款「○○費」,可用餘額新臺幣○○○元。\n三、預估金額:新臺幣○○○元(未稅 / 含稅)。\n四、採購方式:\n   □ 未達公告金額之小額採購(< 150 萬)— 採[議價 / 比價 / 公開徵求書面報價]\n   □ 公告金額以上 — 依政府採購法辦理[公開招標 / 選擇性招標 / 限制性招標(第○條第○款)]\n五、預定執行期間:○年○月○日至○年○月○日。\n六、是否涉政府採購法第 105/106 條:□ 否  □ 是,事由:○○○(已會政風)。\n\n承辦人:○○○\n單位主管:○○○\n採購經辦:○○○\n主辦會計:○○○\n機關首長:○○○"
+        }
       ],
       "approvers": [
         "申請/承辦人員填表",
@@ -1079,18 +1219,18 @@
         },
         "conclusions": {
           "small_normal": {
-            "title": "小額採購 — 一般原始憑證",
-            "limit": "—",
-            "note": "檢附發票/收據與經費結報單即可,毋須決標公告;若超過小額採購金額仍須符合招標規定。",
+            "title": "小額採購(< 150 萬) — 一般原始憑證",
+            "limit": "≤ 150 萬;一般採以議價、比價或公開徵求書面報價(政府採購法第 49 條)",
+            "note": "檢附發票/收據與經費結報單即可,毋須決標公告。仍須符合機關內部採購授權規範。",
             "refs": [
               "A-支出憑證與結報-007",
               "D-支出憑證與結報-007"
             ]
           },
           "small_special": {
-            "title": "小額但有特殊事由 — 加附事由說明",
-            "limit": "—",
-            "note": "依政府採購法相關條文(限制性招標、緊急、獨家等)檢附事由及核准文件。",
+            "title": "小額(< 150 萬)但有特殊事由 — 加附事由說明",
+            "limit": "≤ 150 萬;限制性招標(政府採購法第 22 條)/ 緊急採購(第 105 條)/ 國防或國安(第 106 條)",
+            "note": "檢附事由及核准文件;若涉政府採購法第 105/106 條情形,加會政風單位。",
             "refs": [
               "A-支出憑證與結報-007",
               "D-支出憑證與結報-009",
@@ -1098,9 +1238,9 @@
             ]
           },
           "above": {
-            "title": "公告金額以上 — 須完整採購程序",
-            "limit": "—",
-            "note": "依政府採購法辦理招標、決標、簽約、驗收;結報應檢附決標公告、契約、驗收紀錄與原始憑證。",
+            "title": "公告金額以上(≥ 150 萬) — 須完整採購程序",
+            "limit": "≥ 150 萬(工程/財物/勞務皆同;以行政院最新公告為準)",
+            "note": "依政府採購法辦理招標、決標、簽約、驗收;結報應檢附決標公告、契約、驗收紀錄與原始憑證。巨額採購(工程 2 億 / 財物勞務 1 億)另有規定。",
             "refs": [
               "A-支出憑證與結報-007",
               "D-支出憑證與結報-009"
@@ -1181,10 +1321,22 @@
         "原始憑證",
         "憑證存管"
       ],
+      "baseline_attachments_id": "voucher_general",
       "attachments": [
         "申請人具結書(載明遺失原因、金額、品名、用途、日期)",
         "替代證明:信用卡帳單、銀行匯款紀錄、廠商出具之證明書",
         "單位主管證明文件"
+      ],
+      "caveats": [
+        { "text": "無任何足以證明支出事實之文件 → 該筆支出不得報支,申請人應自行賠償", "severity": "stop", "legal_ref": "A-支出憑證與結報-012" },
+        { "text": "替代證明必須與原憑證金額/日期一致;不一致須另案說明", "severity": "warn" },
+        { "text": "遺失非機關保管前 → 申請人具結 + 機關首長核處;遺失於機關保管中 → 應另依公文程序辦理", "severity": "info" }
+      ],
+      "template": [
+        {
+          "type": "approval_memo",
+          "body": "切結書\n\n本人 ○○○(身分證字號:○○○○○○○○○○)茲切結:\n\n一、本人於○年○月○日因公支付下列款項:\n   • 品名/事由:○○○\n   • 金額:新臺幣 ○○○ 元整\n   • 收款人 / 廠商:○○○\n   • 用途:○○○(派令字號 / 核准文號:○○字第○○○號)\n\n二、原始憑證(統一發票 / 普通收據)因[請具體說明:1. 攜帶途中遺失 / 2. 雨水浸毀無法辨識 / 3. ○○○]無法檢附,經多方尋找仍未尋獲。\n\n三、本人謹檢附下列替代證明:\n   □ 信用卡帳單(載明日期、金額、商家)\n   □ 銀行匯款紀錄 / 轉帳明細\n   □ 廠商重新出具之證明書(具負責人簽章)\n   □ 其他:○○○\n\n四、本切結書內容如有不實,本人願負一切法律責任,並繳還已領金額。\n\n此致 ○○○○○(機關名稱)\n\n切結人:○○○ (簽章)\n單位主管:○○○ (證明屬實)\n主辦會計:○○○\n機關首長核處:○○○\n\n中 華 民 國 ○ 年 ○ 月 ○ 日"
+        }
       ],
       "approvers": [
         "申請人具結書(說明遺失原因、金額、用途)",
@@ -1209,14 +1361,15 @@
             ]
           },
           "amount": {
-            "label": "金額大小?",
+            "label": "個別憑證金額是否 ≤ 5,000 元?",
+            "hint": "5,000 元為一般機關常用之「非重大」門檻參考(各機關內規可能不同;審計部 1 萬元以下亦多視為小額)。具體以機關自訂內控規範為準。",
             "options": [
               {
-                "label": "小額(不影響審計重大性)",
+                "label": "是,≤ 5,000 元(或機關內規之小額門檻內)",
                 "conclude": "small"
               },
               {
-                "label": "重大金額或審計關注事項",
+                "label": "否,> 5,000 元 或屬審計關注重大事項",
                 "conclude": "large"
               }
             ]
@@ -1224,17 +1377,17 @@
         },
         "conclusions": {
           "small": {
-            "title": "小額 + 有替代證明 — 機關首長核處可代用",
-            "limit": "—",
-            "note": "檢附申請人具結書 + 替代證明,經機關首長核處後得替代原始憑證。",
+            "title": "小額(≤ 5,000 元)+ 有替代證明 → 機關首長核處可代用",
+            "limit": "個別憑證 ≤ 5,000 元(參考門檻;依機關內規)",
+            "note": "檢附:① 申請人具結書(載明遺失原因/金額/品名/用途/日期)② 替代證明(信用卡帳單/匯款證明/廠商證明書) ③ 經機關首長核處後得替代原始憑證。",
             "refs": [
               "A-支出憑證與結報-012"
             ]
           },
           "large": {
-            "title": "重大金額 + 有替代證明 — 專案核處",
-            "limit": "—",
-            "note": "金額較大或屬審計重大事項時,除替代證明外,應由機關專案簽報、必要時函詢主辦會計或審計機關意見。",
+            "title": "重大金額(> 5,000 元)+ 有替代證明 → 專案簽報核處",
+            "limit": "金額 > 5,000 元 或審計關注事項",
+            "note": "除一般替代證明外,應由機關「專案簽報」核處;金額顯著時必要時函詢主辦會計或審計機關意見後辦理。",
             "refs": [
               "A-支出憑證與結報-012"
             ]
@@ -1751,6 +1904,9 @@
       "subtitle": "未達 60 公里須事前機關核准之業務需要",
       "parent": "國內旅費",
       "expense": "住宿費",
+      "deprecated": true,
+      "parent_scenario": "overnight",
+      "deprecation_note": "本情境已整併入「跨夜住宿」決策樹的 distance question 分支(2026-05-01)",
       "primary_ids": [
         "A-國內旅費-009",
         "D-國內旅費-012"
@@ -1778,6 +1934,9 @@
       "subtitle": "假日含放假日前一天,不含放假日最後一天",
       "parent": "國內旅費",
       "expense": "住宿費",
+      "deprecated": true,
+      "parent_scenario": "overnight",
+      "deprecation_note": "本情境已整併入「跨夜住宿」決策樹的 weekday question 分支(2026-05-01)",
       "primary_ids": [
         "B-國內旅費-001",
         "A-國內旅費-009"
@@ -1803,6 +1962,9 @@
       "subtitle": "同地超過 1 個月按 8 折、超過 2 個月按 7 折報支",
       "parent": "國內旅費",
       "expense": "住宿費",
+      "deprecated": true,
+      "parent_scenario": "overnight",
+      "deprecation_note": "本情境已整併入「跨夜住宿」決策樹的 long_stay question 分支(2026-05-01)",
       "primary_ids": [
         "A-國內旅費-011",
         "B-國內旅費-001",
@@ -1870,11 +2032,14 @@
         "行李費",
         "覈實報支"
       ],
+      "baseline_attachments_id": "abroad_trip",
       "attachments": [
-        "機票購票證明(顯示總票款 + 各項明細)",
-        "購票證明單 / 旅行業代收轉付收據(付款證明)",
-        "說明:廉航內含必要項目(行李托運、餐飲、手續費)可比照一般航空併報",
-        "注意:可選擇項目(毛毯、眼罩、特殊選位等)應自費,本撙節原則不予核銷(C-120)"
+        "機票購票證明(顯示總票款 + 各項明細,需逐項列計)"
+      ],
+      "caveats": [
+        { "text": "可選擇項目(毛毯、眼罩、特殊選位等)應自費,本撙節原則不予核銷", "severity": "stop", "legal_ref": "A-國外旅費-006" },
+        { "text": "廉航總票款(含內含項目)不得高於一般航空相同航段票價,否則僅能報該上限", "severity": "warn" },
+        { "text": "內含項目(行李托運、機上餐飲、刷卡手續費)可比照一般航空併報", "severity": "info" }
       ],
       "approvers": [
         "申請/出差人員填表",
@@ -2034,11 +2199,19 @@
         "行政費",
         "註冊費"
       ],
+      "baseline_attachments_id": "abroad_trip",
       "attachments": [
         "註冊費 / 報名費收據",
         "信用卡手續費明細 / 對帳單",
-        "主辦限定刷卡支付之文件 / 公告",
-        "驗算:原費用 + 信用卡手續費合計 ≤ 該費目上限(超過部分不得報支)"
+        "主辦限定刷卡支付之文件 / 公告"
+      ],
+      "caveats": [
+        { "text": "原費用 + 信用卡手續費合計不得超過該費目上限,超過部分不得報支", "severity": "stop", "legal_ref": "A-國外旅費-015" },
+        { "text": "須有「主辦限定刷卡支付」公告或文件;若可現金/匯款,不得報手續費", "severity": "warn" }
+      ],
+      "example": [
+        { "case": "註冊費 5,000 元 + 刷卡手續費 75 元(1.5%),費目上限 5,000 元", "formula": "5,000 + 75 = 5,075 > 5,000 → 僅得報 5,000 元,75 元不得報", "total": "5,000 元(超出 75 元自負)" },
+        { "case": "註冊費 4,800 元 + 刷卡手續費 72 元,費目上限 5,000 元", "formula": "4,800 + 72 = 4,872 ≤ 5,000 → 全額可報", "total": "4,872 元" }
       ],
       "approvers": [
         "申請/出差人員填表",
