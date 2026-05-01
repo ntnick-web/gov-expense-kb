@@ -47,3 +47,24 @@ _report_unpacked/
 
 # Node(若日後加 Node 工具鏈)
 node_modules/
+
+# 一次性 LLM batch / audit 產物(已 apply 到 SSOT,不入 repo;2026-05-01 加)
+_retitle_proposals/
+_resummary_proposals/
+_*_proposals/
+05_scripts/_*.csv
+05_scripts/_*.txt
+!05_scripts/_skip.txt   # _skip.txt 不算 dev artefact(00_source 用),保留 — 但其實在 00_source/ 不在這
+
+# 00_source 的「準輸入」配置檔保留(以 _ 開頭但需 tracked);其他 _ 開頭排除
+!00_source/_manifest.csv
+!00_source/_skip.txt
+
+# 前端開發樣本與 dev 暫存(避免 nodes_sample.json 之類再次進 repo)
+04_web/data/*_sample.json
+04_web/data/_*.json
+
+# Word 暫存鎖定檔(開啟時 Word 會建 ~$ 前綴的鎖)
+~$*.docx
+~$*.doc
+~$*.xlsx

@@ -2350,10 +2350,6 @@
     <span class="v2-footer-sep">·</span>
     <span>法規原文 屬政府公開資訊</span>
     <span class="v2-footer-sep">·</span>
-    <a href="index-v3.html" title="V3 候選版(vanilla,無 React/CDN)">✨ V3 候選</a>
-    <span class="v2-footer-sep">·</span>
-    <a href="design-preview/" title="編輯感馬卡龍試做版(React prototype)">🎨 設計試做</a>
-    <span class="v2-footer-sep">·</span>
     <a href="https://github.com/ntnick-web/gov-expense-kb" target="_blank" rel="noopener">GitHub</a>
     <span class="v2-footer-sep">·</span>
     <a href="https://forms.gle/R7F6x8v8UepfXgn4A" target="_blank" rel="noopener">問題回報或優化建議</a>
@@ -2455,18 +2451,15 @@ let BASELINE_ATTACHMENTS = {};  // 情境共通標配憑證 (baseline_attachment
 let SYNONYM_INDEX = new Map();  // 任一詞 → 該組所有詞 (含 canonical),供 expandSynonyms 用
 async function loadAllData() {
   const v = '?v=' + DATA_VERSION;
-  // 2026-05-01 (A1):auto 卡完全停用 — 情境視圖只載手寫 manual 卡。
-  //                 scenarios_auto.json 仍保留在 repo 供未來重啟或法條索引分頁參考,但前端不 fetch。
-  const [nodes, edges, scnManual, scnLegacy, aliases, synonyms, baseline] = await Promise.all([
+  // 2026-05-01 (A1):auto 卡停用、舊 scenarios.json monolith 退役 — 情境視圖只載手寫 manual 卡。
+  const [nodes, edges, scnManual, aliases, synonyms, baseline] = await Promise.all([
     fetch('../03_index/nodes.json' + v).then(r => r.json()),
     fetch('../03_index/edges.json' + v).then(r => r.json()),
     fetch('data/scenarios_manual.json' + v).then(r => r.ok ? r.json() : null).catch(() => null),
-    fetch('data/scenarios.json' + v).then(r => r.ok ? r.json() : { scenarios: [] }).catch(() => ({ scenarios: [] })),
     fetch('data/city_aliases.json' + v).then(r => r.ok ? r.json() : { aliases: {} }).catch(() => ({ aliases: {} })),
     fetch('data/synonyms.json' + v).then(r => r.ok ? r.json() : { groups: [] }).catch(() => ({ groups: [] })),
     fetch('data/baseline_attachments.json' + v).then(r => r.ok ? r.json() : { groups: {} }).catch(() => ({ groups: {} })),
   ]);
-  const scnAuto = null;  // 已停用
   BASELINE_ATTACHMENTS = baseline.groups || {};
   CITY_ALIASES = aliases.aliases || {};
   SYNONYMS = synonyms.groups || [];
@@ -2485,15 +2478,9 @@ async function loadAllData() {
     if (!INCOMING_EDGES.has(e.to)) INCOMING_EDGES.set(e.to, []);
     INCOMING_EDGES.get(e.to).push(e.from);
   }
-  // 2026-05-01:只載 manual;auto 卡停用(見上)
-  if (scnManual) {
-    const m = (scnManual.scenarios || scnManual) || [];
-    SCENARIOS = m;
-  } else {
-    SCENARIOS = scnLegacy.scenarios || scnLegacy;
-  }
-  // 防呆:過濾掉任何殘留 source==='auto' 卡(理論上 manual 不會有,但保險)
-  SCENARIOS = SCENARIOS.filter(s => s.source !== 'auto');
+  // 2026-05-01:只載 manual(auto / legacy 兩份 JSON 已退役)
+  const m = scnManual ? (scnManual.scenarios || scnManual) : [];
+  SCENARIOS = (m || []).filter(s => s.source !== 'auto');
   // map nodes → DATA (隱藏已廢止節點,但保留有 effective_period 的歷史費率表)
   DATA = nodes
     .filter(n => {
