@@ -8,8 +8,10 @@ on:
     paths:
       - '02_markdown/**'
       - '04_web/data/scenarios_manual.json'
+      - '04_web/data/scenarios/**'
       - '05_scripts/03_build_index.py'
       - '05_scripts/04_validate.py'
+      - '05_scripts/_build_scenarios_manual.py'
   workflow_dispatch:  # 也支援手動觸發
 
 permissions:
@@ -34,15 +36,37 @@ jobs:
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
-          pip install PyYAML
+          pip install PyYAML jsonschema
 
-      - name: Validate schema
+      - name: Build merged scenarios_manual.json
+        # _build_scenarios_manual.py:把 04_web/data/scenarios/*.json 多檔 → merged
+        run: python 05_scripts/_build_scenarios_manual.py --apply
+
+      - name: Validate MD schema
         # 04_validate.py:E1-E11 schema 一致性檢查;有 error 會 exit 2 阻擋
         run: python 05_scripts/04_validate.py
+
+      - name: Validate scenarios JSON Schema
+        # _validate_scenarios_schema.py:對 scenarios_manual.json 跑 JSON Schema 驗證
+        run: python 05_scripts/_validate_scenarios_schema.py --strict
+
+      - name: Link check
+        # _link_check.py:掃 README / docs / 02_markdown 內所有 markdown 連結,
+        # 驗證內部連結目標檔存在(外部 http(s) 不檢);跳過 code block 內範例
+        run: python 05_scripts/_link_check.py --strict
 
       - name: Rebuild index
         # 03_build_index.py:重建 03_index/*.json
         run: python 05_scripts/03_build_index.py
+
+      - name: Audit scenario sources
+        # _audit_scenario_sources.py:法源 5 項檢查(C1 primary_ids 真實性、C3 flow.refs 等)
+        # *-err 會 exit 2 阻擋(--strict);warn / info 僅輸出
+        run: python 05_scripts/_audit_scenario_sources.py --strict
+
+      - name: Sync DATA_VERSION
+        # _sync_data_version.py:_meta.last_indexed 比 index.html DATA_VERSION 新就 bump
+        run: python 05_scripts/_sync_data_version.py --apply
 
       # 2026-05-01:auto scenarios 已停用。原因見 CLAUDE.md §16(A1 決策)。
       # build_scenarios.py 仍保留在 repo 供未來重啟,但 CI 不再自動跑。
@@ -50,13 +74,13 @@ jobs:
       #                      run: python 05_scripts/build_scenarios.py --apply
 
       - name: Commit rebuilt artifacts
-        # 若 03_index/ 有變,自動 commit 回 main
+        # 若 03_index/ 或 04_web/index.html 有變,自動 commit 回 main
         run: |
-          if [ -n "$(git status --porcelain 03_index/)" ]; then
+          if [ -n "$(git status --porcelain 03_index/ 04_web/index.html)" ]; then
             git config user.name 'github-actions[bot]'
             git config user.email 'github-actions[bot]@users.noreply.github.com'
-            git add 03_index/
-            git commit -m "chore(ci): 自動重建 03_index [skip ci]"
+            git add 03_index/ 04_web/index.html
+            git commit -m "chore(ci): 自動重建 03_index + sync DATA_VERSION [skip ci]"
             git push
           else
             echo "No changes in build outputs; skipping commit."
