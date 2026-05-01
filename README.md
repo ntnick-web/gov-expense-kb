@@ -1,8 +1,8 @@
 # 政府支出法規知識庫
 
-將政府支出規定、解釋函令、問答集自動化處理為結構化 Markdown,並建立三視圖(泡泡概覽 / 條文庫 / 關聯圖)的純靜態 HTML 視覺化介面。
+將政府支出規定、解釋函令、問答集自動化處理為結構化 Markdown,並建立 6 視圖(Landing 三入口 / 情境檢索 / 條文庫 / 試算表 / 抽屜 / 比較模式)的純靜態 HTML 視覺化介面。
 
-**目前資料規模**:513 節點(國內旅費 204 + 國外旅費 209 + 支出憑證與結報 100),全部已校對(reviewed)。
+**目前資料規模**:520 節點(國內旅費 204 + 國外旅費 215 + 支出憑證與結報 101),全部已校對(reviewed)。72 張可見情境卡 + 6 個情境樹 root + 482 條人工/推斷雙模式關聯邊。
 
 線上版:<https://ntnick-web.github.io/gov-expense-kb/>
 
@@ -46,10 +46,10 @@ gov-expense-kb/
 ├── 00_source/        原始 PDF/DOCX/MD,按「機關」分子目錄(如 04_主計總處/)。唯讀
 ├── 01_extracted/     抽取後純文字 + .meta.json sidecar,按「類別/母題」分(A_核心法規/國內旅費/)
 ├── 02_markdown/      結構化 MD ⭐ 單一事實來源(SSOT),按類別/母題分
-├── 03_index/         自動產生的 JSON 索引(nodes/edges/tags/search_index 4 份),勿手改
-├── 04_web/           純靜態 HTML 三視圖介面(無框架、無 CDN)
+├── 03_index/         自動產生的 JSON 索引(nodes/edges/tags/search_index/_meta/rate_lookup 6 份),勿手改
+├── 04_web/           純靜態 HTML 6 視圖介面(無框架、無 CDN);展示用情境設定於 04_web/data/
 ├── 05_scripts/       自動化腳本與一次性工具
-├── docs/             規格與決策文件
+├── docs/             規格、決策、變更紀錄、法源審查與已封存 handoff
 └── .claude/          Claude Code 設定(launch.json 等)
 ```
 
@@ -66,26 +66,32 @@ gov-expense-kb/
 | [docs/04_ui_spec.md](docs/04_ui_spec.md) | 三視圖介面規格 |
 | [docs/05_workflow.md](docs/05_workflow.md) | 新增來源檔 SOP |
 | [docs/06_tags_taxonomy.md](docs/06_tags_taxonomy.md) | 標籤分類系統 |
-| [docs/decisions.md](docs/decisions.md) | 重要技術決策紀錄 |
+| [docs/decisions.md](docs/decisions.md) | 重要技術決策紀錄(ADR) |
+| [docs/changelog.md](docs/changelog.md) | 大型重構 / 設計轉換歷史 |
+| [docs/_review_log.md](docs/_review_log.md) | 法源審查 SOP 與紀錄 |
+| [docs/_archive/](docs/_archive/) | 已封存 handoff 文件 |
 
 ---
 
-## 四視圖
+## 6 視圖
 
 | 視圖 | 用途 | 優先級 |
 |------|------|--------|
-| 母題泡泡 | 首頁入口、母題視覺地圖 | **P0**(預設首頁) |
-| 核銷情境 | 使用者語言入口、深 link 到條文 | P1 |
-| 條文庫(三層樹+卡片+抽屜) | 日常查找主力 | P1 |
-| 關聯圖 | 研究條文牽連、靜態力佈局 | P3(暫時隱藏) |
+| Landing 三入口卡 | 首頁,新手三選一聚焦 | **P0**(預設首頁) |
+| 核銷情境檢索 | 使用者語言入口、深 link 到條文 | P1 |
+| 條文庫(chip filter+卡片+抽屜) | 日常查找主力 | P1 |
+| 試算表 | 日支生活費 + 外交部保險費試算 | P2 |
+| 抽屜(Drawer) | 條文全文 + 相關規定 + prev/next | 隨條文庫 |
+| 比較模式 | 2-3 卡並排 + metadata diff | P2 |
 
-四者共用 `03_index/*.json` + `04_web/data/scenarios.json`,不重複維護資料。
+共用 `03_index/*.json` + `04_web/data/scenarios_manual.json`(展示用,非 SSOT)。
 
 **互通設計**
-- 泡泡圖點母題 → 切到「情境」視圖並鎖定該母題
-- 情境卡片點擊 → 切到條文庫並套用情境過濾(primary_ids ∪ tag 命中)
-- 條文庫於鎖定模式下可切回情境或泡泡
-- 關聯圖點節點 → 切回條文庫並開啟抽屜
+- 任何時候點 topnav brand「核銷這樣做!!!」回 Landing 並清掉所有 filter
+- 情境卡片點擊 → 切到條文庫並套用情境過濾(primary_ids 置頂 + tag ≥2 命中)
+- 條文庫卡片點擊 → 開啟抽屜載入完整 MD + 相關規定
+- 抽屜內「+ 加入比較」→ 浮動底部 compare-bar 累積 → 並排 modal(2-3 張)
+- ⌘K Spotlight 全螢幕搜尋(分組顯示頁面 + 情境 + 條文)
 
 ---
 
@@ -106,12 +112,18 @@ gov-expense-kb/
 - [x] 範例 MD 樣本建立
 - [x] 抽取腳本 `01_extract.py`(PDF/DOCX/MD 通用,OCR 為 opt-in)
 - [x] 切分腳本 `02_parse.py`(中文數字 ID、reviewed 安全網、Q&A 切分)
-- [x] 索引腳本 `03_build_index.py`(4 份 JSON + 正文引用推斷邊)
+- [x] 索引腳本 `03_build_index.py`(6 份 JSON + 正文引用推斷邊 + rate_lookup)
 - [x] 驗證腳本 `04_validate.py`(errors/warnings 分級)
 - [x] 批次自動初校工具 `_batch_autoreview.py`
-- [x] HTML 條文庫視圖(P1,三層樹 + 卡片 + 抽屜 + 搜尋)
-- [x] HTML 泡泡概覽圖(P0,佔滿頁面、0 筆灰色、裝飾泡泡)
-- [x] HTML 關聯圖(P2,靜態 layout、scope 過濾、推斷邊區分)
+- [x] LLM 16 batch subagent 模式(`_retitle_*` / `_resummary_*`)
+- [x] 信度系統 `_mark_certainty.py`(explicit / inferred / contested)
+- [x] GitHub Actions CI(push to main 自動 validate → build_index)
+- [x] HTML Landing 三入口(P0,左中右並排,行動版堆疊)
+- [x] HTML 條文庫視圖(P1,4 排 chip filter + 卡片 + 抽屜 + ⌘K Spotlight)
+- [x] HTML 情境檢索(P1,情境樹 root + sub_scenarios + 條件問答 modal)
+- [x] HTML 試算表(P2,日支生活費公式拆解 + 外交部保險費 widget)
+- [x] HTML 比較模式(P2,2-3 卡並排 + metadata diff)
+- [x] 馬卡龍 7 色 token + WCAG AA 設計系統
 
 ---
 

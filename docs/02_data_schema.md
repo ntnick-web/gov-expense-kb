@@ -256,3 +256,76 @@ FlexSearch 預建索引,前端載入後即可全文搜尋。
 2. 同步更新範例 MD(`02_markdown/` 內的樣本)
 3. 更新 `04_validate.py` 驗證邏輯
 4. 對既有 MD 執行批次遷移腳本(若需要)
+
+---
+
+## 7. 情境卡 schema(`04_web/data/scenarios_manual.json`)
+
+> 情境卡為展示用,**非 SSOT**;不進 `03_index/`。schema 為原始 5 欄 + 2026-05-01 加 7 欄(P1),全部 optional 除 `id` `parent` `expense`。
+
+### 7.1 必填欄位
+
+| 欄位 | 型別 | 說明 |
+|------|------|------|
+| `id` | string | 情境卡 ID(kebab-case),唯一 |
+| `parent` | string | 母題(同 MD `parent`) |
+| `expense` | string | 支出類別(對應 `EXPENSE_LAYER` 表),分類用 |
+| `icon` | string | 卡片 icon |
+| `title` | string | 中文標題 |
+| `subtitle` | string | 一句白話說明 |
+
+### 7.2 法源連結
+
+| 欄位 | 型別 | 說明 |
+|------|------|------|
+| `primary_ids` | string[] | 主要法源節點 ID(必須在 `nodes.json` 找得到) |
+| `tags` | string[] | 過濾與相關卡計算用 |
+
+### 7.3 內容深化欄位(2026-05-01 加,P1)
+
+| 欄位 | 型別 | 說明 |
+|------|------|------|
+| `caveats` | array | 紅線 / 禁止項。每項 `{text, severity: 'stop'\|'warn'\|'info', legal_ref?}`,渲染為紅色 banner |
+| `example` | array | 計算範例 `{case, formula, total}`,渲染為抹茶綠卡 |
+| `template` | array | 簽呈樣張 `{type, body}`,`type='approval_memo'`(簽呈)/ `'request_letter'`(請示函)等;可摺疊 |
+| `baseline_attachments_id` | string | 指向 `baseline_attachments.json` 的 group key,共通標配憑證 |
+| `flow_root` | bool | 此卡為情境樹根,前端套 `.is-root` 樣式 + 「🗂 N 子情境」徽章 |
+| `sub_scenarios` | string[] | root 卡列出的子情境 ID(配合 `flow_root` 使用) |
+| `deprecated` | bool | 此卡內容已被 root flow 完整覆蓋,前端從主清單與計數隱藏 |
+| `parent_scenario` | string | 配合 `deprecated`,標明被哪個 root 整併 |
+
+### 7.4 條件問答(decision tree)
+
+`flow` 物件,完整 schema:
+
+```json
+{
+  "start": "Q1",
+  "questions": {
+    "Q1": {
+      "label": "問題敘述",
+      "hint": "(可選)補充說明",
+      "options": [
+        { "label": "選項 A", "next": "Q2" },
+        { "label": "選項 B", "conclude": "C1" }
+      ]
+    }
+  },
+  "conclusions": {
+    "C1": {
+      "title": "結論標題",
+      "limit": "金額或限制(如 3,500 元/日)",
+      "note": "依 A-國內-005 條規定...(中性化語氣)",
+      "refs": ["A-國內-005", "C-國內-159"]
+    }
+  }
+}
+```
+
+### 7.5 SOP — 新增情境卡前
+
+詳見 [_review_log.md](_review_log.md):必須同時搜 A/B/C/D 全四分類,確認結論的每個限制詞 / 數字 / 條件都對應到原文。違反原則的禁止寫入。
+
+### 7.6 共通標配憑證(`04_web/data/baseline_attachments.json`)
+
+5 組 group key:`domestic_trip` / `abroad_trip` / `voucher_general` / `procurement` / `honorarium`。情境卡的 `attachments` 欄位只列差異,共通項由本檔顯示為灰色摺疊區塊。新增母題時擴充本檔。

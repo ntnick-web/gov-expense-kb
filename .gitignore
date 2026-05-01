@@ -68,3 +68,7 @@ _*_proposals/
 ~$*.docx
 ~$*.doc
 ~$*.xlsx
+
+# 內部診斷報告(_gen_review_reports.py 產出,需要時本機重跑;不推公開 repo)
+# 規劃文件 _未來優化規劃報告_*.docx 仍 tracked 不受此規則影響
+docs/_資料庫*_報告_*.docx

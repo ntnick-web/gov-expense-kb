@@ -286,6 +286,101 @@ UI 規格、開發優先順序
 
 ---
 
+## 2026-04-29: LLM subagent 16 batch 模式 — title 與 summary 大規模重整
+
+**背景**
+500+ 節點的 title 與 summary 經 PDF 抽取 + 規則式整理,仍存在截斷、檔名直譯、前言式、長度不一等問題;直接呼叫 LLM API 成本高且難以追蹤。
+
+**決定**
+建立 `_retitle_build_batches.py` + `_retitle_apply.py` 雙腳本範式:① 切 16 批分檔輸出 ② Claude Code subagent 並行讀取內文 + 摘要 + 前後脈絡產出提案 ③ apply 腳本自動 merge 提案 + 套用到 SSOT。Summary 同模式建立 `_resummary_*` 對偶腳本。
+
+**理由**
+- subagent 是免費(無 API 費),適合大規模重整
+- 16 批切分讓單次 context 維持在可控範圍
+- proposals/ 落地產物可審計、可重跑、可 dry-run
+- title 在 LLM 提案後仍經 `_polish_titles.py` 20 字硬上限把關
+
+**影響範圍**
+460 卡 title 改動、479 卡 summary 改動;`02_markdown/` 大規模 SSOT 變動;新範式可外推到下次內容深化(scenarios caveats / example / template 67 卡待補)
+
+---
+
+## 2026-04-30e: 馬卡龍 7 色 token 設計系統 — 取代靛藍單色品牌
+
+**背景**
+舊版 v2 用單一靛藍品牌色(oklch 55% 0.15 265),搭配多色 chip 與徽章顯得雜亂;V3 prototype 提出馬卡龍系統作為候選。改版建議報告(2026-04-30 對話)決議將 V3 優點融入正式版。
+
+**決定**
+- `:root` 從靛藍 hue 265 改成薰衣草 hue 295 主品牌
+- 加入 7 色馬卡龍 token:lavender / peach / strawberry / vanilla / matcha / sky / rose-taupe
+- 每色配套深 ink 變數,過 WCAG AA 對比 ≥ 4.5
+- 深色模式 L 從 ~88% 降到 ~30% 保留 hue,避免螢光糖果色
+- **角色映射規則**:主畫布奶白底;馬卡龍只用於 chip / banner / dot / 邊框(< 30% 面積);馬卡龍底必配深 ink 字
+
+**理由**
+- 政府網站普遍硬色彩,馬卡龍系統提升品牌辨識度
+- 7 色覆蓋 ok / warn / stop / info / 中性 5 種語意需求
+- token 化讓改色一次到位(改 `:root` 即可)
+- 深色模式 hue 保留,避免兩種模式視覺斷裂
+
+**影響範圍**
+[04_web/index.html](../04_web/index.html) `:root` + `--ok/warn/stop` + `mark.search-hit` + `.related-kind` + `.sc-flow-strip` + `.badge-certainty` 等共 ~30 處改用 token
+
+---
+
+## 2026-05-01: 中立角色原則明文化 + 法源位階 SOP
+
+**背景**
+2026-05-02 法源審查發現 4 張情境卡曾被誤判為「無法源」(因初查只搜 A/B/D,漏 C 類解釋彙編 359 份),需建立明確 SOP 防止再現。同時 AI 助手在內容深化過程曾以「常識補強」名義加入無法源結論,違反專案中立原則。
+
+**決定**
+- CLAUDE.md §0 新增「核心原則:中立角色 — 不給予判斷,不加入無法源依據的內容」段落
+- 法源位階明確:A 核心 > B 標準 > C 解釋 > D 問答(D 仍算法源,但位階最低,不可推翻 A/B 文義)
+- 新增情境卡 SOP:必須**同時搜 A/B/C/D 全四分類**才能寫結論;每個限制詞 / 數字 / 條件都需對應原文
+- 違反原則的既有內容**列入待處理清單**,不自行修改;等人類拍板處理方式
+- 用語中性化:用「條文規定...」「依○○條...」取代「應該...」「不得...」「才能...」
+- 處理紀錄抽出獨立檔 [_review_log.md](_review_log.md)(2026-05-01 拆檔)
+
+**理由**
+- 中立角色是本資料庫最大護城河,違反即等於把工具變成「另一份實務指引」失去差異化
+- 法律意見必須有來源,沒有就應留白讓使用者諮詢主計室
+- AI 助手「主動補強」是常見失誤,需明確禁止
+
+**影響範圍**
+- CLAUDE.md §0 + §17(後 §17 抽到 [_review_log.md](_review_log.md))
+- 對 75 manual 情境卡的 caveats / flow.conclusions / template 內容皆有審查影響
+
+---
+
+## 2026-05-01: 多版本前端檔退役 — 以 git tag 取代實檔保留
+
+**背景**
+從 2026-04-26 v1(母題泡泡圖) → 2026-04-28r v2(Claude Design)→ 2026-04-30 V3 候選 → 2026-04-30e 馬卡龍重構,累積 4 份 index.html 並存 + 兩份 scenarios JSON + `design-preview/` React prototype。同時存在帶來 ~600 KB tracked 體積與「該改哪一版?」的維護心智成本。
+
+**決定**
+- `git tag` 三個歷史錨點:`v2-archive`(`8aaf079`) / `v3-prototype`(`6dfea70`) / `old-bubblechart`(`8aaf079`)
+- `git rm` 7 檔 + 1 目錄:`index-v2.html` / `index-v3.html` / `index-old.html` / `assets/app.js` / `assets/style.css` / `data/scenarios.json` / `data/scenarios_auto.json` / `design-preview/`
+- `04_web/index.html`:刪 footer 兩個連結 + 移除 `loadAllData()` 的 `scenarios.json` fallback fetch + 簡化 SCENARIOS 賦值
+- 還原任一檔:`git checkout <tag> -- <path>`
+
+**理由**
+- 「保留供 bookmark 不破」實際很少使用,卻長期增加心智成本
+- git tag 是更乾淨的歷史錨點機制(語義化 + 不佔工作樹)
+- `04_web/` 從 4 份 index 簡化為 1 份,新進者不會誤改錯版本
+- legacy scenarios.json 早被 A1 決策停載,留著只是 dead code
+
+**替代方案**
+- 砍 design-preview 但保留 v2/v3:仍有「該改哪一版?」問題
+- 全保留 + 加 README 說明:文件成本只增不減
+
+**影響範圍**
+- `04_web/` 大幅瘦身(從 4 份 index 變 1 份)
+- 新增 `docs/changelog.md` + `_review_log.md` 兩檔
+- `_handoff_*.md` 移到 `docs/_archive/`
+- README.md / 01_architecture.md / 02_data_schema.md 同步更新
+
+---
+
 ## (待補)
 
 新決策依時間順序追加於下方。

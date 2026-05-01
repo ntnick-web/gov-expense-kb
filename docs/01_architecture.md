@@ -1,5 +1,7 @@
 # 系統架構與技術決策
 
+> 最後更新:2026-05-01。歷史變更見 [changelog.md](changelog.md);早期 ADR 見 [decisions.md](decisions.md)。
+
 ---
 
 ## 1. 系統總覽
@@ -7,13 +9,20 @@
 ```
 ┌──────────────┐    ┌──────────────┐    ┌──────────────┐    ┌──────────────┐
 │  00_source   │───▶│ 01_extracted │───▶│ 02_markdown  │───▶│  03_index    │
-│  PDF/DOCX    │    │   純文字     │    │  結構化 MD   │    │  JSON 索引   │
+│  PDF/DOCX    │    │   純文字     │    │  結構化 MD   │    │  6 份 JSON   │
 └──────────────┘    └──────────────┘    └──────────────┘    └──────┬───────┘
        ▲                   ▲                   ▲                   │
        │                   │                   │                   ▼
    人工放檔        01_extract.py        02_parse.py          ┌──────────────┐
-                                       (+人工校對)            │   04_web     │
-                                                              │  HTML 介面   │
+                                       + autoreview           │   04_web     │
+                                       + LLM 16 batch         │  6 視圖介面  │
+                                       + 法源審查 SOP         └──────────────┘
+                                                                      │
+                                                                      ▼
+                                                              ┌──────────────┐
+                                                              │ GitHub Pages │
+                                                              │ + CF Web     │
+                                                              │   Analytics  │
                                                               └──────────────┘
 ```
 
@@ -21,6 +30,20 @@
 - 單向資料流:左→右,不回流
 - 每階段產物可獨立檢視
 - `02_markdown` 為單一事實來源(SSOT),其他可重建
+- 中立角色(不下判斷,每結論需有真實 A/B/C/D 法源 — 詳見 [_review_log.md](_review_log.md))
+
+**6 視圖架構**(2026-04-30 起,取代舊版 4 視圖)
+
+| 視圖 | 內容 | 預設 |
+|------|------|------|
+| Landing 三入口 | Hero「核銷這樣做!!!」+ 情境/條文/試算三卡 | ✅ 預設首頁 |
+| 情境檢索 | 6 個 root + sub_scenarios + 條件問答 modal | |
+| 條文庫 | 4 排 chip filter + 卡片網格 + 抽屜 + ⌘K Spotlight | |
+| 試算表 | 日支生活費(公式拆解)+ 外交部保險費 widget | |
+| 抽屜 | 條文全文 + 相關規定(出/入)+ prev/next + 比較加入 | |
+| 比較模式 | 2-3 卡並排 + metadata diff + 馬卡龍 | |
+
+舊「母題泡泡圖」與「關聯圖」於 2026-04-30 退役(關聯圖程式碼仍在但 hidden;泡泡圖已從 v2 設計拿掉)。
 
 ---
 
@@ -111,28 +134,32 @@
 
 ---
 
-## 5. 效能預估
+## 5. 效能(實測 2026-05-01)
 
-- 預估節點數:法規 ~50 條 + 函釋 ~30 則 + Q&A ~80 題 ≈ 160 節點
-- `nodes.json` 預估大小:< 200 KB
-- `search_index.json` 預估大小:< 500 KB
-- 首頁載入時間目標:< 1 秒(行動裝置 4G)
+- 節點數:520(國內 204 + 國外 215 + 支出憑證 101)
+- `nodes.json` 約 700 KB / `edges.json` 約 50 KB / `search_index.json` 約 350 KB / `rate_lookup.json` 約 30 KB
+- 條文庫 lazy-render:首批 30 卡 + IntersectionObserver(rootMargin 400px)
+- 情境視圖:首批 3 sections,page height 19887 → 4936px(降 75%)
+- 首頁載入時間:桌面 < 0.5 秒、行動裝置 4G < 1.5 秒
 
 ---
 
-## 6. 安全性
+## 6. 安全性與隱私
 
 - 純靜態檔,無後端攻擊面
-- 不蒐集使用者資料
-- 部署於內網時可加 HTTP Basic Auth
+- 完全公開無存取控制(內容皆政府公開法規)
+- Cloudflare Web Analytics:無 cookie / 無 PII / GDPR 友善
+- 詳見 [privacy.md](privacy.md)
 
 ---
 
-## 7. 未上線前的限制
+## 7. 已知擴充點
 
-- 無多人協作編輯機制(改 MD 用 Git)
-- 無使用紀錄統計
-- 無留言或註記功能
-- 無 RWD 行動裝置最佳化(P2 階段補)
+- 新增母題:在 `PARENT_KEYWORDS` 加識別字串 + `EXPENSE_LAYER` 加支出類別表 + `_normalize_tags.py` `ENRICH_RULES` 加關鍵字
+- 主推下一輪母題:酬勞費(講座 / 出席 / 稿費),預估 18-25 卡
+- 後續 5 母題順序:共通性費用 → 加班費 → 公務車輛 → 教育部 → 國科會
+- 推斷邊獨立追蹤(目前 482 條全混雜為人工邊)
+- index.html(5424 行)拆 ESM module
+- 節點 > 1000 時引入 FlexSearch 中文分詞
 
-以上限制接受度高,符合「先做原型」原則。
+完整擴充清單見 [CLAUDE.md](../CLAUDE.md) §14。
