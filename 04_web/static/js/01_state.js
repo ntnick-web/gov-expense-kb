@@ -5,7 +5,7 @@
 let compareList = [];
 
 /* ──────── 真實資料載入 (520 nodes from 03_index/) ──────── */
-const DATA_VERSION = '2026-05-02f';  // 中立角色原則 + 5 卡法源審查(刪 passport-rush-fee + 4 卡補 C 類函釋)
+const DATA_VERSION = '2026-05-02g';  // 中立角色原則 + 5 卡法源審查(刪 passport-rush-fee + 4 卡補 C 類函釋)
 let DATA = [];                 // 對外用的卡片資料 (mapped from nodes.json)
 let NODES_BY_ID = new Map();   // id → original node (含 file_path 等)
 let INCOMING_EDGES = new Map();// id → [from1, from2, ...] 反向引用
