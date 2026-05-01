@@ -1,0 +1,148 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://ntnick-web.github.io/gov-expense-kb/scenarios.schema.json",
+  "title": "Scenario card schema (scenarios_manual.json)",
+  "description": "依 docs/02_data_schema.md §7 定義。情境卡為展示用,非 SSOT。",
+  "type": "object",
+  "required": ["scenarios"],
+  "properties": {
+    "version": { "type": "string" },
+    "note": { "type": "string" },
+    "scenarios": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/scenario" }
+    }
+  },
+  "$defs": {
+    "scenario": {
+      "type": "object",
+      "required": ["id", "parent", "expense"],
+      "additionalProperties": true,
+      "properties": {
+        "id": { "type": "string", "pattern": "^[a-z0-9-]+$", "description": "kebab-case 唯一 ID" },
+        "parent": { "type": "string", "enum": ["國內旅費", "國外旅費", "支出憑證與結報", "酬勞費", "講座鐘點費", "教育部專章", "國科會專章", "其他"] },
+        "expense": { "type": "string", "description": "支出類別,對應 EXPENSE_LAYER 表" },
+        "icon": { "type": "string" },
+        "title": { "type": "string" },
+        "subtitle": { "type": "string" },
+        "primary_ids": {
+          "type": "array",
+          "items": { "type": "string", "pattern": "^[A-DN]-[一-鿿]+-\\d+$", "description": "節點 ID,需在 nodes.json 找到" }
+        },
+        "tags": {
+          "type": "array",
+          "items": { "type": "string" }
+        },
+        "attachments": {
+          "type": "array",
+          "items": { "type": "string" }
+        },
+        "approvers": {
+          "type": "array",
+          "items": { "type": "string" }
+        },
+        "caveats": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["text", "severity"],
+            "properties": {
+              "text": { "type": "string" },
+              "severity": { "enum": ["stop", "warn", "info"] },
+              "legal_ref": { "type": "string", "description": "stop / warn 嚴重度建議必填(C2 audit 會警告)" }
+            }
+          }
+        },
+        "example": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["case", "formula", "total"],
+            "properties": {
+              "case": { "type": "string" },
+              "formula": { "type": "string" },
+              "total": { "type": "string" }
+            }
+          }
+        },
+        "template": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["type", "body"],
+            "properties": {
+              "type": { "type": "string", "enum": ["approval_memo", "request_letter", "settlement_form", "other"] },
+              "body": { "type": "string" }
+            }
+          }
+        },
+        "baseline_attachments_id": {
+          "type": "string",
+          "enum": ["domestic_trip", "abroad_trip", "voucher_general", "procurement", "honorarium"]
+        },
+        "flow_root": { "type": "boolean" },
+        "sub_scenarios": {
+          "type": "array",
+          "items": { "type": "string", "pattern": "^[a-z0-9-]+$" }
+        },
+        "deprecated": { "type": "boolean" },
+        "parent_scenario": { "type": "string", "pattern": "^[a-z0-9-]+$" },
+        "flow": {
+          "type": "object",
+          "required": ["start", "questions", "conclusions"],
+          "properties": {
+            "start": { "type": "string" },
+            "questions": {
+              "type": "object",
+              "patternProperties": {
+                "^Q\\d+$": {
+                  "type": "object",
+                  "required": ["label", "options"],
+                  "properties": {
+                    "label": { "type": "string" },
+                    "hint": { "type": "string" },
+                    "options": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "required": ["label"],
+                        "properties": {
+                          "label": { "type": "string" },
+                          "next": { "type": "string", "pattern": "^Q\\d+$" },
+                          "conclude": { "type": "string", "pattern": "^C\\d+[A-Z]?$" }
+                        },
+                        "oneOf": [
+                          { "required": ["next"] },
+                          { "required": ["conclude"] }
+                        ]
+                      }
+                    }
+                  }
+                }
+              }
+            },
+            "conclusions": {
+              "type": "object",
+              "patternProperties": {
+                "^C\\d+[A-Z]?$": {
+                  "type": "object",
+                  "required": ["title"],
+                  "properties": {
+                    "title": { "type": "string" },
+                    "limit": { "type": "string" },
+                    "note": { "type": "string" },
+                    "refs": {
+                      "type": "array",
+                      "items": { "type": "string", "pattern": "^[A-DN]-[一-鿿]+-\\d+$" }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "source": { "enum": ["manual", "auto"] }
+      }
+    }
+  }
+}
