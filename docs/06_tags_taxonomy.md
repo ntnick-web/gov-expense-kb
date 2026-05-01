@@ -20,7 +20,7 @@
 
 ### 實作對應(關鍵)
 
-本檔的「母標籤」是規範層,**實際分類由前端 [04_web/assets/app.js](../04_web/assets/app.js) 內的 `EXPENSE_LAYER` 表決定**。`EXPENSE_LAYER` 各類別有 `match` 詞庫,從節點的 `tags`(自由標籤)反推支出類別,例:
+本檔的「母標籤」是規範層,**實際分類由前端 [04_web/index.html](../04_web/index.html) 內的 `EXPENSE_LAYER` 表決定**。`EXPENSE_LAYER` 各類別有 `match` 詞庫,從節點的 `tags`(自由標籤)反推支出類別,例:
 
 ```js
 { name: '交通費', match: ['交通費', '機票', '飛機', '艙等', '計程車', '租車', ...] }
@@ -199,7 +199,7 @@
 新增一個母題的 `EXPENSE_LAYER` 子表時:
 
 1. 觀察該母題實際 tag 分布(可用 `python -c "import json; from collections import Counter; ..."` 統計)
-2. 在 [04_web/assets/app.js](../04_web/assets/app.js) `EXPENSE_LAYER['{母題}']` 加陣列,每項含 `name` + `match` 詞庫
+2. 在 [04_web/index.html](../04_web/index.html) `EXPENSE_LAYER['{母題}']` 加陣列,每項含 `name` + `match` 詞庫
 3. 順序設計原則:
    - **特殊情境**(如「大陸港澳」「出國進修」)放最前,優先過濾
    - **具體費用類別**居中(交通費 / 生活費 / 手續費 / 保險費 / 行政費 / 禮品交際及雜費 ...)

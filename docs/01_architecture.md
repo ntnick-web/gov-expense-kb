@@ -108,7 +108,7 @@
 **人工介入點**:
 1. 來源盤點(可選,manifest 沒對應時自動推斷)
 2. **MD 精校**:補 `related`、潤飾自動摘要、加備註
-3. (可選)新增母題的 `EXPENSE_LAYER` 表(於 [04_web/assets/app.js](04_web/assets/app.js))
+3. (可選)新增母題的 `EXPENSE_LAYER` 表(於 [04_web/index.html](../04_web/index.html))
 
 「批次自動初校」讓初次新增的草稿快速進入可瀏覽狀態(摘要尾標 `_(自動初校,待人工潤飾)_`),配合「正文引用偵測 → 推斷邊」機制,即使尚未人工補 `related` 也能在關聯圖看到合理連線。
 

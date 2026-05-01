@@ -129,7 +129,7 @@
                                       問答集 D)
 ```
 
-「支出類別」中間層由前端 `EXPENSE_LAYER` 表(於 [04_web/assets/app.js](../04_web/assets/app.js))定義。目前已配置:
+「支出類別」中間層由前端 `EXPENSE_LAYER` 表(於 [04_web/index.html](../04_web/index.html))定義。目前已配置:
 
 | 母題 | 支出類別 |
 |---|---|
@@ -312,7 +312,7 @@
 
 ## 8. 樣式變數
 
-統一定義於 [04_web/assets/style.css](../04_web/assets/style.css):
+統一定義於 [04_web/index.html](../04_web/index.html):
 
 ```css
 :root {

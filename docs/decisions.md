@@ -127,7 +127,7 @@ UI 規格、開發優先順序
 - FlexSearch:需中文分詞或同義詞搜尋時可重新評估
 
 **影響範圍**
-[04_web/assets/app.js](../04_web/assets/app.js)、[docs/01_architecture.md](01_architecture.md) §2.4-2.5
+[04_web/index.html](../04_web/index.html)、[docs/01_architecture.md](01_architecture.md) §2.4-2.5
 
 ---
 
@@ -192,7 +192,7 @@ UI 規格、開發優先順序
 - `setFilter` 變動時自動觸發 `updateGraphScopeBanner`,雙向同步
 
 **影響範圍**
-[04_web/assets/app.js](../04_web/assets/app.js) `renderTree / applyGraphFilter / setFilter / updateGraphScopeBanner`
+[04_web/index.html](../04_web/index.html) `renderTree / applyGraphFilter / setFilter / updateGraphScopeBanner`
 
 ---
 
@@ -215,7 +215,7 @@ UI 規格、開發優先順序
 - 使用者校對時補具體 tag,下次重建索引自動歸正,不需動 `EXPENSE_LAYER` 表
 
 **影響範圍**
-[04_web/assets/app.js](../04_web/assets/app.js) `EXPENSE_LAYER`、`buildTreeData`、`renderTree`、`filteredNodes`、`renderCards` 麵包屑;[06_tags_taxonomy.md](06_tags_taxonomy.md) 加實作對應段
+[04_web/index.html](../04_web/index.html) `EXPENSE_LAYER`、`buildTreeData`、`renderTree`、`filteredNodes`、`renderCards` 麵包屑;[06_tags_taxonomy.md](06_tags_taxonomy.md) 加實作對應段
 
 ---
 
@@ -260,7 +260,7 @@ UI 規格、開發優先順序
 - 裝飾泡泡填補大畫面的空白,維持「視覺地圖」感
 
 **影響範圍**
-[04_web/assets/app.js](../04_web/assets/app.js) `renderOverview`、`packBubbles`、`makeBubble`;[04_ui_spec.md](04_ui_spec.md) §2 完全重寫
+[04_web/index.html](../04_web/index.html) `renderOverview`、`packBubbles`、`makeBubble`;[04_ui_spec.md](04_ui_spec.md) §2 完全重寫
 
 ---
 
@@ -282,7 +282,7 @@ UI 規格、開發優先順序
 - 節省 CPU(無持續 RAF)
 
 **影響範圍**
-[04_web/assets/app.js](../04_web/assets/app.js) `tickSimulation` 移除、`runPackingSync` 新增、拖曳互動改寫
+[04_web/index.html](../04_web/index.html) `tickSimulation` 移除、`runPackingSync` 新增、拖曳互動改寫
 
 ---
 

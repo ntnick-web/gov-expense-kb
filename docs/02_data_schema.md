@@ -17,7 +17,8 @@
 | `parent` | string | ✓ | 所屬母題 | `國內旅費` |
 | `title` | string | ✓ | 條文/函釋/題目標題 | `第五條 交通費上限` |
 | `tags` | array<string> | ✓ | 自由標籤,至少 1 個 | `[交通費, 報支上限]` |
-| `related` | array<id> | ✗ | 關聯節點 ID(人工邊;推斷邊由 `03_build_index.py` 額外產出) | `[C-國內旅費-002]` |
+| `related` | array<id> | ✗ | 關聯節點 ID — **人工邊**(由人工或精校時補入) | `[C-國內旅費-002]` |
+| `related_inferred` | array<id> | ✗ | **推斷邊**(2026-05-01 加,由 `_write_inferred_related.py` 寫入;edges.json 中以 `_inferred` 後綴 relation 顯示) | `[A-國內旅費-005]` |
 | `source` | string | ✓ | 來源檔名/法規名稱 | `行政院主計總處_國內旅費報支要點` |
 | `version` | date | ✓ | 法規版本日期(YYYY-MM-DD) | `2024-01-15` |
 | `reviewed` | date | ✗ | 校對日期。**有此欄位 = 已校對**(自動或人工);用於 `02_parse.py` 的安全網,`--force` 不蓋,需 `--force-reviewed` | `2026-04-25` |
@@ -26,7 +27,7 @@
 | `status` | enum | ✗ | 法規狀態,預設 `現行`。允許值:`現行` / `被取代` / `修正中` / `已廢止`(2026-04-29 從 3 值擴成 4 值,拆「部分修正」為更精確的兩個語意)| `現行` |
 | `source_url` | url | ✗ | 原始法規/函釋的官方網頁/PDF 連結,前端卡片會顯示為「原始出處」按鈕 | `https://www.dgbas.gov.tw/...` |
 | `summary_pending` | bool | ✗ | 由 `_cleanup_*` 腳本自動加上,代表摘要尚為占位符 | `true` |
-| `review_level` | enum | ✗ | 校對層級,預設 `草稿`。允許值:`人工` / `llm精校` / `自動初校` / `草稿`(2026-04-29 加 `草稿`)| `人工` |
+| `review_level` | enum | ✗ | 校對層級,預設 `草稿`。允許值:`人工` / `llm精校` / `llm待人工` / `自動初校` / `草稿`(2026-05-01 加 `llm待人工`,LLM 精校時 body 不完整無法驗證,需人工複核)| `llm精校` |
 | `effective_period` | string | ✗ | 歷史費率表的適用期間,如 `'2024-06-21 ~ 2025-06-20'`(配合 `status: 已廢止` 使用)| `'2024-06-21 ~ 2025-06-20'` |
 | `superseded_by` | id | ✗ | 被哪個現行節點取代,如 `B-國外旅費-006`。`status: 被取代` 必須配此欄位 | `B-國外旅費-006` |
 | `certainty` | enum | ✗ | 法規明文程度,預設 `explicit`。允許值:`explicit`(法規明文)/ `inferred`(依精神推論)/ `contested`(實務有爭議)— 驅動前端 `disclaimer_level` 與是否顯示判斷結論。**Phase 4 標記中,目前所有節點預設 explicit** | `explicit` |
@@ -82,14 +83,18 @@
 
 前端依 `disclaimer_level` 顯示三層免責文字(關於頁完整版 / 卡片底部 40 字版 / inferred-contested 強警示版,見 `04_ui_spec.md`)。
 
-### 1.6 `review_level` 4 級制(2026-04-29 起)
+### 1.6 `review_level` 5 級制(2026-04-29 4 級;2026-05-01 加 `llm待人工` 變 5 級)
 
-| review_level | 語意 | 對情境回答的影響 |
-|--------------|------|--------------------|
-| `人工` | 人工比對原始條文完成 | 情境回答可直接引用 |
-| `llm精校` | LLM 二輪精校(目前未使用) | 同 `人工` 但徽章顏色不同 |
-| `自動初校` | `_batch_autoreview.py` 抽首段 | 回答時附「建議核對原文」提示 |
-| `草稿` | 尚未校對,無 reviewed | 不納入情境回答主回傳,僅條文庫可見 |
+| review_level | 語意 | 對情境回答的影響 | 數量 |
+|--------------|------|--------------------|------|
+| `人工` | 人工比對原始條文完成 | 情境回答可直接引用 | 39 |
+| `llm精校` | LLM 二輪精校通過 / 已修正(`_llm_review_*` 流程) | 高可信,情境回答可引用 | 442 |
+| `llm待人工` | LLM 精校時 body 不完整無法驗證 → 需人工複核 | 顯示時加「待人工複核」提示 | 37 |
+| `自動初校` | `_batch_autoreview.py` 抽首段(尚未經 LLM 精校) | 回答時附「建議核對原文」提示 | 2(殘留) |
+| `草稿` | 尚未校對,無 reviewed | 不納入情境回答主回傳,僅條文庫可見 | 0 |
+
+LLM 精校流程(2026-05-01 起):`_llm_review_build_batches.py` 切 16 批 → subagent 逐筆驗 `current_summary`
+是否準確反映 `body_excerpt` → `_llm_review_apply.py` 套用 verdicts(pass / fix / flag)。
 
 ---
 

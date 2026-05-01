@@ -134,7 +134,7 @@ python -m http.server 8765
 # → 開瀏覽器訪問 http://localhost:8765/04_web/
 ```
 
-或用 Claude Code:`preview_start "Static frontend (04_web)"`(從 [.claude/launch.json](.claude/launch.json) 啟動)。
+或用 Claude Code:`preview_start "Static frontend (04_web)"`(從 [.claude/launch.json](../.claude/launch.json) 啟動)。
 
 > ⚠️ 不能直接 `open 04_web/index.html`,因為 file:// 協定下瀏覽器會擋 `fetch()`,JSON 與 MD 載不進來。
 
