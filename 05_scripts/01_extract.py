@@ -171,7 +171,7 @@ class ExtractResult:
 
 
 def load_manifest(path: Path) -> dict[str, dict[str, str]]:
-    """讀取 _manifest.csv,以 filename 為 key。"""
+    """讀取 _manifest.csv,以 filename 為 key。包含 status 欄位（若存在）。"""
     if not path.exists():
         return {}
     rows: dict[str, dict[str, str]] = {}
@@ -183,6 +183,16 @@ def load_manifest(path: Path) -> dict[str, dict[str, str]]:
                 continue
             rows[fname] = {k: (v or "").strip() for k, v in row.items()}
     return rows
+
+
+def save_manifest(path: Path, manifest: dict[str, dict[str, str]]) -> None:
+    """將更新後的 manifest 寫回 CSV（含 status 欄位）。"""
+    headers = ["filename", "category", "parent", "agency", "version", "notes", "status"]
+    with path.open("w", encoding="utf-8", newline="") as f:
+        writer = csv.DictWriter(f, fieldnames=headers, extrasaction="ignore")
+        writer.writeheader()
+        for row in manifest.values():
+            writer.writerow({h: row.get(h, "") for h in headers})
 
 
 # ─────────────────────────────────────────────
@@ -841,17 +851,39 @@ def main(argv: Optional[list[str]] = None) -> int:
     log.info(f"準備處理 {len(inputs)} 個檔案" + (" (dry-run)" if args.dry_run else ""))
 
     results: list[ExtractResult] = []
+    manifest_dirty = False
     for src in inputs:
-        results.append(
-            process_file(
-                src,
-                manifest,
-                use_ocr=args.ocr,
-                force=args.force,
-                dry_run=args.dry_run,
-                log=log,
-            )
+        manifest_row = manifest.get(src.name) or {}
+        status = manifest_row.get("status", "")
+
+        # manifest status 過濾：skip 一律跳過；parsed 除非 --force
+        if status == "skip":
+            log.info(f"跳過 {src.name}（_manifest.csv status=skip）")
+            continue
+        if status == "parsed" and not args.force:
+            log.info(f"跳過 {src.name}（已處理完畢，加 --force 可覆寫）")
+            continue
+
+        result = process_file(
+            src,
+            manifest,
+            use_ocr=args.ocr,
+            force=args.force,
+            dry_run=args.dry_run,
+            log=log,
         )
+        results.append(result)
+
+        # 抽取成功後回寫 status=extracted
+        if result.ok and result.method != "skipped" and not args.dry_run:
+            if src.name not in manifest:
+                manifest[src.name] = {"filename": src.name}
+            manifest[src.name]["status"] = "extracted"
+            manifest_dirty = True
+
+    if manifest_dirty:
+        save_manifest(MANIFEST_PATH, manifest)
+        log.info("已回寫 _manifest.csv（status=extracted）")
 
     print_summary(results, args.dry_run)
 
