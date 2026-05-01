@@ -379,13 +379,17 @@ async function openDrawer(idx) {
   document.getElementById("d-meta").innerHTML = `${d.id} <span class="sep"></span> ${d.updated || '尚未校對'}${reviewMeta} <span class="sep"></span> ${d.cat} · ${d.catLabel}`;
   if (typeof track === 'function') track('drawer_open', d.id, { parent: d.cat });
   // 2026-05-02 #23:條文修法歷史 timeline(僅 A 類核心法規條文有意義)
+  // 必須插在 .drawer-head 之外、.drawer-body 之上,否則會擠到 .drawer-row 的 flex 寬度
   let $vh = document.getElementById('d-version-history');
   if (Array.isArray(d.versionHistory) && d.versionHistory.length) {
     if (!$vh) {
       $vh = document.createElement('div');
       $vh.id = 'd-version-history';
       $vh.className = 'version-timeline';
-      document.getElementById('d-meta').insertAdjacentElement('afterend', $vh);
+      const $body = document.getElementById('d-body');
+      if ($body && $body.parentNode) {
+        $body.parentNode.insertBefore($vh, $body);
+      }
     }
     $vh.innerHTML = `<div class="vh-head"><span class="vh-icon">📜</span><span>條文修法歷史(${d.versionHistory.length} 筆)</span></div>` +
       d.versionHistory.map((h, i) => {
