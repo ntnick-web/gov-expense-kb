@@ -377,6 +377,29 @@ async function openDrawer(idx) {
   // metadata 行 + 類別膠囊
   const reviewMeta = d.reviewLevel ? ` ${d.reviewLevel}` : '';
   document.getElementById("d-meta").innerHTML = `${d.id} <span class="sep"></span> ${d.updated || '尚未校對'}${reviewMeta} <span class="sep"></span> ${d.cat} · ${d.catLabel}`;
+  if (typeof track === 'function') track('drawer_open', d.id, { parent: d.cat });
+  // 2026-05-02 #23:條文修法歷史 timeline(僅 A 類核心法規條文有意義)
+  let $vh = document.getElementById('d-version-history');
+  if (Array.isArray(d.versionHistory) && d.versionHistory.length) {
+    if (!$vh) {
+      $vh = document.createElement('div');
+      $vh.id = 'd-version-history';
+      $vh.className = 'version-timeline';
+      document.getElementById('d-meta').insertAdjacentElement('afterend', $vh);
+    }
+    $vh.innerHTML = `<div class="vh-head"><span class="vh-icon">📜</span><span>條文修法歷史(${d.versionHistory.length} 筆)</span></div>` +
+      d.versionHistory.map((h, i) => {
+        const isLatest = i === 0;
+        return `<div class="vh-item${isLatest ? ' is-latest' : ''}">
+          <span class="vh-dot"></span>
+          <span class="vh-date">${escapeHtml(h.date || '')}</span>
+          <span class="vh-change">${escapeHtml(h.change || '')}</span>
+          ${h.replaces ? `<span class="vh-replaces" title="替代節點 ${h.replaces}">↩ ${escapeHtml(h.replaces)}</span>` : ''}
+        </div>`;
+      }).join('');
+  } else if ($vh) {
+    $vh.remove();
+  }
   document.getElementById("d-title").textContent = buildCardTitleText(d, 'full');
   document.getElementById("d-tags").innerHTML = (d.tags || []).map(t => `<span class="tag">${t}</span>`).join("");
   // 重置 status badge 元素
@@ -1410,6 +1433,7 @@ function renderScenarios() {
       filterState.type = null; filterState.tag = null; filterState.expense = null;
       switchView('library');
       renderSidebar(); renderChips(); renderCards();
+      window.scrollTo({ top: 0, behavior: 'smooth' });
       flashHint(`套用情境:${sc.title} · ${currentList.length} 張相關卡`);
       return;
     }
@@ -1427,6 +1451,8 @@ function renderScenarios() {
     renderSidebar();
     renderChips();
     renderCards();
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+    if (typeof track === 'function') track('scenario_apply', id);
     flashHint(`套用情境:${sc.title} · ${currentList.length} 張相關卡`);
   };
 }
