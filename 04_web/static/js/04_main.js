@@ -29,6 +29,37 @@ function dismissSplash(immediate = false) {
   setTimeout(() => dismissSplash(false), splashHold);
 })();
 
+/* ──────── 後端事件追蹤 (2026-05-02 #25) ────────
+   - 條件:window.EVENTS_ENDPOINT 設定才啟用(預設 null = 關閉)
+   - 寫法:track('view_change', 'library') / track('drawer_open', 'A-國內旅費-005')
+   - 隱私:不發 IP / cookie;search query 由 worker 側 hash;90 天滾動清
+   - 部署:見 06_workers/README.md(目前未 deploy,本前端代碼預設 inert) */
+window.EVENTS_ENDPOINT = window.EVENTS_ENDPOINT || null;  // e.g. 'https://events.ntnick-web.workers.dev/api/track'
+const _EVENTS_BUFFER = [];
+function track(type, target, ctx) {
+  if (!window.EVENTS_ENDPOINT) return;  // disabled
+  if (!navigator.onLine) return;
+  const evt = { type, target: target || null, context: ctx || null, ts: Date.now() };
+  _EVENTS_BUFFER.push(evt);
+  // beacon flush 防抖(每 2s 或滿 10 筆送一次)
+  clearTimeout(track._flushT);
+  if (_EVENTS_BUFFER.length >= 10) flushEvents();
+  else track._flushT = setTimeout(flushEvents, 2000);
+}
+function flushEvents() {
+  if (!window.EVENTS_ENDPOINT || _EVENTS_BUFFER.length === 0) return;
+  const batch = _EVENTS_BUFFER.splice(0);
+  const url = window.EVENTS_ENDPOINT.replace(/\/track$/, '/track/batch');
+  // sendBeacon 在 page unload 時也能送出(navigator.sendBeacon)
+  const blob = new Blob([JSON.stringify(batch)], { type: 'application/json' });
+  if (navigator.sendBeacon && navigator.sendBeacon(url, blob)) return;
+  fetch(url, { method: 'POST', headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(batch), keepalive: true }).catch(() => {});
+}
+// page 即將離開時 flush 殘留
+window.addEventListener('pagehide', flushEvents);
+window.addEventListener('beforeunload', flushEvents);
+
 /* ──────── init ──────── */
 async function init() {
   try {
@@ -41,6 +72,7 @@ async function init() {
     renderScenarios();
     wireScenarioSearch();
     syncMobileTabbar?.();
+    track('page_view', location.pathname);
   } catch (e) {
     grid.innerHTML = `<div style="color:var(--stop);padding:40px">資料載入失敗: ${e.message}</div>`;
     console.error(e);

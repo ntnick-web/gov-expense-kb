@@ -18,6 +18,7 @@ function switchView(v) {
   // 否則 html[data-init-view="scenarios"] #view-scenarios{display:block} 會永久蓋過 .active 切換,
   // 導致從情境切到試算 / 條文庫時舊 view 內容仍堆在新 view 下方。
   document.documentElement.removeAttribute('data-init-view');
+  if (v !== currentView && typeof track === 'function') track('view_change', v);
   currentView = v;
   document.getElementById('view-landing')?.classList.toggle('active', v === 'landing');
   document.getElementById('view-library').classList.toggle('hidden', v !== 'library');
@@ -130,6 +131,17 @@ function filteredData() {
   const q = qRaw.toLowerCase();
   // 同義詞展開:多詞 OR 比對(查命中時也記錄是哪一個 alias 命中,供 UI 標示)
   const queryTerms = q ? expandSynonyms(q) : [];
+  // 2026-05-02 #24:用 bigram/trigram 索引取候選 IDs(避免每張卡跑 substring,加速 5-10x)
+  let candidateIds = null;
+  if (q && q.length >= 2 && window.SearchIndex) {
+    candidateIds = new Set();
+    for (const term of queryTerms) {
+      const cset = window.SearchIndex.candidates(term);
+      if (cset && cset.size) for (const id of cset) candidateIds.add(id);
+    }
+    // 若所有 term 都找不到任何候選,直接回空(避免 fallback 跑滿全集)
+    if (candidateIds.size === 0) candidateIds = new Set();
+  }
   // scenario filter:取該情境的 primary_ids ∪ tag 命中
   const sc = filterState.scenario ? SCENARIOS.find(s => s.id === filterState.scenario) : null;
   const scPrimary = sc ? new Set(sc.primary_ids || []) : null;
@@ -138,6 +150,8 @@ function filteredData() {
   const TAG_MATCH_THRESHOLD = 2;  // 純 tag 命中需 ≥ 2 個 tag 才視為相關
   const scored = [];
   for (const d of DATA) {
+    // 2026-05-02 #24:bigram 候選預過濾(query mode 下大幅縮小迴圈)
+    if (candidateIds !== null && !candidateIds.has(d.id)) continue;
     // 已廢止預設隱藏,但有 effective_period 的歷史費率表例外保留
     if (!filterState.showObsolete && d.status === '已廢止' && !d.effectivePeriod) continue;
     if (filterState.parent && d.cat !== filterState.parent) continue;

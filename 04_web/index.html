@@ -255,10 +255,10 @@
   <button class="mobile-tab" data-entry="calc" type="button"><span class="tab-emoji">🧮</span><span>試算</span></button>
 </nav>
 
-<!-- 2026-05-02 #2 Phase 2-4: app.js 拆 4 module(plain script,共享 window scope,
-     依賴順序固定:state → data → render → main。
-     設計文件:docs/_esm_split_plan.md。Phase 5 (真 ES module + State namespace)
-     需重構 3000+ 全域 reference,留後續 session。 -->
+<!-- 2026-05-02 #2 Phase 2-4: app.js 拆 4 module + mini search index(00_)。
+     plain script,共享 window scope,依賴順序固定:search → state → data → render → main。
+     設計文件:docs/_esm_split_plan.md -->
+<script src="static/js/00_search_index.js"></script>
 <script src="static/js/01_state.js"></script>
 <script src="static/js/02_data.js"></script>
 <script src="static/js/03_render.js"></script>

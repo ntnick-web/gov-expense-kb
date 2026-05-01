@@ -1,0 +1,23 @@
+# wrangler.toml — Cloudflare Workers + D1 設定(2026-05-02 #25)
+# 部署:wrangler deploy(會用此 config)
+
+name = "gov-expense-events"
+main = "events_worker.js"
+compatibility_date = "2024-09-01"
+
+# D1 binding(部署前先 create:wrangler d1 create gov-expense-events,
+# 並把回傳的 database_id 填回此處)
+[[d1_databases]]
+binding = "DB"
+database_name = "gov-expense-events"
+database_id = "FILL_IN_AFTER_D1_CREATE"
+
+# /api/stats 查詢 token(部署:wrangler secret put STATS_TOKEN)
+# Worker 內讀 env.STATS_TOKEN
+[vars]
+# (沒有非機密 vars 需要;STATS_TOKEN 用 secret)
+
+# Routes — 部署後設定 events.ntnick-web.workers.dev 子域或自訂域
+# [[routes]]
+# pattern = "events.ntnick-web.workers.dev/api/*"
+# zone_name = "ntnick-web.workers.dev"
