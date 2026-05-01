@@ -5,7 +5,7 @@
 let compareList = [];
 
 /* ──────── 真實資料載入 (561 nodes / 105 scenarios from 03_index/) ──────── */
-const DATA_VERSION = '2026-05-02k';  // 新增酬勞費 30 張情境卡(6 鐘點費 / 7 出席費 / 5 稿費 / 6 兼職費 / 5 健保補充保費 / 1 內審)
+const DATA_VERSION = '2026-05-02l';  // 酬勞費母題暫時隱藏(整備中)
 let DATA = [];                 // 對外用的卡片資料 (mapped from nodes.json)
 let NODES_BY_ID = new Map();   // id → original node (含 file_path 等)
 let INCOMING_EDGES = new Map();// id → [from1, from2, ...] 反向引用
@@ -13,6 +13,8 @@ let SCENARIOS = [];
 
 // 母題 → 簡稱 (sidebar 用)
 const PARENTS = ['國內旅費', '國外旅費', '支出憑證與結報', '酬勞費'];
+// 整備中母題:chip 顯示為灰色不可點按;卡片與情境全部隱藏
+const WIP_PARENTS = new Set(['酬勞費']);
 // 母題 → 正式法規名稱 + 顯示用簡稱 (A 類條文卡片標題前綴)
 const PARENT_LAW = {
   '國內旅費':       { full: '中央政府各機關員工國內出差旅費報支要點', short: '國內旅費要點' },
@@ -86,13 +88,14 @@ async function loadAllData() {
     if (!INCOMING_EDGES.has(e.to)) INCOMING_EDGES.set(e.to, []);
     INCOMING_EDGES.get(e.to).push(e.from);
   }
-  // 2026-05-01:只載 manual(auto / legacy 兩份 JSON 已退役)
+  // 2026-05-01:只載 manual(auto / legacy 兩份 JSON 已退役);整備中母題情境一併隱藏
   const m = scnManual ? (scnManual.scenarios || scnManual) : [];
-  SCENARIOS = (m || []).filter(s => s.source !== 'auto');
-  // map nodes → DATA (隱藏已廢止節點,但保留有 effective_period 的歷史費率表)
+  SCENARIOS = (m || []).filter(s => s.source !== 'auto' && !WIP_PARENTS.has(s.parent || ''));
+  // map nodes → DATA (隱藏已廢止節點,但保留有 effective_period 的歷史費率表;隱藏整備中母題)
   DATA = nodes
     .filter(n => {
       if (n.status === '已廢止' && !n.effective_period) return false;
+      if (WIP_PARENTS.has(n.parent || '')) return false;
       return true;
     })
     .sort((a, b) => {

@@ -961,11 +961,15 @@ function renderChips() {
     byParent.set(p, (byParent.get(p) || 0) + 1);
   }
   if ($parentRow) {
-    const visibleParents = PARENTS.filter(p => byParent.has(p));
+    const visibleParents = PARENTS.filter(p => !WIP_PARENTS.has(p) && byParent.has(p));
+    const wipChips = [...WIP_PARENTS].map(p =>
+      `<button class="chip chip-wip" disabled title="整備中，內容尚未完整">${p} <span class="chip-count">–</span></button>`
+    ).join('');
     $parentRow.innerHTML = `
       <span class="filterrow-label">母題</span>
       <button class="chip${!filterState.parent ? ' on' : ''}" data-parent="">全部 <span class="chip-count">${parentAll}</span></button>
       ${visibleParents.map(p => `<button class="chip${filterState.parent === p ? ' on' : ''}" data-parent="${p}">${p} <span class="chip-count">${byParent.get(p)}</span></button>`).join('')}
+      ${wipChips}
     `;
   }
 

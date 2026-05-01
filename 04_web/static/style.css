@@ -448,6 +448,10 @@
     background: transparent !important;
   }
   .chip-toggle-more:hover { color: var(--brand) !important; border-color: var(--brand-line) !important; }
+  .chip.chip-wip {
+    opacity: .38; cursor: not-allowed; border-style: dashed;
+    pointer-events: none; color: var(--ink-3);
+  }
 
   /* 情境視圖 chip filter — 兩排:母題 + 支出類別(2026-04-29 加)*/
   .sc-filterbar {
