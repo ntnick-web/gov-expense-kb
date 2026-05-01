@@ -1,0 +1,806 @@
+{
+  "version": "2026-05-01",
+  "parent": "酬勞費",
+  "scenarios": [
+    {
+      "id": "lecture-fee-overview",
+      "title": "🎤 講座鐘點費總覽",
+      "icon": "🎤",
+      "subtitle": "外聘 / 內聘 / 國外 / 助理 鐘點費上限與限制(整合下列子情境)",
+      "parent": "酬勞費",
+      "expense": "講座鐘點費",
+      "flow_root": true,
+      "sub_scenarios": [
+        "lecture-internal-external",
+        "lecture-foreign",
+        "lecture-assistant",
+        "lecture-no-overtime",
+        "lecture-natural-person"
+      ],
+      "primary_ids": ["A-酬勞費-010", "B-酬勞費-027", "B-酬勞費-028", "B-酬勞費-037"],
+      "tags": ["講座鐘點費", "酬勞費"],
+      "attachments": ["講座鐘點費領據(含金額/節數)", "授課簽到/教材或課程表"],
+      "caveats": [
+        {
+          "text": "每節 50 分鐘、連續 2 節 90 分鐘;未滿 1 節減半",
+          "severity": "info",
+          "legal_ref": "A-酬勞費-010"
+        },
+        {
+          "text": "邀請自然人授課符合本規定者免適用政府採購法",
+          "severity": "info",
+          "legal_ref": "B-酬勞費-029"
+        }
+      ],
+      "example": [
+        {
+          "case": "外聘國內專家授課 4 節(各 50 分鐘)",
+          "formula": "2,000 × 4 = 8,000",
+          "total": "8,000 元(鐘點費上限)"
+        }
+      ]
+    },
+    {
+      "id": "lecture-internal-external",
+      "title": "外聘 vs 內聘鐘點費上限",
+      "icon": "👥",
+      "subtitle": "外聘國內 2,000 / 隸屬 1,500 / 內聘 1,000 元/節",
+      "parent": "酬勞費",
+      "expense": "講座鐘點費",
+      "primary_ids": ["A-酬勞費-010"],
+      "tags": ["講座鐘點費", "外聘", "內聘"],
+      "caveats": [
+        {
+          "text": "外聘國內專家學者每節 ≤ 2,000 元",
+          "severity": "info",
+          "legal_ref": "A-酬勞費-010"
+        },
+        {
+          "text": "外聘與主辦機關有隸屬關係之機關學校人員每節 ≤ 1,500 元",
+          "severity": "info",
+          "legal_ref": "A-酬勞費-010"
+        },
+        {
+          "text": "內聘(主辦機關學校人員)每節 ≤ 1,000 元",
+          "severity": "info",
+          "legal_ref": "A-酬勞費-010"
+        }
+      ],
+      "example": [
+        {
+          "case": "外聘國內專家 + 內聘人員 各 2 節",
+          "formula": "2,000 × 2 + 1,000 × 2 = 6,000",
+          "total": "6,000 元"
+        }
+      ],
+      "flow": {
+        "start": "speaker_type",
+        "questions": {
+          "speaker_type": {
+            "label": "授課人員身分為何?",
+            "options": [
+              { "label": "外聘國內專家學者", "conclude": "external_domestic" },
+              { "label": "外聘但與主辦機關(構)、學校有隸屬關係", "conclude": "external_subordinate" },
+              { "label": "內聘(主辦機關自有人員)", "conclude": "internal" },
+              { "label": "邀請國外專家學者來臺", "next": "foreign_qa" }
+            ]
+          },
+          "foreign_qa": {
+            "label": "國外專家鐘點費由主辦機關自訂(衡酌國際聲譽 / 學術地位 / 課程內容 / 延聘難易)",
+            "options": [
+              { "label": "確認自訂", "conclude": "foreign" }
+            ]
+          }
+        },
+        "conclusions": {
+          "external_domestic": {
+            "title": "外聘國內專家學者",
+            "limit": "≤ 2,000 元/節(每節 50 分鐘)",
+            "note": "依《講座鐘點費支給表》上限。",
+            "refs": ["A-酬勞費-010"]
+          },
+          "external_subordinate": {
+            "title": "外聘但與主辦機關有隸屬關係",
+            "limit": "≤ 1,500 元/節",
+            "note": "與主辦機關(構)、學校有隸屬關係之機關(構)學校人員。",
+            "refs": ["A-酬勞費-010"]
+          },
+          "internal": {
+            "title": "內聘(主辦機關自有人員)",
+            "limit": "≤ 1,000 元/節",
+            "note": "主辦機關(構)、學校人員擔任授課。",
+            "refs": ["A-酬勞費-010"]
+          },
+          "foreign": {
+            "title": "國外專家學者來臺",
+            "limit": "由主辦機關衡酌自訂",
+            "note": "考量國際聲譽、學術地位、課程內容、延聘難易程度。",
+            "refs": ["A-酬勞費-010"]
+          }
+        }
+      }
+    },
+    {
+      "id": "lecture-foreign",
+      "title": "國外專家鐘點費 + 重複給付限制",
+      "icon": "🌐",
+      "subtitle": "已支日支生活酬金者不得另支講座鐘點費",
+      "parent": "酬勞費",
+      "expense": "講座鐘點費",
+      "primary_ids": ["A-酬勞費-010", "B-酬勞費-032", "B-酬勞費-033"],
+      "tags": ["講座鐘點費", "國外專家"],
+      "caveats": [
+        {
+          "text": "國外專家學者來臺鐘點費由主辦機關自行訂定,不受 2,000 元上限拘束",
+          "severity": "info",
+          "legal_ref": "A-酬勞費-010"
+        },
+        {
+          "text": "國外專家若已支領日支生活酬金,不得再另支講座鐘點費(避免重複)",
+          "severity": "stop",
+          "legal_ref": "B-酬勞費-032"
+        }
+      ]
+    },
+    {
+      "id": "lecture-assistant",
+      "title": "講座助理鐘點費",
+      "icon": "📚",
+      "subtitle": "依同一課程講座鐘點費減半支給;得覈實支交通住宿",
+      "parent": "酬勞費",
+      "expense": "講座鐘點費",
+      "primary_ids": ["A-酬勞費-010", "B-酬勞費-027"],
+      "tags": ["講座鐘點費", "講座助理"],
+      "caveats": [
+        {
+          "text": "協助教學並實際授課之講座助理,鐘點費按同一課程講座減半",
+          "severity": "info",
+          "legal_ref": "A-酬勞費-010"
+        },
+        {
+          "text": "講座助理得依《講座鐘點費支給表》規定覈實支給交通費及國內住宿費",
+          "severity": "info",
+          "legal_ref": "B-酬勞費-027"
+        }
+      ],
+      "example": [
+        {
+          "case": "外聘國內專家(2,000/節)的助理 4 節",
+          "formula": "2,000 ÷ 2 × 4 = 4,000",
+          "total": "4,000 元"
+        }
+      ]
+    },
+    {
+      "id": "lecture-no-overtime",
+      "title": "假日內聘授課不得另領加班費",
+      "icon": "⛔",
+      "subtitle": "假日或夜間擔任內聘講座已支鐘點費,不得補休或領加班費",
+      "parent": "酬勞費",
+      "expense": "講座鐘點費",
+      "primary_ids": ["B-酬勞費-001"],
+      "tags": ["講座鐘點費", "加班費"],
+      "caveats": [
+        {
+          "text": "假日或夜間擔任內聘講座授課人員,如已支給鐘點費,不得補休或領取加班費",
+          "severity": "stop",
+          "legal_ref": "B-酬勞費-001"
+        }
+      ]
+    },
+    {
+      "id": "lecture-natural-person",
+      "title": "邀請自然人授課免適用採購法",
+      "icon": "📜",
+      "subtitle": "邀請自然人並符合鐘點費支給規定者免適用政府採購法",
+      "parent": "酬勞費",
+      "expense": "講座鐘點費",
+      "primary_ids": ["B-酬勞費-029", "B-酬勞費-030"],
+      "tags": ["講座鐘點費", "採購法"],
+      "caveats": [
+        {
+          "text": "邀請自然人授課演講等並符合《軍公教人員兼職費及講座鐘點費支給規定》,免適用政府採購法",
+          "severity": "info",
+          "legal_ref": "B-酬勞費-029"
+        },
+        {
+          "text": "邀請對象非屬自然人(如顧問公司),或未按支給規定者,應依政府採購法辦理",
+          "severity": "warn",
+          "legal_ref": "B-酬勞費-030"
+        }
+      ]
+    },
+    {
+      "id": "attendance-fee-overview",
+      "title": "🪑 出席費總覽",
+      "icon": "🪑",
+      "subtitle": "委員 / 學者專家出席會議酬勞;含視訊 / 採購評選 / 利益迴避 等子情境",
+      "parent": "酬勞費",
+      "expense": "出席費",
+      "flow_root": true,
+      "sub_scenarios": [
+        "attendance-vs-review",
+        "attendance-video",
+        "attendance-foreign-expert",
+        "attendance-gov-director",
+        "attendance-procurement-committee",
+        "attendance-conflict-interest"
+      ],
+      "primary_ids": ["A-酬勞費-001", "A-酬勞費-003", "B-酬勞費-034"],
+      "tags": ["出席費", "酬勞費"],
+      "attachments": ["出席費領據", "會議紀錄或簽到表"],
+      "caveats": [
+        {
+          "text": "出席費係『出席會議』所支之酬勞;與審查費(屬稿費)性質不同,不得重複支給",
+          "severity": "warn",
+          "legal_ref": "B-酬勞費-017"
+        },
+        {
+          "text": "邀請學者專家如自遠地前往,邀請機關得參照《國內出差旅費報支要點》覈實支給交通費及住宿費",
+          "severity": "info",
+          "legal_ref": "A-酬勞費-001"
+        }
+      ]
+    },
+    {
+      "id": "attendance-vs-review",
+      "title": "出席費 vs 審查費 區別",
+      "icon": "⚖️",
+      "subtitle": "出席費屬出席會議酬勞;審查費屬稿費類別,不得重複支給",
+      "parent": "酬勞費",
+      "expense": "出席費",
+      "primary_ids": ["B-酬勞費-017", "B-酬勞費-018"],
+      "tags": ["出席費", "稿費", "審查費"],
+      "caveats": [
+        {
+          "text": "出席費(出席會議)+ 審查費(屬稿費)二者不得重複支給",
+          "severity": "stop",
+          "legal_ref": "B-酬勞費-017"
+        },
+        {
+          "text": "於出席會議前先行提供書面審查意見者,得依稿費支給標準另支審查費",
+          "severity": "info",
+          "legal_ref": "B-酬勞費-017"
+        },
+        {
+          "text": "受邀參與最有利標評選會議專家學者:得支出席費;但開會前已提書面審查意見者,得另支審查費",
+          "severity": "info",
+          "legal_ref": "B-酬勞費-018"
+        }
+      ]
+    },
+    {
+      "id": "attendance-video",
+      "title": "視訊會議出席費",
+      "icon": "💻",
+      "subtitle": "確親自參與視訊得支領;憑證可用匯款證明",
+      "parent": "酬勞費",
+      "expense": "出席費",
+      "primary_ids": ["B-酬勞費-012", "B-酬勞費-013"],
+      "tags": ["出席費", "視訊會議"],
+      "caveats": [
+        {
+          "text": "專家學者經機關學校認定確親自參與視訊會議者得支領出席費,不因會議召開方式不同而異",
+          "severity": "info",
+          "legal_ref": "B-酬勞費-012"
+        },
+        {
+          "text": "以匯款支付出席費得以匯款證明文件作為支出憑證(《政府支出憑證處理要點》第 7 點)",
+          "severity": "info",
+          "legal_ref": "B-酬勞費-013"
+        }
+      ]
+    },
+    {
+      "id": "attendance-foreign-expert",
+      "title": "國外專家不得另支出席費",
+      "icon": "🌐",
+      "subtitle": "已支生活費者除符合特定情況外,不得另支出席費",
+      "parent": "酬勞費",
+      "expense": "出席費",
+      "primary_ids": ["B-酬勞費-011"],
+      "tags": ["出席費", "國外專家"],
+      "caveats": [
+        {
+          "text": "聘請國外專家學者來臺工作,除支給生活費外,得否另支出席費 — 依本函釋規定辦理",
+          "severity": "warn",
+          "legal_ref": "B-酬勞費-011"
+        }
+      ]
+    },
+    {
+      "id": "attendance-gov-director",
+      "title": "政府推派董監事身分迴避",
+      "icon": "🏛️",
+      "subtitle": "政府推派董監事另以學者專家身分支領出席費應避免",
+      "parent": "酬勞費",
+      "expense": "出席費",
+      "primary_ids": ["B-酬勞費-010"],
+      "tags": ["出席費", "利益迴避"],
+      "caveats": [
+        {
+          "text": "政府推派之董事及監察人另以學者專家身分受邀兼任公司具政策性或專案性重大諮詢會議,如確係在其職責範圍內,應避免重複支給出席費",
+          "severity": "stop",
+          "legal_ref": "B-酬勞費-010"
+        }
+      ]
+    },
+    {
+      "id": "attendance-procurement-committee",
+      "title": "採購評選委員出席與審查",
+      "icon": "📋",
+      "subtitle": "外聘評選委員出席費與審查費支給規定",
+      "parent": "酬勞費",
+      "expense": "出席費",
+      "primary_ids": ["B-酬勞費-019", "B-酬勞費-020"],
+      "tags": ["出席費", "採購評選委員會"],
+      "caveats": [
+        {
+          "text": "採購評選委員會外聘評選委員得依規定支給出席費及審查費",
+          "severity": "info",
+          "legal_ref": "B-酬勞費-019"
+        }
+      ]
+    },
+    {
+      "id": "attendance-conflict-interest",
+      "title": "補助機關人員利益迴避",
+      "icon": "🚫",
+      "subtitle": "受補助計畫之相關會議,補助機關人員不論是否公假均不得支出席費",
+      "parent": "酬勞費",
+      "expense": "出席費",
+      "primary_ids": ["B-酬勞費-016"],
+      "tags": ["出席費", "利益迴避", "補助核定"],
+      "caveats": [
+        {
+          "text": "補助計畫之補助機關人員出席該受補助計畫之相關會議,基於利益迴避原則,不論是否公假均不得支領出席費",
+          "severity": "stop",
+          "legal_ref": "B-酬勞費-016"
+        },
+        {
+          "text": "即使請假以專家學者身分參加受補助計畫會議仍不得支領",
+          "severity": "stop",
+          "legal_ref": "B-酬勞費-016"
+        }
+      ]
+    },
+    {
+      "id": "article-fee-overview",
+      "title": "✍️ 稿費總覽",
+      "icon": "✍️",
+      "subtitle": "撰稿 / 校對 / 審查 / 譯稿 等支給基準與限制(整合下列子情境)",
+      "parent": "酬勞費",
+      "expense": "稿費",
+      "flow_root": true,
+      "sub_scenarios": [
+        "article-general-special",
+        "article-proofreading",
+        "article-no-transcript",
+        "article-commission"
+      ],
+      "primary_ids": ["A-酬勞費-004", "A-酬勞費-008", "A-酬勞費-009", "B-酬勞費-036"],
+      "tags": ["稿費", "酬勞費"],
+      "attachments": ["稿件電子檔或樣張", "稿費領據(含字數/件數)"],
+      "caveats": [
+        {
+          "text": "依本表規定,具體基準參考《稿費支給基準數額表》(A-酬勞費-004)",
+          "severity": "info",
+          "legal_ref": "A-酬勞費-004"
+        },
+        {
+          "text": "謄稿因無智慧財產之創作,不適用稿費名義(辦公時間外得支加班費)",
+          "severity": "warn",
+          "legal_ref": "B-酬勞費-025"
+        }
+      ]
+    },
+    {
+      "id": "article-general-special",
+      "title": "一般稿 vs 特別稿基準",
+      "icon": "📝",
+      "subtitle": "中文 1,100~1,600 元/千字 vs 1,600~3,000 元/千字 等",
+      "parent": "酬勞費",
+      "expense": "稿費",
+      "primary_ids": ["A-酬勞費-004", "A-酬勞費-008"],
+      "tags": ["稿費", "撰稿費"],
+      "caveats": [
+        {
+          "text": "一般稿件:中文每千字 1,100~1,600 元 / 外文 2,000~3,750 元 / 件 3,000~8,000 元",
+          "severity": "info",
+          "legal_ref": "A-酬勞費-004"
+        },
+        {
+          "text": "特別稿件:中文每千字 1,600~3,000 元 / 外文 2,000~6,400 元 / 件 由各機關依採購法或本權責自訂",
+          "severity": "info",
+          "legal_ref": "A-酬勞費-004"
+        },
+        {
+          "text": "潤稿之支給,僅限於極為專業之譯稿;是否屬極為專業由各機關本權責認定",
+          "severity": "warn",
+          "legal_ref": "A-酬勞費-004"
+        }
+      ],
+      "example": [
+        {
+          "case": "中文一般稿 5,000 字",
+          "formula": "5 × 1,100 = 5,500(下限) ~ 5 × 1,600 = 8,000(上限)",
+          "total": "5,500 ~ 8,000 元(視機關核定)"
+        }
+      ]
+    },
+    {
+      "id": "article-proofreading",
+      "title": "校對費 vs 審查費",
+      "icon": "🔍",
+      "subtitle": "校對:撰稿費 5%~10% / 審查:中文 300~380 元/千字 等",
+      "parent": "酬勞費",
+      "expense": "稿費",
+      "primary_ids": ["A-酬勞費-004", "B-酬勞費-026"],
+      "tags": ["稿費", "校對", "審查費"],
+      "caveats": [
+        {
+          "text": "校對費按『撰稿費』5%~10% 支給(104.7.15 修訂後;原按『稿酬』之 5%~10%)",
+          "severity": "info",
+          "legal_ref": "B-酬勞費-026"
+        },
+        {
+          "text": "審查費:中文 300~380 元/千字 或 1,220~1,830 元/件;外文 380 元/千字 或 1,830 元/件",
+          "severity": "info",
+          "legal_ref": "A-酬勞費-004"
+        }
+      ]
+    },
+    {
+      "id": "article-no-transcript",
+      "title": "謄稿不適用稿費",
+      "icon": "📑",
+      "subtitle": "謄稿因無智慧財產創作,不以撰稿名義支給稿費",
+      "parent": "酬勞費",
+      "expense": "稿費",
+      "primary_ids": ["B-酬勞費-025"],
+      "tags": ["稿費", "謄稿"],
+      "caveats": [
+        {
+          "text": "謄稿工作因無智慧財產之創作,不宜以撰稿名義支給稿費",
+          "severity": "stop",
+          "legal_ref": "B-酬勞費-025"
+        },
+        {
+          "text": "辦公時間外趕辦者,得依規定支給加班費",
+          "severity": "info",
+          "legal_ref": "B-酬勞費-025"
+        }
+      ]
+    },
+    {
+      "id": "article-commission",
+      "title": "委外撰稿/翻譯/編審",
+      "icon": "🤝",
+      "subtitle": "委由本機關以外人員處理重要文件,經首長核准得依稿費基準支給",
+      "parent": "酬勞費",
+      "expense": "稿費",
+      "primary_ids": ["B-酬勞費-023", "B-酬勞費-024"],
+      "tags": ["稿費", "委外撰稿"],
+      "caveats": [
+        {
+          "text": "處理機關業務有關之重要文件,委由機關以外人員撰述、翻譯或編審,經首長或授權人核准者,依現行支給要點第 7 點第 1 款規定辦理",
+          "severity": "info",
+          "legal_ref": "B-酬勞費-023"
+        },
+        {
+          "text": "定期發行刊物之稿費依現行出席費及稿費支給要點第 7、8 點規定辦理",
+          "severity": "info",
+          "legal_ref": "B-酬勞費-024"
+        }
+      ]
+    },
+    {
+      "id": "concurrent-fee-overview",
+      "title": "💼 兼職費總覽",
+      "icon": "💼",
+      "subtitle": "簡薦委月支限額 / 校長兼職 / 主計人員限制 等子情境",
+      "parent": "酬勞費",
+      "expense": "兼職費",
+      "flow_root": true,
+      "sub_scenarios": [
+        "concurrent-monthly-cap",
+        "concurrent-principal",
+        "concurrent-accountant",
+        "concurrent-no-misc",
+        "concurrent-legal-advisor"
+      ],
+      "primary_ids": ["A-酬勞費-012", "B-酬勞費-035"],
+      "tags": ["兼職費", "酬勞費"],
+      "attachments": ["兼職費領據", "派兼公文/聘函"],
+      "caveats": [
+        {
+          "text": "依《軍公教人員兼職費支給表》辦理,各機關得在支給上限範圍內自行核定基準",
+          "severity": "info",
+          "legal_ref": "A-酬勞費-012"
+        }
+      ]
+    },
+    {
+      "id": "concurrent-monthly-cap",
+      "title": "簡薦委月支限額",
+      "icon": "📊",
+      "subtitle": "簡任 3,500 / 薦任 3,000 / 委任 2,500 元/月",
+      "parent": "酬勞費",
+      "expense": "兼職費",
+      "primary_ids": ["A-酬勞費-012"],
+      "tags": ["兼職費", "月支上限"],
+      "caveats": [
+        {
+          "text": "簡任 ≤ 3,500 元/月、薦任 ≤ 3,000 元/月、委任 ≤ 2,500 元/月",
+          "severity": "info",
+          "legal_ref": "A-酬勞費-012"
+        },
+        {
+          "text": "各機關(構)學校得在支給上限範圍內自行核定基準支給;超過基準應從嚴審酌",
+          "severity": "warn",
+          "legal_ref": "A-酬勞費-012"
+        }
+      ],
+      "flow": {
+        "start": "rank",
+        "questions": {
+          "rank": {
+            "label": "兼職人員官等為何?",
+            "options": [
+              { "label": "簡任", "conclude": "senior" },
+              { "label": "薦任", "conclude": "mid" },
+              { "label": "委任", "conclude": "junior" }
+            ]
+          }
+        },
+        "conclusions": {
+          "senior": {
+            "title": "簡任",
+            "limit": "≤ 3,500 元/月",
+            "note": "依《軍公教人員兼職費支給表》上限。",
+            "refs": ["A-酬勞費-012"]
+          },
+          "mid": {
+            "title": "薦任",
+            "limit": "≤ 3,000 元/月",
+            "note": "依《軍公教人員兼職費支給表》上限。",
+            "refs": ["A-酬勞費-012"]
+          },
+          "junior": {
+            "title": "委任",
+            "limit": "≤ 2,500 元/月",
+            "note": "依《軍公教人員兼職費支給表》上限。",
+            "refs": ["A-酬勞費-012"]
+          }
+        }
+      }
+    },
+    {
+      "id": "concurrent-principal",
+      "title": "公立大專校長兼職",
+      "icon": "🎓",
+      "subtitle": "校長兼職個數及總額限制",
+      "parent": "酬勞費",
+      "expense": "兼職費",
+      "primary_ids": ["B-酬勞費-005"],
+      "tags": ["兼職費", "校長兼職"],
+      "caveats": [
+        {
+          "text": "公立大專校院校長依規定兼職所領受之兼職費個數及總額限制,依本函釋規定辦理",
+          "severity": "warn",
+          "legal_ref": "B-酬勞費-005"
+        }
+      ]
+    },
+    {
+      "id": "concurrent-accountant",
+      "title": "主計/會計人員兼職限制",
+      "icon": "🚫",
+      "subtitle": "會計人員不得兼辦出納、經理財物或公私營業機構職務",
+      "parent": "酬勞費",
+      "expense": "兼職費",
+      "primary_ids": ["B-酬勞費-006"],
+      "tags": ["兼職費", "主計人員"],
+      "caveats": [
+        {
+          "text": "依《公務員服務法》第 15 條及《會計法》第 95、108、112 條:會計人員不得兼辦出納或經理財物事務,亦不得兼任公私營業機構職務",
+          "severity": "stop",
+          "legal_ref": "B-酬勞費-006"
+        }
+      ]
+    },
+    {
+      "id": "concurrent-no-misc",
+      "title": "兼職人員交通住宿但不支雜費",
+      "icon": "🚆",
+      "subtitle": "依出差旅費要點覈實支交通住宿,但不得另支雜費",
+      "parent": "酬勞費",
+      "expense": "兼職費",
+      "primary_ids": ["B-酬勞費-008"],
+      "tags": ["兼職費", "交通費", "住宿費"],
+      "caveats": [
+        {
+          "text": "依《軍公教人員兼職費支給表》邀請之兼職人員,邀請機關得參照《國內出差旅費報支要點》覈實支給交通費及住宿費",
+          "severity": "info",
+          "legal_ref": "B-酬勞費-008"
+        },
+        {
+          "text": "不得另行支給雜費(出差雜費僅機關員工奉派出差適用)",
+          "severity": "stop",
+          "legal_ref": "B-酬勞費-008"
+        }
+      ]
+    },
+    {
+      "id": "concurrent-legal-advisor",
+      "title": "法律顧問每月上限",
+      "icon": "⚖️",
+      "subtitle": "聘請法律顧問之兼職費最高 5,000 元/月",
+      "parent": "酬勞費",
+      "expense": "兼職費",
+      "primary_ids": ["B-酬勞費-004"],
+      "tags": ["兼職費", "法律顧問"],
+      "caveats": [
+        {
+          "text": "依行政院 90.8.31 台 90 人政給字第 211055 號函:聘請法律顧問之兼職費最高為新臺幣 5,000 元/月",
+          "severity": "info",
+          "legal_ref": "B-酬勞費-004"
+        }
+      ]
+    },
+    {
+      "id": "supplement-premium-overview",
+      "title": "🏥 二代健保補充保費總覽",
+      "icon": "🏥",
+      "subtitle": "雇主端 / 個人 6 項所得 / 扣繳率 2.11%(整合下列子情境)",
+      "parent": "酬勞費",
+      "expense": "健保補充保費",
+      "flow_root": true,
+      "sub_scenarios": [
+        "supplement-premium-employer",
+        "supplement-premium-bonus",
+        "supplement-premium-parttime",
+        "supplement-premium-execution"
+      ],
+      "primary_ids": ["A-酬勞費-005", "D-酬勞費-001", "D-酬勞費-002", "D-酬勞費-003"],
+      "tags": ["健保補充保費", "扣繳"],
+      "attachments": ["二代健保扣繳明細表", "繳款書"],
+      "caveats": [
+        {
+          "text": "扣繳率 2.11%(自 110 年 1 月 1 日起)",
+          "severity": "info",
+          "legal_ref": "D-酬勞費-001"
+        },
+        {
+          "text": "保險對象 6 項所得:獎金 / 兼職薪資 / 執行業務 / 股利 / 利息 / 租金",
+          "severity": "info",
+          "legal_ref": "D-酬勞費-001"
+        },
+        {
+          "text": "本卡與酬勞費關聯為支給時扣繳補充保費;法源屬健保(待健保母題建立後遷移)",
+          "severity": "info"
+        }
+      ],
+      "example": [
+        {
+          "case": "雇主月薪資 1,500,000 元 - 員工投保金額總額 1,200,000 元",
+          "formula": "(1,500,000 - 1,200,000) × 2.11% = 6,330",
+          "total": "6,330 元/月(雇主補充保費)"
+        }
+      ]
+    },
+    {
+      "id": "supplement-premium-employer",
+      "title": "雇主端補充保費月計算",
+      "icon": "🏢",
+      "subtitle": "薪資差額 × 2.11% 自計,次月底前繳納",
+      "parent": "酬勞費",
+      "expense": "健保補充保費",
+      "primary_ids": ["A-酬勞費-005", "D-酬勞費-002"],
+      "tags": ["健保補充保費", "雇主"],
+      "caveats": [
+        {
+          "text": "依《全民健康保險法》第 34 條:每月支付薪資總額 > 受僱員工當月投保金額總額時,差額按 2.11% 自計",
+          "severity": "info",
+          "legal_ref": "D-酬勞費-002"
+        },
+        {
+          "text": "次月底前繳納給健保署",
+          "severity": "info",
+          "legal_ref": "D-酬勞費-002"
+        }
+      ]
+    },
+    {
+      "id": "supplement-premium-bonus",
+      "title": "獎金補充保費(4 倍門檻)",
+      "icon": "🎁",
+      "subtitle": "全年累計獎金超過當月投保金額 4 倍部分扣 2.11%",
+      "parent": "酬勞費",
+      "expense": "健保補充保費",
+      "primary_ids": ["D-酬勞費-001", "D-酬勞費-004"],
+      "tags": ["健保補充保費", "獎金"],
+      "caveats": [
+        {
+          "text": "投保單位每次給付獎金,計算當年累計獎金有否超過該員當月投保金額 4 倍",
+          "severity": "info",
+          "legal_ref": "D-酬勞費-004"
+        },
+        {
+          "text": "超過 4 倍部分按 2.11% 扣繳補充保費",
+          "severity": "info",
+          "legal_ref": "D-酬勞費-004"
+        }
+      ],
+      "example": [
+        {
+          "case": "投保金額 30,300 元/月,114 年 2 月發年終獎金 100,000 元 + 10 月發中秋 100,000 元",
+          "formula": "第 1 次:100,000 < 30,300×4=121,200 → 不扣;第 2 次累計 200,000 - 121,200 = 78,800,× 2.11% ≈ 1,663",
+          "total": "1,663 元(第 2 次扣繳)"
+        }
+      ]
+    },
+    {
+      "id": "supplement-premium-parttime",
+      "title": "兼職薪資補充保費",
+      "icon": "👷",
+      "subtitle": "單次給付達基本工資(115 年起 29,500 元)須扣繳",
+      "parent": "酬勞費",
+      "expense": "健保補充保費",
+      "primary_ids": ["D-酬勞費-001", "D-酬勞費-005"],
+      "tags": ["健保補充保費", "兼職"],
+      "caveats": [
+        {
+          "text": "兼職所得按單次計收(非累計)",
+          "severity": "info",
+          "legal_ref": "D-酬勞費-005"
+        },
+        {
+          "text": "單次給付達基本工資(115 年 1 月 1 日起為 29,500 元)須扣繳",
+          "severity": "info",
+          "legal_ref": "D-酬勞費-005"
+        }
+      ]
+    },
+    {
+      "id": "supplement-premium-execution",
+      "title": "執行業務報酬補充保費",
+      "icon": "📈",
+      "subtitle": "2 萬起扣 / 上限 1,000 萬;給付事務所不扣",
+      "parent": "酬勞費",
+      "expense": "健保補充保費",
+      "primary_ids": ["D-酬勞費-001", "D-酬勞費-006"],
+      "tags": ["健保補充保費", "執行業務"],
+      "caveats": [
+        {
+          "text": "給付民眾的執行業務收入(不扣除必要費用或成本):2 萬起扣 / 上限 1,000 萬",
+          "severity": "info",
+          "legal_ref": "D-酬勞費-001"
+        },
+        {
+          "text": "給付執行業務報酬予單獨/聯合執業型態事務所:投保單位不扣;由事務所於給付保險對象時扣繳",
+          "severity": "warn",
+          "legal_ref": "D-酬勞費-006"
+        }
+      ]
+    },
+    {
+      "id": "remuneration-internal-audit",
+      "title": "🛡️ 酬勞費動支內審重點",
+      "icon": "🛡️",
+      "subtitle": "出席費 / 稿費 / 兼職費 / 講座鐘點費 等動支審核作業程序",
+      "parent": "酬勞費",
+      "expense": "通則與其他",
+      "primary_ids": ["C-酬勞費-001"],
+      "tags": ["內審", "酬勞費", "結報核銷"],
+      "attachments": ["動支簽核單", "領據", "扣繳憑單"],
+      "caveats": [
+        {
+          "text": "出席費、稿費、兼職費、講座鐘點費、國外專業顧問費及運動競賽裁判費等經費動支審核,依《內審共通性作業範例》DQ09 規定辦理",
+          "severity": "info",
+          "legal_ref": "C-酬勞費-001"
+        }
+      ]
+    }
+  ]
+}

@@ -4,15 +4,15 @@
 /* ──────── compare state (hoisted to top to avoid TDZ in renderCards) ──────── */
 let compareList = [];
 
-/* ──────── 真實資料載入 (520 nodes from 03_index/) ──────── */
-const DATA_VERSION = '2026-05-02g';  // 中立角色原則 + 5 卡法源審查(刪 passport-rush-fee + 4 卡補 C 類函釋)
+/* ──────── 真實資料載入 (561 nodes / 105 scenarios from 03_index/) ──────── */
+const DATA_VERSION = '2026-05-02k';  // 新增酬勞費 30 張情境卡(6 鐘點費 / 7 出席費 / 5 稿費 / 6 兼職費 / 5 健保補充保費 / 1 內審)
 let DATA = [];                 // 對外用的卡片資料 (mapped from nodes.json)
 let NODES_BY_ID = new Map();   // id → original node (含 file_path 等)
 let INCOMING_EDGES = new Map();// id → [from1, from2, ...] 反向引用
 let SCENARIOS = [];
 
 // 母題 → 簡稱 (sidebar 用)
-const PARENTS = ['國內旅費', '國外旅費', '支出憑證與結報'];
+const PARENTS = ['國內旅費', '國外旅費', '支出憑證與結報', '酬勞費'];
 // 母題 → 正式法規名稱 + 顯示用簡稱 (A 類條文卡片標題前綴)
 const PARENT_LAW = {
   '國內旅費':       { full: '中央政府各機關員工國內出差旅費報支要點', short: '國內旅費要點' },

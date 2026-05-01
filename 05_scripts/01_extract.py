@@ -92,11 +92,22 @@ PARENT_KEYWORDS: list[tuple[str, str]] = [
     ("國外旅費", "國外旅費"),
     ("派赴國外", "國外旅費"),
     ("派赴大陸", "國外旅費"),
-    ("講座鐘點費", "講座鐘點費"),
-    ("鐘點費", "講座鐘點費"),
+    # 酬勞費母題(2026-05-02 加,§1.1.2 規劃)— 包含講座鐘點費/出席費/稿費/兼職費/二代健保 等
+    ("講座鐘點費", "酬勞費"),
+    ("鐘點費", "酬勞費"),
+    ("軍公教人員兼職費", "酬勞費"),
+    ("兼職費", "酬勞費"),
+    ("兼任費", "酬勞費"),
+    ("出席費及稿費支給要點", "酬勞費"),
     ("出席費", "酬勞費"),
     ("稿費", "酬勞費"),
     ("審查費", "酬勞費"),
+    ("撰稿費", "酬勞費"),
+    ("印領清冊", "酬勞費"),
+    ("勞報單", "酬勞費"),
+    ("二代健保", "酬勞費"),
+    ("補充保險費", "酬勞費"),
+    ("全民健康保險扣取及繳納補充保險費", "酬勞費"),
     ("國外顧問", "國外專家"),
     ("國外專家", "國外專家"),
     ("聘請國外", "國外專家"),
@@ -115,7 +126,7 @@ PARENT_KEYWORDS: list[tuple[str, str]] = [
 # 觸發 OCR 建議的閾值(平均每頁字數)
 MIN_CHARS_PER_PAGE = 50
 
-SUPPORTED_SUFFIXES = {".pdf", ".docx", ".md", ".markdown", ".txt"}
+SUPPORTED_SUFFIXES = {".pdf", ".docx", ".md", ".markdown", ".txt", ".html", ".htm", ".odt"}
 
 
 # ─────────────────────────────────────────────
@@ -308,6 +319,98 @@ def extract_docx(path: Path) -> tuple[str, int]:
             if line:
                 parts.append(line)
     return "\n".join(parts), len(doc.paragraphs)
+
+
+def extract_html(path: Path) -> tuple[str, int]:
+    """用 bs4 抽 HTML 純文字。策略:剝雜訊 → 主內容區 → get_text 加 \\n →
+    重複行去重(政府網站常 nested block 把同一段塞 5 次)。
+    2026-05-02 加,for ebasnew / dgbas / dgpa LawContent / law.lia-roc 政府網站。
+    """
+    try:
+        from bs4 import BeautifulSoup
+    except ImportError as e:
+        raise RuntimeError("缺少 beautifulsoup4,請執行 pip install beautifulsoup4 lxml") from e
+
+    raw = path.read_text(encoding="utf-8", errors="replace")
+    soup = BeautifulSoup(raw, "lxml")
+    # 1) 移除絕對雜訊:script/style/nav/header/footer/form/aside
+    for tag in soup.find_all(["script", "style", "nav", "header", "footer", "form", "aside", "noscript", "iframe"]):
+        tag.decompose()
+    # 2) 找主內容容器(政府網站常用)
+    main = None
+    for sel in [
+        {"id": "content"}, {"id": "main"}, {"id": "ContentArea"}, {"id": "rightcol"},
+        {"class_": "main-content"}, {"class_": "law-content"},
+        {"class_": "ResultListContent"}, {"role": "main"},
+        {"id": "fmtContent"}, {"id": "Content"}, {"class_": "result-content"},
+    ]:
+        el = soup.find(**sel)
+        if el and len(el.get_text(strip=True)) > 200:
+            main = el
+            break
+    if main is None:
+        main = soup.body if soup.body else soup
+    # 3) 全文 get_text 加 \n,policy: 每個 br/p/div/li/h1-6 之間加 \n
+    text = main.get_text("\n", strip=True)
+    # 4) 行內去重(連續同行 + 行 a 是行 b 的 substring 取較長的)
+    raw_lines = [ln.strip() for ln in text.split("\n")]
+    raw_lines = [ln for ln in raw_lines if ln and len(ln) >= 2]
+    # 移除完全重複(整檔範圍)
+    seen: set[str] = set()
+    deduped: list[str] = []
+    for ln in raw_lines:
+        if ln in seen:
+            continue
+        seen.add(ln)
+        deduped.append(ln)
+    # 5) 移除「N 是 M 的 substring 且 M 已出現」這種重複(政府網站常見 nested 包含)
+    cleaned: list[str] = []
+    for ln in deduped:
+        is_substring_of_existing = False
+        for kept in cleaned:
+            if ln != kept and ln in kept and len(ln) > 8:
+                is_substring_of_existing = True
+                break
+        if not is_substring_of_existing:
+            cleaned.append(ln)
+    # 6) 移除常見公部門網站 layout 雜訊行
+    NOISE_PATTERNS = [
+        r"^(分享|Facebook|X|line|Email|友善列印|LINE)$",
+        r"^(回上一頁|回上方|回首頁|跳到主要內容區塊|您的瀏覽器不支援)",
+        r"^(瀏覽人數|系統版本|系統更新日期|更新日期)[\s::]*\d",
+        r"^(網站導覽|使用手冊|聯絡我們|English)$",
+        r"^(請輸入關鍵字|整合查詢|搜尋)$",
+    ]
+    import re as _re
+    cleaned = [ln for ln in cleaned
+               if not any(_re.match(p, ln) for p in NOISE_PATTERNS)]
+    return "\n".join(cleaned), len(cleaned)
+
+
+def extract_odt(path: Path) -> tuple[str, int]:
+    """從 ODT 抽純文字。ODT 是 ZIP 格式,內含 content.xml。
+    2026-05-02 加,for 軍公教人員兼職費支給表.odt 等支給表附件。
+    """
+    import zipfile
+    from xml.etree import ElementTree as ET
+    parts: list[str] = []
+    with zipfile.ZipFile(str(path), "r") as z:
+        if "content.xml" not in z.namelist():
+            return "", 0
+        xml_data = z.read("content.xml")
+    try:
+        root = ET.fromstring(xml_data)
+    except ET.ParseError:
+        return "", 0
+    # ODT 命名空間
+    ns_text = "{urn:oasis:names:tc:opendocument:xmlns:text:1.0}"
+    # 走訪所有 paragraph / heading / list-item
+    for tag_name in ("p", "h", "list-item"):
+        for el in root.iter(f"{ns_text}{tag_name}"):
+            text = "".join(el.itertext()).strip()
+            if text:
+                parts.append(text)
+    return "\n".join(parts), len(parts)
 
 
 def extract_md(path: Path) -> tuple[str, dict[str, str]]:
@@ -503,6 +606,14 @@ def process_file(
         elif suffix == ".docx":
             text, page_count = extract_docx(src)
             result.method = "docx"
+            result.page_count = page_count
+        elif suffix in (".html", ".htm"):
+            text, page_count = extract_html(src)
+            result.method = "html"
+            result.page_count = page_count
+        elif suffix == ".odt":
+            text, page_count = extract_odt(src)
+            result.method = "odt"
             result.page_count = page_count
         else:  # .md / .markdown / .txt
             text, md_metadata = extract_md(src)
