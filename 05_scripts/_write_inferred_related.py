@@ -118,20 +118,25 @@ def process_one(path: Path, to_add: list[str], apply: bool) -> dict:
         return out
 
     out["id"] = fm.get("id")
-    existing = fm.get("related") or []
-    if not isinstance(existing, list):
-        existing = []
-    existing = [str(r) for r in existing]
+    # 2026-05-01:推斷邊改寫到 related_inferred(原全混入 related,失去區分能力)
+    existing_inferred = fm.get("related_inferred") or []
+    if not isinstance(existing_inferred, list):
+        existing_inferred = []
+    existing_inferred = [str(r) for r in existing_inferred]
 
-    new_related, added = merge_related(existing, to_add)
+    # 不重複加入已在 related(人工邊)的目標
+    existing_human = set(str(r) for r in (fm.get("related") or []) if r)
+    to_add_filtered = [t for t in to_add if t not in existing_human]
+
+    new_inferred, added = merge_related(existing_inferred, to_add_filtered)
     out["added"] = added
-    out["total_after"] = len(new_related)
+    out["total_after"] = len(new_inferred)
 
     if not added:
         return out
 
     if apply:
-        fm["related"] = new_related
+        fm["related_inferred"] = new_inferred
         write_md(path, fm, body)
 
     return out

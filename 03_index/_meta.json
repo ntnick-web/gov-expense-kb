@@ -1,6 +1,6 @@
 {
   "last_indexed": "2026-05-01",
-  "last_indexed_iso": "2026-05-01T03:41:45+08:00",
+  "last_indexed_iso": "2026-05-01T10:08:25+08:00",
   "node_count": 520,
   "edge_count": 485,
   "status_counts": {
@@ -11,6 +11,8 @@
   "reviewed_count": 520,
   "review_level_counts": {
     "人工": 39,
-    "自動初校": 481
+    "llm精校": 442,
+    "llm待人工": 37,
+    "自動初校": 2
   }
 }

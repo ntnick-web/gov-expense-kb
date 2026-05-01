@@ -79,6 +79,7 @@ class Node:
     title: str
     tags: list[str]
     related: list[str]
+    related_inferred: list[str]  # 2026-05-01 加:推斷邊獨立追蹤(原全混入 related)
     file_path: str
     version: str
     summary: str = ""
@@ -287,12 +288,19 @@ def load_nodes(
         if not tags:
             warnings.append(f"{rel}: tags 為空")
 
-        # related
+        # related(人工邊)
         related = fm.get("related") or []
         if not isinstance(related, list):
             warnings.append(f"{rel}: related 非 list,視為空")
             related = []
         related = [str(r) for r in related]
+
+        # related_inferred(2026-05-01 加:推斷邊獨立追蹤,由 _write_inferred_related.py 寫入)
+        related_inferred = fm.get("related_inferred") or []
+        if not isinstance(related_inferred, list):
+            warnings.append(f"{rel}: related_inferred 非 list,視為空")
+            related_inferred = []
+        related_inferred = [str(r) for r in related_inferred]
 
         # version
         version = fm.get("version", "")
@@ -335,6 +343,7 @@ def load_nodes(
             title=str(fm.get("title", "")),
             tags=tags,
             related=related,
+            related_inferred=related_inferred,
             file_path=rel,
             version=version,
             summary=summary,
@@ -373,6 +382,7 @@ def build_nodes_json(nodes: list[Node]) -> list[dict]:
             "title": n.title,
             "tags": n.tags,
             "related": n.related,
+            "related_inferred": n.related_inferred,
             "file_path": n.file_path,
             "version": n.version,
             "summary": n.summary,
@@ -442,6 +452,7 @@ def build_edges_json(
     node_ids = {n.id for n in nodes}
     seen: set[tuple[str, str, str]] = set()
     edges: list[dict] = []
+    # 1) 人工邊 — 從 fm.related
     for n in nodes:
         for rel_id in n.related:
             if rel_id not in node_ids:
@@ -457,6 +468,27 @@ def build_edges_json(
             edges.append({
                 "from": n.id, "to": rel_id, "relation": relation,
                 "inferred": False,
+            })
+    # 2) 推斷邊 — 從 fm.related_inferred(2026-05-01 加;原全混入 related)
+    for n in nodes:
+        for rel_id in n.related_inferred:
+            if rel_id not in node_ids:
+                warnings.append(
+                    f"{n.id}.related_inferred → {rel_id} 不存在於 nodes"
+                )
+                continue
+            base_rel = infer_relation(category_of(n.id), category_of(rel_id))
+            relation = f"{base_rel}_inferred"
+            key = (n.id, rel_id, relation)
+            if key in seen:
+                continue
+            # 若同 (from, to) 已有人工邊則跳過(人工優先)
+            if any((n.id, rel_id, r) in seen for r in ("cites", "explains", "answers", "belongs_to")):
+                continue
+            seen.add(key)
+            edges.append({
+                "from": n.id, "to": rel_id, "relation": relation,
+                "inferred": True, "source": "fm",  # 來自 fm.related_inferred(可重建)
             })
     return edges, warnings
 
