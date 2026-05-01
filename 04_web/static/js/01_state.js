@@ -5,7 +5,7 @@
 let compareList = [];
 
 /* ──────── 真實資料載入 (520 nodes from 03_index/) ──────── */
-const DATA_VERSION = '2026-05-02e';  // 中立角色原則 + 5 卡法源審查(刪 passport-rush-fee + 4 卡補 C 類函釋)
+const DATA_VERSION = '2026-05-02f';  // 中立角色原則 + 5 卡法源審查(刪 passport-rush-fee + 4 卡補 C 類函釋)
 let DATA = [];                 // 對外用的卡片資料 (mapped from nodes.json)
 let NODES_BY_ID = new Map();   // id → original node (含 file_path 等)
 let INCOMING_EDGES = new Map();// id → [from1, from2, ...] 反向引用
@@ -135,8 +135,19 @@ async function loadAllData() {
         certainty: n.certainty || 'explicit',
         disclaimerLevel: n.disclaimer_level || 'standard',
         noInferenceNote: n.no_inference_note || '',
+        // 2026-05-02 #23:條文修法歷史
+        versionHistory: Array.isArray(n.version_history) ? n.version_history : [],
       };
     });
+  // 2026-05-02 #24:建 bigram/trigram 反向索引(query → 候選 ID Set,加速 substring 搜尋)
+  if (window.SearchIndex) {
+    const docs = DATA.map(d => ({
+      id: d.id,
+      text: [d.id, d.title, (d.tags || []).join(' '), d.summary].filter(Boolean).join(' '),
+    }));
+    window.SearchIndex.build(docs);
+    console.log('[SearchIndex] built:', window.SearchIndex.stats());
+  }
   return DATA;
 }
 

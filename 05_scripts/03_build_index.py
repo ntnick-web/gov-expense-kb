@@ -97,6 +97,8 @@ class Node:
     certainty: str = "explicit"   # explicit / inferred / contested
     disclaimer_level: str = "standard"  # standard / strong
     no_inference_note: Optional[str] = None
+    # 2026-05-02 加(#23):條文修法歷史
+    version_history: list[dict] = field(default_factory=list)
     body_plain: str = field(default="", repr=False)
 
 
@@ -360,6 +362,7 @@ def load_nodes(
             certainty=certainty_val,
             disclaimer_level=disclaimer_val,
             no_inference_note=str(fm["no_inference_note"]) if fm.get("no_inference_note") else None,
+            version_history=fm["version_history"] if isinstance(fm.get("version_history"), list) else [],
             body_plain=body_plain,
         )
         nodes.append(node)
@@ -413,6 +416,8 @@ def build_nodes_json(nodes: list[Node]) -> list[dict]:
             d["disclaimer_level"] = n.disclaimer_level
         if n.no_inference_note:
             d["no_inference_note"] = n.no_inference_note
+        if n.version_history:
+            d["version_history"] = n.version_history
         out.append(d)
     return out
 

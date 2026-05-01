@@ -33,6 +33,7 @@
 | `certainty` | enum | ✗ | 法規明文程度,預設 `explicit`。允許值:`explicit`(法規明文)/ `inferred`(依精神推論)/ `contested`(實務有爭議)— 驅動前端 `disclaimer_level` 與是否顯示判斷結論。**Phase 4 標記中,目前所有節點預設 explicit** | `explicit` |
 | `disclaimer_level` | enum | ✗ | 免責強度,預設 `standard`。允許值:`standard`(每張卡 40 字版)/ `strong`(inferred / contested 節點 50 字警示版)— 通常依 certainty 自動推斷,可手動覆寫 | `standard` |
 | `no_inference_note` | string | ✗ | `certainty: inferred / contested` 時的免責補充說明,前端強警示區塊內顯示 | `此情形法規無明文規定,本站不提供判斷,請洽主計室確認。` |
+| `version_history` | array | ✗ | 條文修法歷史(2026-05-02 加,#23)。每項 `{date, change, replaces?}`,前端在抽屜 metadata 後顯示時間軸 | `[{date:'2024-01-15',change:'修正第 5 條,加自駕費率'},{date:'2018-09-04',change:'初訂'}]` |
 
 **`reviewed` 安全網**
 - `02_parse.py` 不寫入 `reviewed`(留給人工 / `_batch_autoreview.py` 補)

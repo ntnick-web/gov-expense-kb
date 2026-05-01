@@ -2137,3 +2137,63 @@
       animation-delay: 0s !important;
     }
   }
+
+/* ──────── 條文修法歷史 timeline(2026-05-02 #23 加) ──────── */
+.version-timeline {
+  margin: 8px 0 12px;
+  padding: 10px 12px;
+  background: var(--pastel-vanilla);
+  border: 1px solid var(--ink-vanilla);
+  border-left: 3px solid var(--ink-vanilla);
+  border-radius: 6px;
+  font-size: 12px;
+}
+.version-timeline .vh-head {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-weight: 700;
+  color: var(--ink-vanilla);
+  margin-bottom: 8px;
+  font-size: 12px;
+}
+.version-timeline .vh-icon { font-size: 14px; }
+.version-timeline .vh-item {
+  display: grid;
+  grid-template-columns: 8px 76px 1fr auto;
+  gap: 8px;
+  align-items: baseline;
+  padding: 4px 0;
+  border-bottom: 1px dashed var(--line);
+  position: relative;
+}
+.version-timeline .vh-item:last-child { border-bottom: none; }
+.version-timeline .vh-dot {
+  width: 7px; height: 7px;
+  border-radius: 50%;
+  background: var(--line-strong);
+  margin-top: 6px;
+}
+.version-timeline .vh-item.is-latest .vh-dot {
+  background: var(--ink-vanilla);
+  box-shadow: 0 0 0 2px var(--pastel-vanilla);
+}
+.version-timeline .vh-date {
+  color: var(--ink-2);
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 600;
+}
+.version-timeline .vh-item.is-latest .vh-date { color: var(--ink); }
+.version-timeline .vh-change {
+  color: var(--ink-2);
+  line-height: 1.5;
+}
+.version-timeline .vh-replaces {
+  font-size: 10.5px;
+  color: var(--ink-3);
+  font-family: var(--font-mono);
+  background: var(--surface-2);
+  padding: 1px 6px;
+  border-radius: 3px;
+}
