@@ -4,6 +4,8 @@ type: 核心法規
 parent: 酬勞費
 title: 第五條 補充保費扣繳辦法
 tags:
+- 保險費
+- 健保補充保費
 - 酬勞費
 related: []
 source: 全民健康保險扣取及繳納補充保險費辦法

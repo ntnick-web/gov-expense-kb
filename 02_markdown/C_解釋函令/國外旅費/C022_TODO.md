@@ -4,6 +4,8 @@ type: 解釋函令
 parent: 國外旅費
 title: 經濟艙搭乘與學雜費覈實
 tags:
+- 會議費
+- 機票
 - 覈實報支
 - 雜費
 related: []
