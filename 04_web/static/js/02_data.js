@@ -209,14 +209,26 @@ function filteredData() {
     d._matchedSynonym = matchedSynonym;
     scored.push({d, scenarioRelevance, queryRelevance});
   }
-  // 排序優先序:scenario 相關度 > query 相關度 > 原始 ID 序
+  // 排序優先序:scenario 相關度 > query 相關度 > sort_order(條文序號) > 原始 ID 序
   if (sc || q) {
     scored.sort((a, b) => {
       const s = b.scenarioRelevance - a.scenarioRelevance;
       if (s !== 0) return s;
       return b.queryRelevance - a.queryRelevance;
     });
+  } else if (filterState.parent) {
+    // 有 parent filter 但無 query/scenario:依 sort_order 排(條文邏輯順序),
+    // 無序號者(C/D 類)墊底,按 ID 末段數字升序
+    scored.sort((a, b) => {
+      const sa = a.d.sortOrder ?? Infinity;
+      const sb = b.d.sortOrder ?? Infinity;
+      if (sa !== sb) return sa - sb;
+      const ia = parseInt(a.d.id.split('-').pop(), 10) || 0;
+      const ib = parseInt(b.d.id.split('-').pop(), 10) || 0;
+      return ia - ib;
+    });
   }
+  // 無 parent filter + 無 query/scenario:保持 DATA 順序(loadAllData 已按母題→類別→ID 排)
   return scored.map(x => x.d);
 }
 

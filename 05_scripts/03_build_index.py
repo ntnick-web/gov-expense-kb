@@ -99,6 +99,8 @@ class Node:
     no_inference_note: Optional[str] = None
     # 2026-05-02 加(#23):條文修法歷史
     version_history: list[dict] = field(default_factory=list)
+    # 2026-05-02 加:自訂排序序號(用於同母題內按條文順序排列,如酬勞費 A 類)
+    sort_order: Optional[int] = None
     body_plain: str = field(default="", repr=False)
 
 
@@ -363,6 +365,7 @@ def load_nodes(
             disclaimer_level=disclaimer_val,
             no_inference_note=str(fm["no_inference_note"]) if fm.get("no_inference_note") else None,
             version_history=fm["version_history"] if isinstance(fm.get("version_history"), list) else [],
+            sort_order=int(fm["sort_order"]) if fm.get("sort_order") is not None else None,
             body_plain=body_plain,
         )
         nodes.append(node)
@@ -418,6 +421,8 @@ def build_nodes_json(nodes: list[Node]) -> list[dict]:
             d["no_inference_note"] = n.no_inference_note
         if n.version_history:
             d["version_history"] = n.version_history
+        if n.sort_order is not None:
+            d["sort_order"] = n.sort_order
         out.append(d)
     return out
 

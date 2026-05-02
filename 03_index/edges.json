@@ -259,7 +259,7 @@
   },
   {
     "from": "A-酬勞費-003",
-    "to": "A-酬勞費-004",
+    "to": "B-酬勞費-039",
     "relation": "cites",
     "inferred": false
   },
@@ -278,18 +278,6 @@
   {
     "from": "A-酬勞費-015",
     "to": "A-酬勞費-016",
-    "relation": "cites",
-    "inferred": false
-  },
-  {
-    "from": "A-酬勞費-004",
-    "to": "A-酬勞費-003",
-    "relation": "cites",
-    "inferred": false
-  },
-  {
-    "from": "A-酬勞費-004",
-    "to": "A-酬勞費-009",
     "relation": "cites",
     "inferred": false
   },
@@ -343,7 +331,7 @@
   },
   {
     "from": "A-酬勞費-009",
-    "to": "A-酬勞費-004",
+    "to": "B-酬勞費-039",
     "relation": "cites",
     "inferred": false
   },
@@ -398,6 +386,18 @@
   {
     "from": "B-國外旅費-007",
     "to": "A-國外旅費-014",
+    "relation": "cites",
+    "inferred": false
+  },
+  {
+    "from": "B-酬勞費-039",
+    "to": "A-酬勞費-003",
+    "relation": "cites",
+    "inferred": false
+  },
+  {
+    "from": "B-酬勞費-039",
+    "to": "A-酬勞費-009",
     "relation": "cites",
     "inferred": false
   },
@@ -3063,14 +3063,6 @@
   },
   {
     "from": "A-酬勞費-005",
-    "to": "A-酬勞費-004",
-    "relation": "cites_inferred",
-    "inferred": true,
-    "matched": "第 4 條",
-    "cross_parent": false
-  },
-  {
-    "from": "A-酬勞費-005",
     "to": "A-酬勞費-009",
     "relation": "cites_inferred",
     "inferred": true,
@@ -3086,7 +3078,7 @@
     "cross_parent": false
   },
   {
-    "from": "B-酬勞費-006",
+    "from": "C-酬勞費-007",
     "to": "A-酬勞費-014",
     "relation": "cites_inferred",
     "inferred": true,
@@ -3094,7 +3086,7 @@
     "cross_parent": false
   },
   {
-    "from": "B-酬勞費-006",
+    "from": "C-酬勞費-007",
     "to": "A-酬勞費-015",
     "relation": "cites_inferred",
     "inferred": true,
@@ -3102,7 +3094,7 @@
     "cross_parent": false
   },
   {
-    "from": "B-酬勞費-014",
+    "from": "C-酬勞費-015",
     "to": "A-酬勞費-001",
     "relation": "cites_inferred",
     "inferred": true,
@@ -3110,7 +3102,7 @@
     "cross_parent": false
   },
   {
-    "from": "B-酬勞費-016",
+    "from": "C-酬勞費-017",
     "to": "A-酬勞費-005",
     "relation": "cites_inferred",
     "inferred": true,
@@ -3118,15 +3110,7 @@
     "cross_parent": false
   },
   {
-    "from": "B-酬勞費-016",
-    "to": "A-酬勞費-004",
-    "relation": "cites_inferred",
-    "inferred": true,
-    "matched": "第4點",
-    "cross_parent": false
-  },
-  {
-    "from": "B-酬勞費-022",
+    "from": "C-酬勞費-023",
     "to": "A-酬勞費-003",
     "relation": "cites_inferred",
     "inferred": true,
@@ -3134,7 +3118,7 @@
     "cross_parent": false
   },
   {
-    "from": "B-酬勞費-023",
+    "from": "C-酬勞費-024",
     "to": "A-酬勞費-009",
     "relation": "cites_inferred",
     "inferred": true,
@@ -3142,7 +3126,7 @@
     "cross_parent": false
   },
   {
-    "from": "B-酬勞費-024",
+    "from": "C-酬勞費-025",
     "to": "A-酬勞費-010",
     "relation": "cites_inferred",
     "inferred": true,
@@ -3150,7 +3134,7 @@
     "cross_parent": false
   },
   {
-    "from": "B-酬勞費-034",
+    "from": "C-酬勞費-035",
     "to": "A-酬勞費-003",
     "relation": "cites_inferred",
     "inferred": true,
@@ -3158,15 +3142,7 @@
     "cross_parent": false
   },
   {
-    "from": "B-酬勞費-034",
-    "to": "A-酬勞費-004",
-    "relation": "cites_inferred",
-    "inferred": true,
-    "matched": "第4點",
-    "cross_parent": false
-  },
-  {
-    "from": "B-酬勞費-034",
+    "from": "C-酬勞費-035",
     "to": "A-酬勞費-005",
     "relation": "cites_inferred",
     "inferred": true,
@@ -3174,7 +3150,7 @@
     "cross_parent": false
   },
   {
-    "from": "B-酬勞費-034",
+    "from": "C-酬勞費-035",
     "to": "A-酬勞費-009",
     "relation": "cites_inferred",
     "inferred": true,
@@ -3182,7 +3158,7 @@
     "cross_parent": false
   },
   {
-    "from": "B-酬勞費-035",
+    "from": "C-酬勞費-036",
     "to": "A-酬勞費-014",
     "relation": "cites_inferred",
     "inferred": true,
@@ -3190,7 +3166,7 @@
     "cross_parent": false
   },
   {
-    "from": "B-酬勞費-035",
+    "from": "C-酬勞費-036",
     "to": "A-酬勞費-015",
     "relation": "cites_inferred",
     "inferred": true,
@@ -3198,7 +3174,7 @@
     "cross_parent": false
   },
   {
-    "from": "B-酬勞費-036",
+    "from": "C-酬勞費-037",
     "to": "A-酬勞費-009",
     "relation": "cites_inferred",
     "inferred": true,
@@ -3206,7 +3182,7 @@
     "cross_parent": false
   },
   {
-    "from": "B-酬勞費-036",
+    "from": "C-酬勞費-037",
     "to": "A-酬勞費-010",
     "relation": "cites_inferred",
     "inferred": true,

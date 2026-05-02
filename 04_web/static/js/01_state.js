@@ -5,7 +5,7 @@
 let compareList = [];
 
 /* ──────── 真實資料載入 (586 nodes / 105 scenarios from 03_index/) ──────── */
-const DATA_VERSION = '2026-05-02q';
+const DATA_VERSION = '2026-05-02r';
 let DATA = [];                 // 對外用的卡片資料 (mapped from nodes.json)
 let NODES_BY_ID = new Map();   // id → original node (含 file_path 等)
 let INCOMING_EDGES = new Map();// id → [from1, from2, ...] 反向引用
@@ -140,6 +140,8 @@ async function loadAllData() {
         noInferenceNote: n.no_inference_note || '',
         // 2026-05-02 #23:條文修法歷史
         versionHistory: Array.isArray(n.version_history) ? n.version_history : [],
+        // 2026-05-02:自訂排序序號(用於同母題內按條文順序排列)
+        sortOrder: typeof n.sort_order === 'number' ? n.sort_order : null,
       };
     });
   // 2026-05-02 #24:建 bigram/trigram 反向索引(query → 候選 ID Set,加速 substring 搜尋)

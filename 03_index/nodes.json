@@ -1670,7 +1670,8 @@
     "agency": "行政院主計總處",
     "reviewed": "2026-05-02",
     "review_level": "人工",
-    "source_url": "https://law.dgbas.gov.tw/LawContent.aspx?id=FL000752"
+    "source_url": "https://law.dgbas.gov.tw/LawContent.aspx?id=FL000752",
+    "sort_order": 1
   },
   {
     "id": "A-酬勞費-014",
@@ -1694,7 +1695,8 @@
     "agency": "行政院主計總處",
     "reviewed": "2026-05-02",
     "review_level": "人工",
-    "source_url": "https://law.dgbas.gov.tw/LawContent.aspx?id=FL000752"
+    "source_url": "https://law.dgbas.gov.tw/LawContent.aspx?id=FL000752",
+    "sort_order": 2
   },
   {
     "id": "A-酬勞費-003",
@@ -1708,7 +1710,7 @@
       "酬勞費"
     ],
     "related": [
-      "A-酬勞費-004",
+      "B-酬勞費-039",
       "A-酬勞費-009"
     ],
     "related_inferred": [],
@@ -1719,7 +1721,8 @@
     "agency": "行政院主計總處",
     "reviewed": "2026-05-02",
     "review_level": "人工",
-    "source_url": "https://law.dgbas.gov.tw/LawContent.aspx?id=FL000752"
+    "source_url": "https://law.dgbas.gov.tw/LawContent.aspx?id=FL000752",
+    "sort_order": 7
   },
   {
     "id": "A-酬勞費-015",
@@ -1742,31 +1745,8 @@
     "agency": "行政院主計總處",
     "reviewed": "2026-05-02",
     "review_level": "人工",
-    "source_url": "https://law.dgbas.gov.tw/LawContent.aspx?id=FL000752"
-  },
-  {
-    "id": "A-酬勞費-004",
-    "type": "核心法規",
-    "parent": "酬勞費",
-    "title": "附表 稿費支給基準數額表",
-    "tags": [
-      "採購",
-      "稿費",
-      "酬勞費"
-    ],
-    "related": [
-      "A-酬勞費-003",
-      "A-酬勞費-009"
-    ],
-    "related_inferred": [],
-    "file_path": "02_markdown/A_核心法規/酬勞費/第04條_修正中央政府各機關學校稿.md",
-    "version": "2024-01-01",
-    "summary": "稿費基準：一般稿件中文每千字1,100~1,600元、外文2,000~3,750元；特別稿件由機關自行認定；校對為撰稿費5~10%；審查中文每千字300~380元；譯稿、圖片等由機關依採購法或本於權責…",
-    "status": "現行",
-    "agency": "行政院主計總處",
-    "reviewed": "2026-05-02",
-    "review_level": "人工",
-    "source_url": "https://law.dgbas.gov.tw/LawContent.aspx?id=FL000752"
+    "source_url": "https://law.dgbas.gov.tw/LawContent.aspx?id=FL000752",
+    "sort_order": 3
   },
   {
     "id": "A-酬勞費-016",
@@ -1789,7 +1769,8 @@
     "agency": "行政院主計總處",
     "reviewed": "2026-05-02",
     "review_level": "人工",
-    "source_url": "https://law.dgbas.gov.tw/LawContent.aspx?id=FL000752"
+    "source_url": "https://law.dgbas.gov.tw/LawContent.aspx?id=FL000752",
+    "sort_order": 4
   },
   {
     "id": "A-酬勞費-005",
@@ -1809,7 +1790,8 @@
     "status": "現行",
     "agency": "衛生福利部中央健康保險署",
     "reviewed": "2026-04-25",
-    "review_level": "llm待人工"
+    "review_level": "llm待人工",
+    "sort_order": 13
   },
   {
     "id": "A-酬勞費-017",
@@ -1832,7 +1814,8 @@
     "agency": "行政院主計總處",
     "reviewed": "2026-05-02",
     "review_level": "人工",
-    "source_url": "https://law.dgbas.gov.tw/LawContent.aspx?id=FL000752"
+    "source_url": "https://law.dgbas.gov.tw/LawContent.aspx?id=FL000752",
+    "sort_order": 5
   },
   {
     "id": "A-酬勞費-018",
@@ -1859,7 +1842,8 @@
     "agency": "行政院主計總處",
     "reviewed": "2026-05-02",
     "review_level": "人工",
-    "source_url": "https://law.dgbas.gov.tw/LawContent.aspx?id=FL000752"
+    "source_url": "https://law.dgbas.gov.tw/LawContent.aspx?id=FL000752",
+    "sort_order": 6
   },
   {
     "id": "A-酬勞費-009",
@@ -1872,7 +1856,7 @@
     ],
     "related": [
       "A-酬勞費-003",
-      "A-酬勞費-004"
+      "B-酬勞費-039"
     ],
     "related_inferred": [],
     "file_path": "02_markdown/A_核心法規/酬勞費/第09條_第七點附表（中央政府各機.md",
@@ -1882,7 +1866,8 @@
     "agency": "行政院主計總處",
     "reviewed": "2026-05-02",
     "review_level": "人工",
-    "source_url": "https://law.dgbas.gov.tw/LawContent.aspx?id=FL000752"
+    "source_url": "https://law.dgbas.gov.tw/LawContent.aspx?id=FL000752",
+    "sort_order": 9
   },
   {
     "id": "A-酬勞費-019",
@@ -1906,7 +1891,8 @@
     "agency": "行政院主計總處",
     "reviewed": "2026-05-02",
     "review_level": "人工",
-    "source_url": "https://law.dgbas.gov.tw/LawContent.aspx?id=FL000752"
+    "source_url": "https://law.dgbas.gov.tw/LawContent.aspx?id=FL000752",
+    "sort_order": 10
   },
   {
     "id": "A-酬勞費-010",
@@ -1932,7 +1918,42 @@
     "agency": "行政院人事行政總處",
     "reviewed": "2026-05-02",
     "review_level": "人工",
-    "source_url": "https://law.dgpa.gov.tw/LawContent.aspx?id=GL000341"
+    "source_url": "https://law.dgpa.gov.tw/LawContent.aspx?id=GL000341",
+    "rate_table": {
+      "caption": "講座鐘點費支給表",
+      "unit": "新臺幣元/節",
+      "effective": "2018-02-01",
+      "headers": [
+        "類別",
+        "對象",
+        "支給上限"
+      ],
+      "rows": [
+        [
+          "外聘",
+          "國內專家學者",
+          "2,000"
+        ],
+        [
+          "外聘",
+          "與主辦機關（構）、學校有隸屬關係之機關（構）學校人員",
+          "1,500"
+        ],
+        [
+          "內聘",
+          "主辦機關（構）、學校人員",
+          "1,000"
+        ]
+      ],
+      "notes": [
+        "本表所定內聘及外聘講座鐘點費係屬上限規範，主辦機關得參酌預算狀況及實際需要等因素，於本表所定範圍內自行訂定。",
+        "授課時間每節為50分鐘；連續上課2節者為90分鐘，未滿減半支給。",
+        "協助教學並實際授課之講座助理，支給數額按同一課程講座鐘點費減半支給。",
+        "主辦機關辦理專題演講，得衡酌國際（內）聲譽、學術地位、演講內容及延聘難易程度等因素自行核定支給。",
+        "本表自107年2月1日生效。"
+      ]
+    },
+    "sort_order": 11
   },
   {
     "id": "A-酬勞費-012",
@@ -1954,7 +1975,37 @@
     "agency": "行政院人事行政總處",
     "reviewed": "2026-05-02",
     "review_level": "人工",
-    "source_url": "https://law.dgpa.gov.tw/LawContent.aspx?id=GL000347"
+    "source_url": "https://law.dgpa.gov.tw/LawContent.aspx?id=GL000347",
+    "rate_table": {
+      "caption": "軍公教人員兼職費支給表",
+      "unit": "新臺幣元/月",
+      "effective": "2018-09-01",
+      "headers": [
+        "官等",
+        "月支數額上限"
+      ],
+      "rows": [
+        [
+          "簡任",
+          "3,500"
+        ],
+        [
+          "薦任",
+          "3,000"
+        ],
+        [
+          "委任",
+          "2,500"
+        ]
+      ],
+      "notes": [
+        "基於法令規定或經權責機關核准有數個兼職者，每月最多得領受2個兼職費，且總額以17,000元為限。",
+        "單一兼任職務兼職費領受以8,500元為限，但兼任公司常務董事或常駐監察人以12,750元為限。",
+        "按實際出席會議次數支給者，每次最高2,500元。",
+        "本表自107年9月1日生效。"
+      ]
+    },
+    "sort_order": 12
   },
   {
     "id": "B-國內旅費-001",
@@ -15119,791 +15170,100 @@
     "reviewed": "2026-04-25"
   },
   {
-    "id": "B-酬勞費-001",
+    "id": "B-酬勞費-039",
     "type": "支出標準",
     "parent": "酬勞費",
-    "title": "內聘講座已支鐘點費不得加班",
+    "title": "附表 稿費支給基準數額表",
     "tags": [
-      "講座鐘點費",
-      "酬勞費"
-    ],
-    "related": [],
-    "related_inferred": [],
-    "file_path": "02_markdown/B_支出標準/酬勞費/B001_支標手冊 _ 第壹篇.md",
-    "version": "2024-01-01",
-    "summary": "假日或夜間擔任內聘講座授課人員,如已支給鐘點費,依規定不得再補休或領取加班費。",
-    "status": "現行",
-    "agency": "行政院主計總處(友善專區)",
-    "reviewed": "2026-04-25",
-    "review_level": "llm精校"
-  },
-  {
-    "id": "B-酬勞費-002",
-    "type": "支出標準",
-    "parent": "酬勞費",
-    "title": "代表會兼任人員主管加給疑義",
-    "tags": [
-      "酬勞費"
-    ],
-    "related": [],
-    "related_inferred": [],
-    "file_path": "02_markdown/B_支出標準/酬勞費/B002_支標手冊 _ 第壹篇.md",
-    "version": "2024-01-01",
-    "summary": "鄉鎮市民代表會兼任人事管理員或會計員時,得否支領主管職務加給疑義,請洽詢原權責機關確認。",
-    "status": "現行",
-    "agency": "行政院主計總處(友善專區)",
-    "reviewed": "2026-04-25",
-    "review_level": "llm待人工"
-  },
-  {
-    "id": "B-酬勞費-003",
-    "type": "支出標準",
-    "parent": "酬勞費",
-    "title": "兼職與兼辦之區別認定",
-    "tags": [
-      "兼職費",
-      "酬勞費"
-    ],
-    "related": [],
-    "related_inferred": [],
-    "file_path": "02_markdown/B_支出標準/酬勞費/B003_支標手冊 _ 第壹篇.md",
-    "version": "2024-01-01",
-    "summary": "支標手冊說明「兼職」與「兼辦」之區別認定依據,依原行政院人事行政局函釋辦理,詳情請洽權責機關。",
-    "status": "現行",
-    "agency": "行政院主計總處(友善專區)",
-    "reviewed": "2026-04-25",
-    "review_level": "llm待人工"
-  },
-  {
-    "id": "B-酬勞費-004",
-    "type": "支出標準",
-    "parent": "酬勞費",
-    "title": "法律顧問兼職費每月上限五千",
-    "tags": [
-      "兼職費",
-      "酬勞費"
-    ],
-    "related": [],
-    "related_inferred": [],
-    "file_path": "02_markdown/B_支出標準/酬勞費/B004_支標手冊 _ 第壹篇.md",
-    "version": "2024-01-01",
-    "summary": "機關聘請法律顧問時,依行政院函規定,兼職費最高標準為每月新臺幣5,000元。",
-    "status": "現行",
-    "agency": "行政院主計總處(友善專區)",
-    "reviewed": "2026-04-25",
-    "review_level": "llm精校"
-  },
-  {
-    "id": "B-酬勞費-005",
-    "type": "支出標準",
-    "parent": "酬勞費",
-    "title": "公立大專校長兼職費個數限制",
-    "tags": [
-      "兼職費",
-      "酬勞費"
-    ],
-    "related": [],
-    "related_inferred": [],
-    "file_path": "02_markdown/B_支出標準/酬勞費/B005_支標手冊 _ 第壹篇.md",
-    "version": "2024-01-01",
-    "summary": "公立大專校院校長依規定兼職時,所領受兼職費個數及每月總額有所限制,詳見行政院108年函規定。",
-    "status": "現行",
-    "agency": "行政院主計總處(友善專區)",
-    "reviewed": "2026-04-25",
-    "review_level": "llm待人工"
-  },
-  {
-    "id": "B-酬勞費-006",
-    "type": "支出標準",
-    "parent": "酬勞費",
-    "title": "主計人員兼職限制與利益迴避",
-    "tags": [
-      "兼職費",
-      "酬勞費"
-    ],
-    "related": [],
-    "related_inferred": [],
-    "file_path": "02_markdown/B_支出標準/酬勞費/B006_支標手冊 _ 第壹篇.md",
-    "version": "2024-01-01",
-    "summary": "主計人員不得兼辦出納或經理財物事務,不得兼任公私營業機構職務;兼職應在不影響本職及避免內部審核角色衝突原則下辦理。",
-    "status": "現行",
-    "agency": "行政院主計總處(友善專區)",
-    "reviewed": "2026-04-25",
-    "review_level": "llm精校"
-  },
-  {
-    "id": "B-酬勞費-007",
-    "type": "支出標準",
-    "parent": "酬勞費",
-    "title": "兼職費晉支後補發差額疑義",
-    "tags": [
-      "兼職費",
-      "酬勞費"
-    ],
-    "related": [],
-    "related_inferred": [],
-    "file_path": "02_markdown/B_支出標準/酬勞費/B007_支標手冊 _ 第壹篇.md",
-    "version": "2024-01-01",
-    "summary": "考績晉支後兼職費差額補發疑義，原函內容請洽詢行政院人事行政總處。",
-    "status": "現行",
-    "agency": "行政院主計總處(友善專區)",
-    "reviewed": "2026-04-25",
-    "review_level": "llm待人工"
-  },
-  {
-    "id": "B-酬勞費-008",
-    "type": "支出標準",
-    "parent": "酬勞費",
-    "title": "兼職人員另支交通住宿費",
-    "tags": [
-      "交通費",
-      "住宿費",
-      "兼職費",
-      "覈實報支",
-      "講座鐘點費",
-      "雜費",
-      "酬勞費"
-    ],
-    "related": [],
-    "related_inferred": [],
-    "file_path": "02_markdown/B_支出標準/酬勞費/B008_支標手冊 _ 第壹篇.md",
-    "version": "2024-01-01",
-    "summary": "兼職人員支有報酬，邀請機關得覈實支給交通費及住宿費，但條文規定不得另行支給雜費。",
-    "status": "現行",
-    "agency": "行政院主計總處(友善專區)",
-    "reviewed": "2026-04-25",
-    "review_level": "llm精校"
-  },
-  {
-    "id": "B-酬勞費-009",
-    "type": "支出標準",
-    "parent": "酬勞費",
-    "title": "兼任非政府職務車馬出席費",
-    "tags": [
-      "兼職費",
-      "出席費",
-      "酬勞費"
-    ],
-    "related": [],
-    "related_inferred": [],
-    "file_path": "02_markdown/B_支出標準/酬勞費/B009_支標手冊 _ 第壹篇.md",
-    "version": "2024-01-01",
-    "summary": "軍公教人員兼任非政府機關職務，領受車馬費或出席費之疑義，原函內容請洽詢人事行政總處。",
-    "status": "現行",
-    "agency": "行政院主計總處(友善專區)",
-    "reviewed": "2026-04-25",
-    "review_level": "llm待人工"
-  },
-  {
-    "id": "B-酬勞費-010",
-    "type": "支出標準",
-    "parent": "酬勞費",
-    "title": "董監事兼身分領出席費迴避",
-    "tags": [
-      "出席費",
-      "酬勞費"
-    ],
-    "related": [],
-    "related_inferred": [],
-    "file_path": "02_markdown/B_支出標準/酬勞費/B010_支標手冊 _ 第壹篇.md",
-    "version": "2024-01-01",
-    "summary": "政府推派董監事另以學者專家身分出席兼任公司諮詢會議，如確在職責範圍外，依規定得支領出席費，惟為符合利益迴避原則應予儘量避免。",
-    "status": "現行",
-    "agency": "行政院主計總處(友善專區)",
-    "reviewed": "2026-04-25",
-    "review_level": "llm精校"
-  },
-  {
-    "id": "B-酬勞費-011",
-    "type": "支出標準",
-    "parent": "酬勞費",
-    "title": "外籍學者另支出席費疑義",
-    "tags": [
-      "出席費",
-      "日支生活費",
-      "酬勞費"
-    ],
-    "related": [],
-    "related_inferred": [],
-    "file_path": "02_markdown/B_支出標準/酬勞費/B011_支標手冊 _ 第壹篇.md",
-    "version": "2024-01-01",
-    "summary": "國外專家學者來臺期間已支領生活費，得否另支給出席費之疑義，原函內容請洽詢人事行政總處。",
-    "status": "現行",
-    "agency": "行政院主計總處(友善專區)",
-    "reviewed": "2026-04-25",
-    "review_level": "llm待人工"
-  },
-  {
-    "id": "B-酬勞費-012",
-    "type": "支出標準",
-    "parent": "酬勞費",
-    "title": "視訊會議出席費支給認定",
-    "tags": [
-      "出席費",
-      "稿費",
-      "酬勞費"
-    ],
-    "related": [],
-    "related_inferred": [],
-    "file_path": "02_markdown/B_支出標準/酬勞費/B012_支標手冊 _ 第壹篇.md",
-    "version": "2024-01-01",
-    "summary": "專家學者出席視訊會議，只要機關本權責認定確有親自參與具政策性或專案性重大諮詢事項，條文規定即得支領出席費，不因會議召開方式而有差異。",
-    "status": "現行",
-    "agency": "行政院主計總處(友善專區)",
-    "reviewed": "2026-04-25",
-    "review_level": "llm精校"
-  },
-  {
-    "id": "B-酬勞費-013",
-    "type": "支出標準",
-    "parent": "酬勞費",
-    "title": "視訊出席費憑證及出席證明",
-    "tags": [
-      "出席費",
-      "稿費",
-      "酬勞費"
-    ],
-    "related": [],
-    "related_inferred": [],
-    "file_path": "02_markdown/B_支出標準/酬勞費/B013_支標手冊 _ 第壹篇.md",
-    "version": "2024-01-01",
-    "summary": "視訊會議出席費以機關本權責認定親自參與為準，以匯款支付得以匯款證明為憑證，條文規定無須要求出席者於簽到簿親自簽名。",
-    "status": "現行",
-    "agency": "行政院主計總處(友善專區)",
-    "reviewed": "2026-04-25",
-    "review_level": "llm精校"
-  },
-  {
-    "id": "B-酬勞費-014",
-    "type": "支出標準",
-    "parent": "酬勞費",
-    "title": "外聘學者交通費起算地認定",
-    "tags": [
-      "交通費",
-      "公差派遣",
-      "出席費",
-      "機關所在地",
-      "稿費",
-      "覈實報支",
-      "酬勞費"
-    ],
-    "related": [],
-    "related_inferred": [],
-    "file_path": "02_markdown/B_支出標準/酬勞費/B014_支標手冊 _ 第壹篇.md",
-    "version": "2024-01-01",
-    "summary": "邀請外聘學者專家出席會議之交通費起算地點，條文規定現行已刪除30公里限制，起算地認定請各機關本權責訂定內部規範，經機關首長同意後辦理。",
-    "status": "現行",
-    "agency": "行政院主計總處(友善專區)",
-    "reviewed": "2026-04-25",
-    "review_level": "llm精校"
-  },
-  {
-    "id": "B-酬勞費-015",
-    "type": "支出標準",
-    "parent": "酬勞費",
-    "title": "組織法規不宜增訂出席費",
-    "tags": [
-      "出席費",
-      "酬勞費"
-    ],
-    "related": [],
-    "related_inferred": [],
-    "file_path": "02_markdown/B_支出標準/酬勞費/B015_支標手冊 _ 第壹篇.md",
-    "version": "2024-01-01",
-    "summary": "組織法規有關兼職人員酬勞，條文規定不宜增訂「或支出席費」，原函內容請洽詢人事行政總處。",
-    "status": "現行",
-    "agency": "行政院主計總處(友善專區)",
-    "reviewed": "2026-04-25",
-    "review_level": "llm待人工"
-  },
-  {
-    "id": "B-酬勞費-016",
-    "type": "支出標準",
-    "parent": "酬勞費",
-    "title": "補助機關人員不得支出席費",
-    "tags": [
-      "出席費",
-      "稿費",
-      "酬勞費"
-    ],
-    "related": [],
-    "related_inferred": [],
-    "file_path": "02_markdown/B_支出標準/酬勞費/B016_支標手冊 _ 第壹篇.md",
-    "version": "2024-01-01",
-    "summary": "補助計畫之補助機關人員出席受補助計畫相關會議，條文規定基於利益迴避原則，不論是否公假均不得支給出席費。",
-    "status": "現行",
-    "agency": "行政院主計總處(友善專區)",
-    "reviewed": "2026-04-25",
-    "review_level": "llm精校"
-  },
-  {
-    "id": "B-酬勞費-017",
-    "type": "支出標準",
-    "parent": "酬勞費",
-    "title": "出席費與審查費不得重複給",
-    "tags": [
-      "出席費",
-      "審查費",
-      "稿費",
-      "酬勞費"
-    ],
-    "related": [],
-    "related_inferred": [],
-    "file_path": "02_markdown/B_支出標準/酬勞費/B017_支標手冊 _ 第壹篇.md",
-    "version": "2024-01-01",
-    "summary": "出席費與審查費性質不同，條文規定就會議之出席不得重複支給；會議前已提供書面審查意見者，得依案件性質從嚴認定支給審查費。",
-    "status": "現行",
-    "agency": "行政院主計總處(友善專區)",
-    "reviewed": "2026-04-25",
-    "review_level": "llm精校"
-  },
-  {
-    "id": "B-酬勞費-018",
-    "type": "支出標準",
-    "parent": "酬勞費",
-    "title": "最有利標評選出席審查費",
-    "tags": [
-      "出席費",
-      "審查費",
-      "稿費",
-      "酬勞費"
-    ],
-    "related": [],
-    "related_inferred": [],
-    "file_path": "02_markdown/B_支出標準/酬勞費/B018_支標手冊 _ 第壹篇.md",
-    "version": "2024-01-01",
-    "summary": "最有利標評選會議之外聘專家學者得支領出席費；開會當天至廠房實地勘查屬會前準備工作，條文規定不得支給審查費。",
-    "status": "現行",
-    "agency": "行政院主計總處(友善專區)",
-    "reviewed": "2026-04-25",
-    "review_level": "llm精校"
-  },
-  {
-    "id": "B-酬勞費-019",
-    "type": "支出標準",
-    "parent": "酬勞費",
-    "title": "採購評選委員出席審查費",
-    "tags": [
-      "出席費",
-      "審查費",
-      "酬勞費"
-    ],
-    "related": [],
-    "related_inferred": [],
-    "file_path": "02_markdown/B_支出標準/酬勞費/B019_支標手冊 _ 第壹篇.md",
-    "version": "2024-01-01",
-    "summary": "機關召開採購評選委員會，關於外聘評選委員出席費及審查費之支給規定，原函內容請洽詢行政院公共工程委員會。",
-    "status": "現行",
-    "agency": "行政院主計總處(友善專區)",
-    "reviewed": "2026-04-25",
-    "review_level": "llm待人工"
-  },
-  {
-    "id": "B-酬勞費-020",
-    "type": "支出標準",
-    "parent": "酬勞費",
-    "title": "採購評選委員出席費規定",
-    "tags": [
-      "出席費",
-      "酬勞費"
-    ],
-    "related": [],
-    "related_inferred": [],
-    "file_path": "02_markdown/B_支出標準/酬勞費/B020_支標手冊 _ 第壹篇.md",
-    "version": "2024-01-01",
-    "summary": "機關召開採購評選委員會，關於支給評選委員出席費之相關規定，原函內容請洽詢行政院公共工程委員會。",
-    "status": "現行",
-    "agency": "行政院主計總處(友善專區)",
-    "reviewed": "2026-04-25",
-    "review_level": "llm待人工"
-  },
-  {
-    "id": "B-酬勞費-021",
-    "type": "支出標準",
-    "parent": "酬勞費",
-    "title": "實地評鑑費出席或稿費認定",
-    "tags": [
-      "出席費",
-      "稿費",
-      "酬勞費"
-    ],
-    "related": [],
-    "related_inferred": [],
-    "file_path": "02_markdown/B_支出標準/酬勞費/B021_支標手冊 _ 第壹篇.md",
-    "version": "2024-01-01",
-    "summary": "邀請專家至托兒所實地評鑑，因不具書面審查性質，條文規定無稿費適用；是否支給出席費，請依要點第2點就會議性質本於權責自行認定。",
-    "status": "現行",
-    "agency": "行政院主計總處(友善專區)",
-    "reviewed": "2026-04-25",
-    "review_level": "llm精校"
-  },
-  {
-    "id": "B-酬勞費-022",
-    "type": "支出標準",
-    "parent": "酬勞費",
-    "title": "調解委員榮譽職支出席費",
-    "tags": [
-      "交通費",
-      "兼職費",
-      "出席費",
-      "酬勞費"
-    ],
-    "related": [],
-    "related_inferred": [],
-    "file_path": "02_markdown/B_支出標準/酬勞費/B022_支標手冊 _ 第壹篇.md",
-    "version": "2024-01-01",
-    "summary": "調解委員係無法定俸給之榮譽職務，條文規定無兼職費疑義，出席調解會議時宜支給出席費。",
-    "status": "現行",
-    "agency": "行政院主計總處(友善專區)",
-    "reviewed": "2026-04-25",
-    "review_level": "llm精校"
-  },
-  {
-    "id": "B-酬勞費-023",
-    "type": "支出標準",
-    "parent": "酬勞費",
-    "title": "委外撰稿稿費支給規定",
-    "tags": [
-      "出席費",
-      "稿費",
-      "簽證費",
-      "酬勞費"
-    ],
-    "related": [],
-    "related_inferred": [],
-    "file_path": "02_markdown/B_支出標準/酬勞費/B023_支標手冊 _ 第壹篇.md",
-    "version": "2024-01-01",
-    "summary": "機關委由本機關以外人員撰述、翻譯或編審業務相關重要文件，經首長或授權人核准後，條文規定得依稿費支給基準數額表標準支給稿費。",
-    "status": "現行",
-    "agency": "行政院主計總處(友善專區)",
-    "reviewed": "2026-04-25",
-    "review_level": "llm精校"
-  },
-  {
-    "id": "B-酬勞費-024",
-    "type": "支出標準",
-    "parent": "酬勞費",
-    "title": "定期刊物稿費及圖片使用費",
-    "tags": [
-      "出席費",
-      "審查費",
-      "稿費",
-      "酬勞費"
-    ],
-    "related": [],
-    "related_inferred": [],
-    "file_path": "02_markdown/B_支出標準/酬勞費/B024_支標手冊 _ 第壹篇.md",
-    "version": "2024-01-01",
-    "summary": "機關學校定期發行刊物之稿費支給，依要點第7、8點辦理；紀實性照片圖片使用費，條文規定視照片提供者是否符合稿費支領要件而定。",
-    "status": "現行",
-    "agency": "行政院主計總處(友善專區)",
-    "reviewed": "2026-04-25",
-    "review_level": "llm精校"
-  },
-  {
-    "id": "B-酬勞費-025",
-    "type": "支出標準",
-    "parent": "酬勞費",
-    "title": "謄稿不宜以稿費名義支給",
-    "tags": [
-      "稿費",
-      "酬勞費"
-    ],
-    "related": [],
-    "related_inferred": [],
-    "file_path": "02_markdown/B_支出標準/酬勞費/B025_支標手冊 _ 第壹篇.md",
-    "version": "2024-01-01",
-    "summary": "謄稿工作因無智慧財產之創作，條文規定不宜以撰稿名義支給稿費；於辦公時間外趕辦者，得依規定支給加班費。",
-    "status": "現行",
-    "agency": "行政院主計總處(友善專區)",
-    "reviewed": "2026-04-25",
-    "review_level": "llm精校"
-  },
-  {
-    "id": "B-酬勞費-026",
-    "type": "支出標準",
-    "parent": "酬勞費",
-    "title": "校對費按撰稿費比例支給",
-    "tags": [
-      "稿費",
-      "酬勞費"
-    ],
-    "related": [],
-    "related_inferred": [],
-    "file_path": "02_markdown/B_支出標準/酬勞費/B026_支標手冊 _ 第壹篇.md",
-    "version": "2024-01-01",
-    "summary": "校對費支給基準，條文規定由原按「稿酬」5%至10%修正為按「撰稿費」5%至10%支給，應本撙節原則避免重複支給。",
-    "status": "現行",
-    "agency": "行政院主計總處(友善專區)",
-    "reviewed": "2026-04-25",
-    "review_level": "llm精校"
-  },
-  {
-    "id": "B-酬勞費-027",
-    "type": "支出標準",
-    "parent": "酬勞費",
-    "title": "講座助理交通住宿費支給",
-    "tags": [
-      "交通費",
-      "住宿費",
-      "覈實報支",
-      "講座鐘點費",
-      "酬勞費"
-    ],
-    "related": [],
-    "related_inferred": [],
-    "file_path": "02_markdown/B_支出標準/酬勞費/B027_支標手冊 _ 第壹篇.md",
-    "version": "2024-01-01",
-    "summary": "講座助理得依講座鐘點費支給表規定，覈實支給交通費及國內住宿費，原函詳情請洽詢人事行政總處。",
-    "status": "現行",
-    "agency": "行政院主計總處(友善專區)",
-    "reviewed": "2026-04-25",
-    "review_level": "llm待人工"
-  },
-  {
-    "id": "B-酬勞費-028",
-    "type": "支出標準",
-    "parent": "酬勞費",
-    "title": "委託訓練內部人員鐘點費",
-    "tags": [
-      "教育訓練費",
-      "講座鐘點費",
-      "酬勞費"
-    ],
-    "related": [],
-    "related_inferred": [],
-    "file_path": "02_markdown/B_支出標準/酬勞費/B028_支標手冊 _ 第壹篇.md",
-    "version": "2024-01-01",
-    "summary": "受委託辦理訓練計畫，講座由受委託機關內部人員擔任時，支給講座鐘點費之疑義，原函內容請洽詢人事行政總處。",
-    "status": "現行",
-    "agency": "行政院主計總處(友善專區)",
-    "reviewed": "2026-04-25",
-    "review_level": "llm待人工"
-  },
-  {
-    "id": "B-酬勞費-029",
-    "type": "支出標準",
-    "parent": "酬勞費",
-    "title": "邀請自然人授課免採購法",
-    "tags": [
-      "兼職費",
       "採購",
-      "講座鐘點費",
-      "酬勞費"
-    ],
-    "related": [],
-    "related_inferred": [],
-    "file_path": "02_markdown/B_支出標準/酬勞費/B029_支標手冊 _ 第壹篇.md",
-    "version": "2024-01-01",
-    "summary": "邀請自然人授課、演講並符合講座鐘點費支給表規定者，條文規定免適用政府採購法，原函詳情請洽詢人事行政總處。",
-    "status": "現行",
-    "agency": "行政院主計總處(友善專區)",
-    "reviewed": "2026-04-25",
-    "review_level": "llm待人工"
-  },
-  {
-    "id": "B-酬勞費-030",
-    "type": "支出標準",
-    "parent": "酬勞費",
-    "title": "非自然人講座應依採購法",
-    "tags": [
-      "兼職費",
-      "採購",
-      "講座鐘點費",
-      "酬勞費"
-    ],
-    "related": [],
-    "related_inferred": [],
-    "file_path": "02_markdown/B_支出標準/酬勞費/B030_支標手冊 _ 第壹篇.md",
-    "version": "2024-01-01",
-    "summary": "邀請對象非屬自然人，或未按講座鐘點費支給表辦理者，條文規定應依政府採購法辦理，原函詳情請洽詢公共工程委員會。",
-    "status": "現行",
-    "agency": "行政院主計總處(友善專區)",
-    "reviewed": "2026-04-25",
-    "review_level": "llm待人工"
-  },
-  {
-    "id": "B-酬勞費-031",
-    "type": "支出標準",
-    "parent": "酬勞費",
-    "title": "讀書會報告人不支鐘點費",
-    "tags": [
-      "講座鐘點費",
-      "酬勞費"
-    ],
-    "related": [],
-    "related_inferred": [],
-    "file_path": "02_markdown/B_支出標準/酬勞費/B031_支標手冊 _ 第壹篇.md",
-    "version": "2024-01-01",
-    "summary": "讀書會報告人不符合講座鐘點費之支給規定，條文規定不合支給，原函詳情請洽詢人事行政總處。",
-    "status": "現行",
-    "agency": "行政院主計總處(友善專區)",
-    "reviewed": "2026-04-25",
-    "review_level": "llm精校"
-  },
-  {
-    "id": "B-酬勞費-032",
-    "type": "支出標準",
-    "parent": "酬勞費",
-    "title": "外籍學者鐘點費重複支給疑義",
-    "tags": [
-      "講座鐘點費",
-      "酬勞費"
-    ],
-    "related": [],
-    "related_inferred": [],
-    "file_path": "02_markdown/B_支出標準/酬勞費/B032_支標手冊 _ 第壹篇.md",
-    "version": "2024-01-01",
-    "summary": "國外專家學者來臺期間已支領日支生活酬金，得否再另行核給講座鐘點費之疑義，原函內容請洽詢人事行政總處。",
-    "status": "現行",
-    "agency": "行政院主計總處(友善專區)",
-    "reviewed": "2026-04-25",
-    "review_level": "llm精校"
-  },
-  {
-    "id": "B-酬勞費-033",
-    "type": "支出標準",
-    "parent": "酬勞費",
-    "title": "外籍學者另支費用依工作定",
-    "tags": [
-      "講座鐘點費",
-      "酬勞費"
-    ],
-    "related": [],
-    "related_inferred": [],
-    "file_path": "02_markdown/B_支出標準/酬勞費/B033_支標手冊 _ 第壹篇.md",
-    "version": "2024-01-01",
-    "summary": "國外專家學者來臺期間得否另核給相關費用，條文規定應視其工作範圍及內容而定，原函詳情請洽詢人事行政總處。",
-    "status": "現行",
-    "agency": "行政院主計總處(友善專區)",
-    "reviewed": "2026-04-25",
-    "review_level": "llm精校"
-  },
-  {
-    "id": "B-酬勞費-034",
-    "type": "支出標準",
-    "parent": "酬勞費",
-    "title": "出席費法令規定及解釋彙整",
-    "tags": [
-      "交通費",
-      "健保補充保費",
-      "公差派遣",
-      "兼職費",
-      "出席費",
-      "原始憑證",
-      "審查費",
-      "日支生活費",
-      "機關所在地",
       "稿費",
-      "覈實報支",
       "酬勞費"
     ],
-    "related": [],
-    "related_inferred": [],
-    "file_path": "02_markdown/B_支出標準/酬勞費/B034_支標手冊 _ 第壹篇.md",
-    "version": "2024-01-01",
-    "summary": "出席費之支給依中央政府各機關學校出席費及稿費支給要點第2至6、9點辦理，包含利益迴避、補助機關人員限制、出席費與審查費不得重複支給等規定。",
-    "status": "現行",
-    "agency": "行政院主計總處(友善專區)",
-    "reviewed": "2026-04-25",
-    "review_level": "llm精校"
-  },
-  {
-    "id": "B-酬勞費-035",
-    "type": "支出標準",
-    "parent": "酬勞費",
-    "title": "兼職費法令規定及解釋彙整",
-    "tags": [
-      "交通費",
-      "住宿費",
-      "健保補充保費",
-      "兼職費",
-      "出席費",
-      "原始憑證",
-      "覈實報支",
-      "講座鐘點費",
-      "雜費",
-      "酬勞費"
+    "related": [
+      "A-酬勞費-003",
+      "A-酬勞費-009"
     ],
-    "related": [],
     "related_inferred": [],
-    "file_path": "02_markdown/B_支出標準/酬勞費/B035_支標手冊 _ 第壹篇.md",
+    "file_path": "02_markdown/B_支出標準/酬勞費/第04條_修正中央政府各機關學校稿.md",
     "version": "2024-01-01",
-    "summary": "兼職費之支給依軍公教人員兼職費支給表辦理；條文規定法律顧問兼職費每月上限5,000元，兼職人員得覈實支給交通住宿費但不得另支雜費。",
+    "summary": "稿費基準：一般稿件中文每千字1,100~1,600元、外文2,000~3,750元；特別稿件由機關自行認定；校對為撰稿費5~10%；審查中文每千字300~380元；譯稿、圖片等由機關依採購法或本於權責…",
     "status": "現行",
-    "agency": "行政院主計總處(友善專區)",
-    "reviewed": "2026-04-25",
-    "review_level": "llm精校"
-  },
-  {
-    "id": "B-酬勞費-036",
-    "type": "支出標準",
-    "parent": "酬勞費",
-    "title": "稿費法令規定及解釋彙整",
-    "tags": [
-      "健保補充保費",
-      "出席費",
-      "原始憑證",
-      "審查費",
-      "稿費",
-      "簽證費",
-      "酬勞費"
-    ],
-    "related": [],
-    "related_inferred": [],
-    "file_path": "02_markdown/B_支出標準/酬勞費/B036_支標手冊 _ 第壹篇.md",
-    "version": "2024-01-01",
-    "summary": "稿費之支給依中央政府各機關學校出席費及稿費支給要點第7至9點及稿費支給基準數額表辦理；謄稿不得支給稿費，校對費按撰稿費5%至10%計算。",
-    "status": "現行",
-    "agency": "行政院主計總處(友善專區)",
-    "reviewed": "2026-04-25",
-    "review_level": "llm精校"
-  },
-  {
-    "id": "B-酬勞費-037",
-    "type": "支出標準",
-    "parent": "酬勞費",
-    "title": "講座鐘點費法令與作業程序",
-    "tags": [
-      "交通費",
-      "住宿費",
-      "健保補充保費",
-      "兼職費",
-      "原始憑證",
-      "採購",
-      "教育訓練費",
-      "覈實報支",
-      "講座鐘點費",
-      "酬勞費"
-    ],
-    "related": [],
-    "related_inferred": [],
-    "file_path": "02_markdown/B_支出標準/酬勞費/B037_支標手冊 _ 第壹篇.md",
-    "version": "2024-01-01",
-    "summary": "邀請講座授課時，自然人按鐘點費支給表辦理免採購法；邀請非自然人須依採購法辦理；讀書會報告人不合支給規定。",
-    "status": "現行",
-    "agency": "行政院主計總處(友善專區)",
-    "reviewed": "2026-04-25",
-    "review_level": "llm精校"
-  },
-  {
-    "id": "B-酬勞費-038",
-    "type": "支出標準",
-    "parent": "酬勞費",
-    "title": "支標手冊兼職費修正歷程",
-    "tags": [
-      "兼職費",
-      "酬勞費"
-    ],
-    "related": [],
-    "related_inferred": [],
-    "file_path": "02_markdown/B_支出標準/酬勞費/B038_支標手冊 _ 修正歷程配.md",
-    "version": "2024-01-01",
-    "summary": "支標手冊第壹篇業務費(三)兼職費法令規定，於115年1月22日依人事行政總處函更新。",
-    "status": "現行",
-    "agency": "行政院主計總處(友善專區)",
-    "reviewed": "2026-04-25",
-    "review_level": "llm精校"
+    "agency": "行政院主計總處",
+    "reviewed": "2026-05-02",
+    "review_level": "人工",
+    "source_url": "https://law.dgbas.gov.tw/LawContent.aspx?id=FL000752",
+    "rate_table": {
+      "caption": "中央政府各機關學校稿費支給基準數額表",
+      "unit": "新臺幣元",
+      "effective": "2022-12-20",
+      "sections": [
+        {
+          "title": "撰稿",
+          "headers": [
+            "語別",
+            "稿件類型",
+            "支給基準"
+          ],
+          "rows": [
+            [
+              "中文",
+              "一般稿件",
+              "1,100～1,600元/每千字"
+            ],
+            [
+              "中文",
+              "特別稿件",
+              "1,600～3,000元/每千字，或2,000～6,400元/每件（由各機關學校本於權責自行認定）"
+            ],
+            [
+              "外文",
+              "一般稿件",
+              "2,000～3,750元/每千字"
+            ],
+            [
+              "外文",
+              "特別稿件",
+              "3,000～8,000元/每件"
+            ]
+          ]
+        },
+        {
+          "title": "校對",
+          "headers": [
+            "項目",
+            "支給基準"
+          ],
+          "rows": [
+            [
+              "校對",
+              "撰稿費之5%至10%"
+            ]
+          ]
+        },
+        {
+          "title": "審查",
+          "headers": [
+            "語別",
+            "支給基準"
+          ],
+          "rows": [
+            [
+              "中文",
+              "300～380元/每千字，或1,220～1,830元/每件"
+            ],
+            [
+              "外文",
+              "380元/每千字，或1,830元/每件"
+            ]
+          ]
+        }
+      ],
+      "notes": [
+        "譯稿、潤稿、整冊書籍濃縮、編稿、圖片使用等：由各機關學校依政府採購法相關規定，或本於權責自訂基準辦理。",
+        "國家語言除中文以外其他語種之撰稿及審查基準，各機關得衡酌語種項目之特殊性，依政府採購法相關規定或本於權責自訂基準辦理。"
+      ]
+    },
+    "sort_order": 8
   },
   {
     "id": "C-國內旅費-005",
@@ -23808,6 +23168,793 @@
     "reviewed": "2026-04-28",
     "review_level": "人工",
     "source_url": "https://www.dgbas.gov.tw/News.aspx?n=1522&sms=10692"
+  },
+  {
+    "id": "C-酬勞費-002",
+    "type": "解釋函令",
+    "parent": "酬勞費",
+    "title": "內聘講座已支鐘點費不得加班",
+    "tags": [
+      "講座鐘點費",
+      "酬勞費"
+    ],
+    "related": [],
+    "related_inferred": [],
+    "file_path": "02_markdown/C_解釋函令/酬勞費/B001_支標手冊 _ 第壹篇.md",
+    "version": "2024-01-01",
+    "summary": "假日或夜間擔任內聘講座授課人員,如已支給鐘點費,依規定不得再補休或領取加班費。",
+    "status": "現行",
+    "agency": "行政院主計總處(友善專區)",
+    "reviewed": "2026-04-25",
+    "review_level": "llm精校"
+  },
+  {
+    "id": "C-酬勞費-003",
+    "type": "解釋函令",
+    "parent": "酬勞費",
+    "title": "代表會兼任人員主管加給疑義",
+    "tags": [
+      "酬勞費"
+    ],
+    "related": [],
+    "related_inferred": [],
+    "file_path": "02_markdown/C_解釋函令/酬勞費/B002_支標手冊 _ 第壹篇.md",
+    "version": "2024-01-01",
+    "summary": "鄉鎮市民代表會兼任人事管理員或會計員時,得否支領主管職務加給疑義,請洽詢原權責機關確認。",
+    "status": "現行",
+    "agency": "行政院主計總處(友善專區)",
+    "reviewed": "2026-04-25",
+    "review_level": "llm待人工"
+  },
+  {
+    "id": "C-酬勞費-004",
+    "type": "解釋函令",
+    "parent": "酬勞費",
+    "title": "兼職與兼辦之區別認定",
+    "tags": [
+      "兼職費",
+      "酬勞費"
+    ],
+    "related": [],
+    "related_inferred": [],
+    "file_path": "02_markdown/C_解釋函令/酬勞費/B003_支標手冊 _ 第壹篇.md",
+    "version": "2024-01-01",
+    "summary": "支標手冊說明「兼職」與「兼辦」之區別認定依據,依原行政院人事行政局函釋辦理,詳情請洽權責機關。",
+    "status": "現行",
+    "agency": "行政院主計總處(友善專區)",
+    "reviewed": "2026-04-25",
+    "review_level": "llm待人工"
+  },
+  {
+    "id": "C-酬勞費-005",
+    "type": "解釋函令",
+    "parent": "酬勞費",
+    "title": "法律顧問兼職費每月上限五千",
+    "tags": [
+      "兼職費",
+      "酬勞費"
+    ],
+    "related": [],
+    "related_inferred": [],
+    "file_path": "02_markdown/C_解釋函令/酬勞費/B004_支標手冊 _ 第壹篇.md",
+    "version": "2024-01-01",
+    "summary": "機關聘請法律顧問時,依行政院函規定,兼職費最高標準為每月新臺幣5,000元。",
+    "status": "現行",
+    "agency": "行政院主計總處(友善專區)",
+    "reviewed": "2026-04-25",
+    "review_level": "llm精校"
+  },
+  {
+    "id": "C-酬勞費-006",
+    "type": "解釋函令",
+    "parent": "酬勞費",
+    "title": "公立大專校長兼職費個數限制",
+    "tags": [
+      "兼職費",
+      "酬勞費"
+    ],
+    "related": [],
+    "related_inferred": [],
+    "file_path": "02_markdown/C_解釋函令/酬勞費/B005_支標手冊 _ 第壹篇.md",
+    "version": "2024-01-01",
+    "summary": "公立大專校院校長依規定兼職時,所領受兼職費個數及每月總額有所限制,詳見行政院108年函規定。",
+    "status": "現行",
+    "agency": "行政院主計總處(友善專區)",
+    "reviewed": "2026-04-25",
+    "review_level": "llm待人工"
+  },
+  {
+    "id": "C-酬勞費-007",
+    "type": "解釋函令",
+    "parent": "酬勞費",
+    "title": "主計人員兼職限制與利益迴避",
+    "tags": [
+      "兼職費",
+      "酬勞費"
+    ],
+    "related": [],
+    "related_inferred": [],
+    "file_path": "02_markdown/C_解釋函令/酬勞費/B006_支標手冊 _ 第壹篇.md",
+    "version": "2024-01-01",
+    "summary": "主計人員不得兼辦出納或經理財物事務,不得兼任公私營業機構職務;兼職應在不影響本職及避免內部審核角色衝突原則下辦理。",
+    "status": "現行",
+    "agency": "行政院主計總處(友善專區)",
+    "reviewed": "2026-04-25",
+    "review_level": "llm精校"
+  },
+  {
+    "id": "C-酬勞費-008",
+    "type": "解釋函令",
+    "parent": "酬勞費",
+    "title": "兼職費晉支後補發差額疑義",
+    "tags": [
+      "兼職費",
+      "酬勞費"
+    ],
+    "related": [],
+    "related_inferred": [],
+    "file_path": "02_markdown/C_解釋函令/酬勞費/B007_支標手冊 _ 第壹篇.md",
+    "version": "2024-01-01",
+    "summary": "考績晉支後兼職費差額補發疑義，原函內容請洽詢行政院人事行政總處。",
+    "status": "現行",
+    "agency": "行政院主計總處(友善專區)",
+    "reviewed": "2026-04-25",
+    "review_level": "llm待人工"
+  },
+  {
+    "id": "C-酬勞費-009",
+    "type": "解釋函令",
+    "parent": "酬勞費",
+    "title": "兼職人員另支交通住宿費",
+    "tags": [
+      "交通費",
+      "住宿費",
+      "兼職費",
+      "覈實報支",
+      "講座鐘點費",
+      "雜費",
+      "酬勞費"
+    ],
+    "related": [],
+    "related_inferred": [],
+    "file_path": "02_markdown/C_解釋函令/酬勞費/B008_支標手冊 _ 第壹篇.md",
+    "version": "2024-01-01",
+    "summary": "兼職人員支有報酬，邀請機關得覈實支給交通費及住宿費，但條文規定不得另行支給雜費。",
+    "status": "現行",
+    "agency": "行政院主計總處(友善專區)",
+    "reviewed": "2026-04-25",
+    "review_level": "llm精校"
+  },
+  {
+    "id": "C-酬勞費-010",
+    "type": "解釋函令",
+    "parent": "酬勞費",
+    "title": "兼任非政府職務車馬出席費",
+    "tags": [
+      "兼職費",
+      "出席費",
+      "酬勞費"
+    ],
+    "related": [],
+    "related_inferred": [],
+    "file_path": "02_markdown/C_解釋函令/酬勞費/B009_支標手冊 _ 第壹篇.md",
+    "version": "2024-01-01",
+    "summary": "軍公教人員兼任非政府機關職務，領受車馬費或出席費之疑義，原函內容請洽詢人事行政總處。",
+    "status": "現行",
+    "agency": "行政院主計總處(友善專區)",
+    "reviewed": "2026-04-25",
+    "review_level": "llm待人工"
+  },
+  {
+    "id": "C-酬勞費-011",
+    "type": "解釋函令",
+    "parent": "酬勞費",
+    "title": "董監事兼身分領出席費迴避",
+    "tags": [
+      "出席費",
+      "酬勞費"
+    ],
+    "related": [],
+    "related_inferred": [],
+    "file_path": "02_markdown/C_解釋函令/酬勞費/B010_支標手冊 _ 第壹篇.md",
+    "version": "2024-01-01",
+    "summary": "政府推派董監事另以學者專家身分出席兼任公司諮詢會議，如確在職責範圍外，依規定得支領出席費，惟為符合利益迴避原則應予儘量避免。",
+    "status": "現行",
+    "agency": "行政院主計總處(友善專區)",
+    "reviewed": "2026-04-25",
+    "review_level": "llm精校"
+  },
+  {
+    "id": "C-酬勞費-012",
+    "type": "解釋函令",
+    "parent": "酬勞費",
+    "title": "外籍學者另支出席費疑義",
+    "tags": [
+      "出席費",
+      "日支生活費",
+      "酬勞費"
+    ],
+    "related": [],
+    "related_inferred": [],
+    "file_path": "02_markdown/C_解釋函令/酬勞費/B011_支標手冊 _ 第壹篇.md",
+    "version": "2024-01-01",
+    "summary": "國外專家學者來臺期間已支領生活費，得否另支給出席費之疑義，原函內容請洽詢人事行政總處。",
+    "status": "現行",
+    "agency": "行政院主計總處(友善專區)",
+    "reviewed": "2026-04-25",
+    "review_level": "llm待人工"
+  },
+  {
+    "id": "C-酬勞費-013",
+    "type": "解釋函令",
+    "parent": "酬勞費",
+    "title": "視訊會議出席費支給認定",
+    "tags": [
+      "出席費",
+      "稿費",
+      "酬勞費"
+    ],
+    "related": [],
+    "related_inferred": [],
+    "file_path": "02_markdown/C_解釋函令/酬勞費/B012_支標手冊 _ 第壹篇.md",
+    "version": "2024-01-01",
+    "summary": "專家學者出席視訊會議，只要機關本權責認定確有親自參與具政策性或專案性重大諮詢事項，條文規定即得支領出席費，不因會議召開方式而有差異。",
+    "status": "現行",
+    "agency": "行政院主計總處(友善專區)",
+    "reviewed": "2026-04-25",
+    "review_level": "llm精校"
+  },
+  {
+    "id": "C-酬勞費-014",
+    "type": "解釋函令",
+    "parent": "酬勞費",
+    "title": "視訊出席費憑證及出席證明",
+    "tags": [
+      "出席費",
+      "稿費",
+      "酬勞費"
+    ],
+    "related": [],
+    "related_inferred": [],
+    "file_path": "02_markdown/C_解釋函令/酬勞費/B013_支標手冊 _ 第壹篇.md",
+    "version": "2024-01-01",
+    "summary": "視訊會議出席費以機關本權責認定親自參與為準，以匯款支付得以匯款證明為憑證，條文規定無須要求出席者於簽到簿親自簽名。",
+    "status": "現行",
+    "agency": "行政院主計總處(友善專區)",
+    "reviewed": "2026-04-25",
+    "review_level": "llm精校"
+  },
+  {
+    "id": "C-酬勞費-015",
+    "type": "解釋函令",
+    "parent": "酬勞費",
+    "title": "外聘學者交通費起算地認定",
+    "tags": [
+      "交通費",
+      "公差派遣",
+      "出席費",
+      "機關所在地",
+      "稿費",
+      "覈實報支",
+      "酬勞費"
+    ],
+    "related": [],
+    "related_inferred": [],
+    "file_path": "02_markdown/C_解釋函令/酬勞費/B014_支標手冊 _ 第壹篇.md",
+    "version": "2024-01-01",
+    "summary": "邀請外聘學者專家出席會議之交通費起算地點，條文規定現行已刪除30公里限制，起算地認定請各機關本權責訂定內部規範，經機關首長同意後辦理。",
+    "status": "現行",
+    "agency": "行政院主計總處(友善專區)",
+    "reviewed": "2026-04-25",
+    "review_level": "llm精校"
+  },
+  {
+    "id": "C-酬勞費-016",
+    "type": "解釋函令",
+    "parent": "酬勞費",
+    "title": "組織法規不宜增訂出席費",
+    "tags": [
+      "出席費",
+      "酬勞費"
+    ],
+    "related": [],
+    "related_inferred": [],
+    "file_path": "02_markdown/C_解釋函令/酬勞費/B015_支標手冊 _ 第壹篇.md",
+    "version": "2024-01-01",
+    "summary": "組織法規有關兼職人員酬勞，條文規定不宜增訂「或支出席費」，原函內容請洽詢人事行政總處。",
+    "status": "現行",
+    "agency": "行政院主計總處(友善專區)",
+    "reviewed": "2026-04-25",
+    "review_level": "llm待人工"
+  },
+  {
+    "id": "C-酬勞費-017",
+    "type": "解釋函令",
+    "parent": "酬勞費",
+    "title": "補助機關人員不得支出席費",
+    "tags": [
+      "出席費",
+      "稿費",
+      "酬勞費"
+    ],
+    "related": [],
+    "related_inferred": [],
+    "file_path": "02_markdown/C_解釋函令/酬勞費/B016_支標手冊 _ 第壹篇.md",
+    "version": "2024-01-01",
+    "summary": "補助計畫之補助機關人員出席受補助計畫相關會議，條文規定基於利益迴避原則，不論是否公假均不得支給出席費。",
+    "status": "現行",
+    "agency": "行政院主計總處(友善專區)",
+    "reviewed": "2026-04-25",
+    "review_level": "llm精校"
+  },
+  {
+    "id": "C-酬勞費-018",
+    "type": "解釋函令",
+    "parent": "酬勞費",
+    "title": "出席費與審查費不得重複給",
+    "tags": [
+      "出席費",
+      "審查費",
+      "稿費",
+      "酬勞費"
+    ],
+    "related": [],
+    "related_inferred": [],
+    "file_path": "02_markdown/C_解釋函令/酬勞費/B017_支標手冊 _ 第壹篇.md",
+    "version": "2024-01-01",
+    "summary": "出席費與審查費性質不同，條文規定就會議之出席不得重複支給；會議前已提供書面審查意見者，得依案件性質從嚴認定支給審查費。",
+    "status": "現行",
+    "agency": "行政院主計總處(友善專區)",
+    "reviewed": "2026-04-25",
+    "review_level": "llm精校"
+  },
+  {
+    "id": "C-酬勞費-019",
+    "type": "解釋函令",
+    "parent": "酬勞費",
+    "title": "最有利標評選出席審查費",
+    "tags": [
+      "出席費",
+      "審查費",
+      "稿費",
+      "酬勞費"
+    ],
+    "related": [],
+    "related_inferred": [],
+    "file_path": "02_markdown/C_解釋函令/酬勞費/B018_支標手冊 _ 第壹篇.md",
+    "version": "2024-01-01",
+    "summary": "最有利標評選會議之外聘專家學者得支領出席費；開會當天至廠房實地勘查屬會前準備工作，條文規定不得支給審查費。",
+    "status": "現行",
+    "agency": "行政院主計總處(友善專區)",
+    "reviewed": "2026-04-25",
+    "review_level": "llm精校"
+  },
+  {
+    "id": "C-酬勞費-020",
+    "type": "解釋函令",
+    "parent": "酬勞費",
+    "title": "採購評選委員出席審查費",
+    "tags": [
+      "出席費",
+      "審查費",
+      "酬勞費"
+    ],
+    "related": [],
+    "related_inferred": [],
+    "file_path": "02_markdown/C_解釋函令/酬勞費/B019_支標手冊 _ 第壹篇.md",
+    "version": "2024-01-01",
+    "summary": "機關召開採購評選委員會，關於外聘評選委員出席費及審查費之支給規定，原函內容請洽詢行政院公共工程委員會。",
+    "status": "現行",
+    "agency": "行政院主計總處(友善專區)",
+    "reviewed": "2026-04-25",
+    "review_level": "llm待人工"
+  },
+  {
+    "id": "C-酬勞費-021",
+    "type": "解釋函令",
+    "parent": "酬勞費",
+    "title": "採購評選委員出席費規定",
+    "tags": [
+      "出席費",
+      "酬勞費"
+    ],
+    "related": [],
+    "related_inferred": [],
+    "file_path": "02_markdown/C_解釋函令/酬勞費/B020_支標手冊 _ 第壹篇.md",
+    "version": "2024-01-01",
+    "summary": "機關召開採購評選委員會，關於支給評選委員出席費之相關規定，原函內容請洽詢行政院公共工程委員會。",
+    "status": "現行",
+    "agency": "行政院主計總處(友善專區)",
+    "reviewed": "2026-04-25",
+    "review_level": "llm待人工"
+  },
+  {
+    "id": "C-酬勞費-022",
+    "type": "解釋函令",
+    "parent": "酬勞費",
+    "title": "實地評鑑費出席或稿費認定",
+    "tags": [
+      "出席費",
+      "稿費",
+      "酬勞費"
+    ],
+    "related": [],
+    "related_inferred": [],
+    "file_path": "02_markdown/C_解釋函令/酬勞費/B021_支標手冊 _ 第壹篇.md",
+    "version": "2024-01-01",
+    "summary": "邀請專家至托兒所實地評鑑，因不具書面審查性質，條文規定無稿費適用；是否支給出席費，請依要點第2點就會議性質本於權責自行認定。",
+    "status": "現行",
+    "agency": "行政院主計總處(友善專區)",
+    "reviewed": "2026-04-25",
+    "review_level": "llm精校"
+  },
+  {
+    "id": "C-酬勞費-023",
+    "type": "解釋函令",
+    "parent": "酬勞費",
+    "title": "調解委員榮譽職支出席費",
+    "tags": [
+      "交通費",
+      "兼職費",
+      "出席費",
+      "酬勞費"
+    ],
+    "related": [],
+    "related_inferred": [],
+    "file_path": "02_markdown/C_解釋函令/酬勞費/B022_支標手冊 _ 第壹篇.md",
+    "version": "2024-01-01",
+    "summary": "調解委員係無法定俸給之榮譽職務，條文規定無兼職費疑義，出席調解會議時宜支給出席費。",
+    "status": "現行",
+    "agency": "行政院主計總處(友善專區)",
+    "reviewed": "2026-04-25",
+    "review_level": "llm精校"
+  },
+  {
+    "id": "C-酬勞費-024",
+    "type": "解釋函令",
+    "parent": "酬勞費",
+    "title": "委外撰稿稿費支給規定",
+    "tags": [
+      "出席費",
+      "稿費",
+      "簽證費",
+      "酬勞費"
+    ],
+    "related": [],
+    "related_inferred": [],
+    "file_path": "02_markdown/C_解釋函令/酬勞費/B023_支標手冊 _ 第壹篇.md",
+    "version": "2024-01-01",
+    "summary": "機關委由本機關以外人員撰述、翻譯或編審業務相關重要文件，經首長或授權人核准後，條文規定得依稿費支給基準數額表標準支給稿費。",
+    "status": "現行",
+    "agency": "行政院主計總處(友善專區)",
+    "reviewed": "2026-04-25",
+    "review_level": "llm精校"
+  },
+  {
+    "id": "C-酬勞費-025",
+    "type": "解釋函令",
+    "parent": "酬勞費",
+    "title": "定期刊物稿費及圖片使用費",
+    "tags": [
+      "出席費",
+      "審查費",
+      "稿費",
+      "酬勞費"
+    ],
+    "related": [],
+    "related_inferred": [],
+    "file_path": "02_markdown/C_解釋函令/酬勞費/B024_支標手冊 _ 第壹篇.md",
+    "version": "2024-01-01",
+    "summary": "機關學校定期發行刊物之稿費支給，依要點第7、8點辦理；紀實性照片圖片使用費，條文規定視照片提供者是否符合稿費支領要件而定。",
+    "status": "現行",
+    "agency": "行政院主計總處(友善專區)",
+    "reviewed": "2026-04-25",
+    "review_level": "llm精校"
+  },
+  {
+    "id": "C-酬勞費-026",
+    "type": "解釋函令",
+    "parent": "酬勞費",
+    "title": "謄稿不宜以稿費名義支給",
+    "tags": [
+      "稿費",
+      "酬勞費"
+    ],
+    "related": [],
+    "related_inferred": [],
+    "file_path": "02_markdown/C_解釋函令/酬勞費/B025_支標手冊 _ 第壹篇.md",
+    "version": "2024-01-01",
+    "summary": "謄稿工作因無智慧財產之創作，條文規定不宜以撰稿名義支給稿費；於辦公時間外趕辦者，得依規定支給加班費。",
+    "status": "現行",
+    "agency": "行政院主計總處(友善專區)",
+    "reviewed": "2026-04-25",
+    "review_level": "llm精校"
+  },
+  {
+    "id": "C-酬勞費-027",
+    "type": "解釋函令",
+    "parent": "酬勞費",
+    "title": "校對費按撰稿費比例支給",
+    "tags": [
+      "稿費",
+      "酬勞費"
+    ],
+    "related": [],
+    "related_inferred": [],
+    "file_path": "02_markdown/C_解釋函令/酬勞費/B026_支標手冊 _ 第壹篇.md",
+    "version": "2024-01-01",
+    "summary": "校對費支給基準，條文規定由原按「稿酬」5%至10%修正為按「撰稿費」5%至10%支給，應本撙節原則避免重複支給。",
+    "status": "現行",
+    "agency": "行政院主計總處(友善專區)",
+    "reviewed": "2026-04-25",
+    "review_level": "llm精校"
+  },
+  {
+    "id": "C-酬勞費-028",
+    "type": "解釋函令",
+    "parent": "酬勞費",
+    "title": "講座助理交通住宿費支給",
+    "tags": [
+      "交通費",
+      "住宿費",
+      "覈實報支",
+      "講座鐘點費",
+      "酬勞費"
+    ],
+    "related": [],
+    "related_inferred": [],
+    "file_path": "02_markdown/C_解釋函令/酬勞費/B027_支標手冊 _ 第壹篇.md",
+    "version": "2024-01-01",
+    "summary": "講座助理得依講座鐘點費支給表規定，覈實支給交通費及國內住宿費，原函詳情請洽詢人事行政總處。",
+    "status": "現行",
+    "agency": "行政院主計總處(友善專區)",
+    "reviewed": "2026-04-25",
+    "review_level": "llm待人工"
+  },
+  {
+    "id": "C-酬勞費-029",
+    "type": "解釋函令",
+    "parent": "酬勞費",
+    "title": "委託訓練內部人員鐘點費",
+    "tags": [
+      "教育訓練費",
+      "講座鐘點費",
+      "酬勞費"
+    ],
+    "related": [],
+    "related_inferred": [],
+    "file_path": "02_markdown/C_解釋函令/酬勞費/B028_支標手冊 _ 第壹篇.md",
+    "version": "2024-01-01",
+    "summary": "受委託辦理訓練計畫，講座由受委託機關內部人員擔任時，支給講座鐘點費之疑義，原函內容請洽詢人事行政總處。",
+    "status": "現行",
+    "agency": "行政院主計總處(友善專區)",
+    "reviewed": "2026-04-25",
+    "review_level": "llm待人工"
+  },
+  {
+    "id": "C-酬勞費-030",
+    "type": "解釋函令",
+    "parent": "酬勞費",
+    "title": "邀請自然人授課免採購法",
+    "tags": [
+      "兼職費",
+      "採購",
+      "講座鐘點費",
+      "酬勞費"
+    ],
+    "related": [],
+    "related_inferred": [],
+    "file_path": "02_markdown/C_解釋函令/酬勞費/B029_支標手冊 _ 第壹篇.md",
+    "version": "2024-01-01",
+    "summary": "邀請自然人授課、演講並符合講座鐘點費支給表規定者，條文規定免適用政府採購法，原函詳情請洽詢人事行政總處。",
+    "status": "現行",
+    "agency": "行政院主計總處(友善專區)",
+    "reviewed": "2026-04-25",
+    "review_level": "llm待人工"
+  },
+  {
+    "id": "C-酬勞費-031",
+    "type": "解釋函令",
+    "parent": "酬勞費",
+    "title": "非自然人講座應依採購法",
+    "tags": [
+      "兼職費",
+      "採購",
+      "講座鐘點費",
+      "酬勞費"
+    ],
+    "related": [],
+    "related_inferred": [],
+    "file_path": "02_markdown/C_解釋函令/酬勞費/B030_支標手冊 _ 第壹篇.md",
+    "version": "2024-01-01",
+    "summary": "邀請對象非屬自然人，或未按講座鐘點費支給表辦理者，條文規定應依政府採購法辦理，原函詳情請洽詢公共工程委員會。",
+    "status": "現行",
+    "agency": "行政院主計總處(友善專區)",
+    "reviewed": "2026-04-25",
+    "review_level": "llm待人工"
+  },
+  {
+    "id": "C-酬勞費-032",
+    "type": "解釋函令",
+    "parent": "酬勞費",
+    "title": "讀書會報告人不支鐘點費",
+    "tags": [
+      "講座鐘點費",
+      "酬勞費"
+    ],
+    "related": [],
+    "related_inferred": [],
+    "file_path": "02_markdown/C_解釋函令/酬勞費/B031_支標手冊 _ 第壹篇.md",
+    "version": "2024-01-01",
+    "summary": "讀書會報告人不符合講座鐘點費之支給規定，條文規定不合支給，原函詳情請洽詢人事行政總處。",
+    "status": "現行",
+    "agency": "行政院主計總處(友善專區)",
+    "reviewed": "2026-04-25",
+    "review_level": "llm精校"
+  },
+  {
+    "id": "C-酬勞費-033",
+    "type": "解釋函令",
+    "parent": "酬勞費",
+    "title": "外籍學者鐘點費重複支給疑義",
+    "tags": [
+      "講座鐘點費",
+      "酬勞費"
+    ],
+    "related": [],
+    "related_inferred": [],
+    "file_path": "02_markdown/C_解釋函令/酬勞費/B032_支標手冊 _ 第壹篇.md",
+    "version": "2024-01-01",
+    "summary": "國外專家學者來臺期間已支領日支生活酬金，得否再另行核給講座鐘點費之疑義，原函內容請洽詢人事行政總處。",
+    "status": "現行",
+    "agency": "行政院主計總處(友善專區)",
+    "reviewed": "2026-04-25",
+    "review_level": "llm精校"
+  },
+  {
+    "id": "C-酬勞費-034",
+    "type": "解釋函令",
+    "parent": "酬勞費",
+    "title": "外籍學者另支費用依工作定",
+    "tags": [
+      "講座鐘點費",
+      "酬勞費"
+    ],
+    "related": [],
+    "related_inferred": [],
+    "file_path": "02_markdown/C_解釋函令/酬勞費/B033_支標手冊 _ 第壹篇.md",
+    "version": "2024-01-01",
+    "summary": "國外專家學者來臺期間得否另核給相關費用，條文規定應視其工作範圍及內容而定，原函詳情請洽詢人事行政總處。",
+    "status": "現行",
+    "agency": "行政院主計總處(友善專區)",
+    "reviewed": "2026-04-25",
+    "review_level": "llm精校"
+  },
+  {
+    "id": "C-酬勞費-035",
+    "type": "解釋函令",
+    "parent": "酬勞費",
+    "title": "出席費法令規定及解釋彙整",
+    "tags": [
+      "交通費",
+      "健保補充保費",
+      "公差派遣",
+      "兼職費",
+      "出席費",
+      "原始憑證",
+      "審查費",
+      "日支生活費",
+      "機關所在地",
+      "稿費",
+      "覈實報支",
+      "酬勞費"
+    ],
+    "related": [],
+    "related_inferred": [],
+    "file_path": "02_markdown/C_解釋函令/酬勞費/B034_支標手冊 _ 第壹篇.md",
+    "version": "2024-01-01",
+    "summary": "出席費之支給依中央政府各機關學校出席費及稿費支給要點第2至6、9點辦理，包含利益迴避、補助機關人員限制、出席費與審查費不得重複支給等規定。",
+    "status": "現行",
+    "agency": "行政院主計總處(友善專區)",
+    "reviewed": "2026-04-25",
+    "review_level": "llm精校"
+  },
+  {
+    "id": "C-酬勞費-036",
+    "type": "解釋函令",
+    "parent": "酬勞費",
+    "title": "兼職費法令規定及解釋彙整",
+    "tags": [
+      "交通費",
+      "住宿費",
+      "健保補充保費",
+      "兼職費",
+      "出席費",
+      "原始憑證",
+      "覈實報支",
+      "講座鐘點費",
+      "雜費",
+      "酬勞費"
+    ],
+    "related": [],
+    "related_inferred": [],
+    "file_path": "02_markdown/C_解釋函令/酬勞費/B035_支標手冊 _ 第壹篇.md",
+    "version": "2024-01-01",
+    "summary": "兼職費之支給依軍公教人員兼職費支給表辦理；條文規定法律顧問兼職費每月上限5,000元，兼職人員得覈實支給交通住宿費但不得另支雜費。",
+    "status": "現行",
+    "agency": "行政院主計總處(友善專區)",
+    "reviewed": "2026-04-25",
+    "review_level": "llm精校"
+  },
+  {
+    "id": "C-酬勞費-037",
+    "type": "解釋函令",
+    "parent": "酬勞費",
+    "title": "稿費法令規定及解釋彙整",
+    "tags": [
+      "健保補充保費",
+      "出席費",
+      "原始憑證",
+      "審查費",
+      "稿費",
+      "簽證費",
+      "酬勞費"
+    ],
+    "related": [],
+    "related_inferred": [],
+    "file_path": "02_markdown/C_解釋函令/酬勞費/B036_支標手冊 _ 第壹篇.md",
+    "version": "2024-01-01",
+    "summary": "稿費之支給依中央政府各機關學校出席費及稿費支給要點第7至9點及稿費支給基準數額表辦理；謄稿不得支給稿費，校對費按撰稿費5%至10%計算。",
+    "status": "現行",
+    "agency": "行政院主計總處(友善專區)",
+    "reviewed": "2026-04-25",
+    "review_level": "llm精校"
+  },
+  {
+    "id": "C-酬勞費-038",
+    "type": "解釋函令",
+    "parent": "酬勞費",
+    "title": "講座鐘點費法令與作業程序",
+    "tags": [
+      "交通費",
+      "住宿費",
+      "健保補充保費",
+      "兼職費",
+      "原始憑證",
+      "採購",
+      "教育訓練費",
+      "覈實報支",
+      "講座鐘點費",
+      "酬勞費"
+    ],
+    "related": [],
+    "related_inferred": [],
+    "file_path": "02_markdown/C_解釋函令/酬勞費/B037_支標手冊 _ 第壹篇.md",
+    "version": "2024-01-01",
+    "summary": "邀請講座授課時，自然人按鐘點費支給表辦理免採購法；邀請非自然人須依採購法辦理；讀書會報告人不合支給規定。",
+    "status": "現行",
+    "agency": "行政院主計總處(友善專區)",
+    "reviewed": "2026-04-25",
+    "review_level": "llm精校"
+  },
+  {
+    "id": "C-酬勞費-039",
+    "type": "解釋函令",
+    "parent": "酬勞費",
+    "title": "支標手冊兼職費修正歷程",
+    "tags": [
+      "兼職費",
+      "酬勞費"
+    ],
+    "related": [],
+    "related_inferred": [],
+    "file_path": "02_markdown/C_解釋函令/酬勞費/B038_支標手冊 _ 修正歷程配.md",
+    "version": "2024-01-01",
+    "summary": "支標手冊第壹篇業務費(三)兼職費法令規定，於115年1月22日依人事行政總處函更新。",
+    "status": "現行",
+    "agency": "行政院主計總處(友善專區)",
+    "reviewed": "2026-04-25",
+    "review_level": "llm精校"
   },
   {
     "id": "C-酬勞費-001",
