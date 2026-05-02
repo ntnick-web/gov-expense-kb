@@ -102,6 +102,13 @@ const EXPENSE_LAYER = {
   '支出憑證與結報': ['收據與發票', '採購結報', '系統化結報', '補助與分攤', '差旅費結報', '酬勞與會議', '程序與通則'],
   '酬勞費':         ['講座鐘點費', '出席費', '稿費', '兼職費', '健保補充保費', '程序與通則'],
 };
+/* 類別排序(A→B→C→D)與母題排序(條文庫無 query/scenario 時的主排序鍵) */
+const TYPE_ORDER = {'核心法規': 0, '支出標準': 1, '解釋函令': 2, '問答集': 3};
+const PARENT_ORDER = Object.fromEntries(
+  ['國內旅費','國外旅費','支出憑證與結報','酬勞費','國外專家','國科會專章','教育部專章','其他']
+  .map((p, i) => [p, i])
+);
+
 // 情境 expense 值 → 條文 tag 比對 (節點 tag 中沒有「程序與通則」這詞,故額外處理)
 function nodeMatchesExpense(d, expense) {
   if (!expense) return true;
@@ -217,17 +224,22 @@ function filteredData() {
     d._matchedSynonym = matchedSynonym;
     scored.push({d, scenarioRelevance, queryRelevance});
   }
-  // 排序優先序:scenario 相關度 > query 相關度 > sort_order(條文序號) > 原始 ID 序
+  // 排序優先序:scenario/query 相關度 > 類別(A→B→C→D) > 母題 > sort_order > ID 末段
   if (sc || q) {
     scored.sort((a, b) => {
       const s = b.scenarioRelevance - a.scenarioRelevance;
       if (s !== 0) return s;
       return b.queryRelevance - a.queryRelevance;
     });
-  } else if (filterState.parent) {
-    // 有 parent filter 但無 query/scenario:依 sort_order 排(條文邏輯順序),
-    // 無序號者(C/D 類)墊底,按 ID 末段數字升序
+  } else {
+    // 無 query/scenario:依類別(A→B→C→D)→母題→sort_order→ID 末段數字升序
     scored.sort((a, b) => {
+      const ta = TYPE_ORDER[a.d.type] ?? 99;
+      const tb = TYPE_ORDER[b.d.type] ?? 99;
+      if (ta !== tb) return ta - tb;
+      const pa = PARENT_ORDER[a.d.parent] ?? 99;
+      const pb = PARENT_ORDER[b.d.parent] ?? 99;
+      if (pa !== pb) return pa - pb;
       const sa = a.d.sortOrder ?? Infinity;
       const sb = b.d.sortOrder ?? Infinity;
       if (sa !== sb) return sa - sb;
@@ -236,7 +248,6 @@ function filteredData() {
       return ia - ib;
     });
   }
-  // 無 parent filter + 無 query/scenario:保持 DATA 順序(loadAllData 已按母題→類別→ID 排)
   return scored.map(x => x.d);
 }
 
