@@ -23,9 +23,9 @@ function dismissSplash(immediate = false) {
     }
   };
   window.addEventListener('keydown', onKey);
-  // 自動消失時長(2026-05-XX 從 1800 → 3000):動畫進場到 brand 浮現約 1.85s,
-  // 給 ~1.15s 駐留呼吸感讓使用者讀完「將法律語言變成使用者的語言」+ fade 0.42s
-  const splashHold = sessionStorage.getItem('verifyMode') === '1' ? 60000 : 3000;
+  // 自動消失時長(2026-05-XX 從 1800 → 3000 → 3500):動畫進場到 brand 浮現約 1.85s,
+  // 給 ~1.65s 駐留呼吸感讓使用者讀完「將法律語言變成使用者的語言」+ fade 0.42s
+  const splashHold = sessionStorage.getItem('verifyMode') === '1' ? 60000 : 3500;
   setTimeout(() => dismissSplash(false), splashHold);
 })();
 
