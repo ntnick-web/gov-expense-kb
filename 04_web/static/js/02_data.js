@@ -104,7 +104,8 @@ const EXPENSE_LAYER = {
 };
 /* 類別排序(A→B→C→D)與母題排序(條文庫無 query/scenario 時的主排序鍵) */
 const TYPE_ORDER = {'核心法規': 0, '支出標準': 1, '解釋函令': 2, '問答集': 3};
-const PARENT_ORDER = Object.fromEntries(
+// 注意:03_render.js 另有同名陣列版 PARENT_ORDER(用於情境分組排序);此處改名 PARENT_SORT_IDX 避免衝突
+const PARENT_SORT_IDX = Object.fromEntries(
   ['支出憑證與結報','國內旅費','酬勞費','國外旅費','國外專家','教育部專章','國科會專章','其他']
   .map((p, i) => [p, i])
 );
@@ -237,8 +238,8 @@ function filteredData() {
       const ta = TYPE_ORDER[a.d.type] ?? 99;
       const tb = TYPE_ORDER[b.d.type] ?? 99;
       if (ta !== tb) return ta - tb;
-      const pa = PARENT_ORDER[a.d.parent] ?? 99;
-      const pb = PARENT_ORDER[b.d.parent] ?? 99;
+      const pa = PARENT_SORT_IDX[a.d.parent] ?? 99;
+      const pb = PARENT_SORT_IDX[b.d.parent] ?? 99;
       if (pa !== pb) return pa - pb;
       const sa = a.d.sortOrder ?? Infinity;
       const sb = b.d.sortOrder ?? Infinity;
