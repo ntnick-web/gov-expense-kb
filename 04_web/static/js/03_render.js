@@ -1146,7 +1146,7 @@ document.getElementById('q').addEventListener('input', (ev) => {
 
 
 /* ──────── scenarios view ──────── */
-const PARENT_ORDER = ['國內旅費', '國外旅費', '支出憑證與結報'];
+const PARENT_ORDER = ['國內旅費', '國外旅費', '支出憑證與結報', '酬勞費'];
 const EXPENSE_ORDER = ['交通費','住宿費','雜費','出國進修','生活費','手續費','保險費','行政費','禮品交際及雜費','收據與發票','採購結報','系統化結報','補助與分攤','差旅費結報','酬勞與會議','程序與通則','通則與其他','大陸港澳','其他'];
 // 顯示時將舊用語「通則與其他」一律呈現為「程序與通則」(資料源不動,維持向下相容)
 const EXPENSE_DISPLAY_RENAME = { '通則與其他': '程序與通則' };
@@ -1290,11 +1290,21 @@ function renderScenarioChips() {
     const p = s.parent || '其他';
     parentCount.set(p, (parentCount.get(p) || 0) + 1);
   }
+  // library-link chips：有條文但無情境的母題，點擊跳條文庫
+  const libLinkChips = PARENT_ORDER
+    .filter(p => !parentCount.has(p) && !WIP_PARENTS.has(p))
+    .map(p => {
+      const cnt = DATA.filter(d => d.cat === p).length;
+      return cnt > 0
+        ? `<button class="chip chip-lib-link" data-sc-lib-parent="${p}" title="${p}目前尚無情境卡，點擊前往條文庫查閱 ${cnt} 筆條文">📑 ${p} <span class="chip-count">${cnt}</span></button>`
+        : '';
+    }).filter(Boolean);
   const parentChips = [
     `<button class="chip${!scenarioFilterParent ? ' on' : ''}" data-sc-parent="">全部 <span class="chip-count">${queryFiltered.length}</span></button>`,
     ...PARENT_ORDER.filter(p => parentCount.has(p)).map(p =>
       `<button class="chip${scenarioFilterParent === p ? ' on' : ''}" data-sc-parent="${p}">${p} <span class="chip-count">${parentCount.get(p)}</span></button>`
     ),
+    ...libLinkChips,
   ];
   $parentBar.innerHTML = `<span class="sc-filterbar-label">母題</span>${parentChips.join('')}`;
 
@@ -1342,6 +1352,15 @@ function renderScenarioChips() {
       scenarioFilterParent = b.dataset.scParent || null;
       scenarioFilterExpense = null;  // 切換母題時清掉支出類別 filter
       renderScenarios();
+    };
+  });
+  // library-link chip：跳轉條文庫並套用母題 filter
+  $parentBar.querySelectorAll('[data-sc-lib-parent]').forEach(b => {
+    b.onclick = () => {
+      filterState.parent = b.dataset.scLibParent;
+      filterState.type = null; filterState.tag = null; filterState.expense = null; filterState.scenario = null; filterState.query = '';
+      switchView('library');
+      renderCards();
     };
   });
   $expBar.querySelectorAll('[data-sc-exp]').forEach(b => {

@@ -5,7 +5,7 @@
 let compareList = [];
 
 /* ──────── 真實資料載入 (561 nodes / 105 scenarios from 03_index/) ──────── */
-const DATA_VERSION = '2026-05-02o';  // 酬勞費母題暫時隱藏(整備中)
+const DATA_VERSION = '2026-05-02o';
 let DATA = [];                 // 對外用的卡片資料 (mapped from nodes.json)
 let NODES_BY_ID = new Map();   // id → original node (含 file_path 等)
 let INCOMING_EDGES = new Map();// id → [from1, from2, ...] 反向引用
@@ -13,8 +13,8 @@ let SCENARIOS = [];
 
 // 母題 → 簡稱 (sidebar 用)
 const PARENTS = ['國內旅費', '國外旅費', '支出憑證與結報', '酬勞費'];
-// 整備中母題:chip 顯示為灰色不可點按;卡片與情境全部隱藏
-const WIP_PARENTS = new Set(['酬勞費']);
+// 整備中母題:chip 顯示為灰色不可點按;卡片與情境全部隱藏（目前無整備中母題）
+const WIP_PARENTS = new Set();
 // 母題 → 正式法規名稱 + 顯示用簡稱 (A 類條文卡片標題前綴)
 const PARENT_LAW = {
   '國內旅費':       { full: '中央政府各機關員工國內出差旅費報支要點', short: '國內旅費要點' },

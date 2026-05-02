@@ -452,6 +452,18 @@
     opacity: .38; cursor: not-allowed; border-style: dashed;
     pointer-events: none; color: var(--ink-3);
   }
+  /* library-link chip：情境頁的「前往條文庫」捷徑，虛線框 + 薰衣草色 */
+  .chip.chip-lib-link {
+    border-style: dashed; border-color: var(--lavender, #9f8fd4);
+    color: var(--lavender, #9f8fd4); background: transparent;
+    font-size: .8rem; opacity: .85;
+  }
+  .chip.chip-lib-link:hover {
+    opacity: 1; background: color-mix(in srgb, var(--lavender, #9f8fd4) 12%, transparent);
+  }
+  [data-theme="dark"] .chip.chip-lib-link {
+    border-color: #b8acdf; color: #b8acdf;
+  }
   .chip.chip-e-hidden:not(.on) {
     opacity: .55; border-style: dashed; color: var(--ink-3);
   }
