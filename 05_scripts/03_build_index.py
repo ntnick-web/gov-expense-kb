@@ -867,6 +867,68 @@ def print_summary(
 
 
 # ─────────────────────────────────────────────
+# N5 情境版本影響掃描
+# ─────────────────────────────────────────────
+
+def _scan_scenario_version_impact(
+    nodes_list: list[dict],
+    warnings: list[str],
+    log: logging.Logger,
+) -> None:
+    """掃描 scenarios_manual.json，對 primary_ids 節點版本 > 12 個月者發出 warning。"""
+    import datetime
+
+    scenarios_path = ROOT / "04_web" / "data" / "scenarios_manual.json"
+    if not scenarios_path.exists():
+        return
+
+    try:
+        data = json.loads(scenarios_path.read_text(encoding="utf-8"))
+    except Exception:
+        return
+
+    scenarios = data.get("scenarios", [])
+    if not scenarios:
+        return
+
+    node_version: dict[str, str] = {}
+    for n in nodes_list:
+        nid = n.get("id", "")
+        ver = n.get("version", "")
+        if nid and ver:
+            node_version[nid] = str(ver)
+
+    today = datetime.date.today()
+    stale_threshold_days = 365
+
+    stale_count = 0
+    for sc in scenarios:
+        sc_id = sc.get("id", "?")
+        primary_ids = sc.get("primary_ids") or []
+        for nid in primary_ids:
+            ver_str = node_version.get(nid, "")
+            if not ver_str:
+                continue
+            # 嘗試解析版本日期（格式 YYYY-MM-DD）
+            try:
+                ver_date = datetime.date.fromisoformat(str(ver_str)[:10])
+            except (ValueError, TypeError):
+                continue
+            age_days = (today - ver_date).days
+            if age_days > stale_threshold_days:
+                warnings.append(
+                    f"[N5] 情境 {sc_id!r} 引用 {nid}（版本 {ver_str}，距今 {age_days} 天）"
+                    f"— 法規可能已更新，情境卡內容請人工覆核"
+                )
+                stale_count += 1
+
+    if stale_count:
+        log.warning(f"[N5] {stale_count} 個情境主法源版本 > {stale_threshold_days} 天，建議覆核")
+    else:
+        log.info("[N5] 情境版本影響掃描：無逾期法源")
+
+
+# ─────────────────────────────────────────────
 # main
 # ─────────────────────────────────────────────
 
@@ -953,6 +1015,11 @@ def main(argv: Optional[list[str]] = None) -> int:
     )
     write_json(INDEX_DIR / "_meta.json", meta, dry_run=args.validate, log=log)
     write_json(INDEX_DIR / "rate_lookup.json", rate_lookup, dry_run=args.validate, log=log)
+
+    # ── N5 情境版本影響掃描 ────────────────────────────────────────────────────
+    # 對 scenarios_manual.json 的每個情境，比對其 primary_ids 節點的 version。
+    # 若節點版本距今 > 12 個月，以 warning 提示「法規可能已更新，情境卡需覆核」。
+    _scan_scenario_version_impact(nodes_json, warnings, log)
 
     print_summary(nodes, edges, tags_json, warnings, errors, args.validate)
 

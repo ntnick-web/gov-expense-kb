@@ -989,13 +989,13 @@ function renderChips() {
     }
     return true;
   };
-  const byType = { A: 0, B: 0, C: 0, D: 0 };
+  const byType = { A: 0, B: 0, C: 0, D: 0, E: 0 };
   let typeAll = 0;
   for (const d of DATA) {
     if (!passNonType(d)) continue;
-    typeAll++;
     const t = d.id.split('-')[0];
     if (byType[t] !== undefined) byType[t]++;
+    if (t !== 'E') typeAll++;  // E類不計入「全部」計數
   }
   if ($typeRow) {
     const TYPES = [
@@ -1008,6 +1008,7 @@ function renderChips() {
       <span class="filterrow-label">類別</span>
       <button class="chip${!filterState.type ? ' on' : ''}" data-type="">全部 <span class="chip-count">${typeAll}</span></button>
       ${TYPES.map(t => `<button class="chip${filterState.type === t.k ? ' on' : ''}" data-type="${t.k}">${t.icon} ${t.label} <span class="chip-count">${byType[t.k]}</span></button>`).join('')}
+      <button class="chip chip-e-hidden${filterState.type === 'E' ? ' on' : ''}" data-type="E">📎 附屬資料 <span class="chip-count">${byType.E}</span></button>
     `;
   }
 
@@ -1017,6 +1018,8 @@ function renderChips() {
   const baseline = DATA.filter(d => {
     if (!filterState.showObsolete && d.status === '已廢止' && !d.effectivePeriod) return false;
     if (filterState.parent && d.cat !== filterState.parent) return false;
+    // E類附屬資料不計入支出類別 chip 計數
+    if (d.id.split('-')[0] === 'E' && filterState.type !== 'E') return false;
     if (filterState.type && d.id.split('-')[0] !== filterState.type) return false;
     if (filterState.scenario) {
       const sc = SCENARIOS.find(s => s.id === filterState.scenario);

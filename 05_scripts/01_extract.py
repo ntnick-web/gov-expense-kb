@@ -64,6 +64,7 @@ CATEGORY_DIR_NAMES: dict[str, str] = {
     "B": "B_支出標準",
     "C": "C_解釋函令",
     "D": "D_問答集",
+    "E": "E_附屬資料",
 }
 UNSORTED = "_unsorted"
 

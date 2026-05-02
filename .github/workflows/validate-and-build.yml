@@ -38,9 +38,20 @@ jobs:
           python -m pip install --upgrade pip
           pip install PyYAML jsonschema
 
-      - name: Build merged scenarios_manual.json
-        # _build_scenarios_manual.py:把 04_web/data/scenarios/*.json 多檔 → merged
-        run: python 05_scripts/_build_scenarios_manual.py --apply
+      - name: Build merged scenarios_manual.json (N6 衝突偵測)
+        # _build_scenarios_manual.py:把 04_web/data/scenarios/*.json 多檔 → merged。
+        # N6 保護:先備份舊版,合併後若有差異表示有人直接手改 scenarios_manual.json,
+        # 輸出 warning(手改內容以來源為準覆蓋,不阻擋 CI)。
+        run: |
+          if [ -f "04_web/data/scenarios_manual.json" ]; then
+            cp 04_web/data/scenarios_manual.json /tmp/scenarios_manual_before.json
+          fi
+          python 05_scripts/_build_scenarios_manual.py --apply
+          if [ -f /tmp/scenarios_manual_before.json ]; then
+            if ! diff -q /tmp/scenarios_manual_before.json 04_web/data/scenarios_manual.json > /dev/null 2>&1; then
+              echo "::warning title=N6 scenarios 衝突::scenarios_manual.json 與來源檔不一致,已由來源重新合併覆蓋。若有手改內容已遺失,請改為編輯 04_web/data/scenarios/{domestic,abroad,voucher}.json。"
+            fi
+          fi
 
       - name: Validate MD schema
         # 04_validate.py:E1-E11 schema 一致性檢查;有 error 會 exit 2 阻擋

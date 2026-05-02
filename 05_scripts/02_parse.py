@@ -65,12 +65,14 @@ CATEGORY_DIR_NAMES: dict[str, str] = {
     "B": "B_支出標準",
     "C": "C_解釋函令",
     "D": "D_問答集",
+    "E": "E_附屬資料",
 }
 TYPE_BY_CATEGORY: dict[str, str] = {
     "A": "核心法規",
     "B": "支出標準",
     "C": "解釋函令",
     "D": "問答集",
+    "E": "附屬資料",
 }
 
 UNSORTED = "_unsorted"
@@ -965,7 +967,7 @@ def main(argv: Optional[list[str]] = None) -> int:
         description="把 01_extracted/*.txt 結構化為 02_markdown/*.md"
     )
     parser.add_argument("--file", help="檔名 glob;比對 01_extracted/**/*.txt")
-    parser.add_argument("--category", choices=["A", "B", "C", "D"])
+    parser.add_argument("--category", choices=["A", "B", "C", "D", "E"])
     parser.add_argument("--parent", help="只跑某母題(如「國內旅費」)")
     parser.add_argument(
         "--force", action="store_true",

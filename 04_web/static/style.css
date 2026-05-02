@@ -452,6 +452,10 @@
     opacity: .38; cursor: not-allowed; border-style: dashed;
     pointer-events: none; color: var(--ink-3);
   }
+  .chip.chip-e-hidden:not(.on) {
+    opacity: .55; border-style: dashed; color: var(--ink-3);
+  }
+  .chip.chip-e-hidden:not(.on)::before { content: '👁 '; font-size: 11px; }
 
   /* 情境視圖 chip filter — 兩排:母題 + 支出類別(2026-04-29 加)*/
   .sc-filterbar {

@@ -99,19 +99,20 @@ STAGES: dict[str, StageConfig] = {
     ),
 
     # ══════════════════════════════════════════════════════
-    # P2  跨母題分類（Opus — 法律語境推理）
+    # P2  跨母題分類（Sonnet — 四母題邊界清晰，Sonnet 足夠）
     # ══════════════════════════════════════════════════════
     'cross_topic': StageConfig(
         label         = '跨母題歸屬驗證',
         script        = '_cross_topic_build_batches.py',
         apply_script  = '_cross_topic_apply.py',
-        model         = OPUS,
+        model         = SONNET,
         batch_size    = 5,
         parallel      = 2,
         proposals_dir = '_cross_topic_proposals',
         why           = (
-            'Opus：需理解一份文件的法律主體（例如補充保費辦法應歸健保/酬勞費），'
-            '表面關鍵字不夠，需要法規體系語境推理。錯誤歸類會污染 nodes.json。'
+            'Sonnet：目前四個母題邊界清晰（國內旅費 / 國外旅費 / 支出憑證 / 酬勞費），'
+            'Sonnet 4.6 已能準確分類。flag rate > 15% 時升 Opus。'
+            '（2026-05-02 由用戶確認：Sonnet 優先，需要可改 Opus）'
         )
     ),
 
@@ -293,7 +294,7 @@ PIPELINE_ORDER: list[str] = [
     # ▶ [人工] 下載補缺文件
     'extract', 'parse', 'redact', 'dedup',
     'source_audit',       # Haiku
-    'cross_topic',        # Opus
+    'cross_topic',        # Sonnet（flag rate >15% 升 Opus）
     'llm_review_A',       # Opus
     'llm_review_BCD',     # Sonnet
     'retitle',            # Sonnet

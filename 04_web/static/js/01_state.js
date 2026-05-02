@@ -5,7 +5,7 @@
 let compareList = [];
 
 /* ──────── 真實資料載入 (561 nodes / 105 scenarios from 03_index/) ──────── */
-const DATA_VERSION = '2026-05-02l';  // 酬勞費母題暫時隱藏(整備中)
+const DATA_VERSION = '2026-05-02m';  // 酬勞費母題暫時隱藏(整備中)
 let DATA = [];                 // 對外用的卡片資料 (mapped from nodes.json)
 let NODES_BY_ID = new Map();   // id → original node (含 file_path 等)
 let INCOMING_EDGES = new Map();// id → [from1, from2, ...] 反向引用
@@ -22,8 +22,8 @@ const PARENT_LAW = {
   '支出憑證與結報': { full: '政府支出憑證處理要點',                       short: '支出憑證處理要點' },
 };
 // 類別代碼 → art (色點 + label)
-const CAT_ART = { A: 'travel', B: 'rate', C: 'fn', D: 'qa' };
-const CAT_LABEL = { A: '核心法規', B: '支出標準', C: '解釋函令', D: '問答集' };
+const CAT_ART = { A: 'travel', B: 'rate', C: 'fn', D: 'qa', E: 'annex' };
+const CAT_LABEL = { A: '核心法規', B: '支出標準', C: '解釋函令', D: '問答集', E: '附屬資料' };
 
 // 把節點 title 拆成 no + 主標 ("第一條 訂定目的" → no: "第一條", title: "訂定目的")
 function splitTitle(rawTitle, id) {
