@@ -1632,23 +1632,6 @@
     "review_level": "llm精校"
   },
   {
-    "id": "A-酬勞費-002",
-    "type": "核心法規",
-    "parent": "酬勞費",
-    "title": "第?條 行政院主計總處主管法規共",
-    "tags": [
-      "酬勞費"
-    ],
-    "related": [],
-    "related_inferred": [],
-    "file_path": "02_markdown/A_核心法規/酬勞費/第02條_行政院主計總處主管法規共.md",
-    "version": "2024-01-01",
-    "summary": "行政院主計總處主管法規共用系統-法規內容-中央政府各機關學校出席費及稿費支給要點您的瀏覽器不支援JavaScript功能，若網頁功能無法正常使用時，請開啟瀏覽器JavaScript狀態行政院主計總處主…",
-    "status": "現行",
-    "agency": "行政院主計總處",
-    "reviewed": "2026-04-25"
-  },
-  {
     "id": "A-酬勞費-003",
     "type": "核心法規",
     "parent": "酬勞費",
@@ -1701,40 +1684,6 @@
     "agency": "衛生福利部中央健康保險署",
     "reviewed": "2026-04-25",
     "review_level": "llm待人工"
-  },
-  {
-    "id": "A-酬勞費-006",
-    "type": "核心法規",
-    "parent": "酬勞費",
-    "title": "第?條_TODO",
-    "tags": [
-      "酬勞費"
-    ],
-    "related": [],
-    "related_inferred": [],
-    "file_path": "02_markdown/A_核心法規/酬勞費/第06條_TODO.md",
-    "version": "2024-01-01",
-    "summary": "",
-    "status": "現行",
-    "agency": "行政院主計總處",
-    "reviewed": "2026-04-25"
-  },
-  {
-    "id": "A-酬勞費-007",
-    "type": "核心法規",
-    "parent": "酬勞費",
-    "title": "第?條_TODO",
-    "tags": [
-      "酬勞費"
-    ],
-    "related": [],
-    "related_inferred": [],
-    "file_path": "02_markdown/A_核心法規/酬勞費/第07條_TODO.md",
-    "version": "2024-01-01",
-    "summary": "",
-    "status": "現行",
-    "agency": "行政院主計總處",
-    "reviewed": "2026-04-25"
   },
   {
     "id": "A-酬勞費-008",
@@ -1791,23 +1740,6 @@
     "review_level": "llm精校"
   },
   {
-    "id": "A-酬勞費-011",
-    "type": "核心法規",
-    "parent": "酬勞費",
-    "title": "第?條 行政院人事行政總處主管法",
-    "tags": [
-      "酬勞費"
-    ],
-    "related": [],
-    "related_inferred": [],
-    "file_path": "02_markdown/A_核心法規/酬勞費/第11條_行政院人事行政總處主管法.md",
-    "version": "2024-01-01",
-    "summary": "行政院人事行政總處主管法規共用系統-法規內容-講座鐘點費支給表您的瀏覽器不支援JavaScript功能，若網頁功能無法正常使用時，請開啟瀏覽器JavaScript狀態行政院人事行政總處主管法規共用系統…",
-    "status": "現行",
-    "agency": "行政院主計總處",
-    "reviewed": "2026-04-25"
-  },
-  {
     "id": "A-酬勞費-012",
     "type": "核心法規",
     "parent": "酬勞費",
@@ -1824,23 +1756,6 @@
     "agency": "行政院主計總處",
     "reviewed": "2026-04-25",
     "review_level": "llm精校"
-  },
-  {
-    "id": "A-酬勞費-013",
-    "type": "核心法規",
-    "parent": "酬勞費",
-    "title": "第?條 行政院人事行政總處主管法",
-    "tags": [
-      "酬勞費"
-    ],
-    "related": [],
-    "related_inferred": [],
-    "file_path": "02_markdown/A_核心法規/酬勞費/第13條_行政院人事行政總處主管法.md",
-    "version": "2024-01-01",
-    "summary": "行政院人事行政總處主管法規共用系統-法規內容-軍公教人員兼職費支給表您的瀏覽器不支援JavaScript功能，若網頁功能無法正常使用時，請開啟瀏覽器JavaScript狀態行政院人事行政總處主管法規共…",
-    "status": "現行",
-    "agency": "行政院主計總處",
-    "reviewed": "2026-04-25"
   },
   {
     "id": "B-國內旅費-001",
@@ -15672,24 +15587,6 @@
     "agency": "行政院主計總處(友善專區)",
     "reviewed": "2026-04-25",
     "review_level": "llm精校"
-  },
-  {
-    "id": "C-國內旅費-002",
-    "type": "解釋函令",
-    "parent": "國內旅費",
-    "title": "本彙編適用於中央及地方政",
-    "tags": [
-      "教育訓練費"
-    ],
-    "related": [],
-    "related_inferred": [],
-    "file_path": "02_markdown/C_解釋函令/國內旅費/C002_本彙編適用於中央及地方政.md",
-    "version": "2024-01-01",
-    "summary": "",
-    "status": "現行",
-    "agency": "行政院主計總處",
-    "reviewed": "2026-04-25",
-    "summary_pending": true
   },
   {
     "id": "C-國內旅費-005",
