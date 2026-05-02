@@ -4,13 +4,12 @@
 name = "gov-expense-data"
 main = "06_workers/data_worker.js"
 compatibility_date = "2024-01-01"
+account_id = "514feb8fdcc971d9802e9c6fe3c67b86"
 
 # ── KV Namespace ─────────────────────────────────────────────
-# 步驟：先執行 wrangler kv:namespace create DATA_KV
-# 再把回傳的 id 填入下方 id 欄位
 [[kv_namespaces]]
 binding = "DATA_KV"
-id = "REPLACE_WITH_YOUR_KV_NAMESPACE_ID"
+id = "b06a21e042db46c38ae57ebf1225f430"
 
 # ── 環境變數 ──────────────────────────────────────────────────
 # UPLOAD_TOKEN：透過 wrangler secret put UPLOAD_TOKEN 設定（不要寫在此檔）

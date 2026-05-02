@@ -5,6 +5,11 @@
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>核銷 Let's go!</title>
 <script>
+  /* 資料 API 端點：核心資料(nodes/scenarios)從 CF Workers 取得，而非直接讀靜態 JSON。
+     本機開發時保持 null，前端自動 fallback 到靜態 JSON。 */
+  window.DATA_API_BASE = 'https://gov-expense-data.ntnick72.workers.dev';
+</script>
+<script>
   /* Pre-paint:在 body 渲染前決定預設 view,避免行動版進站瞬間 flash 過 landing。
      行動版預設 'scenarios';桌面預設 'landing'。 */
   (function () {

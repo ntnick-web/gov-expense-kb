@@ -70,6 +70,10 @@ _*_proposals/
 04_web/data/*_sample.json
 04_web/data/_*.json
 
+# 核心資料已遷移至 Cloudflare KV（gov-expense-data Worker）— 不再公開於 GitHub
+03_index/nodes.json
+04_web/data/scenarios_manual.json
+
 # Word 暫存鎖定檔(開啟時 Word 會建 ~$ 前綴的鎖)
 ~$*.docx
 ~$*.doc
@@ -78,3 +82,7 @@ _*_proposals/
 # 內部診斷報告(_gen_review_reports.py 產出,需要時本機重跑;不推公開 repo)
 # 規劃文件 _未來優化規劃報告_*.docx 仍 tracked 不受此規則影響
 docs/_資料庫*報告_*.docx
+
+# wrangler CLI 快取
+.wrangler/
+06_workers/.wrangler/
