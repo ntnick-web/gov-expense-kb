@@ -4,68 +4,54 @@
 
 ---
 
-## 1. 程式碼 — MIT License
+## 1. 程式碼 — All Rights Reserved
 
-適用範圍:`05_scripts/`、`04_web/`(HTML/CSS/JavaScript)、根目錄 `index.html`、本專案內所有自製腳本與工具。
+適用範圍:`04_web/`(HTML/CSS/JavaScript)、根目錄 `index.html`、本專案內所有自製前端腳本與工具。
 
-```
-MIT License
+**Copyright © 2026 NtN. 保留所有權利。**
 
-Copyright (c) 2026 NtN
+未經作者明確書面授權,**禁止**:
+- 複製、散布、重製本站前端程式碼用於商業用途
+- 基於本站程式碼建立競爭性服務或衍生產品
+- 移除或竄改本站版權聲明
 
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
+個人學習、非商業性學術研究、引用說明等用途可合理使用,惟須保留版權聲明。
 
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-SOFTWARE.
-```
+> 資料處理管線腳本(**05_scripts/**)屬私有程式碼,未公開授權。
 
 ---
 
-## 2. 內容資料 — Creative Commons BY 4.0
+## 2. 整理內容 — Creative Commons BY-NC-ND 4.0
 
-適用範圍:`02_markdown/` 內所有結構化 MD 的**重點摘要、tags、related 關聯標記、備註**;`04_web/data/scenarios.json` 的情境設計;`docs/` 內所有規格與決策文件。
+適用範圍:`02_markdown/` 內所有結構化 MD 的**重點摘要、tags、related 關聯標記、備註**;`04_web/data/scenarios_manual.json` 的情境設計;`docs/` 內所有規格與決策文件。
 
 > 法規條文、解釋函令、問答集**原文**屬政府公開資訊,依《著作權法》第 9 條「法律命令、政府公文書」不得為著作權標的,不在本授權範圍內。本授權僅針對作者對其進行的**整理、結構化、摘要、關聯**等編輯著作。
 
-**摘要**(完整條款見 <https://creativecommons.org/licenses/by/4.0/legalcode.zh-Hant>):
+**授權條款:Creative Commons 姓名標示-非商業性-禁止改作 4.0 國際**
+完整條款見 <https://creativecommons.org/licenses/by-nc-nd/4.0/legalcode.zh-Hant>
 
-- ✅ **可以分享** — 以任何媒材或格式重製、散布
-- ✅ **可以修改** — 重混、轉換、依本素材建立新作品
-- ✅ **可以商業使用**
-- ⚠️ **必須標示姓名** — 須提供合理且適當的歸屬標示、提供本授權條款連結,並指出是否變更原素材
-- ⚠️ **不得加入額外限制** — 不得套用比本授權更嚴格的法律或科技措施限制他人使用
+- ✅ **可以分享** — 以任何媒材或格式重製、散布(僅限**非商業用途**)
+- ❌ **禁止商業使用** — 不得將本整理內容用於任何商業目的、付費服務或商業產品
+- ❌ **禁止改作** — 不得重混、轉換、依本素材建立衍生作品後再散布
+- ⚠️ **必須標示姓名** — 須提供合理且適當的歸屬標示、提供本授權條款連結
 
-**建議引用格式**:
+**明確禁止行為**(不論是否標示出處,皆違反本授權):
+- ❌ 基於本整理內容建立同類型或競爭性資料庫、查詢系統或服務
+- ❌ 將本整理內容用於訓練機器學習模型、大型語言模型或 AI 系統
+- ❌ 以自動化方式批量爬取、複製或鏡像本站資料庫
+- ❌ 將本整理內容整合至商業產品、SaaS 服務或付費 API
 
-> NtN (2026)。政府支出法規知識庫。摘自 <https://ntnick-web.github.io/gov-expense-kb/>,授權條款 CC BY 4.0。
+商業授權洽詢:[GitHub Issues](https://github.com/ntnick-web/gov-expense-kb/issues)
 
-或在學術引文中:
+**建議引用格式**(非商業學術用途):
 
-```
-NtN (2026). 政府支出法規知識庫 [Online database].
-Retrieved from https://ntnick-web.github.io/gov-expense-kb/
-Licensed under CC BY 4.0.
-```
+> NtN (2026)。政府支出法規知識庫。摘自 <https://ntnick-web.github.io/gov-expense-kb/>,授權條款 CC BY-NC-ND 4.0。
 
 ---
 
 ## 3. 第三方資源
 
 本專案前端不依賴任何第三方 JavaScript 函式庫(無 React/Vue/jQuery/D3 等)。
-若未來引入,將於本檔列出對應授權。
 
 ---
 

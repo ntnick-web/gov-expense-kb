@@ -1,0 +1,41 @@
+# wrangler_data.toml — 資料保護 Worker 部署設定
+# 部署指令：wrangler deploy 06_workers/data_worker.js --config 06_workers/wrangler_data.toml
+
+name = "gov-expense-data"
+main = "06_workers/data_worker.js"
+compatibility_date = "2024-01-01"
+
+# ── KV Namespace ─────────────────────────────────────────────
+# 步驟：先執行 wrangler kv:namespace create DATA_KV
+# 再把回傳的 id 填入下方 id 欄位
+[[kv_namespaces]]
+binding = "DATA_KV"
+id = "REPLACE_WITH_YOUR_KV_NAMESPACE_ID"
+
+# ── 環境變數 ──────────────────────────────────────────────────
+# UPLOAD_TOKEN：透過 wrangler secret put UPLOAD_TOKEN 設定（不要寫在此檔）
+# ALLOWED_ORIGIN：可選，追加自訂允許的前端 origin（如自訂域名）
+# 範例：wrangler secret put ALLOWED_ORIGIN --config 06_workers/wrangler_data.toml
+
+# ── 路由 ──────────────────────────────────────────────────────
+# Worker 會自動掛在 gov-expense-data.YOUR_SUBDOMAIN.workers.dev
+# 若要綁自訂域名，在 CF Dashboard → Workers → 此 Worker → Triggers → Custom Domains 加入
+
+# ── 使用量限制（免費方案）────────────────────────────────────
+# Cloudflare Workers 免費方案：10 萬次請求/天，超過自動降速（不收費）
+# KV 免費方案：讀 10 萬次/天，寫 1000 次/天（足夠日常更新）
+
+# ── CI/CD 整合（選項）────────────────────────────────────────
+# 在 GitHub Actions 加入以下步驟（於 03_build_index.py 之後）：
+#
+# - name: Upload data to CF KV
+#   env:
+#     CLOUDFLARE_API_TOKEN: ${{ secrets.CF_API_TOKEN }}
+#     UPLOAD_TOKEN: ${{ secrets.DATA_UPLOAD_TOKEN }}
+#   run: |
+#     curl -s -X POST https://gov-expense-data.YOUR_SUBDOMAIN.workers.dev/admin/upload \
+#       -H "Content-Type: application/json" \
+#       -H "X-Upload-Token: $UPLOAD_TOKEN" \
+#       -d "{\"nodes\": $(cat 03_index/nodes.json), \
+#            \"scenarios\": $(cat 04_web/data/scenarios_manual.json), \
+#            \"meta\": $(cat 03_index/_meta.json)}"

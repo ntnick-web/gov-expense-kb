@@ -1,0 +1,93 @@
+# 政府支出法規知識庫 — robots.txt
+# https://ntnick-web.github.io/gov-expense-kb/
+# 版權所有 © 2026 NtN. 整理內容採 CC BY-NC-ND 4.0，禁止商業使用及 AI 訓練。
+
+# ── 一般爬蟲：禁止抓取核心資料目錄 ──────────────────────────
+User-agent: *
+Crawl-delay: 10
+Disallow: /gov-expense-kb/03_index/
+Disallow: /gov-expense-kb/04_web/data/scenarios_manual.json
+Disallow: /gov-expense-kb/04_web/data/scenarios/
+Disallow: /gov-expense-kb/02_markdown/
+Disallow: /gov-expense-kb/05_scripts/
+Disallow: /gov-expense-kb/06_workers/
+
+# ── OpenAI ─────────────────────────────────────────────────
+User-agent: GPTBot
+Disallow: /
+
+User-agent: ChatGPT-User
+Disallow: /
+
+User-agent: OAI-SearchBot
+Disallow: /
+
+# ── Google AI ──────────────────────────────────────────────
+User-agent: Google-Extended
+Disallow: /
+
+# ── Anthropic ──────────────────────────────────────────────
+User-agent: anthropic-ai
+Disallow: /
+
+User-agent: ClaudeBot
+Disallow: /
+
+# ── Common Crawl（餵養多數 AI 訓練集）──────────────────────
+User-agent: CCBot
+Disallow: /
+
+# ── Perplexity ─────────────────────────────────────────────
+User-agent: PerplexityBot
+Disallow: /
+
+# ── ByteDance / TikTok ─────────────────────────────────────
+User-agent: Bytespider
+Disallow: /
+
+# ── Cohere ─────────────────────────────────────────────────
+User-agent: cohere-ai
+Disallow: /
+
+# ── Amazon ─────────────────────────────────────────────────
+User-agent: Amazonbot
+Disallow: /
+
+# ── Meta / Facebook ────────────────────────────────────────
+User-agent: FacebookBot
+Disallow: /
+
+# ── Diffbot（結構化資料爬取）───────────────────────────────
+User-agent: Diffbot
+Disallow: /
+
+# ── 其他 AI/資料爬蟲 ────────────────────────────────────────
+User-agent: ImagesiftBot
+Disallow: /
+
+User-agent: omgili
+Disallow: /
+
+User-agent: YouBot
+Disallow: /
+
+User-agent: DataForSeoBot
+Disallow: /
+
+User-agent: PetalBot
+Disallow: /
+
+User-agent: Applebot-Extended
+Disallow: /
+
+User-agent: AI2Bot
+Disallow: /
+
+User-agent: Timpibot
+Disallow: /
+
+User-agent: VelenPublicWebCrawler
+Disallow: /
+
+User-agent: Kangaroo Bot
+Disallow: /

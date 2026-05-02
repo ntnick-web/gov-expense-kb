@@ -59,11 +59,17 @@ let BASELINE_ATTACHMENTS = {};  // 情境共通標配憑證 (baseline_attachment
 let SYNONYM_INDEX = new Map();  // 任一詞 → 該組所有詞 (含 canonical),供 expandSynonyms 用
 async function loadAllData() {
   const v = '?v=' + DATA_VERSION;
+  // DATA_API_BASE：設定後改從 CF Workers API 取核心資料（nodes / scenarios）。
+  // 預設 null = 直接讀靜態 JSON（本地 dev 與 GitHub Pages 模式）。
+  // 部署後在 index.html <head> 加：<script>window.DATA_API_BASE='https://gov-expense-data.XXX.workers.dev';</script>
+  const API = (typeof window !== 'undefined' && window.DATA_API_BASE) ? window.DATA_API_BASE : null;
+  const nodesUrl    = API ? API + '/data/nodes?v='     + DATA_VERSION : '../03_index/nodes.json' + v;
+  const scenariosUrl = API ? API + '/data/scenarios?v=' + DATA_VERSION : 'data/scenarios_manual.json' + v;
   // 2026-05-01 (A1):auto 卡停用、舊 scenarios.json monolith 退役 — 情境視圖只載手寫 manual 卡。
   const [nodes, edges, scnManual, aliases, neighbors, synonyms, baseline] = await Promise.all([
-    fetch('../03_index/nodes.json' + v).then(r => r.json()),
+    fetch(nodesUrl).then(r => r.json()),
     fetch('../03_index/edges.json' + v).then(r => r.json()),
-    fetch('data/scenarios_manual.json' + v).then(r => r.ok ? r.json() : null).catch(() => null),
+    fetch(scenariosUrl).then(r => r.ok ? r.json() : null).catch(() => null),
     fetch('data/city_aliases.json' + v).then(r => r.ok ? r.json() : { aliases: {} }).catch(() => ({ aliases: {} })),
     fetch('data/country_neighbors.json' + v).then(r => r.ok ? r.json() : { neighbors: {} }).catch(() => ({ neighbors: {} })),
     fetch('data/synonyms.json' + v).then(r => r.ok ? r.json() : { groups: [] }).catch(() => ({ groups: [] })),
