@@ -233,14 +233,14 @@ function filteredData() {
       return b.queryRelevance - a.queryRelevance;
     });
   } else {
-    // 無 query/scenario:依類別(A→B→C→D)→母題→sort_order→ID 末段數字升序
+    // 無 query/scenario:依母題(支出憑證→國內→酬勞→國外)→類別(A→B→C→D)→sort_order→ID 末段數字升序
     scored.sort((a, b) => {
+      const pa = PARENT_SORT_IDX[a.d.cat] ?? 99;
+      const pb = PARENT_SORT_IDX[b.d.cat] ?? 99;
+      if (pa !== pb) return pa - pb;
       const ta = TYPE_ORDER[a.d.type] ?? 99;
       const tb = TYPE_ORDER[b.d.type] ?? 99;
       if (ta !== tb) return ta - tb;
-      const pa = PARENT_SORT_IDX[a.d.parent] ?? 99;
-      const pb = PARENT_SORT_IDX[b.d.parent] ?? 99;
-      if (pa !== pb) return pa - pb;
       const sa = a.d.sortOrder ?? Infinity;
       const sb = b.d.sortOrder ?? Infinity;
       if (sa !== sb) return sa - sb;

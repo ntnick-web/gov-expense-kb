@@ -64,7 +64,6 @@ window.addEventListener('beforeunload', flushEvents);
 async function init() {
   try {
     await loadAllData();
-    renderSidebar();
     renderChips();
     renderCards();
     // 2026-05-XX:landing 已封存,進站預設 scenarios(splash 期間使用者不會感受到延遲)
@@ -309,7 +308,6 @@ function _enterView(v) {
   if (v === 'scenarios') renderScenarios();
   if (v === 'calc') renderCalc();
   if (v === 'library') renderCards();   // 確保 library 切入時刷新
-  renderSidebar();
   syncMobileTabbar();
   window.scrollTo({ top: 0, behavior: 'smooth' });
 }

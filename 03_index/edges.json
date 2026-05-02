@@ -582,12 +582,6 @@
     "inferred": false
   },
   {
-    "from": "C-國內旅費-098",
-    "to": "A-國內旅費-002",
-    "relation": "explains",
-    "inferred": false
-  },
-  {
     "from": "C-國內旅費-099",
     "to": "A-國內旅費-003",
     "relation": "explains",
