@@ -1043,8 +1043,13 @@ function renderChips() {
     }
     if (!matched) expCount['程序與通則']++;
   }
-  /* 支出類別:預設只顯示 top 6 + 「+ N 類」展開按鈕(目前選中的也保留可見)*/
-  const visibleExpenses = EXPENSE_LIST.filter(e => expCount[e] > 0);
+  /* 支出類別:預設只顯示 top 6 + 「+ N 類」展開按鈕(目前選中的也保留可見)
+     若有 parent filter 且 EXPENSE_LAYER 有定義,只顯示該母題允許的支出類別,
+     避免跨類 tag 汙染(如 normalize_tags 替 酬勞費 節點加了 交通費 tag)。*/
+  const _expAllowed = (filterState.parent && EXPENSE_LAYER[filterState.parent])
+    ? new Set(EXPENSE_LAYER[filterState.parent])
+    : null;
+  const visibleExpenses = EXPENSE_LIST.filter(e => expCount[e] > 0 && (!_expAllowed || _expAllowed.has(e)));
   const TOP_EXP = 6;
   const expanded = window._expExpanded === true;
   let visibleSet;
