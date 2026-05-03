@@ -1,6 +1,6 @@
 # 隱私聲明 (Privacy Policy)
 
-**生效日期**:2026-04-27
+**生效日期**:2026-04-27　　**最後更新**:2026-05-04
 
 本站採取**最小蒐集原則**,僅收集匿名統計資料以改善服務,**不收集任何可識別個人之資訊**。
 
@@ -28,7 +28,26 @@
 
 Cloudflare Web Analytics 之隱私說明:<https://www.cloudflare.com/web-analytics/>(privacy-first 設計,符合 GDPR / CCPA)
 
-### 1.2 使用者主動提供
+### 1.2 匿名使用統計(Google Analytics 4)
+
+本站使用 Google Analytics 4(GA4)蒐集匿名使用統計,內容包含:
+
+- 頁面瀏覽量、工作階段數、不重複訪客數
+- 流量來源(搜尋引擎、referrer 網站、直接輸入)
+- 國家 / 地區、語言設定
+- 裝置類型、作業系統、瀏覽器類型
+- 頁面停留時間、跳出率
+
+**不收集的內容**:
+- ❌ 姓名、電話、email 等可識別個人資訊
+- ❌ 站內搜尋關鍵字、表單輸入內容
+- ❌ 跨站行為追蹤(本站未啟用 Google Signals)
+
+**Cookie 使用說明**:GA4 會在您的瀏覽器設置 `_ga`、`_ga_*` 等 Cookie,有效期最長 2 年,用於區分不同訪客工作階段。如不希望被統計,可透過瀏覽器設定拒絕 Cookie,或安裝 [Google Analytics 選擇退出附加元件](https://tools.google.com/dlpage/gaoptout)。
+
+Google Analytics 隱私說明:<https://policies.google.com/privacy>
+
+### 1.3 使用者主動提供
 
 - **GitHub Issues 留言**:當您於 GitHub 上回報問題或建議,GitHub 會記錄您的帳號名稱、留言內容、時間。本站不另存此資料,完全依 GitHub 隱私政策。
 - **Local Storage**(僅存於您的瀏覽器,不上傳):
@@ -62,33 +81,46 @@ Cloudflare Web Analytics 之隱私說明:<https://www.cloudflare.com/web-analyti
 
 ## 4. 第三方服務
 
-| 服務 | 用途 | 隱私說明 |
-|---|---|---|
-| **Cloudflare Web Analytics** | 匿名 PV/UV 統計 | <https://www.cloudflare.com/web-analytics/> |
-| **GitHub Pages** | 網站託管 | <https://docs.github.com/en/site-policy/privacy-policies/github-privacy-statement> |
-| **dgbas.gov.tw** 等政府網站 | 「原始出處」連結指向 | 連往時依該網站隱私政策,本站無控制 |
+| 服務 | 用途 | Cookie | 隱私說明 |
+|---|---|---|---|
+| **Google Analytics 4** | 匿名使用統計(PV/UV/流量來源) | 有(`_ga`、`_ga_*`,最長 2 年) | <https://policies.google.com/privacy> |
+| **Cloudflare Web Analytics** | 匿名 PV/UV 統計(無 cookie 補充層) | 無 | <https://www.cloudflare.com/web-analytics/> |
+| **GitHub Pages** | 網站託管 | 無 | <https://docs.github.com/en/site-policy/privacy-policies/github-privacy-statement> |
+| **dgbas.gov.tw** 等政府網站 | 「原始出處」連結指向 | 依各網站 | 連往時依該網站隱私政策,本站無控制 |
 
 ---
 
 ## 5. Cookie 政策
 
-本站**完全不使用 Cookie**。
+本站使用的 Cookie 僅限以下兩類:
 
-- Cloudflare Web Analytics 採無 cookie 設計
-- 本站前端僅使用 Local Storage 儲存暗黑模式等偏好,Local Storage 與 Cookie 不同,不會在 HTTP 請求中傳送
+| Cookie 名稱 | 來源 | 用途 | 有效期 |
+|---|---|---|---|
+| `_ga` | Google Analytics 4 | 區分不重複訪客 | 2 年 |
+| `_ga_1LTQGY50L2` | Google Analytics 4 | 工作階段維持 | 2 年 |
+
+- Cloudflare Web Analytics 採**無 cookie 設計**,不另設 Cookie
+- 本站前端僅使用 **Local Storage** 儲存暗黑模式等偏好,不會在 HTTP 請求中傳送
+
+**如何拒絕 Cookie**:可透過瀏覽器設定關閉 Cookie,或安裝 [Google Analytics 選擇退出附加元件](https://tools.google.com/dlpage/gaoptout)。拒絕後不影響本站正常功能。
 
 ---
 
 ## 6. 資料保留
 
-- Cloudflare Web Analytics 統計資料保留期間依其服務條款(目前為 6 個月)
-- 本站不保留任何使用者層級資料,故無資料刪除需求
+- **Google Analytics 4**:事件資料預設保留 **14 個月**,可由維護者調整(最短 2 個月);Cookie 有效期最長 2 年
+- **Cloudflare Web Analytics**:統計資料保留期間依其服務條款(目前為 6 個月)
+- 本站不保留任何使用者層級原始資料,故無資料刪除需求
 
 ---
 
 ## 7. 您的權利
 
 由於本站不收集可識別個人之資料,因此 GDPR / 個資法所稱的「查詢權、更正權、刪除權」等對本站不適用。
+
+若您希望退出 Google Analytics 統計:
+- 安裝 [Google Analytics 選擇退出附加元件](https://tools.google.com/dlpage/gaoptout)
+- 或透過瀏覽器設定拒絕第三方 Cookie
 
 若您對 Cloudflare Web Analytics 蒐集的匿名統計有疑問,可透過瀏覽器安裝廣告攔截擴充(如 uBlock Origin)阻擋。
 
@@ -112,4 +144,4 @@ Cloudflare Web Analytics 之隱私說明:<https://www.cloudflare.com/web-analyti
 
 ---
 
-**最後更新**:2026-04-27
+**最後更新**:2026-05-04
