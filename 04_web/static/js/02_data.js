@@ -39,6 +39,11 @@ function switchView(v) {
   document.querySelectorAll('.mobile-tabbar .mobile-tab').forEach(it => {
     it.classList.toggle('active', it.dataset.entry === v);
   });
+  // 若直接呼叫 switchView('calc') 而非透過 _enterView，補觸發 renderCalc
+  if (v === 'calc' && typeof renderCalc === 'function') {
+    const grid = document.getElementById('calc-grid');
+    if (grid && !grid.children.length) renderCalc();
+  }
 }
 let currentList = [];   // filteredNodes 結果
 let currentIdx = -1;    // 抽屜目前指到 currentList 的 index

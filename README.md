@@ -6,9 +6,9 @@
 
 線上版:<https://ntnick-web.github.io/gov-expense-kb/>
 
-> **安全聲明**:本站完全公開,無存取控制 — 內容皆為政府公開法規,可公開傳布。請勿在此 repo 放置任何機密資訊。
+> **安全聲明**:核心資料（nodes.json、scenarios_manual.json）已移至 Cloudflare Workers KV，public repo 僅含前端程式碼。請勿在此 repo 放置任何機密資訊。
 
-> **授權**:程式碼 [MIT](LICENSE.md) / 整理內容 [CC BY 4.0](LICENSE.md) / 法規原文 屬政府公開資訊。引用方式見 [LICENSE.md](LICENSE.md)。
+> **授權**:程式碼 All Rights Reserved / 整理內容 [CC BY-NC-ND 4.0](LICENSE.md)（禁商業、禁改作）/ 法規原文 屬政府公開資訊。詳見 [LICENSE.md](LICENSE.md)。
 
 ---
 
@@ -130,14 +130,12 @@ gov-expense-kb/
 ## 授權與聲明
 
 本知識庫**雙授權**:
-- **程式碼**(`05_scripts/`、`04_web/`):[MIT License](LICENSE.md)
-- **整理內容**(摘要、tags、related、情境、文件):[Creative Commons BY 4.0](LICENSE.md)
+- **程式碼**(`05_scripts/`、`04_web/`):All Rights Reserved — 未經授權不得複製、修改、商業使用
+- **整理內容**(摘要、tags、related、情境、文件):[Creative Commons BY-NC-ND 4.0](LICENSE.md) — 非商業、禁改作、姓名標示
 - **法規原文**:依《著作權法》§9 屬政府公開資訊,公有領域
 
-歡迎自由使用、改作、商業引用,僅需姓名標示(歸屬本知識庫)。
-
 **引用範本**:
-> NtN (2026)。政府支出法規知識庫。摘自 https://ntnick-web.github.io/gov-expense-kb/,授權 CC BY 4.0。
+> NtN (2026)。政府支出法規知識庫。摘自 https://ntnick-web.github.io/gov-expense-kb/,授權 CC BY-NC-ND 4.0。
 
 **重要聲明**:
 - 本工具僅供**查詢輔助**使用,正式引用、報支、決策請以**主管機關公告之最新版本**為準
