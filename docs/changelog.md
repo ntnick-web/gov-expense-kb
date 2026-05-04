@@ -77,7 +77,7 @@
 
 **4 項使用者已決議暫不執行**(留底參考):mobile-tabbar 補回 4 tab、複製附件清單一鍵按鈕、列印/匯出 PDF 核銷 SOP、我的常用情境 localStorage 收藏。
 
-詳細分析、未來母題擴充建議(主推:講座鐘點費 / 出席費 / 稿費)、整體核銷邏輯優化方向見 [docs/_未來優化規劃報告_2026-05-01.docx](_未來優化規劃報告_2026-05-01.docx)。
+詳細分析、未來母題擴充建議(主推:講座鐘點費 / 出席費 / 稿費)、整體核銷邏輯優化方向詳見 CLAUDE.md §14 已知擴充點。
 
 **回滾**:`git revert d0d4063`。子模組可單獨 hotfix:
 - A1 拆 auto:在 `loadAllData()` 加回 `fetch('data/scenarios_auto.json'+v)` + CI workflow 加回 `build_scenarios.py --apply` 步驟
