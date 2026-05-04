@@ -276,6 +276,77 @@
 <script src="static/js/01_state.js?v=2026-05-02x"></script>
 <script src="static/js/02_data.js?v=2026-05-02x"></script>
 <script src="static/js/03_render.js?v=2026-05-02x"></script>
+  <script>
+    /* ── GA4 自訂事件追蹤 ── */
+    (function () {
+        function gev(name, params) {
+              if (typeof gtag === 'function') gtag('event', name, params);
+        }
+
+        // 1. 分頁切換（情境 / 條文庫 / 試算）
+        document.addEventListener('click', function (e) {
+              var btn = e.target.closest('[data-entry]');
+              if (btn) {
+                      gev('tab_switch', { tab_name: btn.dataset.entry });
+              }
+        });
+
+        // 2. 情境卡片點擊
+        document.addEventListener('click', function (e) {
+              var card = e.target.closest('#sc-list .sc-card, #sc-list [data-scenario]');
+              if (card) {
+                      var title = card.querySelector('.sc-title, h3, h2');
+                      gev('scenario_click', { scenario_title: title ? title.textContent.trim() : '(unknown)' });
+              }
+        });
+
+        // 3. 條文庫卡片點擊（開啟 Drawer）
+        document.addEventListener('click', function (e) {
+              var card = e.target.closest('#grid .card, #grid [data-id]');
+              if (card) {
+                      var id = card.dataset.id || '';
+                      var title = card.querySelector('.card-title, h3, h2');
+                      gev('library_card_click', {
+                                card_id: id,
+                                card_title: title ? title.textContent.trim() : '(unknown)'
+                      });
+              }
+        });
+
+        // 4. 搜尋（主搜尋 #q + 情境搜尋 #sc-q + ⌘K #cmdk-input）
+        ['q', 'sc-q', 'cmdk-input'].forEach(function (id) {
+              var el = document.getElementById(id);
+              if (!el) return;
+                    var timer;
+              el.addEventListener('input', function () {
+                      clearTimeout(timer);
+                      var val = el.value.trim();
+                      if (!val) return;
+                              timer = setTimeout(function () {
+                                        gev('search_query', { search_term: val, search_source: id });
+                              }, 800);
+              });
+        });
+
+        // 5. 複製條號
+        var btnCopy = document.getElementById('btn-copy');
+        if (btnCopy) {
+              btnCopy.addEventListener('click', function () {
+                      var meta = document.getElementById('d-meta');
+                      gev('copy_card_id', { card_id: meta ? meta.textContent.trim() : '(unknown)' });
+              });
+        }
+
+            // 6. 點擊原始出處
+            var btnSource = document.getElementById('btn-source');
+        if (btnSource) {
+              btnSource.addEventListener('click', function () {
+                      var title = document.getElementById('d-title');
+                      gev('open_source_link', { card_title: title ? title.textContent.trim() : '(unknown)' });
+              });
+        }
+    })();
+  </script>
 <script src="static/js/04_main.js?v=2026-05-02x"></script>
 </body>
 </html>
