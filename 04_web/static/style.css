@@ -252,6 +252,7 @@
   @media (max-width: 880px) { .main { padding: 16px 16px 80px; } }
 
   .topbar {
+    @media (min-width: 1800px) { .main { max-width: 1800px; } }
     display: flex; gap: 12px; align-items: center; margin-bottom: 22px;
     flex-wrap: wrap;
     /* 桌面:搜尋框置頂不滑動,sticky 於 topnav 之下 */
