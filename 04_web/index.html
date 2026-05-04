@@ -431,6 +431,55 @@
       }
     }
 
+
+    // 14. 搜尋零結果追蹤
+    // 條文庫：監聽 #grid 內出現「沒有符合條件的條文」
+    var grid = document.getElementById('grid');
+    if (grid) {
+      new MutationObserver(function () {
+        var empty = grid.querySelector('.cmp-empty');
+        if (empty) {
+          var q = document.getElementById('q');
+          gev('search_no_result', {
+            search_term: q ? q.value.trim() : '',
+            search_source: 'library'
+          });
+        }
+      }).observe(grid, { childList: true, subtree: false });
+    }
+
+    // ⌘K：監聽 #cmdk-list 內出現「沒有結果」
+    var cmdkList = document.getElementById('cmdk-list');
+    if (cmdkList) {
+      new MutationObserver(function () {
+        var empty = cmdkList.querySelector('.cmdk-empty');
+        if (empty) {
+          var qi = document.getElementById('cmdk-input');
+          gev('search_no_result', {
+            search_term: qi ? qi.value.trim() : '',
+            search_source: 'cmdk'
+          });
+        }
+      }).observe(cmdkList, { childList: true, subtree: false });
+    }
+
+    // 情境搜尋：監聽 #sc-list 內結果為空
+    var scList = document.getElementById('sc-list');
+    if (scList) {
+      new MutationObserver(function () {
+        // sc-list 有內容但全是 hidden，代表沒有結果
+        var allCards = scList.querySelectorAll('.sc-card, [data-scenario]');
+        var visible = Array.from(allCards).filter(function(c){ return !c.hidden && c.style.display !== 'none'; });
+        if (allCards.length > 0 && visible.length === 0) {
+          var qs = document.getElementById('sc-q');
+          gev('search_no_result', {
+            search_term: qs ? qs.value.trim() : '',
+            search_source: 'scenarios'
+          });
+        }
+      }).observe(scList, { childList: true, subtree: true });
+    }
+
   })();
   </script>
 
