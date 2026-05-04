@@ -378,6 +378,7 @@ async function openDrawer(idx) {
   const reviewMeta = d.reviewLevel ? ` ${d.reviewLevel}` : '';
   document.getElementById("d-meta").innerHTML = `${d.id} <span class="sep"></span> ${d.updated || '尚未校對'}${reviewMeta} <span class="sep"></span> ${d.cat} · ${d.catLabel}`;
   if (typeof track === 'function') track('drawer_open', d.id, { parent: d.cat });
+  if (typeof ga4 === 'function') ga4('view_item', { item_id: d.id, item_name: (d.title || d.id).slice(0, 80), item_category: d.cat });
   // 2026-05-02 #23:條文修法歷史 timeline(僅 A 類核心法規條文有意義)
   // 必須插在 .drawer-head 之外、.drawer-body 之上,否則會擠到 .drawer-row 的 flex 寬度
   let $vh = document.getElementById('d-version-history');
@@ -1488,6 +1489,7 @@ function renderScenarios() {
     renderCards();
     window.scrollTo({ top: 0, behavior: 'smooth' });
     if (typeof track === 'function') track('scenario_apply', id);
+    if (typeof ga4 === 'function') ga4('select_content', { content_type: 'scenario', item_id: id, content_id: (sc.title || '').slice(0, 80) });
     flashHint(`套用情境:${sc.title} · ${currentList.length} 張相關卡`);
   };
 }
@@ -1827,6 +1829,7 @@ function jumpToCard(id) {
 
 function openFlowModal(scenario) {
   if (!scenario.flow || !scenario.flow.start) return;
+  if (typeof ga4 === 'function') ga4('tutorial_begin', { content_id: scenario.id || '' });
   // 2026-05-XX:防止抽屜疊在 flow modal 之上(P0-5)— flow 開啟時關掉所有 overlay
   const $drawer = document.querySelector('.drawer.show');
   if ($drawer) $drawer.classList.remove('show');
@@ -1882,6 +1885,7 @@ function openFlowModal(scenario) {
     }
     // 結論
     if (conclusionId) {
+      if (typeof ga4 === 'function') ga4('tutorial_complete', { content_id: scenario.id || '', conclusion_id: conclusionId });
       const c = flow.conclusions?.[conclusionId];
       if (c) {
         html += `<div style="padding:18px;background:var(--brand-soft);border:2px solid var(--brand);border-radius:var(--radius);margin-top:8px">

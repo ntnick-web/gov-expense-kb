@@ -60,6 +60,23 @@ function flushEvents() {
 window.addEventListener('pagehide', flushEvents);
 window.addEventListener('beforeunload', flushEvents);
 
+/* ──────── GA4 自訂事件追蹤 ────────
+   ga4(event_name, params) — 安全 wrapper:gtag 未載入(或 localhost 無 GA4)時靜默忽略
+   事件命名:snake_case / ≤40 chars / 避開 GA4 保留字
+   完整事件清單:
+     view_change         視圖切換      view_name
+     view_item           抽屜開啟      item_id / item_name / item_category
+     select_content      情境套用      content_type='scenario' / item_id / content_id
+     search              搜尋          search_term / search_location
+     filter_select       chip 篩選    filter_type / filter_value
+     tutorial_begin      問答啟動      content_id
+     tutorial_complete   問答結論      content_id / conclusion_id
+     compare_view        並排比較開啟  count                              */
+function ga4(event_name, params) {
+  if (typeof gtag !== 'function') return;
+  try { gtag('event', event_name, params || {}); } catch (_) {}
+}
+
 /* ──────── init ──────── */
 async function init() {
   try {
@@ -285,6 +302,7 @@ async function openCompareModal() {
   });
 
   cmpModal.classList.add("show");
+  ga4('compare_view', { count: nodes.length });
 }
 function closeCompareModal() {
   cmpModal.classList.remove("show");
@@ -346,4 +364,52 @@ document.getElementById('brand-home')?.addEventListener('click', () => {
 });
 
 // 進站預設 view 已由 init() 處理(scenarios)
+
+/* ──────── GA4 搜尋 / 篩選 埋點 (2026-05-04) ──────── */
+
+// 主 topbar 搜尋:1.5s 防抖後送(代表使用者已完成輸入)
+(function () {
+  const $q = document.getElementById('q');
+  if (!$q) return;
+  let _t = null;
+  $q.addEventListener('input', function () {
+    clearTimeout(_t);
+    _t = setTimeout(function () {
+      const v = ($q.value || '').trim();
+      if (v.length >= 2) ga4('search', { search_term: v, search_location: 'topbar' });
+    }, 1500);
+  });
+})();
+
+// Spotlight CmdK 搜尋
+(function () {
+  const $ck = document.getElementById('cmdk-input');
+  if (!$ck) return;
+  let _t = null;
+  $ck.addEventListener('input', function () {
+    clearTimeout(_t);
+    _t = setTimeout(function () {
+      const v = ($ck.value || '').trim();
+      if (v.length >= 2) ga4('search', { search_term: v, search_location: 'spotlight' });
+    }, 1500);
+  });
+})();
+
+// Chip 篩選 — 事件委派(filterrow 在 renderChips 後才有內容,用 click 冒泡捕捉)
+document.getElementById('lib-parent-row')?.addEventListener('click', function (e) {
+  const b = e.target.closest('[data-parent]');
+  if (b && b.dataset.parent) ga4('filter_select', { filter_type: 'topic', filter_value: b.dataset.parent });
+});
+document.getElementById('lib-type-row')?.addEventListener('click', function (e) {
+  const b = e.target.closest('[data-type]');
+  if (b && b.dataset.type) ga4('filter_select', { filter_type: 'type', filter_value: b.dataset.type });
+});
+document.getElementById('lib-expense-row')?.addEventListener('click', function (e) {
+  const b = e.target.closest('[data-expense]');
+  if (b && b.dataset.expense) ga4('filter_select', { filter_type: 'expense', filter_value: b.dataset.expense });
+});
+document.getElementById('lib-tag-row')?.addEventListener('click', function (e) {
+  const b = e.target.closest('[data-tag]');
+  if (b && b.dataset.tag) ga4('filter_select', { filter_type: 'tag', filter_value: b.dataset.tag });
+});
 

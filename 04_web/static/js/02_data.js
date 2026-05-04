@@ -18,7 +18,10 @@ function switchView(v) {
   // 否則 html[data-init-view="scenarios"] #view-scenarios{display:block} 會永久蓋過 .active 切換,
   // 導致從情境切到試算 / 條文庫時舊 view 內容仍堆在新 view 下方。
   document.documentElement.removeAttribute('data-init-view');
-  if (v !== currentView && typeof track === 'function') track('view_change', v);
+  if (v !== currentView) {
+    if (typeof track === 'function') track('view_change', v);
+    if (typeof ga4 === 'function') ga4('view_change', { view_name: v });
+  }
   currentView = v;
   document.getElementById('view-landing')?.classList.toggle('active', v === 'landing');
   document.getElementById('view-library').classList.toggle('hidden', v !== 'library');
