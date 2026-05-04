@@ -1,190 +1,438 @@
 <!doctype html>
 <html lang="zh-Hant">
-  <head>
-      <meta charset="utf-8">
-      <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-      <title>核銷 Let's go!</title>
-    <script>
-          /* 資料 API 端點：核心資料(nodes/scenarios)從 CF Workers 取得，而非直接讀靜態 JSON。
-                 本機開發時保持 null，前端自動 fallback 到靜態 JSON。 */
-          window.DATA_API_BASE = 'https://gov-expense-data.ntnick72.workers.dev';
-    </script>
-      <script>
-            /* Pre-paint:在 body 渲染前決定預設 view,避免行動版進站瞬間 flash 過 landing。
-                   行動版預設 'scenarios';桌面預設 'landing'。 */
-            (function () {
-                    try {
-                              var isMobile = window.matchMedia && window.matchMedia('(max-width: 880px)').matches;
-                              document.documentElement.dataset.initView = isMobile ? 'scenarios' : 'landing';
-                    } catch (e) { document.documentElement.dataset.initView = 'landing'; }
-            })();
-      </script>
-      <link rel="stylesheet" href="static/style.css">
-      <!-- Google tag (gtag.js) -->
-      <script async src="https://www.googletagmanager.com/gtag/js?id=G-1LTQGY50L2"></script>
-      <script>
-            window.dataLayer = window.dataLayer || [];
-            function gtag(){dataLayer.push(arguments);}
-            gtag('js', new Date());
-            gtag('config', 'G-1LTQGY50L2');
-      </script>
-  </head>
-  <body>
-      <!-- ═══ Splash 啟動畫面(每次進站顯示 ~1.8s,點擊/按鍵跳過) ═══ -->
-      <div id="splash" class="splash" role="status" aria-label="網站啟動畫面">
-            <div class="splash-stage">
-                    <div class="splash-mark"><span class="mark-line"></span>span><span>§ 政府支出規定知識庫</span><span class="mark-line"></span></div>div>
-                  <h1 class="splash-headline">
-                          <span class="h-conjunction cj-1">將</span><span class="legal-term">「法律語言」</span><span class="h-conjunction cj-2">變成</span><span class="human-term">「使用者的語言」</span>
-                  </h1>h1>
-                  <div class="splash-arrow" aria-hidden="true"></div>div>
-                  <div class="splash-brand">
-                          <span class="b-mark">支</span>
-                          <span class="b-text"><strong>核銷</strong> <span class="b-go">Let's go!</span></span>
-                  </div>div>
-            </div>div>
-          <div class="splash-skip">點任意處 · 按 <kbd>Esc</kbd> · <kbd>Enter</kbd> 立即進入</div>div>
-      </div>div>
-    <div class="app">
-        <!-- ───── Main ───── -->
-        <main class="main">
-              <!-- ───── 桌面 topbar nav(2026-04-30 起取代 sidebar)───── -->
-              <header class="topnav">
-                      <button class="topnav-brand" id="brand-home" title="回首頁">
-                                <span class="brand-mark">支</span>
-                                <span class="brand-text-h">核銷 <span style="color:var(--brand)">Let's go!</span></span>
-                      </button>button>
-                      <nav class="topnav-tabs">
-                                <button class="topnav-tab" data-entry="scenarios"><span>🧭</span> 情境檢索</button>button>
-                                <button class="topnav-tab" data-entry="library"><span>📑</span> 條文庫</button>button>
-                                <button class="topnav-tab" data-entry="calc"><span>🧮</span> 試算表</button>button>
-                      </nav>nav>
-              </header>header>
-              <div class="topbar">
-                      <label class="search" for="q">
-                                <svg class="icon" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="m20 20-3-3"/></svg>svg>
-                                <input id="q" placeholder="搜尋條文、條號、關鍵字…例如：自用汽車 油資" autocomplete="off">
-                                <span class="kbd">⌘ K</span>
-                      </label>label>
-              </div>div>
-              <!-- ───── Landing view(2026-04-30 加,首頁三選一)───── 2026-05-XX 封存:改用啟動 splash + 預設進情境視圖。
-              保留 HTML 為 <template> 形式,需要時可恢復(把 <template> 換回 <section> 並還原 init 預設值)。 -->
-              <template id="archived-landing-view">
-                      <section id="view-landing" class="landing-view">
-                                <div class="landing-hero">
-                                            <h1>核銷 <span class="brand-x">Let's go!</span></h1>
-                                            <p>三種使用方式,選你需要的入口開始</p>
-                                </div>div>
-                                <div class="landing-grid">
-                                            <button class="landing-card" data-entry="scenarios" type="button">
-                                                          <div class="landing-icon">🧭</div>div>
-                                                          <h2>情境檢索</h2>
-                                                          <p>用「我的狀況是 ...」找答案。</p>
-                                            </button>button>
-                                            <button class="landing-card" data-entry="library" type="button">
-                                                          <div class="landing-icon">📑</div>div>
-                                                          <h2>條文庫</h2>
-                                                          <p>核心法規 · 解釋函令 · 問答集,完整全文逐字保留。</p>
-                                            </button>button>
-                                            <button class="landing-card" data-entry="calc" type="button">
-                                                          <div class="landing-icon">🧮</div>div>
-                                                          <h2>試算表</h2>
-                                                          <p>輸入城市/天數即知金額,一鍵連到法源。</p>
-                                            </button>button>
-                                </div>div>
-                                <div class="landing-foot">
-                                            ⚖️ 本站僅供查詢輔助使用,不構成行政核准依據;實際核銷以主計室審核為準。
-                                </div>div>
-                      </section>section>
-              </template>template>
-              <!-- 條文庫 view -->
-              <section id="view-library" class="library-view hidden">
-                      <nav class="breadcrumb" id="lib-breadcrumb" aria-label="麵包屑導覽"></nav>nav>
-                      <div class="pagehead">
-                                <h1>條文庫</h1>
-                                <p>核心法規 · 支出標準 · 解釋函令 · 問答集 — 點擊任一卡片查看詳細條文與相關 Q&amp;A · <span id="grid-count" style="color:var(--brand);font-weight:600"></span>span></p>
-                      </div>div>
-                      <div id="scope-banner-slot"></div>div>
-                      <div class="filterbar">
-                                <!-- 四排 chip 篩選:母題 / 類別 / 支出類別 / 熱門標籤 -->
-                                <div class="filterrow" id="lib-parent-row"></div>div>
-                                <div class="filterrow" id="lib-type-row"></div>div>
-                                <div class="filterrow" id="lib-expense-row"></div>div>
-                                <div class="filterrow" id="lib-tag-row"></div>div>
-                      </div>div>
-                      <div class="grid" id="grid"></div>div>
-              </section>section>
-              <!-- 試算表 view -->
-              <section id="view-calc" class="calc-view">
-                      <div class="sc-head">
-                                <h1>試算表</h1>
-                                <p>常用標準表互動查詢:輸入條件即知金額,並可一鍵跳到完整法源</p>
-                      </div>div>
-                      <div class="calc-grid" id="calc-grid"></div>div>
-              </section>section>
-              <!-- 情境檢索 view -->
-              <section id="view-scenarios" class="scenarios-view">
-                      <div class="sc-head">
-                                <h1>核銷情境</h1>
-                                <p>用使用者語言列出實務常見問題,點選後直接帶到對應的條文與 Q&amp;A</p>
-                      </div>div>
-                      <!-- 情境內關鍵字搜尋(2026-05-01 加)-->
-                      <div class="sc-search">
-                                <span aria-hidden="true">🔍</span>
-                                <input type="search" id="sc-q" placeholder="情境內搜尋:標題、副標、標籤、母題、支出類別…(含同義詞)" autocomplete="off" spellcheck="false">
-                                <button class="sc-search-clear" id="sc-q-clear" hidden type="button" aria-label="清除搜尋">✕ 清除</button>button>
-                      </div>div>
-                      <!-- 兩排 chip 篩選:母題 + 支出類別(2026-04-29 加)-->
-                      <div class="sc-filterbar" id="sc-parent-chips"></div>div>
-                      <div class="sc-filterbar sc-filterbar-sub" id="sc-expense-chips"></div>div>
-                      <div id="sc-list"></div>div>
-              </section>section>
-        </main>main>
-    </div>div>
-    <!-- ───── Spotlight Command Palette (⌘K / Ctrl+K) ───── -->
-    <div class="cmdk-overlay" id="cmdk-overlay" aria-hidden="true">
-        <div class="cmdk-panel" role="dialog" aria-label="搜尋情境、條文、試算表">
-              <div class="cmdk-head">
-                      <span class="cmdk-icon">🔍</span>
-                      <input type="search" id="cmdk-input" placeholder="搜尋情境、條文、城市…" autocomplete="off" spellcheck="false">
-                      <kbd class="cmdk-esc">Esc</kbd>
-              </div>div>
-              <div class="cmdk-list" id="cmdk-list" role="listbox"></div>div>
-              <div class="cmdk-foot">
-                      <span><kbd>↑</kbd><kbd>↓</kbd> 選擇</span>
-                      <span><kbd>Enter</kbd> 開啟</span>
-                      <span><kbd>Esc</kbd> 關閉</span>
-                      <span class="cmdk-foot-spacer"></span>
-                      <span class="cmdk-tip">💡 同義詞自動展開(自駕 ≈ 自用汽車)</span>
-              </div>div>
-        </div>div>
-    </div>div>
-    <!-- ───── Drawer ───── -->
-    <div class="scrim" id="scrim"></div>div>
-    <aside class="drawer" id="drawer" aria-hidden="true">
-        <div class="drawer-grab"></div>div>
-        <header class="drawer-head">
-              <div class="drawer-row">
-                      <div class="drawer-meta" id="d-meta">A-國內旅費-002 <span class="sep"></span> 2026-04-25 人工校對</div>div>
-                      <div class="drawer-actions">
-                                <span class="drawer-nav" id="d-nav" title="上一張(←) / 下一張(→)">
-                                            <button class="drawer-nav-btn" id="btn-prev" aria-label="上一張" type="button">‹</button>button>
-                                            <span class="drawer-nav-counter" id="d-nav-counter">— / —</span>
-                                            <button class="drawer-nav-btn" id="btn-next" aria-label="下一張" type="button">›</button>button>
-                                </span>
-                                <button class="iconbtn" title="複製條號到剪貼簿" aria-label="複製條號" id="btn-copy"><svg class="icon" viewBox="0 0 24 24"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg>svg><span class="iconbtn-label">複製</span></button>button>
-                                <button class="iconbtn" title="開新分頁前往主計總處原始出處" aria-label="原始出處" id="btn-source"><svg class="icon" viewBox="0 0 24 24"><path d="M14 4h6v6"/><path d="M20 4 10 14"/><path d="M20 14v5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V5a1 1 0 0 1 1-1h5"/></svg>svg><span class="iconbtn-label">出處</span></button>button>
-                                <button class="iconbtn" title="關閉抽屜 (Esc)" aria-label="關閉" id="btn-close"><svg class="icon" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6l-12 12"/></svg>svg><span class="iconbtn-label">關閉</span></button>button>
-                      </div>div>
-              </div>div>
-              <h2 class="drawer-title" id="d-t第二條 旅費項目</h2>
-                      <div class="drawer-row">
-                      <div class="card-tags" id="d-tags"></div>div>
-                      <span class="badge ok" id="d-status">現行</span>
-              </div>
-        </header>
-        <div class="drawer-body</p></p></h1></kbd></kbd></strong></span>
-  </body>
-      </script>
-    </script></title>
-  </head>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>核銷 Let's go!</title>
+<script>
+  /* 資料 API 端點：核心資料(nodes/scenarios)從 CF Workers 取得，而非直接讀靜態 JSON。
+     本機開發時保持 null，前端自動 fallback 到靜態 JSON。 */
+  window.DATA_API_BASE = 'https://gov-expense-data.ntnick72.workers.dev';
+</script>
+<script>
+  /* Pre-paint:在 body 渲染前決定預設 view,避免行動版進站瞬間 flash 過 landing。
+     行動版預設 'scenarios';桌面預設 'landing'。 */
+  (function () {
+    try {
+      var isMobile = window.matchMedia && window.matchMedia('(max-width: 880px)').matches;
+      document.documentElement.dataset.initView = isMobile ? 'scenarios' : 'landing';
+    } catch (e) { document.documentElement.dataset.initView = 'landing'; }
+  })();
+</script>
+<link rel="stylesheet" href="static/style.css">
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-1LTQGY50L2"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-1LTQGY50L2');
+</script>
+</head>
+<body>
+
+<!-- ═══ Splash 啟動畫面(每次進站顯示 ~1.8s,點擊/按鍵跳過) ═══ -->
+<div id="splash" class="splash" role="status" aria-label="網站啟動畫面">
+  <div class="splash-stage">
+    <div class="splash-mark"><span class="mark-line"></span><span>§ 政府支出規定知識庫</span><span class="mark-line"></span></div>
+    <h1 class="splash-headline">
+      <span class="h-conjunction cj-1">將</span><span class="legal-term">「法律語言」</span><span class="h-conjunction cj-2">變成</span><span class="human-term">「使用者的語言」</span>
+    </h1>
+    <div class="splash-arrow" aria-hidden="true"></div>
+    <div class="splash-brand">
+      <span class="b-mark">支</span>
+      <span class="b-text"><strong>核銷</strong> <span class="b-go">Let's go!</span></span>
+    </div>
+  </div>
+  <div class="splash-skip">點任意處 · 按 <kbd>Esc</kbd> · <kbd>Enter</kbd> 立即進入</div>
+</div>
+
+<div class="app">
+  <!-- ───── Main ───── -->
+  <main class="main">
+    <!-- ───── 桌面 topbar nav(2026-04-30 起取代 sidebar)───── -->
+    <header class="topnav">
+      <button class="topnav-brand" id="brand-home" title="回首頁">
+        <span class="brand-mark">支</span>
+        <span class="brand-text-h">核銷 <span style="color:var(--brand)">Let's go!</span></span>
+      </button>
+      <nav class="topnav-tabs">
+        <button class="topnav-tab" data-entry="scenarios"><span>🧭</span> 情境檢索</button>
+        <button class="topnav-tab" data-entry="library"><span>📑</span> 條文庫</button>
+        <button class="topnav-tab" data-entry="calc"><span>🧮</span> 試算表</button>
+      </nav>
+    </header>
+    <div class="topbar">
+      <label class="search" for="q">
+        <svg class="icon" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="m20 20-3-3"/></svg>
+        <input id="q" placeholder="搜尋條文、條號、關鍵字…例如：自用汽車 油資" autocomplete="off">
+        <span class="kbd">⌘ K</span>
+      </label>
+    </div>
+
+    <!-- ───── Landing view(2026-04-30 加,首頁三選一)─────
+         2026-05-XX 封存:改用啟動 splash + 預設進情境視圖。
+         保留 HTML 為 <template> 形式,需要時可恢復(把 <template> 換回 <section> 並還原 init 預設值)。 -->
+    <template id="archived-landing-view">
+      <section id="view-landing" class="landing-view">
+        <div class="landing-hero">
+          <h1>核銷 <span class="brand-x">Let's go!</span></h1>
+          <p>三種使用方式,選你需要的入口開始</p>
+        </div>
+        <div class="landing-grid">
+          <button class="landing-card" data-entry="scenarios" type="button">
+            <div class="landing-icon">🧭</div>
+            <h2>情境檢索</h2>
+            <p>用「我的狀況是 ...」找答案。</p>
+          </button>
+          <button class="landing-card" data-entry="library" type="button">
+            <div class="landing-icon">📑</div>
+            <h2>條文庫</h2>
+            <p>核心法規 · 解釋函令 · 問答集,完整全文逐字保留。</p>
+          </button>
+          <button class="landing-card" data-entry="calc" type="button">
+            <div class="landing-icon">🧮</div>
+            <h2>試算表</h2>
+            <p>輸入城市/天數即知金額,一鍵連到法源。</p>
+          </button>
+        </div>
+        <div class="landing-foot">
+          ⚖️ 本站僅供查詢輔助使用,不構成行政核准依據;實際核銷以主計室審核為準。
+        </div>
+      </section>
+    </template>
+
+    <!-- 條文庫 view -->
+    <section id="view-library" class="library-view hidden">
+      <nav class="breadcrumb" id="lib-breadcrumb" aria-label="麵包屑導覽"></nav>
+      <div class="pagehead">
+        <h1>條文庫</h1>
+        <p>核心法規 · 支出標準 · 解釋函令 · 問答集 — 點擊任一卡片查看詳細條文與相關 Q&amp;A · <span id="grid-count" style="color:var(--brand);font-weight:600"></span></p>
+      </div>
+
+      <div id="scope-banner-slot"></div>
+      <div class="filterbar">
+        <!-- 四排 chip 篩選:母題 / 類別 / 支出類別 / 熱門標籤 -->
+        <div class="filterrow" id="lib-parent-row"></div>
+        <div class="filterrow" id="lib-type-row"></div>
+        <div class="filterrow" id="lib-expense-row"></div>
+        <div class="filterrow" id="lib-tag-row"></div>
+      </div>
+
+      <div class="grid" id="grid"></div>
+    </section>
+
+    <!-- 試算表 view -->
+    <section id="view-calc" class="calc-view">
+      <div class="sc-head">
+        <h1>試算表</h1>
+        <p>常用標準表互動查詢:輸入條件即知金額,並可一鍵跳到完整法源</p>
+      </div>
+      <div class="calc-grid" id="calc-grid"></div>
+    </section>
+
+    <!-- 情境檢索 view -->
+    <section id="view-scenarios" class="scenarios-view">
+      <div class="sc-head">
+        <h1>核銷情境</h1>
+        <p>用使用者語言列出實務常見問題,點選後直接帶到對應的條文與 Q&amp;A</p>
+      </div>
+
+      <!-- 情境內關鍵字搜尋(2026-05-01 加)-->
+      <div class="sc-search">
+        <span aria-hidden="true">🔍</span>
+        <input type="search" id="sc-q" placeholder="情境內搜尋:標題、副標、標籤、母題、支出類別…(含同義詞)" autocomplete="off" spellcheck="false">
+        <button class="sc-search-clear" id="sc-q-clear" hidden type="button" aria-label="清除搜尋">✕ 清除</button>
+      </div>
+
+      <!-- 兩排 chip 篩選:母題 + 支出類別(2026-04-29 加)-->
+      <div class="sc-filterbar" id="sc-parent-chips"></div>
+      <div class="sc-filterbar sc-filterbar-sub" id="sc-expense-chips"></div>
+
+      <div id="sc-list"></div>
+    </section>
+  </main>
+</div>
+
+<!-- ───── Spotlight Command Palette (⌘K / Ctrl+K) ───── -->
+<div class="cmdk-overlay" id="cmdk-overlay" aria-hidden="true">
+  <div class="cmdk-panel" role="dialog" aria-label="搜尋情境、條文、試算表">
+    <div class="cmdk-head">
+      <span class="cmdk-icon">🔍</span>
+      <input type="search" id="cmdk-input" placeholder="搜尋情境、條文、城市…" autocomplete="off" spellcheck="false">
+      <kbd class="cmdk-esc">Esc</kbd>
+    </div>
+    <div class="cmdk-list" id="cmdk-list" role="listbox"></div>
+    <div class="cmdk-foot">
+      <span><kbd>↑</kbd><kbd>↓</kbd> 選擇</span>
+      <span><kbd>Enter</kbd> 開啟</span>
+      <span><kbd>Esc</kbd> 關閉</span>
+      <span class="cmdk-foot-spacer"></span>
+      <span class="cmdk-tip">💡 同義詞自動展開(自駕 ≈ 自用汽車)</span>
+    </div>
+  </div>
+</div>
+
+<!-- ───── Drawer ───── -->
+<div class="scrim" id="scrim"></div>
+<aside class="drawer" id="drawer" aria-hidden="true">
+  <div class="drawer-grab"></div>
+  <header class="drawer-head">
+    <div class="drawer-row">
+      <div class="drawer-meta" id="d-meta">A-國內旅費-002 <span class="sep"></span> 2026-04-25 人工校對</div>
+      <div class="drawer-actions">
+        <span class="drawer-nav" id="d-nav" title="上一張(←) / 下一張(→)">
+          <button class="drawer-nav-btn" id="btn-prev" aria-label="上一張" type="button">‹</button>
+          <span class="drawer-nav-counter" id="d-nav-counter">— / —</span>
+          <button class="drawer-nav-btn" id="btn-next" aria-label="下一張" type="button">›</button>
+        </span>
+        <button class="iconbtn" title="複製條號到剪貼簿" aria-label="複製條號" id="btn-copy"><svg class="icon" viewBox="0 0 24 24"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg><span class="iconbtn-label">複製</span></button>
+        <button class="iconbtn" title="開新分頁前往主計總處原始出處" aria-label="原始出處" id="btn-source"><svg class="icon" viewBox="0 0 24 24"><path d="M14 4h6v6"/><path d="M20 4 10 14"/><path d="M20 14v5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V5a1 1 0 0 1 1-1h5"/></svg><span class="iconbtn-label">出處</span></button>
+        <button class="iconbtn" title="關閉抽屜 (Esc)" aria-label="關閉" id="btn-close"><svg class="icon" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6l-12 12"/></svg><span class="iconbtn-label">關閉</span></button>
+      </div>
+    </div>
+    <h2 class="drawer-title" id="d-title">第二條 旅費項目</h2>
+    <div class="drawer-row">
+      <div class="card-tags" id="d-tags"></div>
+      <span class="badge ok" id="d-status">現行</span>
+    </div>
+  </header>
+
+  <div class="drawer-body" id="d-body"></div>
+
+  <div class="toolbar-foot">
+    <div style="font-size:12px;color:var(--ink-3)">↑ ↓ 切換 · Enter 開啟 · Esc 關閉</div>
+    <div style="display:flex;gap:8px">
+      <button class="btn" id="btn-add-compare"><svg class="icon" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>加入比較</button>
+      <button class="btn primary" id="btn-prev-next">查看法規全文 →</button>
+    </div>
+  </div>
+</aside>
+
+<!-- ───── Footer (品牌暱稱) ───── -->
+<footer class="v2-footer">
+  <div class="v2-footer-row">
+    <span class="v2-footer-brand">
+      <span class="brand-mark">支</span>
+      核銷 Let's go!
+    </span>
+    <span class="v2-footer-sep">·</span>
+    <span>程式 <a href="https://github.com/ntnick-web/gov-expense-kb/blob/main/LICENSE.md" target="_blank" rel="noopener">All Rights Reserved</a></span>
+    <span class="v2-footer-sep">·</span>
+    <span>內容 <a href="https://creativecommons.org/licenses/by-nc-nd/4.0/" target="_blank" rel="noopener">CC BY-NC-ND 4.0</a></span>
+    <span class="v2-footer-sep">·</span>
+    <span>法規原文 屬政府公開資訊</span>
+    <span class="v2-footer-sep">·</span>
+    <a href="https://github.com/ntnick-web/gov-expense-kb" target="_blank" rel="noopener">GitHub</a>
+    <span class="v2-footer-sep">·</span>
+    <a href="https://forms.gle/R7F6x8v8UepfXgn4A" target="_blank" rel="noopener">問題回報或優化建議</a>
+  </div>
+  <div class="v2-footer-disclaimer">
+    本站僅供查詢輔助使用,正式引用請以主管機關公告版本為準。
+  </div>
+</footer>
+
+<!-- ───── Compare bar (浮動底部) ───── -->
+<div class="compare-bar" id="compare-bar" role="region" aria-label="比較項目">
+  <div class="compare-bar-label">
+    <svg class="icon" viewBox="0 0 24 24"><path d="M3 12h6l3-9 3 18 3-9h3"/></svg>
+    比較區
+  </div>
+  <div class="compare-chips" id="compare-chips"></div>
+  <button class="btn primary" id="btn-show-compare" disabled>並排比較</button>
+  <button class="iconbtn" id="btn-clear-compare" title="清空"><svg class="icon" viewBox="0 0 24 24"><path d="M3 6h18M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/></svg></button>
+</div>
+
+<!-- ───── Compare modal (並排比較) ───── -->
+<div class="cmp-modal" id="cmp-modal" role="dialog" aria-modal="true" aria-labelledby="cmp-title">
+  <div class="cmp-backdrop" data-cmp-close></div>
+  <div class="cmp-panel">
+    <header class="cmp-head">
+      <h2 id="cmp-title">
+        <span class="brand-mark" style="width:22px;height:22px;font-size:11px;border-radius:6px">比</span>
+        並排比較
+      </h2>
+      <span class="cmp-hint">差異欄位以琥珀色標示</span>
+      <button class="iconbtn" data-cmp-close title="關閉 (Esc)"><svg class="icon" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6l-12 12"/></svg></button>
+    </header>
+    <div class="cmp-body" id="cmp-body"></div>
+  </div>
+</div>
+
+<div class="hint" id="hint">已複製到剪貼簿</div>
+
+<!-- ───── Mobile bottom tabbar (≤880px 才顯示) ───── -->
+<nav class="mobile-tabbar" role="navigation" aria-label="主要導覽">
+  <button class="mobile-tab" data-entry="scenarios" type="button"><span class="tab-emoji">🧭</span><span>情境</span></button>
+  <button class="mobile-tab" data-entry="library" type="button"><span class="tab-emoji">📑</span><span>條文庫</span></button>
+  <button class="mobile-tab" data-entry="calc" type="button"><span class="tab-emoji">🧮</span><span>試算</span></button>
+</nav>
+
+<!-- 2026-05-02 #2 Phase 2-4: app.js 拆 4 module + mini search index(00_)。
+     plain script,共享 window scope,依賴順序固定:search → state → data → render → main。
+     ?v= cache-bust:JS 改動時與 DATA_VERSION 同步 bump,配合 _sync_data_version.py 自動。
+     設計文件:docs/_esm_split_plan.md -->
+<script src="static/js/00_search_index.js?v=2026-05-02x"></script>
+<script src="static/js/01_state.js?v=2026-05-02x"></script>
+<script src="static/js/02_data.js?v=2026-05-02x"></script>
+<script src="static/js/03_render.js?v=2026-05-02x"></script>
+<script src="static/js/04_main.js?v=2026-05-02x"></script>
+  <!-- ── GA4 自訂事件追蹤（完整版 2026-05-04）── -->
+  <script>
+  (function () {
+    function gev(name, params) {
+      if (typeof gtag === 'function') gtag('event', name, params);
+    }
+
+    // 1. 分頁切換（情境 / 條文庫 / 試算）
+    document.addEventListener('click', function (e) {
+      var btn = e.target.closest('[data-entry]');
+      if (btn) gev('tab_switch', { tab_name: btn.dataset.entry });
+    });
+
+    // 2. 情境卡片點擊
+    document.addEventListener('click', function (e) {
+      var card = e.target.closest('#sc-list .sc-card, #sc-list [data-scenario]');
+      if (card) {
+        var title = card.querySelector('.sc-title, h3, h2');
+        gev('scenario_click', { scenario_title: title ? title.textContent.trim() : '(unknown)' });
+      }
+    });
+
+    // 3. 條文庫卡片點擊（開啟 Drawer）
+    document.addEventListener('click', function (e) {
+      var card = e.target.closest('#grid .card, #grid [data-id]');
+      if (card) {
+        gev('library_card_click', {
+          card_id: card.dataset.id || '',
+          card_title: (card.querySelector('.card-title, h3, h2') || {}).textContent || ''
+        });
+      }
+    });
+
+    // 4. 搜尋（主搜尋 #q + 情境搜尋 #sc-q + ⌘K #cmdk-input）
+    ['q', 'sc-q', 'cmdk-input'].forEach(function (id) {
+      var el = document.getElementById(id);
+      if (!el) return;
+      var timer;
+      el.addEventListener('input', function () {
+        clearTimeout(timer);
+        var val = el.value.trim();
+        if (!val) return;
+        timer = setTimeout(function () {
+          gev('search_query', { search_term: val, search_source: id });
+        }, 800);
+      });
+    });
+
+    // 5. 複製條號
+    var btnCopy = document.getElementById('btn-copy');
+    if (btnCopy) btnCopy.addEventListener('click', function () {
+      var meta = document.getElementById('d-meta');
+      gev('copy_card_id', { card_id: meta ? meta.textContent.trim() : '' });
+    });
+
+    // 6. 點擊原始出處
+    var btnSource = document.getElementById('btn-source');
+    if (btnSource) btnSource.addEventListener('click', function () {
+      var title = document.getElementById('d-title');
+      gev('open_source_link', { card_title: title ? title.textContent.trim() : '' });
+    });
+
+    // 7. 抽屜開啟 / 關閉
+    var drawer = document.getElementById('drawer');
+    if (drawer) {
+      new MutationObserver(function (mutations) {
+        mutations.forEach(function (m) {
+          if (m.attributeName === 'aria-hidden') {
+            var isOpen = drawer.getAttribute('aria-hidden') === 'false';
+            var title = document.getElementById('d-title');
+            gev(isOpen ? 'drawer_open' : 'drawer_close',
+              isOpen ? { card_title: title ? title.textContent.trim() : '' } : {});
+          }
+        });
+      }).observe(drawer, { attributes: true });
+    }
+
+    // 8. 抽屜翻頁（上一張 / 下一張）
+    ['btn-prev', 'btn-next'].forEach(function (id) {
+      var btn = document.getElementById(id);
+      if (btn) btn.addEventListener('click', function () {
+        gev('drawer_nav', { direction: id === 'btn-prev' ? 'prev' : 'next' });
+      });
+    });
+
+    // 9. 加入比較 / 開啟並排比較
+    var btnAddCompare = document.getElementById('btn-add-compare');
+    if (btnAddCompare) btnAddCompare.addEventListener('click', function () {
+      var title = document.getElementById('d-title');
+      gev('compare_add', { card_title: title ? title.textContent.trim() : '' });
+    });
+    var btnShowCompare = document.getElementById('btn-show-compare');
+    if (btnShowCompare) btnShowCompare.addEventListener('click', function () {
+      gev('compare_show', {});
+    });
+
+    // 10. ⌘K 面板開啟
+    var cmdkOverlay = document.getElementById('cmdk-overlay');
+    if (cmdkOverlay) {
+      new MutationObserver(function () {
+        if (cmdkOverlay.getAttribute('aria-hidden') === 'false') gev('cmdk_open', {});
+      }).observe(cmdkOverlay, { attributes: true });
+    }
+
+    // 11. 篩選 chip 點擊（條文庫 + 情境）
+    document.addEventListener('click', function (e) {
+      var chip = e.target.closest(
+        '#lib-parent-row .chip, #lib-type-row .chip, #lib-expense-row .chip, #lib-tag-row .chip,' +
+        '#sc-parent-chips .chip, #sc-expense-chips .chip'
+      );
+      if (chip) {
+        var row = chip.closest('[id]');
+        gev('filter_chip_click', {
+          chip_label: chip.textContent.trim(),
+          chip_row: row ? row.id : ''
+        });
+      }
+    });
+
+    // 12. 試算表互動
+    var calcGrid = document.getElementById('calc-grid');
+    if (calcGrid) {
+      calcGrid.addEventListener('change', function (e) {
+        var el = e.target;
+        if (el.tagName === 'SELECT' || el.tagName === 'INPUT') {
+          gev('calc_interact', {
+            field_name: el.name || el.id || el.placeholder || '',
+            field_value: el.value
+          });
+        }
+      });
+    }
+
+    // 13. 抽屜捲動深度（25% / 50% / 75% / 100%）
+    var drawerBody = document.getElementById('d-body');
+    if (drawerBody) {
+      var depthFired = {};
+      drawerBody.addEventListener('scroll', function () {
+        var pct = drawerBody.scrollTop / (drawerBody.scrollHeight - drawerBody.clientHeight);
+        [0.25, 0.5, 0.75, 1].forEach(function (t) {
+          var key = Math.round(t * 100) + '%';
+          if (!depthFired[key] && pct >= t) {
+            depthFired[key] = true;
+            gev('drawer_scroll_depth', { depth: key });
+          }
+        });
+      });
+      if (drawer) {
+        new MutationObserver(function () {
+          if (drawer.getAttribute('aria-hidden') === 'false') depthFired = {};
+        }).observe(drawer, { attributes: true });
+      }
+    }
+
+  })();
+  </script>
+
+</body>
+</html>
