@@ -950,7 +950,8 @@
             "refs": [
               "A-國內旅費-005",
               "D-國內旅費-009"
-            ]
+            ],
+            "redirect_scenario": "transport-choice-overview"
           },
           "C4": {
             "title": "依實際搭乘交通工具覈實報支",
@@ -1339,7 +1340,8 @@
             "refs": [
               "A-國內旅費-002",
               "B-國內旅費-001"
-            ]
+            ],
+            "redirect_scenario": "overnight"
           }
         }
       },
@@ -1563,7 +1565,8 @@
             "note": "依 C-國內旅費-167 函釋,受訓人員之住宿費補助以訓練機構未提供必要住宿(含路程及訓練期間假日)時,始得申請補助。",
             "refs": [
               "C-國內旅費-167"
-            ]
+            ],
+            "redirect_scenario": "overnight"
           },
           "C3": {
             "title": "結訓當日未供宿由服務機關核給",
@@ -1580,7 +1583,8 @@
             "refs": [
               "A-國內旅費-003",
               "C-國內旅費-083"
-            ]
+            ],
+            "redirect_scenario": "day-trip"
           }
         }
       }
@@ -1657,7 +1661,8 @@
               "A-國內旅費-005",
               "A-國內旅費-003",
               "D-國內旅費-002"
-            ]
+            ],
+            "redirect_scenario": "overnight"
           },
           "C2": {
             "title": "以機關所在地至出差地交通費為上限",
@@ -1675,7 +1680,8 @@
             "refs": [
               "A-國內旅費-005",
               "A-國內旅費-003"
-            ]
+            ],
+            "redirect_scenario": "overnight"
           },
           "C4": {
             "title": "可改報居住地至出差地之交通費",
@@ -1822,7 +1828,8 @@
             "refs": [
               "D-國內旅費-003",
               "A-國內旅費-005"
-            ]
+            ],
+            "redirect_scenario": "overnight"
           }
         }
       }
@@ -1915,7 +1922,8 @@
             "refs": [
               "D-國內旅費-007",
               "A-國內旅費-005"
-            ]
+            ],
+            "redirect_scenario": "transport-choice-overview"
           },
           "C3": {
             "title": "請先取得機關就個案之核定",
@@ -1996,7 +2004,8 @@
             "refs": [
               "D-國內旅費-008",
               "A-國內旅費-005"
-            ]
+            ],
+            "redirect_scenario": "day-trip"
           },
           "C2": {
             "title": "送機關核處後辦理",
@@ -2260,7 +2269,8 @@
             "refs": [
               "D-國內旅費-006",
               "A-國內旅費-005"
-            ]
+            ],
+            "redirect_scenario": "transport-choice-overview"
           }
         }
       }
@@ -2340,7 +2350,8 @@
             "refs": [
               "D-國內旅費-011",
               "A-國內旅費-005"
-            ]
+            ],
+            "redirect_scenario": "self-drive"
           },
           "C2B": {
             "title": "出差人自租機車 — 比照自駕每公里 2 元",

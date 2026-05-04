@@ -1608,6 +1608,13 @@ function getRateTableNode(id) {
   return DATA.find(d => d.id === id);
 }
 
+// rate_table 儲存格可能是 string 或 {v, multiline, colspan} 物件,統一取字串值
+function _cellStr(cell) {
+  if (cell == null) return '';
+  if (typeof cell === 'object') return String(cell.v ?? '').replace(/\n/g, ' / ');
+  return String(cell);
+}
+
 function renderCalc() {
   const $g = document.getElementById('calc-grid');
   if (!$g) return;
@@ -1627,9 +1634,9 @@ function renderCalc() {
           rows.push({
             label: `${region} · ${r[1]} · ${r[2]}`,
             shortLabel: `${r[1]} · ${r[2]}`,
-            value: r[3],
-            country: r[1],
-            city: r[2],
+            value: _cellStr(r[3]),
+            country: _cellStr(r[1]),
+            city: _cellStr(r[2]),
             sourceId: 'B-國外旅費-003',
             unit: global.rateTable.unit || '美元',
           });
@@ -1641,10 +1648,10 @@ function renderCalc() {
     for (const r of mainland.rateTable.rows) {
       rows.push({
         label: `大陸港澳 · ${r[1]}`,
-        shortLabel: r[1],
-        value: r[2],
+        shortLabel: _cellStr(r[1]),
+        value: _cellStr(r[2]),
         country: '大陸港澳',
-        city: r[1],
+        city: _cellStr(r[1]),
         sourceId: 'B-國外旅費-002',
         unit: mainland.rateTable.unit || '美元',
       });
