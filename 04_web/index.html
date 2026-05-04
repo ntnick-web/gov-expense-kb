@@ -4,6 +4,17 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>核銷 Let's go!</title>
+<!-- Google tag (gtag.js) — 盡早載入以準確計算 bounce rate / session -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-1LTQGY50L2"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-1LTQGY50L2', {
+    'anonymize_ip': true,
+    'cookie_flags': 'SameSite=None;Secure'
+  });
+</script>
 <script>
   /* 資料 API 端點：核心資料(nodes/scenarios)從 CF Workers 取得，而非直接讀靜態 JSON。
      本機開發時保持 null，前端自動 fallback 到靜態 JSON。 */
@@ -20,14 +31,6 @@
   })();
 </script>
 <link rel="stylesheet" href="static/style.css">
-<!-- Google tag (gtag.js) -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-1LTQGY50L2"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-  gtag('config', 'G-1LTQGY50L2');
-</script>
 </head>
 <body>
 
@@ -48,20 +51,20 @@
 </div>
 
 <div class="app">
+  <!-- ───── 桌面 topnav(品牌 + 3 tab),移到 main 外使其全寬 sticky)───── -->
+  <header class="topnav">
+    <button class="topnav-brand" id="brand-home" title="回首頁">
+      <span class="brand-mark">支</span>
+      <span class="brand-text-h">核銷 <span style="color:var(--brand)">Let's go!</span></span>
+    </button>
+    <nav class="topnav-tabs">
+      <button class="topnav-tab" data-entry="scenarios"><span>🧭</span> 情境檢索</button>
+      <button class="topnav-tab" data-entry="library"><span>📑</span> 條文庫</button>
+      <button class="topnav-tab" data-entry="calc"><span>🧮</span> 試算表</button>
+    </nav>
+  </header>
   <!-- ───── Main ───── -->
   <main class="main">
-    <!-- ───── 桌面 topbar nav(2026-04-30 起取代 sidebar)───── -->
-    <header class="topnav">
-      <button class="topnav-brand" id="brand-home" title="回首頁">
-        <span class="brand-mark">支</span>
-        <span class="brand-text-h">核銷 <span style="color:var(--brand)">Let's go!</span></span>
-      </button>
-      <nav class="topnav-tabs">
-        <button class="topnav-tab" data-entry="scenarios"><span>🧭</span> 情境檢索</button>
-        <button class="topnav-tab" data-entry="library"><span>📑</span> 條文庫</button>
-        <button class="topnav-tab" data-entry="calc"><span>🧮</span> 試算表</button>
-      </nav>
-    </header>
     <div class="topbar">
       <label class="search" for="q">
         <svg class="icon" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="m20 20-3-3"/></svg>
@@ -267,6 +270,10 @@
   <button class="mobile-tab" data-entry="library" type="button"><span class="tab-emoji">📑</span><span>條文庫</span></button>
   <button class="mobile-tab" data-entry="calc" type="button"><span class="tab-emoji">🧮</span><span>試算</span></button>
 </nav>
+
+<!-- Cloudflare Web Analytics — 無 cookie / GDPR 友善,補 GA4 拒絕 cookie 缺口 -->
+<script defer src="https://static.cloudflareinsights.com/beacon.min.js"
+  data-cf-beacon='{"token":"fd2a519ea4a348eda9d77bcfa08727f8"}'></script>
 
 <!-- 2026-05-02 #2 Phase 2-4: app.js 拆 4 module + mini search index(00_)。
      plain script,共享 window scope,依賴順序固定:search → state → data → render → main。

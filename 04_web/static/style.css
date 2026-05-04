@@ -106,7 +106,9 @@
   /* ───── 桌面 topnav(brand + 3 tab)─────  */
   .topnav {
     display: flex; align-items: center; gap: 24px;
-    padding: 12px 24px; border-bottom: 1px solid var(--line);
+    /* 大螢幕動態 padding:使 brand 左側與 .main 內容（含 32px padding）齊平 */
+    padding: 12px max(32px, calc((100% - 1400px) / 2 + 32px));
+    border-bottom: 1px solid var(--line);
     background: var(--bg);
     position: sticky; top: 0; z-index: 30;
   }
@@ -248,7 +250,7 @@
   .nav-item.active .nav-count { color: var(--brand); opacity: .8; }
 
   /* ───── Main ───── */
-  .main { padding: 28px 32px 80px; max-width: 1400px; }
+  .main { padding: 28px 32px 80px; max-width: 1400px; margin: 0 auto; }
 @media (min-width: 1800px) { .main { max-width: 2200px; } }
   @media (max-width: 880px) { .main { padding: 16px 16px 80px; } }
 
