@@ -413,3 +413,16 @@ document.getElementById('lib-tag-row')?.addEventListener('click', function (e) {
   if (b && b.dataset.tag) ga4('filter_select', { filter_type: 'tag', filter_value: b.dataset.tag });
 });
 
+// 抽屜原始出處連結點擊（政府官方網站，代表使用者要去驗證法源，是「查到了」的強訊號）
+document.getElementById('d-body')?.addEventListener('click', function (e) {
+  const a = e.target.closest('a[href]');
+  if (!a) return;
+  const href = a.href || '';
+  const GOV_DOMAINS = ['dgbas.gov.tw', 'mofa.gov.tw', 'moj.gov.tw', 'lia-roc.org.tw', 'dgpa.gov.tw', 'moe.gov.tw'];
+  if (!GOV_DOMAINS.some(d => href.includes(d))) return;
+  const node = currentList?.[currentIdx];
+  try {
+    ga4('source_link_click', { item_id: node?.id || '', link_domain: new URL(href).hostname });
+  } catch (_) {}
+});
+

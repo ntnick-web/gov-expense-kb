@@ -62,6 +62,8 @@ function renderCards() {
     grid.innerHTML = `<div class="cmp-empty" style="grid-column:1/-1;padding:60px 24px"><strong>沒有符合條件的條文</strong>清除過濾條件再試試</div>`;
     const $count = document.getElementById('grid-count');
     if ($count) $count.textContent = `0 筆`;
+    const _q = (filterState.query || '').trim();
+    if (_q.length >= 2 && typeof ga4 === 'function') ga4('search_no_results', { search_term: _q });
     return;
   }
   grid.innerHTML = '';
