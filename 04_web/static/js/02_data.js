@@ -176,6 +176,8 @@ function filteredData() {
   for (const d of DATA) {
     // 2026-05-02 #24:bigram 候選預過濾(query mode 下大幅縮小迴圈)
     if (candidateIds !== null && !candidateIds.has(d.id)) continue;
+    // 只顯示已確認上線的母題(PARENTS);其他母題(國外專家/教育部專章等)全數隱藏
+    if (!PARENTS.includes(d.cat)) continue;
     // 已廢止預設隱藏,但有 effective_period 的歷史費率表例外保留
     if (!filterState.showObsolete && d.status === '已廢止' && !d.effectivePeriod) continue;
     if (filterState.parent && d.cat !== filterState.parent) continue;
@@ -249,6 +251,12 @@ function filteredData() {
       const ta = TYPE_ORDER[a.d.type] ?? 99;
       const tb = TYPE_ORDER[b.d.type] ?? 99;
       if (ta !== tb) return ta - tb;
+      // A 類:有條次(no)的條文優先於無條次的獨立文件,確保 group header 不重複
+      if (ta === 0) {
+        const na = a.d.no ? 0 : 1;
+        const nb = b.d.no ? 0 : 1;
+        if (na !== nb) return na - nb;
+      }
       const sa = a.d.sortOrder ?? Infinity;
       const sb = b.d.sortOrder ?? Infinity;
       if (sa !== sb) return sa - sb;

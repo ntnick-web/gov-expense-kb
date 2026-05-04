@@ -3,7 +3,9 @@
 
 /* ──────── render cards (chunked lazy-render) ──────── */
 const _LIB_CHUNK_SIZE = 30;
-let _libRenderedCount = 0;
+let _libDisplayList = [];  // interleaved: { kind:'header', label } | { kind:'card', data }
+let _libDisplayPos = 0;    // position in _libDisplayList
+let _libCardCount = 0;     // cards rendered so far (for sentinel progress text)
 let _libObserver = null;
 
 function _renderCardHtml(d, q) {
@@ -56,40 +58,138 @@ function renderCards() {
   currentList = filteredData();
   // 重置 lazy-render state
   if (_libObserver) { _libObserver.disconnect(); _libObserver = null; }
-  _libRenderedCount = 0;
+  _libDisplayPos = 0;
+  _libCardCount = 0;
+
+  // 建立 displayList：無搜尋/情境 filter 時在類別切換處插入群組節頭
+  const _qTrim = (filterState.query || '').trim();
+  if (!_qTrim && !filterState.scenario) {
+    _libDisplayList = [];
+
+    // 取得非 A 類卡的主要支出類別(依 EXPENSE_LAYER 順序首個命中)
+    const _getExp = (d) => {
+      const el = EXPENSE_LAYER[d.cat];
+      if (!el) return '程序與通則';
+      for (const exp of el) {
+        if (exp === '程序與通則') continue;
+        if (nodeMatchesExpense(d, exp)) return exp;
+      }
+      return '程序與通則';
+    };
+
+    // 預計算非 A 類的支出類別
+    const _expMap = new Map();
+    for (const d of currentList) {
+      if (d.id.split('-')[0] !== 'A') _expMap.set(d.id, _getExp(d));
+    }
+
+    // 重新排序:母題 → A 類優先(法規) → 非 A 類依支出類別順序 → 類型 → sortOrder
+    const _expOrd = (d) => {
+      const el = EXPENSE_LAYER[d.cat];
+      if (!el) return 99;
+      const i = el.indexOf(_expMap.get(d.id));
+      return i >= 0 ? i : 99;
+    };
+    const _sorted = [...currentList].sort((a, b) => {
+      const pa = PARENT_SORT_IDX[a.cat] ?? 99, pb = PARENT_SORT_IDX[b.cat] ?? 99;
+      if (pa !== pb) return pa - pb;
+      const ta = TYPE_ORDER[a.type] ?? 99, tb = TYPE_ORDER[b.type] ?? 99;
+      const aA = (ta === 0), bA = (tb === 0);
+      if (aA !== bA) return aA ? -1 : 1;           // A 類在非 A 類之前
+      if (aA) {
+        // 兩者皆 A:有條次先、再 sortOrder
+        const na = a.no ? 0 : 1, nb = b.no ? 0 : 1;
+        if (na !== nb) return na - nb;
+        const sa = a.sortOrder ?? Infinity, sb = b.sortOrder ?? Infinity;
+        if (sa !== sb) return sa - sb;
+        return (parseInt(a.id.split('-').pop(),10)||0) - (parseInt(b.id.split('-').pop(),10)||0);
+      }
+      // 兩者皆非 A:支出類別順序 → 類型 → sortOrder
+      const ea = _expOrd(a), eb = _expOrd(b);
+      if (ea !== eb) return ea - eb;
+      if (ta !== tb) return ta - tb;
+      const sa = a.sortOrder ?? Infinity, sb = b.sortOrder ?? Infinity;
+      if (sa !== sb) return sa - sb;
+      return (parseInt(a.id.split('-').pop(),10)||0) - (parseInt(b.id.split('-').pop(),10)||0);
+    });
+    currentList = _sorted;   // 同步更新,使抽屜 prev/next 與畫面順序一致
+
+    // 預計算各群組卡片數(A 類 key: cat|A|subKey;其他 key: cat|exp)
+    const _groupCounts = new Map();
+    for (const d of _sorted) {
+      const _tp = d.id.split('-')[0];
+      const gk = _tp === 'A'
+        ? `${d.cat}|A|${d.no ? 'main' : d.id}`
+        : `${d.cat}|${_expMap.get(d.id)}`;
+      _groupCounts.set(gk, (_groupCounts.get(gk) || 0) + 1);
+    }
+
+    // 建立 displayList
+    let _lastKey = '';
+    for (const d of _sorted) {
+      const _tp = d.id.split('-')[0];
+      let _key;
+      if (_tp === 'A') {
+        const _subKey = d.no ? 'main' : d.id;
+        _key = `${d.cat}|A|${_subKey}`;
+        if (_key !== _lastKey) {
+          _lastKey = _key;
+          const _label = (d.no && PARENT_LAW[d.cat])
+            ? `${d.cat} · 核心法規 ─ ${PARENT_LAW[d.cat].full}`
+            : `${d.cat} · 核心法規 ─ ${d.title}`;
+          _libDisplayList.push({ kind: 'header', label: _label, count: _groupCounts.get(_key) || 0 });
+        }
+      } else {
+        const _exp = _expMap.get(d.id);
+        _key = `${d.cat}|${_exp}`;
+        if (_key !== _lastKey) {
+          _lastKey = _key;
+          _libDisplayList.push({ kind: 'header', label: `${d.cat} · ${_exp}`, count: _groupCounts.get(_key) || 0 });
+        }
+      }
+      _libDisplayList.push({ kind: 'card', data: d });
+    }
+  } else {
+    _libDisplayList = currentList.map(d => ({ kind: 'card', data: d }));
+  }
 
   if (currentList.length === 0) {
     grid.innerHTML = `<div class="cmp-empty" style="grid-column:1/-1;padding:60px 24px"><strong>沒有符合條件的條文</strong>清除過濾條件再試試</div>`;
-    const $count = document.getElementById('grid-count');
-    if ($count) $count.textContent = `0 筆`;
     const _q = (filterState.query || '').trim();
     if (_q.length >= 2 && typeof ga4 === 'function') ga4('search_no_results', { search_term: _q });
     return;
   }
   grid.innerHTML = '';
   appendLibraryChunk();
-  // 計數
-  const $count = document.getElementById('grid-count');
-  if ($count) $count.textContent = `${currentList.length} 筆`;
 }
 
 function appendLibraryChunk() {
-  if (_libRenderedCount >= currentList.length) return;
-  const start = _libRenderedCount;
-  const end = Math.min(start + _LIB_CHUNK_SIZE, currentList.length);
+  if (_libDisplayPos >= _libDisplayList.length) return;
   const q = (filterState.query || '').trim();
   // 移除舊 sentinel 再 append
   grid.querySelector('.lazy-sentinel')?.remove();
-  const html = currentList.slice(start, end).map(d => _renderCardHtml(d, q)).join('');
-  grid.insertAdjacentHTML('beforeend', html);
-  _libRenderedCount = end;
+  let cardsThisChunk = 0;
+  const htmlParts = [];
+  while (_libDisplayPos < _libDisplayList.length && cardsThisChunk < _LIB_CHUNK_SIZE) {
+    const item = _libDisplayList[_libDisplayPos];
+    if (item.kind === 'header') {
+      const cntHtml = item.count != null ? `<span class="lib-group-count">${item.count}</span>` : '';
+      htmlParts.push(`<div class="lib-group-header"><span class="lib-group-label">${escapeHtml(item.label)}</span>${cntHtml}</div>`);
+    } else {
+      htmlParts.push(_renderCardHtml(item.data, q));
+      cardsThisChunk++;
+    }
+    _libDisplayPos++;
+  }
+  _libCardCount += cardsThisChunk;
+  grid.insertAdjacentHTML('beforeend', htmlParts.join(''));
 
   // 還有未 render 的就放 sentinel
-  if (_libRenderedCount < currentList.length) {
+  if (_libDisplayPos < _libDisplayList.length) {
     const sentinel = document.createElement('div');
     sentinel.className = 'lazy-sentinel';
     sentinel.style.gridColumn = '1/-1';
-    sentinel.innerHTML = `<button class="btn lazy-loadmore" type="button" style="width:100%;padding:14px;color:var(--ink-3);background:var(--surface-2);border:1px dashed var(--line-strong)">載入更多 ↓ <span style="opacity:.7;margin-left:6px">已顯示 ${_libRenderedCount} / ${currentList.length}</span></button>`;
+    sentinel.innerHTML = `<button class="btn lazy-loadmore" type="button" style="width:100%;padding:14px;color:var(--ink-3);background:var(--surface-2);border:1px dashed var(--line-strong)">載入更多 ↓ <span style="opacity:.7;margin-left:6px">已顯示 ${_libCardCount} / ${currentList.length}</span></button>`;
     grid.appendChild(sentinel);
     sentinel.querySelector('.lazy-loadmore').onclick = () => appendLibraryChunk();
     // IntersectionObserver 自動載入(scroll 接近 sentinel 時)
@@ -942,6 +1042,7 @@ function renderChips() {
   /* 第一排:母題 chips(國內旅費 / 國外旅費 / 支出憑證與結報)
      基準:忽略 parent filter 後其他條件下的命中,點擊即套用 filterState.parent */
   const passNonParent = (d) => {
+    if (!PARENTS.includes(d.cat)) return false;
     if (!filterState.showObsolete && d.status === '已廢止' && !d.effectivePeriod) return false;
     if (filterState.type && d.id.split('-')[0] !== filterState.type) return false;
     if (filterState.expense && !nodeMatchesExpense(d, filterState.expense)) return false;
@@ -979,6 +1080,7 @@ function renderChips() {
   /* 第二排:類別 chips(A 核心法規 / B 支出標準 / C 解釋函令 / D 問答集)
      基準:忽略 type filter 後其他條件下的命中,點擊即套用 filterState.type */
   const passNonType = (d) => {
+    if (!PARENTS.includes(d.cat)) return false;
     if (!filterState.showObsolete && d.status === '已廢止' && !d.effectivePeriod) return false;
     if (filterState.parent && d.cat !== filterState.parent) return false;
     if (filterState.expense && !nodeMatchesExpense(d, filterState.expense)) return false;
@@ -1019,6 +1121,7 @@ function renderChips() {
      scenario filter 用與 filteredData 相同的「primary 或 ≥2 tag」收緊邏輯,
      避免 chip count 與實際卡片數字不一致。*/
   const baseline = DATA.filter(d => {
+    if (!PARENTS.includes(d.cat)) return false;
     if (!filterState.showObsolete && d.status === '已廢止' && !d.effectivePeriod) return false;
     if (filterState.parent && d.cat !== filterState.parent) return false;
     // E類附屬資料不計入支出類別 chip 計數
@@ -1298,8 +1401,8 @@ function renderScenarioChips() {
     const p = s.parent || '其他';
     parentCount.set(p, (parentCount.get(p) || 0) + 1);
   }
-  // library-link chips：有條文但無情境的母題，點擊跳條文庫
-  const libLinkChips = PARENT_ORDER
+  // library-link chips：已確認上線的母題中，有條文但尚無情境的母題，點擊跳條文庫
+  const libLinkChips = PARENTS
     .filter(p => !parentCount.has(p) && !WIP_PARENTS.has(p))
     .map(p => {
       const cnt = DATA.filter(d => d.cat === p).length;
@@ -1397,6 +1500,8 @@ function renderScenarios() {
     // 2026-05-01 (P2):deprecated 卡(被整併入 root flow)從主清單隱藏;
     // 仍可透過 hash 深 link 或 root 卡的 sub_scenarios 進入。
     if (s.deprecated) return false;
+    // 只顯示已確認上線的母題
+    if (!PARENTS.includes(s.parent)) return false;
     if (!matchScenarioQuery(s, scenarioQuery)) return false;
     if (scenarioFilterParent && s.parent !== scenarioFilterParent) return false;
     if (scenarioFilterExpense && renameExpense(s.expense || '其他') !== scenarioFilterExpense) return false;
@@ -1906,11 +2011,17 @@ function openFlowModal(scenario) {
               </div>
             </div>
           ` : ''}
+          ${c.redirect_scenario ? (() => {
+            const tgt = SCENARIOS.find(s => s.id === c.redirect_scenario);
+            return tgt ? `<div style="margin-top:14px;padding-top:12px;border-top:1px dashed var(--brand-line)">
+              <button class="btn primary" data-flow-redirect="${c.redirect_scenario}" style="font-size:14px;width:100%;justify-content:center">→ 前往「${tgt.title}」條件問答</button>
+            </div>` : '';
+          })() : ''}
         </div>
         <div style="margin-top:14px;display:flex;gap:8px;flex-wrap:wrap">
           ${answered.length > 0 ? `<button class="btn" data-flow-back>← 上一步</button>` : ''}
           <button class="btn" data-flow-restart>↩ 重新開始</button>
-          <button class="btn primary" data-flow-close style="margin-left:auto">關閉</button>
+          <button class="btn" data-flow-close style="margin-left:auto">關閉</button>
         </div>`;
       }
     } else if (questionQid) {
@@ -1964,6 +2075,18 @@ function openFlowModal(scenario) {
     });
     $body.querySelectorAll('[data-flow-close]').forEach(b => {
       b.onclick = () => modal.classList.remove('show');
+    });
+    $body.querySelectorAll('[data-flow-redirect]').forEach(b => {
+      b.onclick = (e) => {
+        e.stopPropagation();
+        modal.classList.remove('show');
+        const targetId = b.dataset.flowRedirect;
+        const targetSc = SCENARIOS.find(s => s.id === targetId);
+        if (targetSc && targetSc.flow) {
+          // 直接接續目標情境的條件問答,不切換 view
+          setTimeout(() => openFlowModal(targetSc), 60);
+        }
+      };
     });
     // 鍵盤:← 觸發上一步;Esc 由 modal 既有監聽器處理
     if (!modal.dataset.kbWired) {

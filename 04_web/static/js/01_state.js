@@ -5,7 +5,7 @@
 let compareList = [];
 
 /* ──────── 真實資料載入 (586 nodes / 105 scenarios from 03_index/) ──────── */
-const DATA_VERSION = '2026-05-04a';
+const DATA_VERSION = '2026-05-04h';
 let DATA = [];                 // 對外用的卡片資料 (mapped from nodes.json)
 let NODES_BY_ID = new Map();   // id → original node (含 file_path 等)
 let INCOMING_EDGES = new Map();// id → [from1, from2, ...] 反向引用
@@ -20,6 +20,7 @@ const PARENT_LAW = {
   '國內旅費':       { full: '中央政府各機關員工國內出差旅費報支要點', short: '國內旅費要點' },
   '國外旅費':       { full: '國外出差旅費報支要點',                       short: '國外旅費要點' },
   '支出憑證與結報': { full: '政府支出憑證處理要點',                       short: '支出憑證處理要點' },
+  '酬勞費':         { full: '中央政府各機關學校出席費及稿費支給要點',     short: '出席費及稿費要點' },
 };
 // 類別代碼 → art (色點 + label)
 const CAT_ART = { A: 'travel', B: 'rate', C: 'fn', D: 'qa', E: 'annex' };

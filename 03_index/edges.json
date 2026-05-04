@@ -234,6 +234,18 @@
     "inferred": false
   },
   {
+    "from": "A-酬勞費-020",
+    "to": "A-酬勞費-003",
+    "relation": "cites",
+    "inferred": false
+  },
+  {
+    "from": "A-酬勞費-020",
+    "to": "A-酬勞費-009",
+    "relation": "cites",
+    "inferred": false
+  },
+  {
     "from": "A-酬勞費-001",
     "to": "A-酬勞費-014",
     "relation": "cites",
@@ -259,7 +271,7 @@
   },
   {
     "from": "A-酬勞費-003",
-    "to": "B-酬勞費-039",
+    "to": "A-酬勞費-020",
     "relation": "cites",
     "inferred": false
   },
@@ -331,7 +343,7 @@
   },
   {
     "from": "A-酬勞費-009",
-    "to": "B-酬勞費-039",
+    "to": "A-酬勞費-020",
     "relation": "cites",
     "inferred": false
   },
@@ -386,18 +398,6 @@
   {
     "from": "B-國外旅費-007",
     "to": "A-國外旅費-014",
-    "relation": "cites",
-    "inferred": false
-  },
-  {
-    "from": "B-酬勞費-039",
-    "to": "A-酬勞費-003",
-    "relation": "cites",
-    "inferred": false
-  },
-  {
-    "from": "B-酬勞費-039",
-    "to": "A-酬勞費-009",
     "relation": "cites",
     "inferred": false
   },
@@ -3069,6 +3069,30 @@
     "relation": "cites_inferred",
     "inferred": true,
     "matched": "第十條",
+    "cross_parent": false
+  },
+  {
+    "from": "C-國內旅費-277",
+    "to": "A-國內旅費-017",
+    "relation": "cites_inferred",
+    "inferred": true,
+    "matched": "第 17 條",
+    "cross_parent": false
+  },
+  {
+    "from": "C-國內旅費-279",
+    "to": "A-國內旅費-017",
+    "relation": "cites_inferred",
+    "inferred": true,
+    "matched": "第 17 點",
+    "cross_parent": false
+  },
+  {
+    "from": "C-國內旅費-284",
+    "to": "A-國內旅費-017",
+    "relation": "cites_inferred",
+    "inferred": true,
+    "matched": "第 17 點",
     "cross_parent": false
   },
   {
