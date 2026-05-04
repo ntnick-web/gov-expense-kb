@@ -249,6 +249,7 @@
 
   /* ───── Main ───── */
   .main { padding: 28px 32px 80px; max-width: 1400px; }
+@media (min-width: 1800px) { .main { max-width: 2200px; } }
   @media (max-width: 880px) { .main { padding: 16px 16px 80px; } }
 
   .topbar {
