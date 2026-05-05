@@ -1,33 +1,42 @@
 /**
- * data_worker.js — Cloudflare Worker：受保護資料 API
- *
- * 核心資料(nodes / scenarios)存於 KV，不直接暴露在 GitHub 靜態檔案。
- * 前端改為呼叫此 Worker，Worker 驗證 Origin 後才回傳資料。
+ * data_worker.js — Cloudflare Worker：受保護資料 API + License Key 多租戶驗證
  *
  * 路由:
- *   GET /data/nodes?v=XXX      — 回傳 nodes.json 全文（Origin 驗證）
- *   GET /data/scenarios?v=XXX  — 回傳 scenarios_manual.json（Origin 驗證）
+ *   GET /data/nodes?v=XXX      — 回傳 nodes.json（Origin 驗證 + License 驗證）
+ *   GET /data/scenarios?v=XXX  — 回傳 scenarios_manual.json（同上）
  *   GET /data/meta?v=XXX       — 回傳 _meta.json（公開，供 footer 顯示）
  *   POST /admin/upload         — 上傳資料到 KV（需 UPLOAD_TOKEN env）
  *
- * 部署步驟：見本檔底部「## 部署 SOP」
+ * License Key 邏輯:
+ *   - 請求帶 X-License-Key header → 查 KV: license_{key} → 取得 tenant config
+ *   - 無 key 或查無 → 套用 DEFAULT_CONFIG（公開版：4 主母題）
+ *   - 到期 → 降回 DEFAULT_CONFIG（不中斷服務，只是降級）
+ *   - 回傳 X-Tenant-Config header（base64 JSON）→ 前端動態設定 WIP_PARENTS
  *
  * Bindings（wrangler_data.toml 設定）:
  *   KV namespace: DATA_KV
  *   Env vars:     UPLOAD_TOKEN（上傳金鑰）、ALLOWED_ORIGIN（自訂允許 origin）
  */
 
+// ─── 公開版預設 config（無 key 或 key 查無時套用）────────────
+const DEFAULT_CONFIG = {
+  tenant_id: 'public',
+  visible_parents: ['支出憑證與結報', '國內旅費', '酬勞費', '國外旅費'],
+  org_specific_parents: [],
+  features: ['flow', 'comparison', 'calc', 'spotlight'],
+  expires_at: null,
+};
+
 // ─── 允許的前端 Origin ────────────────────────────────────────
 const ALLOWED_ORIGINS = new Set([
   'https://ntnick-web.github.io',
-  'https://gov-expense-kb.pages.dev',   // 若遷移到 CF Pages
-  'http://127.0.0.1:8765',              // 本地 dev
+  'https://gov-expense-kb.pages.dev',
+  'http://127.0.0.1:8765',
   'http://localhost:8765',
 ]);
 
 function isAllowedOrigin(origin, env) {
   if (ALLOWED_ORIGINS.has(origin)) return true;
-  // 支援從 env 追加自訂 origin（部署後彈性調整）
   if (env.ALLOWED_ORIGIN && origin === env.ALLOWED_ORIGIN) return true;
   return false;
 }
@@ -41,7 +50,8 @@ function corsHeaders(origin, env) {
   if (isAllowedOrigin(origin, env)) {
     h['Access-Control-Allow-Origin'] = origin;
     h['Access-Control-Allow-Methods'] = 'GET, POST, OPTIONS';
-    h['Access-Control-Allow-Headers'] = 'Content-Type, X-Upload-Token';
+    h['Access-Control-Allow-Headers'] = 'Content-Type, X-Upload-Token, X-License-Key';
+    h['Access-Control-Expose-Headers'] = 'X-Tenant-Config';
     h['Access-Control-Max-Age'] = '86400';
   }
   return h;
@@ -49,7 +59,6 @@ function corsHeaders(origin, env) {
 
 // ─── 來源驗證（核心保護）─────────────────────────────────────
 // Origin 標頭是瀏覽器自動加、無法被 JS 偽造。
-// curl/Python 可偽造 Origin，但配合 CF Bot Fight Mode 可擋住大多數自動化工具。
 function checkOrigin(request, env) {
   const origin = request.headers.get('Origin') || '';
   if (!isAllowedOrigin(origin, env)) {
@@ -59,6 +68,35 @@ function checkOrigin(request, env) {
     );
   }
   return null; // 通過
+}
+
+// ─── License Key 驗證 ─────────────────────────────────────────
+async function getLicenseConfig(key, env) {
+  if (!key || !env.DATA_KV) return DEFAULT_CONFIG;
+  try {
+    const raw = await env.DATA_KV.get('license_' + key, { type: 'text' });
+    if (!raw) return DEFAULT_CONFIG;
+    const config = JSON.parse(raw);
+    // 到期：降回公開版（不中斷服務）
+    if (config.expires_at && new Date(config.expires_at) < new Date()) {
+      return DEFAULT_CONFIG;
+    }
+    return config;
+  } catch (e) {
+    return DEFAULT_CONFIG;
+  }
+}
+
+// X-Tenant-Config header：base64 encode，前端 atob 解碼後動態調整 WIP_PARENTS
+function buildTenantConfigHeader(config) {
+  const payload = {
+    tenant_id: config.tenant_id || 'public',
+    visible_parents: config.visible_parents || DEFAULT_CONFIG.visible_parents,
+    org_specific_parents: config.org_specific_parents || [],
+    features: config.features || DEFAULT_CONFIG.features,
+    expires_at: config.expires_at || null,
+  };
+  return btoa(unescape(encodeURIComponent(JSON.stringify(payload))));
 }
 
 // ─── KV 讀取 helper ──────────────────────────────────────────
@@ -112,22 +150,34 @@ export default {
       if (request.method === 'GET' && url.pathname === '/data/nodes') {
         const denied = checkOrigin(request, env);
         if (denied) return denied;
+        const key = request.headers.get('X-License-Key') || '';
+        const config = await getLicenseConfig(key, env);
+        const tenantHeader = buildTenantConfigHeader(config);
         const result = await kvGet(env, 'nodes');
         if (result.error) {
           return new Response(JSON.stringify({ error: result.error }), { status: result.status, headers });
         }
-        return new Response(result.data, { status: 200, headers });
+        return new Response(result.data, {
+          status: 200,
+          headers: { ...headers, 'X-Tenant-Config': tenantHeader },
+        });
       }
 
       // ── GET /data/scenarios ───────────────────────────
       if (request.method === 'GET' && url.pathname === '/data/scenarios') {
         const denied = checkOrigin(request, env);
         if (denied) return denied;
+        const key = request.headers.get('X-License-Key') || '';
+        const config = await getLicenseConfig(key, env);
+        const tenantHeader = buildTenantConfigHeader(config);
         const result = await kvGet(env, 'scenarios');
         if (result.error) {
           return new Response(JSON.stringify({ error: result.error }), { status: result.status, headers });
         }
-        return new Response(result.data, { status: 200, headers });
+        return new Response(result.data, {
+          status: 200,
+          headers: { ...headers, 'X-Tenant-Config': tenantHeader },
+        });
       }
 
       // ── GET /data/meta（公開，供 footer 顯示節點數）──
@@ -156,49 +206,26 @@ export default {
 };
 
 /*
-## 部署 SOP（約 15 分鐘）
-
-### 前置
-1. 安裝 wrangler: npm install -g wrangler
-2. 登入: wrangler login
-
-### 建立 KV namespace
-wrangler kv:namespace create DATA_KV
-# 記下回傳的 id，填入 wrangler_data.toml 的 [[kv_namespaces]] id 欄位
+## 部署 SOP
 
 ### 部署 Worker
 wrangler deploy 06_workers/data_worker.js --config 06_workers/wrangler_data.toml
 
-### 設定環境變數
-wrangler secret put UPLOAD_TOKEN --config 06_workers/wrangler_data.toml
-# 輸入一組隨機長字串（如 openssl rand -hex 32 的輸出）
+### 建立三筆 License KV（執行一次）
+KV_ID="b06a21e042db46c38ae57ebf1225f430"
 
-### 上傳資料到 KV（每次 build 後執行）
-# 方式 A：使用 /admin/upload API（需 UPLOAD_TOKEN）
-curl -X POST https://gov-expense-data.YOUR_SUBDOMAIN.workers.dev/admin/upload \
-  -H "Content-Type: application/json" \
-  -H "X-Upload-Token: YOUR_UPLOAD_TOKEN" \
-  -d "{\"nodes\": $(cat 03_index/nodes.json), \"scenarios\": $(cat 04_web/data/scenarios_manual.json), \"meta\": $(cat 03_index/_meta.json)}"
+# 公開測試版（自己測試用，不公開宣傳）
+wrangler kv key put --namespace-id "$KV_ID" --remote "license_lk_TEST_2026" \
+  '{"tenant_id":"test","visible_parents":["支出憑證與結報","國內旅費","酬勞費","國外旅費","餐費","採購及履約","物品管理","其他支出","教育訓練","教育部專章","國科會專章"],"org_specific_parents":[],"features":["flow","comparison","calc","spotlight"],"expires_at":null}' \
+  --config 06_workers/wrangler_data.toml
 
-# 方式 B：直接用 wrangler KV CLI
-wrangler kv:key put --binding=DATA_KV nodes "$(cat 03_index/nodes.json)"
-wrangler kv:key put --binding=DATA_KV scenarios "$(cat 04_web/data/scenarios_manual.json)"
-wrangler kv:key put --binding=DATA_KV meta "$(cat 03_index/_meta.json)"
+# 國立成功大學
+wrangler kv key put --namespace-id "$KV_ID" --remote "license_lk_NCKU_2026" \
+  '{"tenant_id":"NCKU","tenant_name":"國立成功大學","visible_parents":["支出憑證與結報","國內旅費","酬勞費","國外旅費","餐費","採購及履約","物品管理","其他支出","教育訓練"],"org_specific_parents":["教育部專章","國科會專章"],"features":["flow","comparison","calc","spotlight","org_overlay"],"max_monthly_users":2000,"expires_at":"2027-06-30"}' \
+  --config 06_workers/wrangler_data.toml
 
-### 前端啟用 API 模式
-在 04_web/index.html 的 <head> 加入：
-  <script>window.DATA_API_BASE = 'https://gov-expense-data.YOUR_SUBDOMAIN.workers.dev';</script>
-
-### 從 GitHub repo 移除敏感 JSON（資料已在 KV，不再需要公開）
-git rm 03_index/nodes.json
-git rm 04_web/data/scenarios_manual.json
-git commit -m "security: 核心資料移至 CF Workers KV，不再公開於 GitHub"
-
-### 選項：移至 Cloudflare Pages（完整保護）
-可將整個 04_web/ 目錄部署到 Cloudflare Pages，獲得：
-  - Bot Fight Mode（免費）
-  - WAF 基礎規則（免費）
-  - 原生 Workers Integration
-部署方式：CF Dashboard → Pages → Create → Connect to Git → 選此 repo
-Build output: 04_web/   Build command: （空白，純靜態）
+### 上傳核心資料（每次 build 後執行）
+wrangler kv key put --namespace-id "$KV_ID" --remote "nodes"     --path "03_index/nodes.json"               --config 06_workers/wrangler_data.toml
+wrangler kv key put --namespace-id "$KV_ID" --remote "scenarios" --path "04_web/data/scenarios_manual.json"  --config 06_workers/wrangler_data.toml
+wrangler kv key put --namespace-id "$KV_ID" --remote "meta"      --path "03_index/_meta.json"               --config 06_workers/wrangler_data.toml
 */

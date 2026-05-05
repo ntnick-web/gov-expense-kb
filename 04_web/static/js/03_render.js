@@ -208,7 +208,7 @@ function appendLibraryChunk() {
 /* ──────── drawer (動態 fetch MD) ──────── */
 const drawer = document.getElementById("drawer");
 const scrim = document.getElementById("scrim");
-const MD_BASE = '../';
+const MD_BASE = (typeof window !== 'undefined' && window._FETCH_BASE) ? window._FETCH_BASE + '../' : '../';
 
 // 簡易 MD parser:把 H2/H3、表格、列表等基本格式轉 HTML
 function renderMarkdown(md) {

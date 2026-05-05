@@ -14,7 +14,7 @@ let SCENARIOS = [];
 // 母題 → 簡稱 (sidebar 用)
 const PARENTS = ['支出憑證與結報', '國內旅費', '酬勞費', '國外旅費', '餐費', '採購及履約', '物品管理', '其他支出', '教育訓練'];
 // 整備中母題:chip 顯示為灰色不可點按;卡片與情境全部隱藏
-const WIP_PARENTS = new Set(['餐費', '採購及履約', '物品管理', '其他支出', '教育訓練']);
+let WIP_PARENTS = new Set(['餐費', '採購及履約', '物品管理', '其他支出', '教育訓練']);
 // 母題 → 正式法規名稱 + 顯示用簡稱 (A 類條文卡片標題前綴)
 const PARENT_LAW = {
   '國內旅費':       { full: '中央政府各機關員工國內出差旅費報支要點', short: '國內旅費要點' },
@@ -58,23 +58,46 @@ let COUNTRY_NEIGHBORS = {};  // 未列載國家 → 比照鄰國中文主名 (co
 let SYNONYMS = [];       // [{canonical, aliases:[...]}, ...] (synonyms.json)
 let BASELINE_ATTACHMENTS = {};  // 情境共通標配憑證 (baseline_attachments.json) — 2026-05-01 加
 let SYNONYM_INDEX = new Map();  // 任一詞 → 該組所有詞 (含 canonical),供 expandSynonyms 用
+// 子目錄版 (test/ ncku/) 透過 window._FETCH_BASE = new URL('../', location.href).href 設定；
+// 主版本不設定，此值為空字串，所有相對路徑行為不變。
+const _BASE = (typeof window !== 'undefined' && window._FETCH_BASE) ? window._FETCH_BASE : '';
 async function loadAllData() {
   const v = '?v=' + DATA_VERSION;
-  // DATA_API_BASE：設定後改從 CF Workers API 取核心資料（nodes / scenarios）。
-  // 預設 null = 直接讀靜態 JSON（本地 dev 與 GitHub Pages 模式）。
-  // 部署後在 index.html <head> 加：<script>window.DATA_API_BASE='https://gov-expense-data.XXX.workers.dev';</script>
   const API = (typeof window !== 'undefined' && window.DATA_API_BASE) ? window.DATA_API_BASE : null;
-  const nodesUrl    = API ? API + '/data/nodes?v='     + DATA_VERSION : '../03_index/nodes.json' + v;
-  const scenariosUrl = API ? API + '/data/scenarios?v=' + DATA_VERSION : 'data/scenarios_manual.json' + v;
-  // 2026-05-01 (A1):auto 卡停用、舊 scenarios.json monolith 退役 — 情境視圖只載手寫 manual 卡。
+  const licenseKey = (typeof window !== 'undefined' && window.LICENSE_KEY) ? window.LICENSE_KEY : null;
+  const nodesUrl    = API ? API + '/data/nodes?v='     + DATA_VERSION : _BASE + '../03_index/nodes.json' + v;
+  const scenariosUrl = API ? API + '/data/scenarios?v=' + DATA_VERSION : _BASE + 'data/scenarios_manual.json' + v;
+  // License Key header（API 模式才帶）
+  const apiFetchOpts = licenseKey && API ? { headers: { 'X-License-Key': licenseKey } } : {};
+  // nodes 先取 Response 物件，以便讀取 X-Tenant-Config header 後再解析 body
+  const nodesResp = await (API ? fetch(nodesUrl, apiFetchOpts) : fetch(nodesUrl));
+  // 解析 X-Tenant-Config → 動態更新 WIP_PARENTS（API + license key 模式）
+  if (API && nodesResp.ok) {
+    const tcHeader = nodesResp.headers.get('X-Tenant-Config');
+    if (tcHeader) {
+      try {
+        const config = JSON.parse(atob(tcHeader));
+        const allAllowed = [
+          ...(config.visible_parents || []),
+          ...(config.org_specific_parents || []),
+        ];
+        WIP_PARENTS = new Set(PARENTS.filter(p => !allAllowed.includes(p)));
+        if (config.features) window.TENANT_FEATURES = config.features;
+        if (config.tenant_id) window.TENANT_ID = config.tenant_id;
+      } catch (e) {
+        console.warn('[License] Failed to parse X-Tenant-Config:', e);
+      }
+    }
+  }
+  // 2026-05-01 (A1):auto 卡停用；整備中母題情境一併隱藏
   const [nodes, edges, scnManual, aliases, neighbors, synonyms, baseline] = await Promise.all([
-    fetch(nodesUrl).then(r => r.json()),
-    fetch('../03_index/edges.json' + v).then(r => r.json()),
-    fetch(scenariosUrl).then(r => r.ok ? r.json() : null).catch(() => null),
-    fetch('data/city_aliases.json' + v).then(r => r.ok ? r.json() : { aliases: {} }).catch(() => ({ aliases: {} })),
-    fetch('data/country_neighbors.json' + v).then(r => r.ok ? r.json() : { neighbors: {} }).catch(() => ({ neighbors: {} })),
-    fetch('data/synonyms.json' + v).then(r => r.ok ? r.json() : { groups: [] }).catch(() => ({ groups: [] })),
-    fetch('data/baseline_attachments.json' + v).then(r => r.ok ? r.json() : { groups: {} }).catch(() => ({ groups: {} })),
+    nodesResp.json(),
+    fetch(_BASE + '../03_index/edges.json' + v).then(r => r.json()),
+    (API ? fetch(scenariosUrl, apiFetchOpts) : fetch(scenariosUrl)).then(r => r.ok ? r.json() : null).catch(() => null),
+    fetch(_BASE + 'data/city_aliases.json' + v).then(r => r.ok ? r.json() : { aliases: {} }).catch(() => ({ aliases: {} })),
+    fetch(_BASE + 'data/country_neighbors.json' + v).then(r => r.ok ? r.json() : { neighbors: {} }).catch(() => ({ neighbors: {} })),
+    fetch(_BASE + 'data/synonyms.json' + v).then(r => r.ok ? r.json() : { groups: [] }).catch(() => ({ groups: [] })),
+    fetch(_BASE + 'data/baseline_attachments.json' + v).then(r => r.ok ? r.json() : { groups: {} }).catch(() => ({ groups: {} })),
   ]);
   BASELINE_ATTACHMENTS = baseline.groups || {};
   CITY_ALIASES = aliases.aliases || {};
