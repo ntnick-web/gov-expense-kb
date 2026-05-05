@@ -12,9 +12,9 @@ let INCOMING_EDGES = new Map();// id → [from1, from2, ...] 反向引用
 let SCENARIOS = [];
 
 // 母題 → 簡稱 (sidebar 用)
-const PARENTS = ['支出憑證與結報', '國內旅費', '酬勞費', '國外旅費'];
-// 整備中母題:chip 顯示為灰色不可點按;卡片與情境全部隱藏（目前無整備中母題）
-const WIP_PARENTS = new Set();
+const PARENTS = ['支出憑證與結報', '國內旅費', '酬勞費', '國外旅費', '餐費', '採購及履約', '物品管理', '其他支出', '教育訓練'];
+// 整備中母題:chip 顯示為灰色不可點按;卡片與情境全部隱藏
+const WIP_PARENTS = new Set(['餐費', '採購及履約', '物品管理', '其他支出', '教育訓練']);
 // 母題 → 正式法規名稱 + 顯示用簡稱 (A 類條文卡片標題前綴)
 const PARENT_LAW = {
   '國內旅費':       { full: '中央政府各機關員工國內出差旅費報支要點', short: '國內旅費要點' },

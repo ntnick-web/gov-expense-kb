@@ -456,6 +456,12 @@
     "inferred": false
   },
   {
+    "from": "B-酬勞費-001",
+    "to": "A-酬勞費-019",
+    "relation": "cites",
+    "inferred": false
+  },
+  {
     "from": "C-國內旅費-021",
     "to": "A-國內旅費-003",
     "relation": "explains",
@@ -2784,264 +2790,6 @@
     "inferred": false
   },
   {
-    "from": "D-支出憑證與結報-033",
-    "to": "D-支出憑證與結報-035",
-    "relation": "answers",
-    "inferred": false
-  },
-  {
-    "from": "D-支出憑證與結報-033",
-    "to": "D-支出憑證與結報-036",
-    "relation": "answers",
-    "inferred": false
-  },
-  {
-    "from": "D-支出憑證與結報-033",
-    "to": "D-支出憑證與結報-037",
-    "relation": "answers",
-    "inferred": false
-  },
-  {
-    "from": "D-支出憑證與結報-033",
-    "to": "D-支出憑證與結報-038",
-    "relation": "answers",
-    "inferred": false
-  },
-  {
-    "from": "D-支出憑證與結報-033",
-    "to": "D-支出憑證與結報-039",
-    "relation": "answers",
-    "inferred": false
-  },
-  {
-    "from": "D-支出憑證與結報-033",
-    "to": "D-支出憑證與結報-040",
-    "relation": "answers",
-    "inferred": false
-  },
-  {
-    "from": "D-支出憑證與結報-033",
-    "to": "D-支出憑證與結報-041",
-    "relation": "answers",
-    "inferred": false
-  },
-  {
-    "from": "D-支出憑證與結報-033",
-    "to": "D-支出憑證與結報-042",
-    "relation": "answers",
-    "inferred": false
-  },
-  {
-    "from": "D-支出憑證與結報-033",
-    "to": "D-支出憑證與結報-043",
-    "relation": "answers",
-    "inferred": false
-  },
-  {
-    "from": "D-支出憑證與結報-033",
-    "to": "D-支出憑證與結報-044",
-    "relation": "answers",
-    "inferred": false
-  },
-  {
-    "from": "D-支出憑證與結報-033",
-    "to": "D-支出憑證與結報-045",
-    "relation": "answers",
-    "inferred": false
-  },
-  {
-    "from": "D-支出憑證與結報-033",
-    "to": "D-支出憑證與結報-046",
-    "relation": "answers",
-    "inferred": false
-  },
-  {
-    "from": "D-支出憑證與結報-033",
-    "to": "D-支出憑證與結報-047",
-    "relation": "answers",
-    "inferred": false
-  },
-  {
-    "from": "D-支出憑證與結報-033",
-    "to": "D-支出憑證與結報-048",
-    "relation": "answers",
-    "inferred": false
-  },
-  {
-    "from": "D-支出憑證與結報-033",
-    "to": "D-支出憑證與結報-049",
-    "relation": "answers",
-    "inferred": false
-  },
-  {
-    "from": "D-支出憑證與結報-033",
-    "to": "D-支出憑證與結報-050",
-    "relation": "answers",
-    "inferred": false
-  },
-  {
-    "from": "D-支出憑證與結報-033",
-    "to": "D-支出憑證與結報-051",
-    "relation": "answers",
-    "inferred": false
-  },
-  {
-    "from": "D-支出憑證與結報-033",
-    "to": "D-支出憑證與結報-053",
-    "relation": "answers",
-    "inferred": false
-  },
-  {
-    "from": "D-支出憑證與結報-033",
-    "to": "D-支出憑證與結報-054",
-    "relation": "answers",
-    "inferred": false
-  },
-  {
-    "from": "D-支出憑證與結報-033",
-    "to": "D-支出憑證與結報-055",
-    "relation": "answers",
-    "inferred": false
-  },
-  {
-    "from": "D-支出憑證與結報-033",
-    "to": "D-支出憑證與結報-056",
-    "relation": "answers",
-    "inferred": false
-  },
-  {
-    "from": "D-支出憑證與結報-033",
-    "to": "D-支出憑證與結報-057",
-    "relation": "answers",
-    "inferred": false
-  },
-  {
-    "from": "D-支出憑證與結報-033",
-    "to": "D-支出憑證與結報-058",
-    "relation": "answers",
-    "inferred": false
-  },
-  {
-    "from": "D-支出憑證與結報-033",
-    "to": "D-支出憑證與結報-059",
-    "relation": "answers",
-    "inferred": false
-  },
-  {
-    "from": "D-支出憑證與結報-033",
-    "to": "D-支出憑證與結報-060",
-    "relation": "answers",
-    "inferred": false
-  },
-  {
-    "from": "D-支出憑證與結報-033",
-    "to": "D-支出憑證與結報-061",
-    "relation": "answers",
-    "inferred": false
-  },
-  {
-    "from": "D-支出憑證與結報-033",
-    "to": "D-支出憑證與結報-062",
-    "relation": "answers",
-    "inferred": false
-  },
-  {
-    "from": "D-支出憑證與結報-033",
-    "to": "D-支出憑證與結報-063",
-    "relation": "answers",
-    "inferred": false
-  },
-  {
-    "from": "D-支出憑證與結報-033",
-    "to": "D-支出憑證與結報-064",
-    "relation": "answers",
-    "inferred": false
-  },
-  {
-    "from": "D-支出憑證與結報-033",
-    "to": "D-支出憑證與結報-065",
-    "relation": "answers",
-    "inferred": false
-  },
-  {
-    "from": "D-支出憑證與結報-033",
-    "to": "D-支出憑證與結報-066",
-    "relation": "answers",
-    "inferred": false
-  },
-  {
-    "from": "D-支出憑證與結報-033",
-    "to": "D-支出憑證與結報-067",
-    "relation": "answers",
-    "inferred": false
-  },
-  {
-    "from": "D-支出憑證與結報-033",
-    "to": "D-支出憑證與結報-068",
-    "relation": "answers",
-    "inferred": false
-  },
-  {
-    "from": "D-支出憑證與結報-033",
-    "to": "D-支出憑證與結報-069",
-    "relation": "answers",
-    "inferred": false
-  },
-  {
-    "from": "D-支出憑證與結報-033",
-    "to": "D-支出憑證與結報-070",
-    "relation": "answers",
-    "inferred": false
-  },
-  {
-    "from": "D-支出憑證與結報-033",
-    "to": "D-支出憑證與結報-071",
-    "relation": "answers",
-    "inferred": false
-  },
-  {
-    "from": "D-支出憑證與結報-033",
-    "to": "D-支出憑證與結報-072",
-    "relation": "answers",
-    "inferred": false
-  },
-  {
-    "from": "D-支出憑證與結報-033",
-    "to": "D-支出憑證與結報-073",
-    "relation": "answers",
-    "inferred": false
-  },
-  {
-    "from": "D-支出憑證與結報-033",
-    "to": "D-支出憑證與結報-074",
-    "relation": "answers",
-    "inferred": false
-  },
-  {
-    "from": "D-支出憑證與結報-033",
-    "to": "D-支出憑證與結報-075",
-    "relation": "answers",
-    "inferred": false
-  },
-  {
-    "from": "D-支出憑證與結報-033",
-    "to": "D-支出憑證與結報-076",
-    "relation": "answers",
-    "inferred": false
-  },
-  {
-    "from": "D-支出憑證與結報-033",
-    "to": "D-支出憑證與結報-077",
-    "relation": "answers",
-    "inferred": false
-  },
-  {
-    "from": "D-支出憑證與結報-033",
-    "to": "D-支出憑證與結報-078",
-    "relation": "answers",
-    "inferred": false
-  },
-  {
     "from": "D-支出憑證與結報-037",
     "to": "A-支出憑證與結報-002",
     "relation": "answers",
@@ -3276,14 +3024,6 @@
     "inferred": false
   },
   {
-    "from": "A-其他-001",
-    "to": "A-其他-002",
-    "relation": "cites_inferred",
-    "inferred": true,
-    "matched": "第二點",
-    "cross_parent": false
-  },
-  {
     "from": "A-國內旅費-018",
     "to": "A-國內旅費-004",
     "relation": "cites_inferred",
@@ -3361,6 +3101,22 @@
     "relation": "cites_inferred",
     "inferred": true,
     "matched": "第 17 點",
+    "cross_parent": false
+  },
+  {
+    "from": "C-國外旅費-186",
+    "to": "A-國外旅費-002",
+    "relation": "cites_inferred",
+    "inferred": true,
+    "matched": "第2點",
+    "cross_parent": false
+  },
+  {
+    "from": "C-國外旅費-186",
+    "to": "A-國外旅費-001",
+    "relation": "cites_inferred",
+    "inferred": true,
+    "matched": "第1點",
     "cross_parent": false
   },
   {
@@ -3562,13 +3318,5 @@
     "inferred": true,
     "matched": "第 15 點",
     "cross_parent": false
-  },
-  {
-    "from": "D-支出憑證與結報-029",
-    "to": "A-其他-002",
-    "relation": "cites_inferred",
-    "inferred": true,
-    "matched": "第 2 點",
-    "cross_parent": true
   }
 ]
