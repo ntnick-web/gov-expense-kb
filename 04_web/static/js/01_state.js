@@ -76,7 +76,7 @@ async function loadAllData() {
     const tcHeader = nodesResp.headers.get('X-Tenant-Config');
     if (tcHeader) {
       try {
-        const config = JSON.parse(atob(tcHeader));
+        const config = JSON.parse(decodeURIComponent(escape(atob(tcHeader))));
         const allAllowed = [
           ...(config.visible_parents || []),
           ...(config.org_specific_parents || []),
