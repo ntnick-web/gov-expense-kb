@@ -49,7 +49,17 @@
 **W4.7** — 刪 `scenarios_list.json`（已廢棄）、`_tmp_*.txt`；`.gitignore` 加 `_tmp_*.txt / json`；cache-bust → `2026-05-06c`
 
 **腳本現況**（gitignored）：45 .py 活躍腳本（W3 目標達成）；`_build_scenarios_manual.py` 現同時產 `scenarios_index.json`
-**待做**：W3.1 `_llm_batch_base.py` 基類；W4.1 rate_table 外部化；W4.4/W4.5 search_index → worker；W1.6 刪重複 PDF（最後）
+**待做**：W3.1 `_llm_batch_base.py` 基類；W4.4/W4.5 search_index → worker；W1.6 刪重複 PDF（最後）
+
+### 2026-05-07 — W4.1 rate_table 外部化（commits `f653a23`）
+
+**W4.1** — `_export_rate_tables.py --apply`：4 個大型 B 類國外旅費節點的 `rate_table.sections` 抽出至 `04_web/data/rates/` 目錄
+- B-國外旅費-003：68KB → 36KB（日支數額全球，551 rows）
+- B-國外旅費-004：45KB → 2.5KB（日支數額 114 年版，524 rows）  
+- B-國外旅費-006/007：各 21KB → 1.9KB（外交部綜合保險，各 730 rows）
+- `03_build_index.py` 新增 `_load_rate_table()` 支援 `rate_table_src` 指標 + 保留 `completeness` 區塊不被覆寫
+
+**待做**：W3.1 `_llm_batch_base.py` 基類；W4.4/W4.5 search_index → worker；W1.6 刪重複 PDF（最後）
 
 ### 2026-05-06 續做（b）— W2.1+W2.2 完成（commits `61b6a04`）
 
