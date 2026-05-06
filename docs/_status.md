@@ -27,14 +27,15 @@
 - **CI/CD**:GitHub Actions push to main 自動 7 步(build merged scenarios → MD validate → JSON Schema validate → audit → link check → build_index → sync DATA_VERSION → commit)
 - **#2 ESM 拆檔(完整)**:[04_web/index.html](../04_web/index.html) 從 5430 行 → **260 行**;JS 拆 [`04_web/static/js/`](../04_web/static/js/) 5 module(`00_search_index.js` / `01_state.js` / `02_data.js` / `03_render.js` / `04_main.js`);全部 plain script + `?v=` cache-bust,共享 window scope(無 ES module 的 import/export 改寫,設計取捨見 [docs/_esm_split_plan.md](_esm_split_plan.md))
 
-## 校對狀態（資料層真實情形，2026-05-06 補完）
+## 校對狀態（資料層真實情形，2026-05-06 更新）
 
-全部 1106 節點以 `review_level` 區分。本期健診後元資料補完進度（W2 後重評）：
+全部 1106 節點以 `review_level` 區分。本期健診後元資料補完進度（W2 完成後更新）：
 
-- **summary 空缺率**：71.7%（789/1101 active；W2.1 LLM batch 尚未跑）
-- **version=TODO 比例**：37.7%（415/1101 active；無可辨識日期，需人工）
+- **summary 空缺率**：0.18%（2/1101 active；A-酬勞費-006/007 為無內容 stub，達成 < 5% 目標）
+- **version=TODO 比例**：37.7%（415/1101 active；內文無可識別日期格式，需人工補充）
 - **無 reviewed 欄位筆數**：0（W2.3 backfill 完成）
 - **DATA_VERSION**：`2026-05-06c`（W4.2 scenarios lazy load 後更新）
+- **completeness 指標修正**：W2.7 原本誤用 frontmatter `summary:` 欄位，已修正為檢查 body `## 重點摘要` section（與 nodes.json 資料來源一致）
 
 ## 歷史摘要（按 session）
 
@@ -48,7 +49,17 @@
 **W4.7** — 刪 `scenarios_list.json`（已廢棄）、`_tmp_*.txt`；`.gitignore` 加 `_tmp_*.txt / json`；cache-bust → `2026-05-06c`
 
 **腳本現況**（gitignored）：45 .py 活躍腳本（W3 目標達成）；`_build_scenarios_manual.py` 現同時產 `scenarios_index.json`
-**待做**：W2.1 LLM batch summary（789 筆空缺）；W3.1 `_llm_batch_base.py` 基類；W4.1 rate_table 外部化；W4.4/W4.5 search_index → worker；W1.6 刪重複 PDF（最後）
+**待做**：W3.1 `_llm_batch_base.py` 基類；W4.1 rate_table 外部化；W4.4/W4.5 search_index → worker；W1.6 刪重複 PDF（最後）
+
+### 2026-05-06 續做（b）— W2.1+W2.2 完成（commits `61b6a04`）
+
+**W2.2** — `_infer_version.py --apply`：fix=0（415 筆 version=TODO 內文均無可辨識日期格式；script 確認無誤，空缺需人工補充）
+**W2.1** — `_fill_summary_v2.py --apply`：38 筆補 `## 重點摘要`（針對 C-酬勞費-040~072 等非標準標題結構）；summary vacancy **0.18%**（2/1101，達成 < 5% 目標）
+**completeness 指標修正** — W2.7 `_summary_vacant()` 誤用 frontmatter `summary:` 欄位（789 筆空缺為誤報）；修正為檢查 body `## 重點摘要` section，重跑後真實空缺 40→2
+**index 重建** — `03_build_index.py` 重跑，`search_index.json` + `_meta.json` 更新
+
+**腳本現況**（gitignored）：新增 `_fill_summary_v2.py`（非標準標題補摘要）、`_infer_version.py`（執行確認）
+**待做**：W3.1 `_llm_batch_base.py` 基類；W4.1 rate_table 外部化；W4.4/W4.5 search_index → worker；W1.6 刪重複 PDF（最後）
 
 ### 2026-05-01 新增酬勞費母題
 
