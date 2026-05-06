@@ -86,3 +86,5 @@ docs/_資料庫*報告_*.docx
 # wrangler CLI 快取
 .wrangler/
 06_workers/.wrangler/
+_tmp_*.txt
+_tmp_*.json

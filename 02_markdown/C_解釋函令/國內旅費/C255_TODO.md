@@ -2,7 +2,7 @@
 id: C-國內旅費-255
 type: 解釋函令
 parent: 國內旅費
-title: TODO
+title: 「國內出差旅費報支要點」第9點規定，「有
 tags:
 - 住宿費
 - 教育訓練費

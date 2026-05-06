@@ -1,0 +1,1561 @@
+{
+  "version": "2026-05-01",
+  "note": "Auto-generated lightweight index (no flow/caveats). 由 _build_scenarios_manual.py --apply 產出。",
+  "scenarios": [
+    {
+      "sub_scenarios": [
+        "day-trip",
+        "overnight",
+        "premium-class",
+        "self-drive",
+        "taxi",
+        "discount-ticket",
+        "change-transport",
+        "senior-premium",
+        "transport-substitute",
+        "car-rental",
+        "period-pass",
+        "from-home",
+        "advance-postpone",
+        "holiday-via-office",
+        "station-choice",
+        "holiday-temporary",
+        "necessary-distance",
+        "package-tour",
+        "incidental",
+        "training"
+      ],
+      "subtitle": "從派遣 → 行程 → 交通工具 → 住宿 → 雜費 → 結報的完整動線(整合下列子情境)",
+      "parent": "國內旅費",
+      "icon": "🗺️",
+      "id": "domestic-trip-overview",
+      "flow_root": true,
+      "expense": "通則與其他",
+      "tags": [
+        "公差派遣",
+        "出差行程",
+        "結報核銷"
+      ],
+      "title": "🧭 國內出差總覽",
+      "has_flow": false
+    },
+    {
+      "sub_scenarios": [
+        "premium-class",
+        "discount-ticket",
+        "senior-premium",
+        "self-drive",
+        "car-rental",
+        "period-pass",
+        "taxi",
+        "change-transport",
+        "transport-substitute",
+        "package-tour"
+      ],
+      "subtitle": "依使用情形決定:大眾運輸 / 自駕 / 計程車 / 套裝行程 / 變更工具",
+      "parent": "國內旅費",
+      "icon": "🚦",
+      "id": "transport-choice-overview",
+      "flow_root": true,
+      "expense": "交通費",
+      "tags": [
+        "交通費",
+        "報支上限",
+        "覈實報支"
+      ],
+      "title": "🚦 交通工具選擇總覽",
+      "has_flow": false
+    },
+    {
+      "subtitle": "不過夜,只報交通費 (高鐵/火車/開車)",
+      "parent": "國內旅費",
+      "icon": "🚆",
+      "id": "day-trip",
+      "expense": "交通費",
+      "tags": [
+        "交通費",
+        "報支上限",
+        "覈實報支"
+      ],
+      "title": "當日往返出差",
+      "has_flow": true
+    },
+    {
+      "sub_scenarios": [
+        "lodging-distance-60km",
+        "lodging-weekday-holiday",
+        "lodging-long-discount"
+      ],
+      "subtitle": "需報住宿費,平日 3,500 假日 4,500 上限",
+      "parent": "國內旅費",
+      "icon": "🏨",
+      "id": "overnight",
+      "flow_root": true,
+      "expense": "住宿費",
+      "tags": [
+        "住宿費",
+        "覈實報支"
+      ],
+      "title": "跨夜住宿",
+      "has_flow": true
+    },
+    {
+      "subtitle": "商務艙/車廂限制,部會首長以上才能搭",
+      "parent": "國內旅費",
+      "icon": "✈️",
+      "id": "premium-class",
+      "expense": "交通費",
+      "tags": [
+        "商務車廂",
+        "經濟艙",
+        "艙等",
+        "票根",
+        "購票證明"
+      ],
+      "title": "搭高鐵或飛機 (艙等)",
+      "has_flow": true
+    },
+    {
+      "subtitle": "汽車 3 元/公里、機車 2 元/公里,不得另報油料過路",
+      "parent": "國內旅費",
+      "icon": "🚗",
+      "id": "self-drive",
+      "expense": "交通費",
+      "tags": [
+        "自用汽車",
+        "機車",
+        "自駕租賃",
+        "必要路程",
+        "公里數"
+      ],
+      "title": "自駕汽機車出差",
+      "has_flow": true
+    },
+    {
+      "subtitle": "起訖點以機關所在地計算上限,實付覈實報支",
+      "parent": "國內旅費",
+      "icon": "🏠",
+      "id": "from-home",
+      "expense": "通則與其他",
+      "tags": [
+        "機關所在地",
+        "誠信原則"
+      ],
+      "title": "由居住地直接出發",
+      "has_flow": true
+    },
+    {
+      "subtitle": "由各機關自行核處公里數,可參考地圖軟體",
+      "parent": "國內旅費",
+      "icon": "📏",
+      "id": "necessary-distance",
+      "expense": "交通費",
+      "tags": [
+        "必要路程",
+        "公里數"
+      ],
+      "title": "必要路程怎麼算",
+      "has_flow": true
+    },
+    {
+      "subtitle": "上限內覈實報支,身分優惠仍可搭商務艙",
+      "parent": "國內旅費",
+      "icon": "🎟️",
+      "id": "discount-ticket",
+      "expense": "交通費",
+      "tags": [
+        "覈實報支",
+        "誠信原則",
+        "報支上限"
+      ],
+      "title": "早鳥票/優惠票/敬老票",
+      "has_flow": true
+    },
+    {
+      "subtitle": "奉准搭飛機可改高鐵,實付不超過上限即可",
+      "parent": "國內旅費",
+      "icon": "🔄",
+      "id": "change-transport",
+      "expense": "交通費",
+      "tags": [
+        "飛機",
+        "高鐵",
+        "覈實報支"
+      ],
+      "title": "改搭其他交通工具",
+      "has_flow": true
+    },
+    {
+      "subtitle": "公民營客運可達區原則不報,業務需要經核准始可",
+      "parent": "國內旅費",
+      "icon": "🚕",
+      "id": "taxi",
+      "expense": "交通費",
+      "tags": [
+        "計程車",
+        "公民營客運汽車",
+        "業務需要"
+      ],
+      "title": "計程車費能否報",
+      "has_flow": true
+    },
+    {
+      "subtitle": "不超過交通+住宿合計上限,檢據覈實報支",
+      "parent": "國內旅費",
+      "icon": "🎒",
+      "id": "package-tour",
+      "expense": "通則與其他",
+      "tags": [
+        "套裝行程",
+        "住宿費",
+        "交通費"
+      ],
+      "title": "套裝行程 (機+酒)",
+      "has_flow": true
+    },
+    {
+      "subtitle": "每日上限 400 元,各機關可另訂以公里/小時計支",
+      "parent": "國內旅費",
+      "icon": "🧾",
+      "id": "incidental",
+      "expense": "雜費",
+      "tags": [
+        "雜費"
+      ],
+      "title": "雜費怎麼報",
+      "has_flow": true
+    },
+    {
+      "subtitle": "依「派員參加國內各項訓練講習補助要點」",
+      "parent": "國內旅費",
+      "icon": "🎓",
+      "id": "training",
+      "expense": "通則與其他",
+      "tags": [
+        "教育訓練費",
+        "公差派遣"
+      ],
+      "title": "參加訓練/講習",
+      "has_flow": true
+    },
+    {
+      "subtitle": "個人因素改期,以原核定行程之交通費上限報支",
+      "parent": "國內旅費",
+      "icon": "⏱️",
+      "id": "advance-postpone",
+      "expense": "交通費",
+      "tags": [
+        "交通費",
+        "報支上限",
+        "出差行程"
+      ],
+      "title": "提前出發或延後返回",
+      "has_flow": true
+    },
+    {
+      "subtitle": "居住地→辦公室路段不得報支,以辦公室為起點計算",
+      "parent": "國內旅費",
+      "icon": "🏢",
+      "id": "holiday-via-office",
+      "expense": "交通費",
+      "tags": [
+        "交通費",
+        "必要路程"
+      ],
+      "title": "放假日經辦公室出發",
+      "has_flow": true
+    },
+    {
+      "subtitle": "機關鄰近多個站(臺北/南港),依事先核定行程或機關規定",
+      "parent": "國內旅費",
+      "icon": "🚉",
+      "id": "station-choice",
+      "expense": "交通費",
+      "tags": [
+        "交通費",
+        "必要路程",
+        "高鐵"
+      ],
+      "title": "鄰近多站點選擇",
+      "has_flow": true
+    },
+    {
+      "subtitle": "休假在外地臨時受命,視必要性可按實際出發地報支",
+      "parent": "國內旅費",
+      "icon": "🏖️",
+      "id": "holiday-temporary",
+      "expense": "交通費",
+      "tags": [
+        "交通費",
+        "必要路程",
+        "業務需要"
+      ],
+      "title": "休假期間臨時奉派",
+      "has_flow": true
+    },
+    {
+      "subtitle": "敬老/愛心票搭商務,優惠價未超經濟全票即覈實報支",
+      "parent": "國內旅費",
+      "icon": "🎟️",
+      "id": "senior-premium",
+      "expense": "交通費",
+      "tags": [
+        "交通費",
+        "高鐵",
+        "商務車廂",
+        "覈實報支"
+      ],
+      "title": "優惠票搭商務車廂",
+      "has_flow": true
+    },
+    {
+      "subtitle": "原核定機票改搭高鐵商務,不得超過原核定上限",
+      "parent": "國內旅費",
+      "icon": "🔁",
+      "id": "transport-substitute",
+      "expense": "交通費",
+      "tags": [
+        "交通費",
+        "報支上限",
+        "高鐵",
+        "機票",
+        "商務車廂"
+      ],
+      "title": "自行變更交通工具",
+      "has_flow": true
+    },
+    {
+      "subtitle": "比照自駕按公里計;機關名義租賃另依公務車輛作業要點",
+      "parent": "國內旅費",
+      "icon": "🚙",
+      "id": "car-rental",
+      "expense": "交通費",
+      "tags": [
+        "交通費",
+        "自駕租賃",
+        "租賃汽車",
+        "公里數"
+      ],
+      "title": "租賃汽機車報支",
+      "has_flow": true
+    },
+    {
+      "subtitle": "未達 60 公里須事前機關核准之業務需要",
+      "parent": "國內旅費",
+      "icon": "📍",
+      "id": "lodging-distance-60km",
+      "expense": "住宿費",
+      "tags": [
+        "住宿費",
+        "業務需要"
+      ],
+      "parent_scenario": "overnight",
+      "title": "住宿距離 60 公里",
+      "deprecated": true,
+      "deprecation_note": "本情境已整併入「跨夜住宿」決策樹的 distance question 分支(2026-05-01)",
+      "has_flow": false
+    },
+    {
+      "subtitle": "假日含放假日前一天,不含放假日最後一天",
+      "parent": "國內旅費",
+      "icon": "📆",
+      "id": "lodging-weekday-holiday",
+      "expense": "住宿費",
+      "tags": [
+        "住宿費"
+      ],
+      "parent_scenario": "overnight",
+      "title": "住宿費平假日認定",
+      "deprecated": true,
+      "deprecation_note": "本情境已整併入「跨夜住宿」決策樹的 weekday question 分支(2026-05-01)",
+      "has_flow": false
+    },
+    {
+      "subtitle": "同地超過 1 個月按 8 折、超過 2 個月按 7 折報支",
+      "parent": "國內旅費",
+      "icon": "🗓️",
+      "id": "lodging-long-discount",
+      "expense": "住宿費",
+      "tags": [
+        "住宿費",
+        "長期派駐",
+        "同一地點超過一個月"
+      ],
+      "parent_scenario": "overnight",
+      "title": "長期出差住宿折扣",
+      "deprecated": true,
+      "deprecation_note": "本情境已整併入「跨夜住宿」決策樹的 long_stay question 分支(2026-05-01)",
+      "has_flow": false
+    },
+    {
+      "subtitle": "按當次出差優待價或平均攤提金額,不超原上限",
+      "parent": "國內旅費",
+      "icon": "🎫",
+      "id": "period-pass",
+      "expense": "交通費",
+      "tags": [
+        "交通費",
+        "報支上限",
+        "覈實報支"
+      ],
+      "title": "使用個人定期票",
+      "has_flow": true
+    },
+    {
+      "sub_scenarios": [
+        "abroad-airfare",
+        "abroad-airfare-receipts",
+        "low-cost-carrier",
+        "abroad-living",
+        "abroad-lodging-over-cap",
+        "onboard-overnight-living",
+        "return-day-living-30",
+        "abroad-insurance",
+        "passport-photo-fee",
+        "abroad-meeting",
+        "registration-credit-card",
+        "abroad-incidental-receipts",
+        "abroad-taxi-classification",
+        "abroad-china",
+        "exchange-rate-no-receipt",
+        "foreign-receipt-translate",
+        "foreign-receipt-payee",
+        "international-date-line",
+        "abroad-incident",
+        "illness-delay-return"
+      ],
+      "subtitle": "派遣→艙等→生活費→保險→銷差,45 日內結報",
+      "parent": "國外旅費",
+      "icon": "🛫",
+      "id": "abroad-basic",
+      "flow_root": true,
+      "expense": "通則與其他",
+      "tags": [
+        "出差規定",
+        "結報核銷",
+        "保險費"
+      ],
+      "title": "出國公差完整流程",
+      "has_flow": false
+    },
+    {
+      "subtitle": "原則經濟艙;部會首長以上才可商務艙",
+      "parent": "國外旅費",
+      "icon": "💺",
+      "id": "abroad-airfare",
+      "expense": "交通費",
+      "tags": [
+        "機票",
+        "艙等"
+      ],
+      "title": "機票艙等與報支",
+      "has_flow": true
+    },
+    {
+      "subtitle": "依日支生活費表報支;超過 1 個月第 2 月起 8 折、超過 3 個月第 4 月起 7 折",
+      "parent": "國外旅費",
+      "icon": "🏨",
+      "id": "abroad-living",
+      "expense": "生活費",
+      "tags": [
+        "住宿費",
+        "日支生活費"
+      ],
+      "title": "國外住宿與生活費",
+      "has_flow": true
+    },
+    {
+      "subtitle": "平安保險 + 護照規費 + 簽證費實報實銷",
+      "parent": "國外旅費",
+      "icon": "📋",
+      "id": "abroad-insurance",
+      "expense": "保險費",
+      "tags": [
+        "保險費",
+        "簽證費",
+        "手續費"
+      ],
+      "title": "出國保險與護照簽證",
+      "has_flow": true
+    },
+    {
+      "subtitle": "代表政府出席須加報行政費,他方供宿須扣減",
+      "parent": "國外旅費",
+      "icon": "🌐",
+      "id": "abroad-meeting",
+      "expense": "行政費",
+      "tags": [
+        "行政費",
+        "禮品交際"
+      ],
+      "title": "國際會議出席",
+      "has_flow": true
+    },
+    {
+      "subtitle": "比照本要點辦理,生活費另由行政院定額",
+      "parent": "國外旅費",
+      "icon": "🏙️",
+      "id": "abroad-china",
+      "expense": "大陸港澳",
+      "tags": [
+        "大陸港澳"
+      ],
+      "title": "赴大陸/港澳出差",
+      "has_flow": true
+    },
+    {
+      "subtitle": "出差期間受刑、休職、停職等如何停發",
+      "parent": "國外旅費",
+      "icon": "⚠️",
+      "id": "abroad-incident",
+      "expense": "通則與其他",
+      "tags": [
+        "出差期間",
+        "休職"
+      ],
+      "title": "出差中受刑/重大變故",
+      "has_flow": true
+    },
+    {
+      "subtitle": "行程證明 + 付款證明,各項皆可用替代文件(依 A-國外-006 最新規定僅 2 項)",
+      "parent": "國外旅費",
+      "icon": "🛫",
+      "id": "abroad-airfare-receipts",
+      "expense": "交通費",
+      "tags": [
+        "機票",
+        "票根",
+        "購票證明",
+        "登機證"
+      ],
+      "title": "機票二項憑證齊備",
+      "has_flow": true
+    },
+    {
+      "subtitle": "機票內含項目(行李/餐飲/手續費)可併報;選位/毛毯等可選擇項目不予核銷;總額不得高於一般航空",
+      "parent": "國外旅費",
+      "icon": "🛬",
+      "id": "low-cost-carrier",
+      "expense": "交通費",
+      "tags": [
+        "機票",
+        "行李費",
+        "覈實報支"
+      ],
+      "title": "廉航附加費用",
+      "has_flow": true
+    },
+    {
+      "subtitle": "因本次公差衍生之必要支出,得與護照費併同報支",
+      "parent": "國外旅費",
+      "icon": "📷",
+      "id": "passport-photo-fee",
+      "expense": "手續費",
+      "tags": [
+        "出國手續費",
+        "護照",
+        "照片費"
+      ],
+      "title": "護照照片費",
+      "has_flow": true
+    },
+    {
+      "subtitle": "未提供結匯水單時,以奉派出差日前一日臺銀牌價為準",
+      "parent": "國外旅費",
+      "icon": "💱",
+      "id": "exchange-rate-no-receipt",
+      "expense": "通則與其他",
+      "tags": [
+        "匯率",
+        "結匯水單",
+        "原始憑證"
+      ],
+      "title": "匯率基準日(無水單)",
+      "has_flow": true
+    },
+    {
+      "subtitle": "非本國文或僅列代號者,經手人加註譯文",
+      "parent": "國外旅費",
+      "icon": "🈳",
+      "id": "foreign-receipt-translate",
+      "expense": "通則與其他",
+      "tags": [
+        "原始憑證",
+        "翻譯"
+      ],
+      "title": "外幣憑證品名翻譯",
+      "has_flow": true
+    },
+    {
+      "subtitle": "返國當日按起飛地生活費日支數額之 30% 限額報支",
+      "parent": "國外旅費",
+      "icon": "🛬",
+      "id": "return-day-living-30",
+      "expense": "生活費",
+      "tags": [
+        "日支生活費",
+        "返國"
+      ],
+      "title": "返國當日生活費 30%",
+      "has_flow": true
+    },
+    {
+      "subtitle": "主辦限定須以個人信用卡支付者,刷卡手續費可併報;費用 + 手續費合計不得超過該費目上限",
+      "parent": "國外旅費",
+      "icon": "💳",
+      "id": "registration-credit-card",
+      "expense": "手續費",
+      "tags": [
+        "出國手續費",
+        "報支上限",
+        "手續費",
+        "行政費",
+        "註冊費"
+      ],
+      "title": "信用卡手續費(可報 + 上限)",
+      "has_flow": true
+    },
+    {
+      "subtitle": "依 A-017 規定每日 1,100 元上限,須檢附原始單據覈實報支",
+      "parent": "國外旅費",
+      "icon": "🎁",
+      "id": "abroad-incidental-receipts",
+      "expense": "禮品交際及雜費",
+      "tags": [
+        "禮品交際",
+        "雜費",
+        "行政費",
+        "原始憑證",
+        "覈實報支"
+      ],
+      "title": "禮品雜費須檢據",
+      "has_flow": true
+    },
+    {
+      "subtitle": "歸入禮品交際及雜費,須具業務必要或節省說明",
+      "parent": "國外旅費",
+      "icon": "🚖",
+      "id": "abroad-taxi-classification",
+      "expense": "禮品交際及雜費",
+      "tags": [
+        "雜費",
+        "業務需要",
+        "覈實報支"
+      ],
+      "title": "計程車租車歸類",
+      "has_flow": true
+    },
+    {
+      "subtitle": "國際會議指定旅館或紅色警示地區可檢據覈實報支",
+      "parent": "國外旅費",
+      "icon": "🏨",
+      "id": "abroad-lodging-over-cap",
+      "expense": "生活費",
+      "tags": [
+        "住宿費",
+        "國際會議",
+        "紅色警示"
+      ],
+      "title": "住宿費超 70% 例外",
+      "has_flow": true
+    },
+    {
+      "subtitle": "旅費日期/時間一律按本國日期時間計算(駐外人員除外)",
+      "parent": "國外旅費",
+      "icon": "🌐",
+      "id": "international-date-line",
+      "expense": "通則與其他",
+      "tags": [
+        "出差行程",
+        "時間計算"
+      ],
+      "title": "國際換日線時間",
+      "has_flow": true
+    },
+    {
+      "subtitle": "在飛機過夜按供宿扣 70%,僅報膳食費及零用費(30%)",
+      "parent": "國外旅費",
+      "icon": "✈️",
+      "id": "onboard-overnight-living",
+      "expense": "生活費",
+      "tags": [
+        "日支生活費",
+        "供宿"
+      ],
+      "title": "飛機歇夜生活費",
+      "has_flow": true
+    },
+    {
+      "subtitle": "醫院證明或航班延誤證明 + 機關首長核准方可補發",
+      "parent": "國外旅費",
+      "icon": "🏥",
+      "id": "illness-delay-return",
+      "expense": "通則與其他",
+      "tags": [
+        "出差行程",
+        "業務需要"
+      ],
+      "title": "病故意外延遲返國",
+      "has_flow": true
+    },
+    {
+      "subtitle": "國外慣例可加註說明簽名;國內憑證須記明機關名稱/統編",
+      "parent": "國外旅費",
+      "icon": "🧾",
+      "id": "foreign-receipt-payee",
+      "expense": "通則與其他",
+      "tags": [
+        "原始憑證",
+        "買受人"
+      ],
+      "title": "國外收據買受人抬頭",
+      "has_flow": true
+    },
+    {
+      "sub_scenarios": [
+        "voucher-receipts",
+        "voucher-receipt",
+        "voucher-electronic",
+        "invoice-tax-id-missing",
+        "invoice-payee-wrong",
+        "agency-abbreviation",
+        "e-invoice-tax-id-missing",
+        "e-invoice-no-stamp",
+        "online-tx-no-receipt",
+        "item-name-code-only",
+        "amount-correction",
+        "stamp-tax-missing",
+        "handwritten-correction",
+        "receipt-no-quantity",
+        "voucher-foreign",
+        "foreign-receipt-no-payee",
+        "voucher-lost"
+      ],
+      "subtitle": "統一發票、收據、證明文件之定義與要件",
+      "parent": "支出憑證與結報",
+      "icon": "🧾",
+      "id": "voucher-types",
+      "flow_root": true,
+      "expense": "通則與其他",
+      "tags": [
+        "原始憑證",
+        "支出憑證"
+      ],
+      "title": "哪些算支出憑證",
+      "has_flow": false
+    },
+    {
+      "subtitle": "個人收據、寺廟感謝狀、紅白帖等非常規憑證如何取信",
+      "parent": "支出憑證與結報",
+      "icon": "📑",
+      "id": "voucher-receipt",
+      "expense": "收據與發票",
+      "tags": [
+        "原始憑證"
+      ],
+      "title": "特殊收據(個人/寺廟/紅白帖)",
+      "has_flow": true
+    },
+    {
+      "subtitle": "電子發票證明聯、網路下載列印之認列",
+      "parent": "支出憑證與結報",
+      "icon": "💻",
+      "id": "voucher-electronic",
+      "expense": "收據與發票",
+      "tags": [
+        "電子憑證",
+        "原始憑證"
+      ],
+      "title": "電子發票/網路交易",
+      "has_flow": true
+    },
+    {
+      "sub_scenarios": [
+        "procurement-detail",
+        "personal-credit-card-payment"
+      ],
+      "subtitle": "三聯式發票、多項採購、決標履約之憑證要求",
+      "parent": "支出憑證與結報",
+      "icon": "🛒",
+      "id": "voucher-procurement",
+      "flow_root": true,
+      "expense": "採購結報",
+      "tags": [
+        "採購",
+        "原始憑證"
+      ],
+      "title": "採購案結報",
+      "has_flow": true
+    },
+    {
+      "subtitle": "出席費、講座鐘點費、津貼以匯款給付之憑證",
+      "parent": "支出憑證與結報",
+      "icon": "💰",
+      "id": "voucher-payment",
+      "expense": "酬勞與會議",
+      "tags": [
+        "出席費",
+        "鐘點費"
+      ],
+      "title": "員工待遇/匯款支付",
+      "has_flow": true
+    },
+    {
+      "subtitle": "原本同性質、同期間之費用如何拆分結報",
+      "parent": "支出憑證與結報",
+      "icon": "🔀",
+      "id": "voucher-shared",
+      "expense": "補助與分攤",
+      "tags": [
+        "補助核定"
+      ],
+      "title": "經費分攤(數計畫/數機關)",
+      "has_flow": true
+    },
+    {
+      "subtitle": "遺失或須他用時補正、副本及切結之程序",
+      "parent": "支出憑證與結報",
+      "icon": "🔍",
+      "id": "voucher-lost",
+      "expense": "系統化結報",
+      "tags": [
+        "原始憑證",
+        "憑證存管"
+      ],
+      "title": "憑證遺失處理",
+      "has_flow": true
+    },
+    {
+      "subtitle": "國外或大陸地區交易之單據與翻譯要件",
+      "parent": "支出憑證與結報",
+      "icon": "🌍",
+      "id": "voucher-foreign",
+      "expense": "通則與其他",
+      "tags": [
+        "原始憑證"
+      ],
+      "title": "國外採購/網路研討會",
+      "has_flow": true
+    },
+    {
+      "subtitle": "對民間團體捐助案件的核銷、銷毀、抽查",
+      "parent": "支出憑證與結報",
+      "icon": "🤲",
+      "id": "voucher-grants",
+      "expense": "補助與分攤",
+      "tags": [
+        "補助核定",
+        "原始憑證",
+        "憑證存管"
+      ],
+      "title": "捐助 / 補助民間團體",
+      "has_flow": true
+    },
+    {
+      "subtitle": "會議費用、便當、茶水、出席費的核銷要件",
+      "parent": "支出憑證與結報",
+      "icon": "🍱",
+      "id": "meeting-meals",
+      "expense": "酬勞與會議",
+      "tags": [
+        "會議費",
+        "膳費",
+        "出席費",
+        "原始憑證"
+      ],
+      "title": "會議便當 / 茶水 / 出席費",
+      "has_flow": true
+    },
+    {
+      "subtitle": "未及關帳前辦理之採購與經費結報處理",
+      "parent": "支出憑證與結報",
+      "icon": "📅",
+      "id": "year-end-closing",
+      "expense": "通則與其他",
+      "tags": [
+        "原始憑證",
+        "採購",
+        "公差派遣",
+        "補助核定"
+      ],
+      "title": "跨年度結報 / 會計關帳",
+      "has_flow": true
+    },
+    {
+      "subtitle": "統一發票、普通收據、電子發票的格式與必要記載",
+      "parent": "支出憑證與結報",
+      "icon": "🧾",
+      "id": "voucher-receipts",
+      "expense": "收據與發票",
+      "tags": [
+        "原始憑證",
+        "電子憑證"
+      ],
+      "title": "統一發票/收據格式要件",
+      "has_flow": true
+    },
+    {
+      "subtitle": "採購案件履約、退保、結算結報的常見疑義",
+      "parent": "支出憑證與結報",
+      "icon": "📋",
+      "id": "procurement-detail",
+      "expense": "採購結報",
+      "tags": [
+        "採購",
+        "原始憑證",
+        "保險費"
+      ],
+      "title": "採購履約 / 驗收 / 保證金退還",
+      "has_flow": true
+    },
+    {
+      "subtitle": "報紙訂閱、水電、印刷、禮品(券)等雜項憑證要件",
+      "parent": "支出憑證與結報",
+      "icon": "📰",
+      "id": "voucher-misc",
+      "expense": "採購結報",
+      "tags": [
+        "原始憑證",
+        "電子憑證",
+        "禮品交際",
+        "採購"
+      ],
+      "title": "訂閱報紙 / 水電 / 印刷 / 禮品",
+      "has_flow": true
+    },
+    {
+      "subtitle": "員工福利衍生支出之核銷與所需文件",
+      "parent": "支出憑證與結報",
+      "icon": "💼",
+      "id": "voucher-welfare",
+      "expense": "通則與其他",
+      "tags": [
+        "原始憑證",
+        "補助核定",
+        "出國進修",
+        "教育訓練費"
+      ],
+      "title": "員工健檢 / 進修補助 / 國旅卡",
+      "has_flow": true
+    },
+    {
+      "subtitle": "通知商家補正;無法補正時由經手人加註簽名",
+      "parent": "支出憑證與結報",
+      "icon": "🆔",
+      "id": "invoice-tax-id-missing",
+      "expense": "收據與發票",
+      "tags": [
+        "統一發票",
+        "統一編號",
+        "原始憑證"
+      ],
+      "title": "統編漏填或錯誤",
+      "has_flow": true
+    },
+    {
+      "subtitle": "差旅費等收據應記明機關名稱(非個人姓名)",
+      "parent": "支出憑證與結報",
+      "icon": "🏛️",
+      "id": "invoice-payee-wrong",
+      "expense": "收據與發票",
+      "tags": [
+        "買受人",
+        "原始憑證"
+      ],
+      "title": "買受人抬頭錯誤",
+      "has_flow": true
+    },
+    {
+      "subtitle": "簡稱(如「成大」)若足以辨識機關全銜即無須補正",
+      "parent": "支出憑證與結報",
+      "icon": "🔤",
+      "id": "agency-abbreviation",
+      "expense": "收據與發票",
+      "tags": [
+        "買受人"
+      ],
+      "title": "機關簡稱辨識度",
+      "has_flow": true
+    },
+    {
+      "subtitle": "可由經手人在證明聯註記統編並簽名辦理補正",
+      "parent": "支出憑證與結報",
+      "icon": "📱",
+      "id": "e-invoice-tax-id-missing",
+      "expense": "收據與發票",
+      "tags": [
+        "電子發票",
+        "統一編號"
+      ],
+      "title": "電子發票漏統編",
+      "has_flow": true
+    },
+    {
+      "subtitle": "國外慣例未記機關抬頭/統編,可加註說明並簽名",
+      "parent": "支出憑證與結報",
+      "icon": "🌏",
+      "id": "foreign-receipt-no-payee",
+      "expense": "收據與發票",
+      "tags": [
+        "原始憑證",
+        "買受人",
+        "國外採購"
+      ],
+      "title": "國外/港澳憑證無抬頭",
+      "has_flow": true
+    },
+    {
+      "subtitle": "電腦代碼/非本國文須由經手人加註譯文(必要時含廠牌規格)",
+      "parent": "支出憑證與結報",
+      "icon": "🏷️",
+      "id": "item-name-code-only",
+      "expense": "收據與發票",
+      "tags": [
+        "原始憑證",
+        "翻譯"
+      ],
+      "title": "品名代號或外文",
+      "has_flow": true
+    },
+    {
+      "subtitle": "普通收據可劃線註銷簽名更正;統一發票須重新開立",
+      "parent": "支出憑證與結報",
+      "icon": "✏️",
+      "id": "amount-correction",
+      "expense": "收據與發票",
+      "tags": [
+        "原始憑證",
+        "統一發票",
+        "普通收據"
+      ],
+      "title": "金額書寫錯誤",
+      "has_flow": true
+    },
+    {
+      "subtitle": "非專任採購人員墊付須符內控機制,不得作為常態",
+      "parent": "支出憑證與結報",
+      "icon": "💳",
+      "id": "personal-credit-card-payment",
+      "expense": "採購結報",
+      "tags": [
+        "採購",
+        "原始憑證"
+      ],
+      "title": "個人信用卡支付公款",
+      "has_flow": true
+    },
+    {
+      "subtitle": "報支金額以扣除折扣後之實付金額為準",
+      "parent": "支出憑證與結報",
+      "icon": "🎁",
+      "id": "credit-card-rewards-discount",
+      "expense": "通則與其他",
+      "tags": [
+        "原始憑證",
+        "覈實報支"
+      ],
+      "title": "紅利或會員點數折抵",
+      "has_flow": true
+    },
+    {
+      "subtitle": "法規未強制,但機關有管理需要可要求補註",
+      "parent": "支出憑證與結報",
+      "icon": "🧮",
+      "id": "receipt-no-quantity",
+      "expense": "收據與發票",
+      "tags": [
+        "普通收據",
+        "原始憑證"
+      ],
+      "title": "收據無單價/數量",
+      "has_flow": true
+    },
+    {
+      "subtitle": "符合特定格式之電子發票證明聯依法得免加蓋",
+      "parent": "支出憑證與結報",
+      "icon": "🪑",
+      "id": "e-invoice-no-stamp",
+      "expense": "收據與發票",
+      "tags": [
+        "電子發票",
+        "統一發票"
+      ],
+      "title": "電子發票無發票章",
+      "has_flow": true
+    },
+    {
+      "subtitle": "電子憑證(如開立通知)+ 經手人簽名,證明支付事實",
+      "parent": "支出憑證與結報",
+      "icon": "🛒",
+      "id": "online-tx-no-receipt",
+      "expense": "收據與發票",
+      "tags": [
+        "電子發票",
+        "網路交易",
+        "原始憑證"
+      ],
+      "title": "網路交易無正式收據",
+      "has_flow": true
+    },
+    {
+      "subtitle": "依《印花稅法》貼足;漏貼可請商家補貼或加註說明",
+      "parent": "支出憑證與結報",
+      "icon": "🏷️",
+      "id": "stamp-tax-missing",
+      "expense": "收據與發票",
+      "tags": [
+        "普通收據",
+        "原始憑證"
+      ],
+      "title": "收據未貼印花稅票",
+      "has_flow": false
+    },
+    {
+      "subtitle": "應記明事項手寫修正須由原出具者簽名或蓋章",
+      "parent": "支出憑證與結報",
+      "icon": "✍️",
+      "id": "handwritten-correction",
+      "expense": "收據與發票",
+      "tags": [
+        "原始憑證"
+      ],
+      "title": "手寫修正未簽章",
+      "has_flow": true
+    },
+    {
+      "sub_scenarios": [
+        "lecture-internal-external",
+        "lecture-foreign",
+        "lecture-assistant",
+        "lecture-no-overtime",
+        "lecture-natural-person"
+      ],
+      "subtitle": "外聘 / 內聘 / 國外 / 助理 鐘點費上限與限制(整合下列子情境)",
+      "parent": "酬勞費",
+      "icon": "🎤",
+      "id": "lecture-fee-overview",
+      "flow_root": true,
+      "expense": "講座鐘點費",
+      "tags": [
+        "講座鐘點費",
+        "酬勞費"
+      ],
+      "title": "🎤 講座鐘點費總覽",
+      "has_flow": false
+    },
+    {
+      "subtitle": "外聘國內 2,000 / 隸屬 1,500 / 內聘 1,000 元/節",
+      "parent": "酬勞費",
+      "icon": "👥",
+      "id": "lecture-internal-external",
+      "expense": "講座鐘點費",
+      "tags": [
+        "講座鐘點費",
+        "外聘",
+        "內聘"
+      ],
+      "title": "外聘 vs 內聘鐘點費上限",
+      "has_flow": true
+    },
+    {
+      "subtitle": "已支日支生活酬金者不得另支講座鐘點費",
+      "parent": "酬勞費",
+      "icon": "🌐",
+      "id": "lecture-foreign",
+      "expense": "講座鐘點費",
+      "tags": [
+        "講座鐘點費",
+        "國外專家"
+      ],
+      "title": "國外專家鐘點費 + 重複給付限制",
+      "has_flow": true
+    },
+    {
+      "subtitle": "依同一課程講座鐘點費減半支給;得覈實支交通住宿",
+      "parent": "酬勞費",
+      "icon": "📚",
+      "id": "lecture-assistant",
+      "expense": "講座鐘點費",
+      "tags": [
+        "講座鐘點費",
+        "講座助理"
+      ],
+      "title": "講座助理鐘點費",
+      "has_flow": true
+    },
+    {
+      "subtitle": "假日或夜間擔任內聘講座已支鐘點費,不得補休或領加班費",
+      "parent": "酬勞費",
+      "icon": "⛔",
+      "id": "lecture-no-overtime",
+      "expense": "講座鐘點費",
+      "tags": [
+        "講座鐘點費",
+        "加班費"
+      ],
+      "title": "假日內聘授課不得另領加班費",
+      "has_flow": true
+    },
+    {
+      "subtitle": "邀請自然人並符合鐘點費支給規定者免適用政府採購法",
+      "parent": "酬勞費",
+      "icon": "📜",
+      "id": "lecture-natural-person",
+      "expense": "講座鐘點費",
+      "tags": [
+        "講座鐘點費",
+        "採購法"
+      ],
+      "title": "邀請自然人授課免適用採購法",
+      "has_flow": true
+    },
+    {
+      "sub_scenarios": [
+        "attendance-vs-review",
+        "attendance-video",
+        "attendance-foreign-expert",
+        "attendance-gov-director",
+        "attendance-procurement-committee",
+        "attendance-conflict-interest"
+      ],
+      "subtitle": "委員 / 學者專家出席會議酬勞;含視訊 / 採購評選 / 利益迴避 等子情境",
+      "parent": "酬勞費",
+      "icon": "🪑",
+      "id": "attendance-fee-overview",
+      "flow_root": true,
+      "expense": "出席費",
+      "tags": [
+        "出席費",
+        "酬勞費"
+      ],
+      "title": "🪑 出席費總覽",
+      "has_flow": false
+    },
+    {
+      "subtitle": "出席費屬出席會議酬勞;審查費屬稿費類別,不得重複支給",
+      "parent": "酬勞費",
+      "icon": "⚖️",
+      "id": "attendance-vs-review",
+      "expense": "出席費",
+      "tags": [
+        "出席費",
+        "稿費",
+        "審查費"
+      ],
+      "title": "出席費 vs 審查費 區別",
+      "has_flow": true
+    },
+    {
+      "subtitle": "確親自參與視訊得支領;憑證可用匯款證明",
+      "parent": "酬勞費",
+      "icon": "💻",
+      "id": "attendance-video",
+      "expense": "出席費",
+      "tags": [
+        "出席費",
+        "視訊會議"
+      ],
+      "title": "視訊會議出席費",
+      "has_flow": true
+    },
+    {
+      "subtitle": "已支生活費者除符合特定情況外,不得另支出席費",
+      "parent": "酬勞費",
+      "icon": "🌐",
+      "id": "attendance-foreign-expert",
+      "expense": "出席費",
+      "tags": [
+        "出席費",
+        "國外專家"
+      ],
+      "title": "國外專家不得另支出席費",
+      "has_flow": false
+    },
+    {
+      "subtitle": "政府推派董監事另以學者專家身分支領出席費應避免",
+      "parent": "酬勞費",
+      "icon": "🏛️",
+      "id": "attendance-gov-director",
+      "expense": "出席費",
+      "tags": [
+        "出席費",
+        "利益迴避"
+      ],
+      "title": "政府推派董監事身分迴避",
+      "has_flow": true
+    },
+    {
+      "subtitle": "外聘評選委員出席費與審查費支給規定",
+      "parent": "酬勞費",
+      "icon": "📋",
+      "id": "attendance-procurement-committee",
+      "expense": "出席費",
+      "tags": [
+        "出席費",
+        "採購評選委員會"
+      ],
+      "title": "採購評選委員出席與審查",
+      "has_flow": false
+    },
+    {
+      "subtitle": "受補助計畫之相關會議,補助機關人員不論是否公假均不得支出席費",
+      "parent": "酬勞費",
+      "icon": "🚫",
+      "id": "attendance-conflict-interest",
+      "expense": "出席費",
+      "tags": [
+        "出席費",
+        "利益迴避",
+        "補助核定"
+      ],
+      "title": "補助機關人員利益迴避",
+      "has_flow": true
+    },
+    {
+      "sub_scenarios": [
+        "article-general-special",
+        "article-proofreading",
+        "article-no-transcript",
+        "article-commission"
+      ],
+      "subtitle": "撰稿 / 校對 / 審查 / 譯稿 等支給基準與限制(整合下列子情境)",
+      "parent": "酬勞費",
+      "icon": "✍️",
+      "id": "article-fee-overview",
+      "flow_root": true,
+      "expense": "稿費",
+      "tags": [
+        "稿費",
+        "酬勞費"
+      ],
+      "title": "✍️ 稿費總覽",
+      "has_flow": false
+    },
+    {
+      "subtitle": "中文 1,100~1,600 元/千字 vs 1,600~3,000 元/千字 等",
+      "parent": "酬勞費",
+      "icon": "📝",
+      "id": "article-general-special",
+      "expense": "稿費",
+      "tags": [
+        "稿費",
+        "撰稿費"
+      ],
+      "title": "一般稿 vs 特別稿基準",
+      "has_flow": true
+    },
+    {
+      "subtitle": "校對:撰稿費 5%~10% / 審查:中文 300~380 元/千字 等",
+      "parent": "酬勞費",
+      "icon": "🔍",
+      "id": "article-proofreading",
+      "expense": "稿費",
+      "tags": [
+        "稿費",
+        "校對",
+        "審查費"
+      ],
+      "title": "校對費 vs 審查費",
+      "has_flow": true
+    },
+    {
+      "subtitle": "謄稿因無智慧財產創作,不以撰稿名義支給稿費",
+      "parent": "酬勞費",
+      "icon": "📑",
+      "id": "article-no-transcript",
+      "expense": "稿費",
+      "tags": [
+        "稿費",
+        "謄稿"
+      ],
+      "title": "謄稿不適用稿費",
+      "has_flow": true
+    },
+    {
+      "subtitle": "委由本機關以外人員處理重要文件,經首長核准得依稿費基準支給",
+      "parent": "酬勞費",
+      "icon": "🤝",
+      "id": "article-commission",
+      "expense": "稿費",
+      "tags": [
+        "稿費",
+        "委外撰稿"
+      ],
+      "title": "委外撰稿/翻譯/編審",
+      "has_flow": true
+    },
+    {
+      "sub_scenarios": [
+        "concurrent-monthly-cap",
+        "concurrent-principal",
+        "concurrent-accountant",
+        "concurrent-no-misc",
+        "concurrent-legal-advisor"
+      ],
+      "subtitle": "簡薦委月支限額 / 校長兼職 / 主計人員限制 等子情境",
+      "parent": "酬勞費",
+      "icon": "💼",
+      "id": "concurrent-fee-overview",
+      "flow_root": true,
+      "expense": "兼職費",
+      "tags": [
+        "兼職費",
+        "酬勞費"
+      ],
+      "title": "💼 兼職費總覽",
+      "has_flow": false
+    },
+    {
+      "subtitle": "簡任 3,500 / 薦任 3,000 / 委任 2,500 元/月",
+      "parent": "酬勞費",
+      "icon": "📊",
+      "id": "concurrent-monthly-cap",
+      "expense": "兼職費",
+      "tags": [
+        "兼職費",
+        "月支上限"
+      ],
+      "title": "簡薦委月支限額",
+      "has_flow": true
+    },
+    {
+      "subtitle": "校長兼職個數及總額限制",
+      "parent": "酬勞費",
+      "icon": "🎓",
+      "id": "concurrent-principal",
+      "expense": "兼職費",
+      "tags": [
+        "兼職費",
+        "校長兼職"
+      ],
+      "title": "公立大專校長兼職",
+      "has_flow": false
+    },
+    {
+      "subtitle": "會計人員不得兼辦出納、經理財物或公私營業機構職務",
+      "parent": "酬勞費",
+      "icon": "🚫",
+      "id": "concurrent-accountant",
+      "expense": "兼職費",
+      "tags": [
+        "兼職費",
+        "主計人員"
+      ],
+      "title": "主計/會計人員兼職限制",
+      "has_flow": true
+    },
+    {
+      "subtitle": "依出差旅費要點覈實支交通住宿,但不得另支雜費",
+      "parent": "酬勞費",
+      "icon": "🚆",
+      "id": "concurrent-no-misc",
+      "expense": "兼職費",
+      "tags": [
+        "兼職費",
+        "交通費",
+        "住宿費"
+      ],
+      "title": "兼職人員交通住宿但不支雜費",
+      "has_flow": true
+    },
+    {
+      "subtitle": "聘請法律顧問之兼職費最高 5,000 元/月",
+      "parent": "酬勞費",
+      "icon": "⚖️",
+      "id": "concurrent-legal-advisor",
+      "expense": "兼職費",
+      "tags": [
+        "兼職費",
+        "法律顧問"
+      ],
+      "title": "法律顧問每月上限",
+      "has_flow": true
+    },
+    {
+      "sub_scenarios": [
+        "supplement-premium-employer",
+        "supplement-premium-bonus",
+        "supplement-premium-parttime",
+        "supplement-premium-execution"
+      ],
+      "subtitle": "雇主端 / 個人 6 項所得 / 扣繳率 2.11%(整合下列子情境)",
+      "parent": "酬勞費",
+      "icon": "🏥",
+      "id": "supplement-premium-overview",
+      "flow_root": true,
+      "expense": "健保補充保費",
+      "tags": [
+        "健保補充保費",
+        "扣繳"
+      ],
+      "title": "🏥 二代健保補充保費總覽",
+      "has_flow": false
+    },
+    {
+      "subtitle": "薪資差額 × 2.11% 自計,次月底前繳納",
+      "parent": "酬勞費",
+      "icon": "🏢",
+      "id": "supplement-premium-employer",
+      "expense": "健保補充保費",
+      "tags": [
+        "健保補充保費",
+        "雇主"
+      ],
+      "title": "雇主端補充保費月計算",
+      "has_flow": true
+    },
+    {
+      "subtitle": "全年累計獎金超過當月投保金額 4 倍部分扣 2.11%",
+      "parent": "酬勞費",
+      "icon": "🎁",
+      "id": "supplement-premium-bonus",
+      "expense": "健保補充保費",
+      "tags": [
+        "健保補充保費",
+        "獎金"
+      ],
+      "title": "獎金補充保費(4 倍門檻)",
+      "has_flow": true
+    },
+    {
+      "subtitle": "單次給付達基本工資(115 年起 29,500 元)須扣繳",
+      "parent": "酬勞費",
+      "icon": "👷",
+      "id": "supplement-premium-parttime",
+      "expense": "健保補充保費",
+      "tags": [
+        "健保補充保費",
+        "兼職"
+      ],
+      "title": "兼職薪資補充保費",
+      "has_flow": true
+    },
+    {
+      "subtitle": "2 萬起扣 / 上限 1,000 萬;給付事務所不扣",
+      "parent": "酬勞費",
+      "icon": "📈",
+      "id": "supplement-premium-execution",
+      "expense": "健保補充保費",
+      "tags": [
+        "健保補充保費",
+        "執行業務"
+      ],
+      "title": "執行業務報酬補充保費",
+      "has_flow": true
+    },
+    {
+      "subtitle": "出席費 / 稿費 / 兼職費 / 講座鐘點費 等動支審核作業程序",
+      "parent": "酬勞費",
+      "icon": "🛡️",
+      "id": "remuneration-internal-audit",
+      "expense": "通則與其他",
+      "tags": [
+        "內審",
+        "酬勞費",
+        "結報核銷"
+      ],
+      "title": "🛡️ 酬勞費動支內審重點",
+      "has_flow": true
+    }
+  ]
+}

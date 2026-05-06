@@ -2,7 +2,7 @@
 id: C-國內旅費-293
 type: 解釋函令
 parent: 國內旅費
-title: TODO
+title: 「長期派駐在外人員」及「各該主管機關」所
 tags:
 - 教育訓練費
 - 結報核銷
