@@ -59,7 +59,7 @@ function statusBadge(s) {
   return `<span class="badge ok">${s}</span>`;
 }
 function dotClass(art) {
-  return ({ travel: "dot-travel", fn: "dot-overseas", qa: "dot-food", rate: "dot-rate", overseas: "dot-overseas", food: "dot-food" })[art] || "";
+  return ({ travel: "dot-travel", fn: "dot-fn", qa: "dot-qa", rate: "dot-rate", overseas: "dot-fn", food: "dot-qa" })[art] || "";
 }
 function flashHint(msg) {
   hint.textContent = msg;
@@ -104,7 +104,7 @@ function findOtherRowForCountry(rows, country) {
 const EXPENSE_LIST = [
   // 現有母題
   '交通費','住宿費','生活費','雜費','保險費','手續費','行政費','禮品交際及雜費',
-  '收據與發票','採購結報','系統化結報','補助與分攤','差旅費結報','酬勞與會議',
+  '收據與發票','採購結報','系統化結報','補助與分攤','差旅費報支','出席費/鐘點費',
   '大陸港澳','出國進修',
   '講座鐘點費','出席費','稿費','兼職費','健保補充保費',
   '程序與通則',
@@ -122,7 +122,7 @@ const EXPENSE_LIST = [
 const EXPENSE_LAYER = {
   '國內旅費':       ['交通費', '住宿費', '雜費', '程序與通則'],
   '國外旅費':       ['大陸港澳', '出國進修', '交通費', '生活費', '手續費', '保險費', '行政費', '禮品交際及雜費', '程序與通則'],
-  '支出憑證與結報': ['收據與發票', '採購結報', '系統化結報', '補助與分攤', '差旅費結報', '酬勞與會議', '程序與通則'],
+  '支出憑證與結報': ['收據與發票', '採購結報', '系統化結報', '補助與分攤', '差旅費報支', '出席費/鐘點費', '程序與通則'],
   '酬勞費':         ['講座鐘點費', '出席費', '稿費', '兼職費', '健保補充保費', '程序與通則'],
   // WIP 母題 — 子類別已定義,待母題正式公開時移除 WIP_PARENTS 即生效
   '國科會專章':     ['計畫申請資格', '業務費', '研究設備費', '差旅費', '管理費', '程序與通則'],
@@ -142,6 +142,11 @@ const PARENT_SORT_IDX = Object.fromEntries(
   .map((p, i) => [p, i])
 );
 
+// 新舊支出類別名稱對照(改善使用者語言後,舊 tag 仍可命中)
+const EXPENSE_TAG_ALIASES = { '差旅費報支': '差旅費結報', '出席費/鐘點費': '酬勞與會議' };
+// 反向查表:舊 tag → 新 EXPENSE_LIST 名稱(供 chip 計數用)
+const EXPENSE_TAG_REVERSE = Object.fromEntries(Object.entries(EXPENSE_TAG_ALIASES).map(([k,v])=>[v,k]));
+
 // 情境 expense 值 → 條文 tag 比對 (節點 tag 中沒有「程序與通則」這詞,故額外處理)
 function nodeMatchesExpense(d, expense) {
   if (!expense) return true;
@@ -150,7 +155,9 @@ function nodeMatchesExpense(d, expense) {
     const concreteHit = (d.tags || []).some(t => EXPENSE_LIST.includes(t) && t !== '程序與通則');
     return !concreteHit;
   }
-  return (d.tags || []).includes(expense);
+  const tags = d.tags || [];
+  const alias = EXPENSE_TAG_ALIASES[expense];
+  return tags.includes(expense) || (alias && tags.includes(alias));
 }
 
 /* 取得 query 的同義詞展開集合(含原 query)。
@@ -221,8 +228,8 @@ function filteredData() {
       if (inP) {
         scenarioRelevance = 1000 + tagOverlap;  // primary 永遠置頂
       } else if (tagOverlap >= TAG_MATCH_THRESHOLD && concreteOverlap >= 1) {
-        // 進一步若 sc.expense 存在於 EXPENSE_LIST,節點 tag 也須含同 expense
-        if (sc.expense && EXPENSE_LIST.includes(sc.expense) && !(d.tags || []).includes(sc.expense)) {
+        // 進一步若 sc.expense 存在於 EXPENSE_LIST,節點 tag 也須含同 expense(含別名)
+        if (sc.expense && EXPENSE_LIST.includes(sc.expense) && !nodeMatchesExpense(d, sc.expense)) {
           continue;
         }
         scenarioRelevance = tagOverlap + concreteOverlap;  // 具體 tag 加權

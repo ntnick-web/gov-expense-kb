@@ -15,7 +15,10 @@ function _renderCardHtml(d, q) {
   const summary = d.summary || '<em style="color:var(--ink-3)">(摘要待補)</em>';
   const titleObj = buildCardTitle(d);
   const titleHtml = `${titleObj.prefix ? `<span style="color:var(--ink-3);font-weight:500;font-size:13px">${titleObj.prefix}</span> ` : ''}${titleObj.no ? `<span style="color:var(--ink-3);font-weight:500">${titleObj.no}</span> ` : ''}${titleObj.title}`;
-  const tagsHtml = (d.tags || []).slice(0,3).map(t=>`<span class="tag">${t}</span>`).join("");
+  const _allTags = d.tags || [];
+  const _visibleTags = _allTags.slice(0, 5);
+  const _hiddenCount = _allTags.length - _visibleTags.length;
+  const tagsHtml = _visibleTags.map(t=>`<span class="tag">${t}</span>`).join("") + (_hiddenCount > 0 ? `<span class="tag tag-overflow">+${_hiddenCount}</span>` : '');
   // 高亮:除原 query 外,同義詞命中也高亮(讓使用者看到實際命中的詞)
   const hlTerms = q ? [q, ...(d._matchedSynonym ? [d._matchedSynonym] : [])] : [];
   const titleHl = q ? highlightTerms(titleHtml, hlTerms) : titleHtml;
@@ -31,6 +34,7 @@ function _renderCardHtml(d, q) {
       <div class="card-eyebrow">
         <span class="card-no"><span class="card-art ${dotClass(d.art)}"></span>&nbsp;&nbsp;${d.id}</span>
         ${d.certainty && d.certainty !== 'explicit' ? `<span class="badge-certainty ${d.certainty}" title="${d.certainty === 'contested' ? '實務見解不一,本站不提供判斷' : '法規無明文,屬推論'}">⚠ ${d.certainty === 'contested' ? '爭議' : '推論'}</span>` : ''}
+        ${d.reviewLevel === 'llm待人工' ? `<span class="badge-review" title="AI 初稿，尚待人工校對">⟳ 待校對</span>` : ''}
         ${statusBadge(d.status)}
       </div>
       <h3 class="card-title">${titleHl}${synBadge}</h3>
@@ -63,6 +67,15 @@ function renderCards() {
   renderBreadcrumb();
   renderScopeBanner();
   currentList = filteredData();
+  window._pushFilterHash?.();  // P2-1: URL hash 持久化
+  // P1-2: 篩選結果計數
+  const $_cnt = document.getElementById('lib-result-count');
+  if ($_cnt) {
+    const _anyFilter = filterState.parent || filterState.type || filterState.expense || filterState.tag || (filterState.query || '').trim() || filterState.scenario;
+    const _show = !!(_anyFilter && currentList.length > 0);
+    $_cnt.textContent = _show ? `找到 ${currentList.length} 筆條文` : '';
+    $_cnt.hidden = !_show;
+  }
   // 重置 lazy-render state
   if (_libObserver) { _libObserver.disconnect(); _libObserver = null; }
   _libDisplayPos = 0;
@@ -163,9 +176,32 @@ function renderCards() {
   }
 
   if (currentList.length === 0) {
-    grid.innerHTML = `<div class="cmp-empty" style="grid-column:1/-1;padding:60px 24px"><strong>沒有符合條件的條文</strong>清除過濾條件再試試</div>`;
     const _q = (filterState.query || '').trim();
     if (_q.length >= 2 && typeof ga4 === 'function') ga4('search_no_results', { search_term: _q });
+    // P2-2: contextual empty-state with action buttons
+    const _actions = [];
+    if (filterState.tag)     _actions.push({ label: '✕ 清除標籤篩選',   action: () => { filterState.tag = null; renderChips(); renderCards(); } });
+    if (filterState.expense) _actions.push({ label: '✕ 清除支出類別',   action: () => { filterState.expense = null; renderChips(); renderCards(); } });
+    if (filterState.type)    _actions.push({ label: '✕ 清除分類篩選',   action: () => { filterState.type = null; renderChips(); renderCards(); } });
+    if (filterState.parent)  _actions.push({ label: '✕ 清除母題篩選',   action: () => { filterState.parent = null; filterState.expense = null; renderChips(); renderCards(); } });
+    if (_q)                  _actions.push({ label: '✕ 清除搜尋關鍵字', action: () => { filterState.query = ''; const $q = document.getElementById('q'); if ($q) $q.value = ''; renderCards(); } });
+    _actions.push({ label: '↺ 清除所有篩選', action: () => {
+      filterState.parent = null; filterState.type = null; filterState.expense = null;
+      filterState.tag = null; filterState.query = ''; filterState.scenario = null;
+      const $q = document.getElementById('q'); if ($q) $q.value = '';
+      window._expExpanded = false; window._tagExpanded = undefined;
+      renderChips(); renderCards();
+    }});
+    const _btns = _actions.map((a, i) => `<button class="chip chip-toggle-more" data-empty-action="${i}" style="margin:4px">${escapeHtml(a.label)}</button>`).join('');
+    grid.innerHTML = `<div class="cmp-empty" style="grid-column:1/-1;padding:60px 24px;text-align:center">
+      <div style="font-size:28px;margin-bottom:12px">🔍</div>
+      <strong style="display:block;margin-bottom:8px">沒有符合條件的條文</strong>
+      <div style="color:var(--ink-3);font-size:13px;margin-bottom:20px">試試調整篩選條件：</div>
+      <div>${_btns}</div>
+    </div>`;
+    grid.querySelectorAll('[data-empty-action]').forEach(b => {
+      b.onclick = () => { const idx = +b.dataset.emptyAction; _actions[idx]?.action(); };
+    });
     return;
   }
   grid.innerHTML = '';
@@ -1039,6 +1075,41 @@ function renderSidebar() {
   });
 }
 
+/* ──────── 常用查詢快速入口 (P1-6) ──────── */
+const QUICK_FILTERS = [
+  { label: '🚗 自駕交通費',  parent: '國內旅費',       expense: '交通費',     query: '' },
+  { label: '🏨 住宿費上限',  parent: '國內旅費',       expense: '住宿費',     query: '上限' },
+  { label: '🎤 鐘點費標準',  parent: '酬勞費',         expense: '講座鐘點費', query: '' },
+  { label: '📋 差旅費報支',  parent: '支出憑證與結報', expense: '差旅費報支', query: '' },
+  { label: '🧾 收據發票',    parent: '支出憑證與結報', expense: '收據與發票', query: '' },
+];
+
+function renderQuickChips() {
+  const $slot = document.getElementById('lib-quick-chips');
+  if (!$slot) return;
+  $slot.innerHTML = `
+    <span class="filterrow-label" style="opacity:.7">快速入口</span>
+    ${QUICK_FILTERS.map((f, i) => `<button class="chip chip-quick" data-qf="${i}" title="${escapeHtml(f.label)}">${f.label}</button>`).join('')}
+  `;
+  $slot.querySelectorAll('[data-qf]').forEach(b => b.onclick = () => {
+    const f = QUICK_FILTERS[+b.dataset.qf];
+    if (!f) return;
+    filterState.parent   = f.parent   || null;
+    filterState.expense  = f.expense  || null;
+    filterState.type     = null;
+    filterState.tag      = null;
+    filterState.query    = f.query    || '';
+    filterState.scenario = null;
+    const $q = document.getElementById('q');
+    if ($q) $q.value = f.query || '';
+    window._expExpanded  = false;
+    window._tagExpanded  = undefined;
+    switchView('library');
+    renderChips();
+    renderCards();
+  });
+}
+
 function renderChips() {
   const $parentRow = document.getElementById('lib-parent-row');
   const $typeRow = document.getElementById('lib-type-row');
@@ -1075,14 +1146,16 @@ function renderChips() {
   }
   if ($parentRow) {
     const visibleParents = PARENTS.filter(p => !WIP_PARENTS.has(p) && byParent.has(p));
-    const wipChips = [...WIP_PARENTS].map(p =>
-      `<button class="chip chip-wip" disabled title="整備中，內容尚未完整">${p} <span class="chip-count">–</span></button>`
-    ).join('');
+    const wipCount = [...WIP_PARENTS].length;
+    const wipNames = [...WIP_PARENTS].join('、');
+    const wipChip = wipCount > 0
+      ? `<button class="chip chip-wip-hint" data-wip-hint="${escapeHtml(wipNames)}" title="點擊查看整備中的主題">🔜 整備中 ${wipCount} 個主題</button>`
+      : '';
     $parentRow.innerHTML = `
       <span class="filterrow-label">母題</span>
       <button class="chip${!filterState.parent ? ' on' : ''}" data-parent="">全部 <span class="chip-count">${parentAll}</span></button>
       ${visibleParents.map(p => `<button class="chip${filterState.parent === p ? ' on' : ''}" data-parent="${p}">${p} <span class="chip-count">${byParent.get(p)}</span></button>`).join('')}
-      ${wipChips}
+      ${wipChip}
     `;
   }
 
@@ -1151,8 +1224,10 @@ function renderChips() {
   for (const d of baseline) {
     let matched = false;
     for (const t of (d.tags || [])) {
-      if (EXPENSE_LIST.includes(t) && t !== '程序與通則') {
-        expCount[t] = (expCount[t] || 0) + 1;
+      // 支援新舊 tag 名稱(EXPENSE_TAG_REVERSE 把舊名對應到 EXPENSE_LIST 新名)
+      const canonical = (typeof EXPENSE_TAG_REVERSE !== 'undefined' && EXPENSE_TAG_REVERSE[t]) || t;
+      if (EXPENSE_LIST.includes(canonical) && canonical !== '程序與通則') {
+        expCount[canonical] = (expCount[canonical] || 0) + 1;
         matched = true;
       }
     }
@@ -1196,9 +1271,12 @@ function renderChips() {
   const topTags = [...tagCount.entries()]
     .filter(([t]) => !EXPENSE_LIST.includes(t))   // 已是 expense 的不重複出現
     .sort((a, b) => b[1] - a[1]).slice(0, 8);
-  if (topTags.length) {
-    /* 熱門標籤:預設摺疊(除非已選中其中一個)以節省 first fold */
-    const tagExpanded = window._tagExpanded === true || !!filterState.tag;
+  /* 熱門標籤排:情境感知 — 只在已選母題/支出類別/標籤/情境時顯示。
+     未篩選時全域 1,100 筆的標籤集合過於龐雜，隱藏以減少首屏視覺負擔。*/
+  const _shouldShowTags = !!(filterState.parent || filterState.expense || filterState.tag || filterState.scenario);
+  if (topTags.length && _shouldShowTags) {
+    /* 有上下文時預設展開（使用者可手動收起）*/
+    const tagExpanded = window._tagExpanded !== false || !!filterState.tag;
     if (tagExpanded) {
       $tagRow.innerHTML = `
         <span class="filterrow-label">熱門標籤</span>
@@ -1214,6 +1292,7 @@ function renderChips() {
     }
   } else {
     $tagRow.innerHTML = '';
+    if (!_shouldShowTags) window._tagExpanded = undefined;
   }
 
   // 綁 click
@@ -1223,7 +1302,11 @@ function renderChips() {
       // 切換母題時清掉支出類別與類別 filter,避免空集合
       filterState.expense = null;
       filterState.type = null;
+      window._tagExpanded = undefined;
       renderSidebar?.(); renderChips(); renderCards();
+    });
+    $parentRow.querySelector('[data-wip-hint]')?.addEventListener('click', (e) => {
+      flashHint(`整備中主題：${e.currentTarget.dataset.wipHint || ''}`);
     });
   }
   if ($typeRow) {
@@ -1248,6 +1331,12 @@ function renderChips() {
     filterState.tag = b.dataset.tag || null;
     renderChips(); renderCards();
   });
+  // P1-4: 清除篩選按鈕 visibility
+  const $clearBtn = document.getElementById('btn-clear-all-filters');
+  if ($clearBtn) {
+    const anyActive = !!(filterState.parent || filterState.type || filterState.expense || filterState.tag || (filterState.query || '').trim() || filterState.scenario);
+    $clearBtn.hidden = !anyActive;
+  }
 }
 
 // 搜尋 input(全站共用)— 打字時自動切到條文庫並過濾
@@ -1256,7 +1345,8 @@ document.getElementById('q').addEventListener('input', (ev) => {
   // 若在情境/試算表視圖,有搜尋字時自動切到條文庫
   if (filterState.query.trim() && currentView !== 'library') {
     switchView('library');
-    renderSidebar();
+    renderSidebar?.();
+    flashHint('已切到條文庫搜尋模式');
   }
   renderChips();
   renderCards();
@@ -1267,9 +1357,9 @@ document.getElementById('q').addEventListener('input', (ev) => {
 
 /* ──────── scenarios view ──────── */
 const PARENT_ORDER = ['支出憑證與結報', '國內旅費', '酬勞費', '國外旅費', '國外專家', '教育部專章', '國科會專章', '其他'];
-const EXPENSE_ORDER = ['交通費','住宿費','雜費','出國進修','生活費','手續費','保險費','行政費','禮品交際及雜費','收據與發票','採購結報','系統化結報','補助與分攤','差旅費結報','酬勞與會議','講座鐘點費','出席費','稿費','兼職費','健保補充保費','程序與通則','通則與其他','大陸港澳','其他'];
-// 顯示時將舊用語「通則與其他」一律呈現為「程序與通則」(資料源不動,維持向下相容)
-const EXPENSE_DISPLAY_RENAME = { '通則與其他': '程序與通則' };
+const EXPENSE_ORDER = ['交通費','住宿費','雜費','出國進修','生活費','手續費','保險費','行政費','禮品交際及雜費','收據與發票','採購結報','系統化結報','補助與分攤','差旅費報支','出席費/鐘點費','講座鐘點費','出席費','稿費','兼職費','健保補充保費','程序與通則','通則與其他','大陸港澳','其他'];
+// 顯示時將舊用語一律呈現為新名稱(資料源不動,維持向下相容)
+const EXPENSE_DISPLAY_RENAME = { '通則與其他': '程序與通則', '差旅費結報': '差旅費報支', '酬勞與會議': '出席費/鐘點費' };
 function renameExpense(e) { return EXPENSE_DISPLAY_RENAME[e] || e; }
 let scenarioQuery = '';
 // 情境視圖 chip filter state(2026-04-29 加)

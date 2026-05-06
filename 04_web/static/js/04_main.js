@@ -77,14 +77,67 @@ function ga4(event_name, params) {
   try { gtag('event', event_name, params || {}); } catch (_) {}
 }
 
+/* ──────── P2-1: URL Hash 持久化篩選狀態 ──────── */
+let _hashReady = false;
+
+function _parseFilterHash() {
+  if (!location.hash || location.hash.length < 2) return false;
+  try {
+    const params = new URLSearchParams(location.hash.slice(1));
+    const p = params.get('p');
+    const t = params.get('t');
+    const e = params.get('e');
+    const tag = params.get('tag');
+    if (!p && !t && !e && !tag) return false;
+    // Reset filter state before restoring (ensures stale state from previous session doesn't bleed in)
+    filterState.parent = null; filterState.type = null; filterState.expense = null; filterState.tag = null;
+    let restored = false;
+    if (p && PARENTS.includes(p)) { filterState.parent = p; restored = true; }
+    if (t && ['A','B','C','D'].includes(t)) { filterState.type = t; restored = true; }
+    if (e && EXPENSE_LIST.includes(e)) { filterState.expense = e; restored = true; }
+    if (tag) { filterState.tag = tag; restored = true; }
+    return restored;
+  } catch (_) { return false; }
+}
+
+function _pushFilterHash() {
+  if (!_hashReady) return;
+  const params = new URLSearchParams();
+  if (filterState.parent) params.set('p', filterState.parent);
+  if (filterState.type)   params.set('t', filterState.type);
+  if (filterState.expense) params.set('e', filterState.expense);
+  if (filterState.tag)    params.set('tag', filterState.tag);
+  const qs = params.toString();
+  history.replaceState(null, '', qs ? '#' + qs : location.pathname + location.search);
+}
+window._pushFilterHash = _pushFilterHash;
+
 /* ──────── init ──────── */
 async function init() {
   try {
     await loadAllData();
+    const _hadHash = _parseFilterHash();  // P2-1: 還原篩選狀態
+    renderQuickChips?.();  // P1-6: 常用查詢快速入口
     renderChips();
     renderCards();
-    // 2026-05-XX:landing 已封存,進站預設 scenarios(splash 期間使用者不會感受到延遲)
-    switchView('scenarios');
+    _hashReady = true;  // P2-1: 初始渲染完成後才啟用 hash 更新
+    // P1-4: 清除全部篩選按鈕（綁一次，避免 renderChips 重複綁）
+    document.getElementById('btn-clear-all-filters')?.addEventListener('click', () => {
+      filterState.parent   = null;
+      filterState.type     = null;
+      filterState.expense  = null;
+      filterState.tag      = null;
+      filterState.query    = '';
+      filterState.scenario = null;
+      const $q = document.getElementById('q');
+      if ($q) $q.value = '';
+      window._expExpanded = false;
+      window._tagExpanded = undefined;
+      renderChips();
+      renderCards();
+    });
+    // 有篩選 hash → 進入條文庫視圖；否則預設情境檢索
+    switchView(_hadHash ? 'library' : 'scenarios');
     renderScenarios();
     wireScenarioSearch();
     syncMobileTabbar?.();

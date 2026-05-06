@@ -792,7 +792,7 @@
       "parent": "支出憑證與結報",
       "icon": "💰",
       "id": "voucher-payment",
-      "expense": "酬勞與會議",
+      "expense": "出席費/鐘點費",
       "tags": [
         "出席費",
         "鐘點費"
@@ -856,7 +856,7 @@
       "parent": "支出憑證與結報",
       "icon": "🍱",
       "id": "meeting-meals",
-      "expense": "酬勞與會議",
+      "expense": "出席費/鐘點費",
       "tags": [
         "會議費",
         "膳費",

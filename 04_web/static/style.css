@@ -572,8 +572,8 @@
   }
   /* 母題 dot:馬卡龍色 + 深 ink 邊框,辨識度比純 hue 飽和色高 */
   .card-art.dot-travel { background: var(--pastel-sky); box-shadow: 0 0 0 1px var(--ink-sky); }
-  .card-art.dot-food { background: var(--pastel-vanilla); box-shadow: 0 0 0 1px var(--ink-vanilla); }
-  .card-art.dot-overseas { background: var(--pastel-lavender); box-shadow: 0 0 0 1px var(--ink-lavender); }
+  .card-art.dot-food,.card-art.dot-qa { background: var(--pastel-vanilla); box-shadow: 0 0 0 1px var(--ink-vanilla); }
+  .card-art.dot-overseas,.card-art.dot-fn { background: var(--pastel-lavender); box-shadow: 0 0 0 1px var(--ink-lavender); }
   .card-art.dot-rate { background: var(--pastel-matcha); box-shadow: 0 0 0 1px var(--ink-matcha); }
 
   .card-no { font-weight: 500; color: var(--ink-2); }
@@ -599,6 +599,10 @@
     font-size: 11px; padding: 2px 7px; border-radius: 5px;
     background: var(--surface-2); color: var(--ink-2);
     border: 1px solid var(--line);
+  }
+  .tag.tag-overflow {
+    background: transparent; color: var(--ink-3);
+    border-color: var(--line);
   }
   .badge {
     font-size: 10.5px; padding: 2px 7px; border-radius: 4px;
@@ -1591,6 +1595,13 @@
   [data-theme="dark"] .badge-certainty.contested {
     background: var(--pastel-strawberry); color: var(--ink-strawberry);
   }
+  .badge-review {
+    font-size: 10px; font-weight: 600;
+    padding: 1px 7px; border-radius: 999px;
+    background: var(--pastel-vanilla); color: var(--ink-vanilla);
+    border: 1px solid var(--ink-vanilla);
+    cursor: help;
+  }
   /* 自動產生情境徽章 — 藕色,告訴使用者「來源較弱」 */
   .sc-auto-badge {
     font-size: 10px; font-weight: 500;
@@ -2246,4 +2257,73 @@
   background: var(--surface-2);
   padding: 1px 6px;
   border-radius: 3px;
+}
+
+/* ──────── 健檢優化 2026-05-07 ──────── */
+
+/* P1-1: WIP 整備中預告 chip */
+.chip.chip-wip-hint {
+  border-style: dashed;
+  color: var(--ink-3);
+  font-size: 12px;
+  opacity: .7;
+  cursor: pointer;
+}
+.chip.chip-wip-hint:hover { opacity: 1; color: var(--brand); border-color: var(--brand-line); }
+
+/* P1-2/P1-4: 結果計數列 */
+.lib-result-bar {
+  display: flex; align-items: center; gap: 10px;
+  min-height: 24px; margin-bottom: 6px;
+}
+#lib-result-count {
+  font-size: 12px; color: var(--ink-3);
+}
+
+/* P1-3: 行動版 filterrow 橫向捲動（對齊 .sc-filterbar 已有的設計）*/
+@media (max-width: 720px) {
+  .filterrow {
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    scroll-snap-type: x proximity;
+    -webkit-overflow-scrolling: touch;
+    padding-bottom: 4px;
+  }
+  .filterrow::-webkit-scrollbar { height: 4px; }
+  .filterrow::-webkit-scrollbar-thumb { background: var(--line-strong); border-radius: 2px; }
+  .filterrow > * { flex-shrink: 0; scroll-snap-align: start; }
+  .filterrow-label {
+    position: sticky; left: 0;
+    background: var(--bg); z-index: 1; padding-right: 4px;
+  }
+}
+
+/* P1-5: 搜尋框有輸入時顯示品牌色框線 */
+#q:not(:placeholder-shown) {
+  border-color: var(--brand-line);
+  box-shadow: 0 0 0 2px var(--brand-soft);
+}
+
+/* P1-6: 常用查詢快速入口 */
+.lib-quick-chips {
+  margin-bottom: 4px;
+}
+.chip.chip-quick {
+  background: var(--brand-soft);
+  border-color: var(--brand-line);
+  color: var(--brand);
+  font-size: 12px;
+}
+.chip.chip-quick:hover {
+  background: var(--brand-line);
+  border-color: var(--brand);
+  color: var(--bg);
+}
+
+/* P1-NEW2: 母題排視覺層次強化（第一個選我）*/
+#lib-parent-row .chip:not(.chip-wip-hint):not(.chip-toggle-more) {
+  font-weight: 600;
+}
+#lib-parent-row .chip.on {
+  font-weight: 700;
 }
