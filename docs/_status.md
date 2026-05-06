@@ -51,7 +51,7 @@
 **腳本現況**（gitignored）：45 .py 活躍腳本（W3 目標達成）；`_build_scenarios_manual.py` 現同時產 `scenarios_index.json`
 **待做**：W3.1 `_llm_batch_base.py` 基類；W4.4/W4.5 search_index → worker；W1.6 刪重複 PDF（最後）
 
-### 2026-05-07 — W4.1 rate_table 外部化（commits `f653a23`）
+### 2026-05-07 — W4.1 + W4.4（commits `f653a23`、`732a874`）
 
 **W4.1** — `_export_rate_tables.py --apply`：4 個大型 B 類國外旅費節點的 `rate_table.sections` 抽出至 `04_web/data/rates/` 目錄
 - B-國外旅費-003：68KB → 36KB（日支數額全球，551 rows）
@@ -59,7 +59,11 @@
 - B-國外旅費-006/007：各 21KB → 1.9KB（外交部綜合保險，各 730 rows）
 - `03_build_index.py` 新增 `_load_rate_table()` 支援 `rate_table_src` 指標 + 保留 `completeness` 區塊不被覆寫
 
-**待做**：W3.1 `_llm_batch_base.py` 基類；W4.4/W4.5 search_index → worker；W1.6 刪重複 PDF（最後）
+**W4.4** — `search_index.json`（1.38MB）從 git 移除追蹤
+- 前端自 2026-05-02 #24 改用客戶端 bigram 索引（[00_search_index.js](../04_web/static/js/00_search_index.js)），從 nodes.json 建立 — `search_index.json` 從未被任何 fetch 引用
+- `.gitignore` 新增 `03_index/search_index.json`；`git rm --cached` 解除追蹤；節省 repo 大小 1.38MB
+
+**待做**：W3.1 `_llm_batch_base.py` 基類；W4.5 CF Workers 部署；W1.6 刪重複 PDF（最後）
 
 ### 2026-05-06 續做（b）— W2.1+W2.2 完成（commits `61b6a04`）
 
