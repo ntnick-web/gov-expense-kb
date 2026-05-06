@@ -63,7 +63,15 @@
 - 前端自 2026-05-02 #24 改用客戶端 bigram 索引（[00_search_index.js](../04_web/static/js/00_search_index.js)），從 nodes.json 建立 — `search_index.json` 從未被任何 fetch 引用
 - `.gitignore` 新增 `03_index/search_index.json`；`git rm --cached` 解除追蹤；節省 repo 大小 1.38MB
 
-**待做**：W3.1 `_llm_batch_base.py` 基類；W4.5 CF Workers 部署；W1.6 刪重複 PDF（最後）
+### 2026-05-07（c）— W3.1 腳本重構
+
+**W3.1** — `_llm_batch_base.py` 共用基類建立（gitignored，本機）
+- 280 行新模組：`clean_excerpt` / `SECTIONS_BY_CAT` / `scan_candidates` / `write_batches` / `write_manifest` / `load_proposals` / `index_md_by_id` / `default_should_skip` / `argparser_build` / `argparser_apply` / `parse_node_id`
+- 5 支腳本改用基類：`_retitle_build_batches` / `_resummary_build_batches` / `_llm_review_build_batches` / `_retitle_apply` / `_resummary_apply`
+- 行數：5 腳本合計 1194 → 773 行（-421 行重複碼）；加上基類共 1053 行，淨減 141
+- 驗證：5 腳本 import OK；`_retitle_build_batches.py` dry-run 掃 1046 份 MD 正常
+
+**待做**：W4.5 CF Workers 部署；W1.6 刪重複 PDF（最後）
 
 ### 2026-05-06 續做（b）— W2.1+W2.2 完成（commits `61b6a04`）
 
