@@ -5,16 +5,16 @@
 let compareList = [];
 
 /* ──────── 真實資料載入 (608 nodes / 105 scenarios from 03_index/) ──────── */
-const DATA_VERSION = '2026-05-06';
+const DATA_VERSION = '2026-05-06b';
 let DATA = [];                 // 對外用的卡片資料 (mapped from nodes.json)
 let NODES_BY_ID = new Map();   // id → original node (含 file_path 等)
 let INCOMING_EDGES = new Map();// id → [from1, from2, ...] 反向引用
 let SCENARIOS = [];
 
 // 母題 → 簡稱 (sidebar 用)
-const PARENTS = ['支出憑證與結報', '國內旅費', '酬勞費', '國外旅費', '餐費', '採購及履約', '物品管理', '其他支出', '教育訓練'];
+const PARENTS = ['支出憑證與結報', '國內旅費', '酬勞費', '國外旅費', '國科會專章', '餐費', '採購及履約', '物品管理', '其他支出', '教育訓練'];
 // 整備中母題:chip 顯示為灰色不可點按;卡片與情境全部隱藏
-let WIP_PARENTS = new Set(['餐費', '採購及履約', '物品管理', '其他支出', '教育訓練']);
+let WIP_PARENTS = new Set(['國科會專章', '餐費', '採購及履約', '物品管理', '其他支出', '教育訓練']);
 // 母題 → 正式法規名稱 + 顯示用簡稱 (A 類條文卡片標題前綴)
 const PARENT_LAW = {
   '國內旅費':       { full: '中央政府各機關員工國內出差旅費報支要點', short: '國內旅費要點' },
@@ -77,11 +77,15 @@ async function loadAllData() {
     if (tcHeader) {
       try {
         const config = JSON.parse(decodeURIComponent(escape(atob(tcHeader))));
-        const allAllowed = [
-          ...(config.visible_parents || []),
-          ...(config.org_specific_parents || []),
-        ];
-        WIP_PARENTS = new Set(PARENTS.filter(p => !allAllowed.includes(p)));
+        if (config.visible_all) {
+          WIP_PARENTS = new Set();  // test tenant：全部母題可見
+        } else {
+          const allAllowed = [
+            ...(config.visible_parents || []),
+            ...(config.org_specific_parents || []),
+          ];
+          WIP_PARENTS = new Set(PARENTS.filter(p => !allAllowed.includes(p)));
+        }
         if (config.features) window.TENANT_FEATURES = config.features;
         if (config.tenant_id) window.TENANT_ID = config.tenant_id;
       } catch (e) {

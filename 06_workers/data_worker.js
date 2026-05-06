@@ -91,6 +91,7 @@ async function getLicenseConfig(key, env) {
 function buildTenantConfigHeader(config) {
   const payload = {
     tenant_id: config.tenant_id || 'public',
+    visible_all: config.visible_all || false,
     visible_parents: config.visible_parents || DEFAULT_CONFIG.visible_parents,
     org_specific_parents: config.org_specific_parents || [],
     features: config.features || DEFAULT_CONFIG.features,
