@@ -82,7 +82,14 @@
 - 刪除：`修正中央政府各機關學校稿費支給基準數額表.pdf`、`支給基準數額表.pdf`
 - 保留：`行政院主計總處_中央政府各機關學校出席費及稿費支給要點稿費支給基準數額表.pdf`
 
-**待做**：W4.5 CF Workers 部署（需 Node.js + wrangler login 人工 OAuth）
+**W4.5** — CF Workers + D1 事件追蹤部署完成（commit `4dfc826`）
+- Node.js v24.15.0 + wrangler 4.88.0 安裝；D1 database `gov-expense-events`（APAC，id: `3277fcc2-...`）
+- Schema 套用（4 queries，events / indexes）；`STATS_TOKEN` secret 上傳（加密，CF Vault）
+- Worker URL：`https://gov-expense-events.ntnick72.workers.dev`
+- 前端 `04_main.js` `EVENTS_ENDPOINT` 由 `null` → 實際 endpoint；事件追蹤正式啟用
+- 驗證：`/api/track POST {"ok":1}` ✅；`/api/stats` token 保護 `{"error":"unauthorized"}` ✅
+
+**所有計畫波次完成**：W2.1/W2.2/W2.3/W2.4 → W3.1/W3.2 → W4.1/W4.2/W4.4/W4.5 → W1.6
 
 ### 2026-05-06 續做（b）— W2.1+W2.2 完成（commits `61b6a04`）
 
