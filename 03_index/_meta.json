@@ -15,5 +15,21 @@
     "人工": 58,
     "自動初校": 75,
     "llm待人工": 299
+  },
+  "completeness": {
+    "generated_at": "2026-05-06T23:14:30",
+    "total_active": 1101,
+    "summary": {
+      "vacant": 789,
+      "vacancy_rate": 0.7166
+    },
+    "version": {
+      "vacant": 415,
+      "vacancy_rate": 0.3769
+    },
+    "reviewed": {
+      "vacant": 0,
+      "vacancy_rate": 0.0
+    }
   }
 }
