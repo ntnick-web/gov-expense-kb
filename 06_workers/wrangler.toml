@@ -10,7 +10,7 @@ compatibility_date = "2024-09-01"
 [[d1_databases]]
 binding = "DB"
 database_name = "gov-expense-events"
-database_id = "FILL_IN_AFTER_D1_CREATE"
+database_id = "3277fcc2-3b1d-494f-beea-1cf5724fc825"
 
 # /api/stats 查詢 token(部署:wrangler secret put STATS_TOKEN)
 # Worker 內讀 env.STATS_TOKEN

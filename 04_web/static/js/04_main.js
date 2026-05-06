@@ -34,7 +34,7 @@ function dismissSplash(immediate = false) {
    - 寫法:track('view_change', 'library') / track('drawer_open', 'A-國內旅費-005')
    - 隱私:不發 IP / cookie;search query 由 worker 側 hash;90 天滾動清
    - 部署:見 06_workers/README.md(目前未 deploy,本前端代碼預設 inert) */
-window.EVENTS_ENDPOINT = window.EVENTS_ENDPOINT || null;  // e.g. 'https://events.ntnick-web.workers.dev/api/track'
+window.EVENTS_ENDPOINT = window.EVENTS_ENDPOINT || 'https://gov-expense-events.ntnick72.workers.dev/api/track';
 const _EVENTS_BUFFER = [];
 function track(type, target, ctx) {
   if (!window.EVENTS_ENDPOINT) return;  // disabled
