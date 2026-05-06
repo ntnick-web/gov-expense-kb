@@ -1,6 +1,6 @@
 {
   "last_indexed": "2026-05-06",
-  "last_indexed_iso": "2026-05-06T15:31:40+08:00",
+  "last_indexed_iso": "2026-05-06T23:07:43+08:00",
   "node_count": 1106,
   "edge_count": 748,
   "status_counts": {
@@ -8,7 +8,7 @@
     "部分修正": 0,
     "已廢止": 5
   },
-  "reviewed_count": 912,
+  "reviewed_count": 1106,
   "review_level_counts": {
     "未標": 197,
     "llm精校": 477,

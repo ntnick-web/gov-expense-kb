@@ -2,7 +2,7 @@
 id: C-國內旅費-172
 type: 解釋函令
 parent: 國內旅費
-title: TODO
+title: 「調任」之定義.............
 tags:
 - 教育訓練費
 related: []
