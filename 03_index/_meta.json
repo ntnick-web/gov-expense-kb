@@ -1,19 +1,19 @@
 {
   "last_indexed": "2026-05-06",
-  "last_indexed_iso": "2026-05-06T12:29:45+08:00",
-  "node_count": 881,
-  "edge_count": 635,
+  "last_indexed_iso": "2026-05-06T15:31:40+08:00",
+  "node_count": 1106,
+  "edge_count": 748,
   "status_counts": {
-    "現行": 876,
+    "現行": 1101,
     "部分修正": 0,
     "已廢止": 5
   },
-  "reviewed_count": 881,
+  "reviewed_count": 912,
   "review_level_counts": {
+    "未標": 197,
     "llm精校": 477,
     "人工": 58,
-    "未標": 8,
-    "llm待人工": 299,
-    "自動初校": 39
+    "自動初校": 75,
+    "llm待人工": 299
   }
 }

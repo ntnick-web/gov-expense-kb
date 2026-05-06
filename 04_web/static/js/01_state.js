@@ -12,9 +12,9 @@ let INCOMING_EDGES = new Map();// id → [from1, from2, ...] 反向引用
 let SCENARIOS = [];
 
 // 母題 → 簡稱 (sidebar 用)
-const PARENTS = ['支出憑證與結報', '國內旅費', '酬勞費', '國外旅費', '國科會專章', '餐費', '採購及履約', '物品管理', '其他支出', '教育訓練'];
+const PARENTS = ['支出憑證與結報', '國內旅費', '酬勞費', '國外旅費', '國科會專章', '餐費', '採購及履約', '物品管理', '其他支出', '教育訓練', '教育部專章', '成功大學專章'];
 // 整備中母題:chip 顯示為灰色不可點按;卡片與情境全部隱藏
-let WIP_PARENTS = new Set(['國科會專章', '餐費', '採購及履約', '物品管理', '其他支出', '教育訓練']);
+let WIP_PARENTS = new Set(['國科會專章', '餐費', '採購及履約', '物品管理', '其他支出', '教育訓練', '教育部專章', '成功大學專章']);
 // 母題 → 正式法規名稱 + 顯示用簡稱 (A 類條文卡片標題前綴)
 const PARENT_LAW = {
   '國內旅費':       { full: '中央政府各機關員工國內出差旅費報支要點', short: '國內旅費要點' },
@@ -176,6 +176,8 @@ async function loadAllData() {
         versionHistory: Array.isArray(n.version_history) ? n.version_history : [],
         // 2026-05-02:自訂排序序號(用於同母題內按條文順序排列)
         sortOrder: typeof n.sort_order === 'number' ? n.sort_order : null,
+        // 法規來源(A 類法規分組標頭用)
+        source: n.source || '',
       };
     });
   // 2026-05-02 #24:建 bigram/trigram 反向索引(query → 候選 ID Set,加速 substring 搜尋)

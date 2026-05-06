@@ -52,6 +52,13 @@ function highlightTerms(html, terms) {
   return html;
 }
 
+/* 從 source 欄位萃取法規名稱（去掉「機關_」前綴）*/
+function extractLawName(source) {
+  if (!source) return '';
+  const idx = source.indexOf('_');
+  return idx >= 0 ? source.slice(idx + 1) : source;
+}
+
 function renderCards() {
   renderBreadcrumb();
   renderScopeBanner();
@@ -119,7 +126,7 @@ function renderCards() {
     for (const d of _sorted) {
       const _tp = d.id.split('-')[0];
       const gk = _tp === 'A'
-        ? `${d.cat}|A|${d.no ? 'main' : d.id}`
+        ? `${d.cat}|A|${d.no ? (extractLawName(d.source) || 'main') : d.id}`
         : `${d.cat}|${_expMap.get(d.id)}`;
       _groupCounts.set(gk, (_groupCounts.get(gk) || 0) + 1);
     }
@@ -130,13 +137,15 @@ function renderCards() {
       const _tp = d.id.split('-')[0];
       let _key;
       if (_tp === 'A') {
-        const _subKey = d.no ? 'main' : d.id;
+        const _lawName = extractLawName(d.source);
+        const _subKey = d.no ? (_lawName || 'main') : d.id;
         _key = `${d.cat}|A|${_subKey}`;
         if (_key !== _lastKey) {
           _lastKey = _key;
-          const _label = (d.no && PARENT_LAW[d.cat])
-            ? `${d.cat} · 核心法規 ─ ${PARENT_LAW[d.cat].full}`
-            : `${d.cat} · 核心法規 ─ ${d.title}`;
+          const _fullLaw = (d.no && PARENT_LAW[d.cat])
+            ? PARENT_LAW[d.cat].full
+            : (_lawName || d.title);
+          const _label = `${d.cat} · 核心法規 ─ ${_fullLaw}`;
           _libDisplayList.push({ kind: 'header', label: _label, count: _groupCounts.get(_key) || 0 });
         }
       } else {
