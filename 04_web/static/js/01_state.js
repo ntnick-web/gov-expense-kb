@@ -67,6 +67,7 @@ async function loadAllData() {
   const licenseKey = (typeof window !== 'undefined' && window.LICENSE_KEY) ? window.LICENSE_KEY : null;
   const nodesUrl    = API ? API + '/data/nodes?v='     + DATA_VERSION : _BASE + '../03_index/nodes.json' + v;
   const scenariosUrl = API ? API + '/data/scenarios?v=' + DATA_VERSION : _BASE + 'data/scenarios_manual.json' + v;
+  const scenariosIndexUrl = API ? scenariosUrl : _BASE + 'data/scenarios_index.json' + v;
   // License Key header（API 模式才帶）
   const apiFetchOpts = licenseKey && API ? { headers: { 'X-License-Key': licenseKey } } : {};
   // nodes 先取 Response 物件，以便讀取 X-Tenant-Config header 後再解析 body
@@ -94,10 +95,11 @@ async function loadAllData() {
     }
   }
   // 2026-05-01 (A1):auto 卡停用；整備中母題情境一併隱藏
-  const [nodes, edges, scnManual, aliases, neighbors, synonyms, baseline] = await Promise.all([
+  // W4.2: 情境載入分兩層 — index(輕量 44KB)優先，detail(426KB)背景載入
+  const [nodes, edges, scnIndex, aliases, neighbors, synonyms, baseline] = await Promise.all([
     nodesResp.json(),
     fetch(_BASE + '../03_index/edges.json' + v).then(r => r.json()),
-    (API ? fetch(scenariosUrl, apiFetchOpts) : fetch(scenariosUrl)).then(r => r.ok ? r.json() : null).catch(() => null),
+    (API ? fetch(scenariosUrl, apiFetchOpts) : fetch(scenariosIndexUrl)).then(r => r.ok ? r.json() : null).catch(() => null),
     fetch(_BASE + 'data/city_aliases.json' + v).then(r => r.ok ? r.json() : { aliases: {} }).catch(() => ({ aliases: {} })),
     fetch(_BASE + 'data/country_neighbors.json' + v).then(r => r.ok ? r.json() : { neighbors: {} }).catch(() => ({ neighbors: {} })),
     fetch(_BASE + 'data/synonyms.json' + v).then(r => r.ok ? r.json() : { groups: [] }).catch(() => ({ groups: [] })),
@@ -122,9 +124,29 @@ async function loadAllData() {
     if (!INCOMING_EDGES.has(e.to)) INCOMING_EDGES.set(e.to, []);
     INCOMING_EDGES.get(e.to).push(e.from);
   }
-  // 2026-05-01:只載 manual(auto / legacy 兩份 JSON 已退役);整備中母題情境一併隱藏
-  const m = scnManual ? (scnManual.scenarios || scnManual) : [];
+  // W4.2: 從 index 建立 SCENARIOS (輕量，has_flow 已由 build 預計算)
+  const m = scnIndex ? (scnIndex.scenarios || scnIndex) : [];
   SCENARIOS = (m || []).filter(s => s.source !== 'auto' && !WIP_PARENTS.has(s.parent || ''));
+
+  // W4.2: 背景載入完整 scenarios_manual.json，完成後 merge flow/caveats 等大欄位到 SCENARIOS
+  if (!API) {
+    window._scenariosDetailReady = false;
+    window._scenariosDetailPromise = fetch(_BASE + 'data/scenarios_manual.json' + v)
+      .then(r => r.ok ? r.json() : null)
+      .catch(() => null)
+      .then(full => {
+        if (!full) return;
+        const detailMap = new Map((full.scenarios || full).map(s => [s.id, s]));
+        for (const s of SCENARIOS) {
+          const d = detailMap.get(s.id);
+          if (d) Object.assign(s, d);
+        }
+        window._scenariosDetailReady = true;
+      });
+  } else {
+    window._scenariosDetailReady = true;
+    window._scenariosDetailPromise = Promise.resolve();
+  }
   // map nodes → DATA (隱藏已廢止節點,但保留有 effective_period 的歷史費率表;隱藏整備中母題)
   DATA = nodes
     .filter(n => {

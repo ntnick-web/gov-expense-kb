@@ -1301,7 +1301,7 @@ function _renderScenarioSectionHtml(key) {
       </h3>
       <div class="sc-grid">
         ${items.map(s => {
-          const hasFlow = s.flow && s.flow.start && s.flow.questions;
+          const hasFlow = s.has_flow || (s.flow && s.flow.start && s.flow.questions);
           const flowBadge = hasFlow ? '<span class="sc-flow-badge">🤔 條件問答</span>' : '';
           const isRoot = s.flow_root === true && Array.isArray(s.sub_scenarios) && s.sub_scenarios.length > 0;
           const rootBadge = isRoot ? `<span class="sc-root-badge" title="此為情境樹根節點 — 整合 ${s.sub_scenarios.length} 個子情境">🗂 ${s.sub_scenarios.length} 子情境</span>` : '';
@@ -1568,8 +1568,17 @@ function renderScenarios() {
     const flowBtn = ev.target.closest('[data-flow]');
     if (flowBtn) {
       ev.stopPropagation();
-      const sc = SCENARIOS.find(x => x.id === flowBtn.dataset.flow);
-      if (sc) openFlowModal(sc);
+      const id = flowBtn.dataset.flow;
+      const openWhenReady = () => {
+        const sc = SCENARIOS.find(x => x.id === id);
+        if (sc && sc.flow) openFlowModal(sc);
+        else if (sc) console.warn('[W4.2] flow data not ready for', id);
+      };
+      if (window._scenariosDetailReady) {
+        openWhenReady();
+      } else {
+        (window._scenariosDetailPromise || Promise.resolve()).then(openWhenReady);
+      }
       return;
     }
     // 2026-05-XX:「📑 看條文」次按鈕(P0-6)— 行為等同點卡片本體,但避免被 [data-flow] 攔截
