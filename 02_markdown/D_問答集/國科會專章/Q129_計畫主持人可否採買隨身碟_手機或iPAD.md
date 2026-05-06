@@ -15,6 +15,7 @@ version: TODO
 reviewed: '2026-05-06'
 review_level: llm待人工
 category_group: C類：經費報銷實務運用
+summary_review_level: llm
 ---
 
 ## 問題
@@ -27,7 +28,9 @@ Q129：計畫主持人可否採買隨身碟、手機或iPAD？
 
 ## 重點摘要
 
-(待人工補)
+Q129：計畫主持人可否採買隨身碟、手機或iPAD？
+
+_(自動初校,待人工潤飾)_
 
 ## 相關規定
 

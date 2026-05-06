@@ -8,6 +8,7 @@ tags:
 related: []
 source: 全民健康保險法
 version: TODO
+reviewed: '2026-05-06'
 agency: 行政院主計總處
 ---
 
