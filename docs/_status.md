@@ -78,7 +78,11 @@
 - `_common.py`：`parse_since()` / `filter_since()` / `walk_md_since()` 三個 helper（供後續腳本共用）
 - `04_validate.py`：`--since` 過濾顯示用 issues（交叉檢查仍全量，exit code 不變）
 
-**待做**：W2.2 `_infer_version.py` dry-run；W4.5 CF Workers 部署；W1.6 刪重複 PDF（最後）
+**W1.6** — 刪除 2 個 SHA-256 完全相同的重複 PDF（`00_source/`）
+- 刪除：`修正中央政府各機關學校稿費支給基準數額表.pdf`、`支給基準數額表.pdf`
+- 保留：`行政院主計總處_中央政府各機關學校出席費及稿費支給要點稿費支給基準數額表.pdf`
+
+**待做**：W4.5 CF Workers 部署（需 Node.js + wrangler login 人工 OAuth）
 
 ### 2026-05-06 續做（b）— W2.1+W2.2 完成（commits `61b6a04`）
 
