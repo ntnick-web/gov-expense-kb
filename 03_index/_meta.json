@@ -1,6 +1,6 @@
 {
   "last_indexed": "2026-05-06",
-  "last_indexed_iso": "2026-05-06T23:07:43+08:00",
+  "last_indexed_iso": "2026-05-06T23:51:38+08:00",
   "node_count": 1106,
   "edge_count": 748,
   "status_counts": {
@@ -17,11 +17,11 @@
     "llm待人工": 299
   },
   "completeness": {
-    "generated_at": "2026-05-06T23:14:30",
+    "generated_at": "2026-05-06T23:52:05",
     "total_active": 1101,
     "summary": {
-      "vacant": 789,
-      "vacancy_rate": 0.7166
+      "vacant": 2,
+      "vacancy_rate": 0.0018
     },
     "version": {
       "vacant": 415,
