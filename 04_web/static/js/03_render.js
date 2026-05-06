@@ -1075,41 +1075,6 @@ function renderSidebar() {
   });
 }
 
-/* ──────── 常用查詢快速入口 (P1-6) ──────── */
-const QUICK_FILTERS = [
-  { label: '🚗 自駕交通費',  parent: '國內旅費',       expense: '交通費',     query: '' },
-  { label: '🏨 住宿費上限',  parent: '國內旅費',       expense: '住宿費',     query: '上限' },
-  { label: '🎤 鐘點費標準',  parent: '酬勞費',         expense: '講座鐘點費', query: '' },
-  { label: '📋 差旅費報支',  parent: '支出憑證與結報', expense: '差旅費報支', query: '' },
-  { label: '🧾 收據發票',    parent: '支出憑證與結報', expense: '收據與發票', query: '' },
-];
-
-function renderQuickChips() {
-  const $slot = document.getElementById('lib-quick-chips');
-  if (!$slot) return;
-  $slot.innerHTML = `
-    <span class="filterrow-label" style="opacity:.7">快速入口</span>
-    ${QUICK_FILTERS.map((f, i) => `<button class="chip chip-quick" data-qf="${i}" title="${escapeHtml(f.label)}">${f.label}</button>`).join('')}
-  `;
-  $slot.querySelectorAll('[data-qf]').forEach(b => b.onclick = () => {
-    const f = QUICK_FILTERS[+b.dataset.qf];
-    if (!f) return;
-    filterState.parent   = f.parent   || null;
-    filterState.expense  = f.expense  || null;
-    filterState.type     = null;
-    filterState.tag      = null;
-    filterState.query    = f.query    || '';
-    filterState.scenario = null;
-    const $q = document.getElementById('q');
-    if ($q) $q.value = f.query || '';
-    window._expExpanded  = false;
-    window._tagExpanded  = undefined;
-    switchView('library');
-    renderChips();
-    renderCards();
-  });
-}
-
 function renderChips() {
   const $parentRow = document.getElementById('lib-parent-row');
   const $typeRow = document.getElementById('lib-type-row');

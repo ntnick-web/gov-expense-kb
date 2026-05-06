@@ -117,8 +117,7 @@ async function init() {
   try {
     await loadAllData();
     const _hadHash = _parseFilterHash();  // P2-1: 還原篩選狀態
-    renderQuickChips?.();  // P1-6: 常用查詢快速入口
-    renderChips();
+renderChips();
     renderCards();
     _hashReady = true;  // P2-1: 初始渲染完成後才啟用 hash 更新
     // P1-4: 清除全部篩選按鈕（綁一次，避免 renderChips 重複綁）
