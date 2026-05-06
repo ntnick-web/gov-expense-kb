@@ -73,6 +73,8 @@ _*_proposals/
 # 核心資料已遷移至 Cloudflare KV（gov-expense-data Worker）— 不再公開於 GitHub
 03_index/nodes.json
 04_web/data/scenarios_manual.json
+# search_index.json：前端改為從 nodes.json 客戶端建 bigram 索引(00_search_index.js)，不再使用
+03_index/search_index.json
 
 # Word 暫存鎖定檔(開啟時 Word 會建 ~$ 前綴的鎖)
 ~$*.docx
