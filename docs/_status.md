@@ -71,7 +71,14 @@
 - 行數：5 腳本合計 1194 → 773 行（-421 行重複碼）；加上基類共 1053 行，淨減 141
 - 驗證：5 腳本 import OK；`_retitle_build_batches.py` dry-run 掃 1046 份 MD 正常
 
-**待做**：W4.5 CF Workers 部署；W1.6 刪重複 PDF（最後）
+**W3.2** — `--since YYYY-MM-DD` 增量旗標加入三支主管線腳本（gitignored）
+- `01_extract.py`：新增 `--since` 過濾來源檔 mtime（`_mtime_ok()` helper + argparse）
+- `02_parse.py`：`discover_pairs()` 已接受 `since_dt` 參數；補齊 `main()` 呼叫端 wiring（parse args → 傳入 `since_dt`）
+- `03_build_index.py`：新增 `--since` 列印近期修改 MD 數量（仍全量重建）
+- `_common.py`：`parse_since()` / `filter_since()` / `walk_md_since()` 三個 helper（供後續腳本共用）
+- `04_validate.py`：`--since` 過濾顯示用 issues（交叉檢查仍全量，exit code 不變）
+
+**待做**：W2.2 `_infer_version.py` dry-run；W4.5 CF Workers 部署；W1.6 刪重複 PDF（最後）
 
 ### 2026-05-06 續做（b）— W2.1+W2.2 完成（commits `61b6a04`）
 
