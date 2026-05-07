@@ -498,7 +498,11 @@
             ]
           }
         }
-      }
+      },
+      "see_also": [
+        {"id": "procurement-service-vs-purchase", "label": "勞務委託 vs. 財物採購的分界判斷"},
+        {"id": "procurement-amount-flow", "label": "小額採購核銷流程（依金額門檻）"}
+      ]
     },
     {
       "id": "attendance-fee-overview",

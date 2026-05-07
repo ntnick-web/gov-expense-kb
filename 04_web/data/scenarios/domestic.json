@@ -1041,6 +1041,7 @@
           }
         }
       },
+      "sub_scenarios": ["change-transport"],
       "see_also": [
         {
           "id": "senior-premium",
@@ -1062,6 +1063,7 @@
       "icon": "🎟️",
       "subtitle": "敬老/愛心票搭商務,優惠價未超經濟全票即覈實報支",
       "parent": "國內旅費",
+      "parent_scenario": "premium-class",
       "expense": "交通費",
       "primary_ids": [
         "D-國內旅費-005",
@@ -1179,6 +1181,7 @@
       "icon": "🎟️",
       "subtitle": "上限內覈實報支,身分優惠仍可搭商務艙",
       "parent": "國內旅費",
+      "parent_scenario": "premium-class",
       "expense": "交通費",
       "primary_ids": [
         "A-國內旅費-005",
@@ -1274,6 +1277,9 @@
       "icon": "🔄",
       "subtitle": "奉准搭飛機可改高鐵,實付不超過上限即可",
       "parent": "國內旅費",
+      "deprecated": true,
+      "parent_scenario": "transport-substitute",
+      "deprecation_note": "已整併為「自行變更交通工具」子情境；法規依據相同(D-國內旅費-006)，不重複列條(2026-05-07)",
       "expense": "交通費",
       "primary_ids": [
         "A-國內旅費-005",
@@ -2532,7 +2538,11 @@
             "redirect_scenario": "day-trip"
           }
         }
-      }
+      },
+      "see_also": [
+        {"id": "training-transport-lodging", "label": "訓練期間交通費與住宿費補助條件（教育訓練章）"},
+        {"id": "training-no-duplicate-subsidy", "label": "教育訓練費用不重複補助規定"}
+      ]
     },
     {
       "id": "lodging-distance-60km",
@@ -2630,6 +2640,7 @@
       "icon": "✈️",
       "subtitle": "商務艙/車廂限制,部會首長以上才能搭",
       "parent": "國內旅費",
+      "sub_scenarios": ["senior-premium", "discount-ticket"],
       "expense": "交通費",
       "primary_ids": [
         "A-國內旅費-005",

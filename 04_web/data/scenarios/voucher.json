@@ -2935,7 +2935,11 @@
             ]
           }
         }
-      }
+      },
+      "see_also": [
+        {"id": "foreign-receipt-payee", "label": "國外收據買受人抬頭（國外旅費版）"},
+        {"id": "foreign-receipt-translate", "label": "國外收據中文翻譯要件"}
+      ]
     },
     {
       "id": "meeting-meals",

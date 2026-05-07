@@ -35,7 +35,8 @@
       ],
       "see_also": [
         {"id": "training-no-duplicate-subsidy", "label": "教育訓練費用不重複補助規定"},
-        {"id": "domestic-trip-overview", "label": "國內出差旅費總覽（交通費準用規定）"}
+        {"id": "domestic-trip-overview", "label": "國內出差旅費總覽（交通費準用規定）"},
+        {"id": "training", "label": "參加訓練/講習（國內旅費差旅費版）"}
       ],
       "flow": {
         "start": "Q1",
@@ -111,6 +112,149 @@
       ],
       "see_also": [
         {"id": "training-transport-lodging", "label": "訓練期間交通費與住宿費補助條件"}
+      ]
+    },
+    {
+      "id": "training-subsidized-leave",
+      "title": "公費進修假期間差旅費報支",
+      "icon": "🎓",
+      "subtitle": "公費進修期間所發生的差旅費，依進修性質判斷屬教育訓練費或一般差旅費",
+      "parent": "教育訓練",
+      "expense": "訓練費",
+      "primary_ids": [
+        "A-教育訓練-001",
+        "A-國內旅費-003"
+      ],
+      "tags": ["教育訓練", "公費進修", "差旅費", "留職留薪"],
+      "attachments": [
+        "核准進修公文（核定進修機關、期間、科目）",
+        "差旅費相關收據（交通費、住宿費）",
+        "進修機構出具之在學或出席證明"
+      ],
+      "approvers": [
+        "進修人員填表",
+        "單位主管核章",
+        "人事單位確認進修核定",
+        "主辦會計核章"
+      ],
+      "caveats": [
+        {
+          "text": "公費進修以留職留薪方式辦理者，差旅費仍依差旅費相關規定辦理，報支標準比照在職人員",
+          "severity": "info",
+          "legal_ref": "A-國內旅費-003"
+        },
+        {
+          "text": "進修地點與服務機關間之通勤（固定往返）不得列差旅費；僅非例行性赴機構交通費方可報支",
+          "severity": "stop",
+          "legal_ref": "A-國內旅費-003"
+        },
+        {
+          "text": "進修期間如有奉派至他處執行業務（與進修無關），可依差旅費規定另行報支；但應區分進修活動與業務活動",
+          "severity": "warn",
+          "legal_ref": "A-教育訓練-001"
+        }
+      ],
+      "see_also": [
+        {"id": "training-transport-lodging", "label": "訓練期間交通費與住宿費補助條件"},
+        {"id": "training-no-duplicate-subsidy", "label": "教育訓練費用不重複補助規定"}
+      ]
+    },
+    {
+      "id": "training-external-institution",
+      "title": "外部訓練機構費用核銷（報名費、教材費）",
+      "icon": "🏫",
+      "subtitle": "派員參加外部機構辦理之訓練，報名費與教材費的科目歸屬及憑證要求",
+      "parent": "教育訓練",
+      "expense": "訓練費",
+      "primary_ids": [
+        "A-教育訓練-001"
+      ],
+      "tags": ["教育訓練", "報名費", "教材費", "外部機構"],
+      "attachments": [
+        "訓練機構開立之收據或統一發票（抬頭為機關）",
+        "訓練課程通知或簡章（載明課程名稱、日期、費用）",
+        "核准派訓公文或簽核紀錄"
+      ],
+      "approvers": [
+        "派訓人員或承辦人填表",
+        "單位主管核章",
+        "主辦會計核章"
+      ],
+      "caveats": [
+        {
+          "text": "報名費及教材費以教育訓練費科目列支；若訓練機構未能開立機關抬頭發票，應取得蓋有機構印信之收據",
+          "severity": "info",
+          "legal_ref": "A-教育訓練-001"
+        },
+        {
+          "text": "受訓期間差旅費（交通費、住宿費）另依差旅費規定辦理，不含在報名費核銷項目內",
+          "severity": "warn",
+          "legal_ref": "A-教育訓練-003"
+        },
+        {
+          "text": "購買教材書籍若屬業務參考用途（非個人所有），應辦理財產或圖書登錄",
+          "severity": "info",
+          "legal_ref": "A-教育訓練-001"
+        }
+      ],
+      "see_also": [
+        {"id": "training-transport-lodging", "label": "訓練期間交通費與住宿費補助條件"},
+        {"id": "training-no-duplicate-subsidy", "label": "教育訓練費用不重複補助規定"}
+      ]
+    },
+    {
+      "id": "training-online",
+      "title": "線上課程費用報支條件",
+      "icon": "💻",
+      "subtitle": "線上學習平台訂閱費或單課報名費，須符合業務相關性且有憑證方可核銷",
+      "parent": "教育訓練",
+      "expense": "訓練費",
+      "primary_ids": [
+        "A-教育訓練-001"
+      ],
+      "tags": ["教育訓練", "線上課程", "訂閱費", "數位學習"],
+      "attachments": [
+        "線上平台開立之收據或電子發票（載明課程名稱、金額）",
+        "課程相關內容截圖或說明（佐證業務相關性）",
+        "核准簽辦文件（說明業務需要）"
+      ],
+      "approvers": [
+        "申請人填表並說明業務需要",
+        "單位主管核章",
+        "主辦會計核章"
+      ],
+      "caveats": [
+        {
+          "text": "線上課程費用須與業務職掌有明確關聯，申請時應說明業務需要，由主管核可",
+          "severity": "warn",
+          "legal_ref": "A-教育訓練-001"
+        },
+        {
+          "text": "國外平台訂閱以外幣支付時，依付款日匯率換算台幣列支，並附外幣收據及匯率換算說明",
+          "severity": "info",
+          "legal_ref": "A-教育訓練-001"
+        },
+        {
+          "text": "年度訂閱費若跨年度，應按實際受益期間分攤於各年度列支；年底前未使用完畢部分不得預先一次認列",
+          "severity": "stop",
+          "legal_ref": "A-教育訓練-001"
+        },
+        {
+          "text": "個人帳號訂閱（僅限個人使用）原則不得以公款核銷；機關帳號或多人共用授權方可申請",
+          "severity": "stop",
+          "legal_ref": "A-教育訓練-001"
+        }
+      ],
+      "example": [
+        {
+          "case": "申請 Coursera 年度訂閱 USD$399，7月1日付款，匯率33.0，業務需要為提升資料分析能力",
+          "formula": "台幣金額 = USD$399 × 33.0 = NT$13,167；7月至12月（6個月）列當年度 = NT$13,167 × 6/12 = NT$6,584",
+          "total": "當年度認列 NT$6,584；次年1-6月 NT$6,583 需列次年度"
+        }
+      ],
+      "see_also": [
+        {"id": "training-external-institution", "label": "外部訓練機構費用核銷"},
+        {"id": "training-no-duplicate-subsidy", "label": "教育訓練費用不重複補助規定"}
       ]
     }
   ]
