@@ -1881,8 +1881,8 @@ function renderCalc() {
     const isUSD = /美元|USD/i.test(partial.unit);
     let formulaHtml = '';
     if (hasDays) {
-      const dailyEffective = Math.round(dailyVal * livingPct / 100);
-      const total = dailyEffective * daysVal;
+      const dailyEffective = parseFloat((dailyVal * livingPct / 100).toFixed(2));
+      const total = parseFloat((dailyEffective * daysVal).toFixed(2));
       const pctNote = livingPct === 100 ? '' : ` × ${livingPct}%`;
       const ntdLine = isUSD ? `
         <div class="calc-formula-aux" style="margin-top:6px;display:flex;align-items:baseline;gap:6px;flex-wrap:wrap">
@@ -1894,7 +1894,7 @@ function renderCalc() {
         <div class="calc-formula">
           <span class="calc-formula-eq">${partial.value} ${partial.unit}/日${pctNote} × ${daysVal} 天</span>
           <span class="calc-formula-arrow">=</span>
-          <span class="calc-formula-total">${total.toLocaleString()} ${partial.unit}</span>
+          <span class="calc-formula-total">${total.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})} ${partial.unit}</span>
         </div>
         ${ntdLine}`;
     } else {
