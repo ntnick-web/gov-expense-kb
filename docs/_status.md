@@ -2,14 +2,13 @@
 
 > 此檔取代舊 CLAUDE.md §0「最新狀態速覽」。每次大型 session 結束時 append 一段；不刪歷史。CLAUDE.md 內只留摘要 5 行 + 連結到本檔。
 
-## 當前快照（2026-05-07）
+## 當前快照（2026-05-07e）
 
-- **DATA_VERSION**:`2026-05-07a`(CI 自動 bump；2026-05-07 母題重整後 rebuild)
-- **節點數**:**1145**(+5 vs 上版；E019-E025 +7 / E001 -1 / A-國科會專章-004 -1；成功大學專章 E-class 共 23 個)；**4 主母題 + 6 WIP 母題**（國科會專章 / 餐費及其他支出 / 採購及履約 / 教育訓練 / 教育部專章 / 成功大學專章）
+- **DATA_VERSION**:`2026-05-07e`
+- **節點數**:**1145**（成功大學專章 E-class 共 23 個）；**4 主母題 + 6 WIP 母題**（國科會專章 / 餐費及其他支出 / 採購及履約 / 教育訓練 / 教育部專章 / 成功大學專章）
 - **review_level 分布**:**80 人工 / 477 llm精校 / 299 llm待人工 / 96 自動初校 / 193 未標**
-- **情境卡**:**75 張**(60 個有 flow 候選中 30 已建)— 73 張可見(扣 deprecated)
-- **Decision tree**:**30 個 flow / 75 cards = 40%**(2026-05-02 #14 達標,從 7 → 17 → 30)
-- **caveats 深化**:**18 張**(從 7,後續持續累積)
+- **情境卡**:**126 張**（122 可見；扣 4 deprecated）；96 flow / 122 visible = **79%**；caveats **121 張**；example **16 張**
+- **母題排序**：三組排序陣列（01_state / 02_data / 03_render）已統一為「國內→國外→酬勞→支出憑證→採購→餐費→物品→其他→教育訓練→國科會→教育部→成大」
 - **6 個情境樹 root**:overnight / voucher-procurement / abroad-basic / voucher-types / domestic-trip-overview / transport-choice-overview
 - **色票系統**:**馬卡龍 7 色 token**(薰衣草主品牌 / 蜜桃 / 草莓 / 香草 / 抹茶 / 天空 / 藕色)+ 配套深 ink(WCAG AA)
 - **桌面 / 行動版 UI**:Landing 三入口 + topnav 3 tab / mobile-tabbar 4 tab(2026-04-30 加首頁)
@@ -26,6 +25,20 @@
 - **後端事件追蹤(2026-05-02 #25)**:[06_workers/](../06_workers/) 含完整 Worker code + D1 schema + 部署 SOP;前端 `track()` helper + sendBeacon batch flush + 3 處埋點(switchView / scenario_apply / drawer_open);**`window.EVENTS_ENDPOINT = null` 預設 inert,部署後設值才啟用**
 - **CI/CD**:GitHub Actions push to main 自動 7 步(build merged scenarios → MD validate → JSON Schema validate → audit → link check → build_index → sync DATA_VERSION → commit)
 - **#2 ESM 拆檔(完整)**:[04_web/index.html](../04_web/index.html) 從 5430 行 → **260 行**;JS 拆 [`04_web/static/js/`](../04_web/static/js/) 5 module(`00_search_index.js` / `01_state.js` / `02_data.js` / `03_render.js` / `04_main.js`);全部 plain script + `?v=` cache-bust,共享 window scope(無 ES module 的 import/export 改寫,設計取捨見 [docs/_esm_split_plan.md](_esm_split_plan.md))
+
+## Session 摘要（2026-05-07e）— 情境檢索全面優化（commit `c2ceb28`）
+
+- **P0 母題排序統一**：01_state.js / 02_data.js / 03_render.js 三組排序陣列統一為「國內→國外→酬勞→支出憑證→採購→餐費→物品→其他→教育訓練→國科會→教育部→成大」；先前三組不一致互衝
+- **P0 條文庫去重**：A-國科會專章-001/002/003 標題修正為各自全文名稱（原標題「第?條 國家科學及技術委員會補助...」無法鑑別）；C-國內旅費-016/038 標題補具體主題（原「其他相關解釋..............」）
+- **P1 重疊卡合併**：`change-transport` deprecated → `transport-substitute` sub_scenario；`senior-premium` / `discount-ticket` 設為 `premium-class` sub_scenarios（鑑別度提升）
+- **P1 example 補充**：`abroad-airfare`（商務艙溢價試算 2 案例）、`procurement-amount-flow`（三級金額門檻試算 3 案例）
+- **P2 新增情境卡 5 張**（117→122 可見；126 總含 deprecated）：
+  - 教育訓練 +3：`training-subsidized-leave`（公費進修假差旅費）、`training-external-institution`（外部機構報名費/教材費）、`training-online`（線上課程費用，含跨年度分攤 example）
+  - 採購 +2：`procurement-it-software`（軟體授權/訂閱採購，含跨年度分攤 example）、`procurement-service-vs-purchase`（勞務 vs 財物分界）
+- **P2 cross_ref 補充**：abroad/foreign-receipt-payee ↔ voucher/foreign-receipt-no-payee 互指；lecture-natural-person → procurement-service-vs-purchase；domestic/training ↔ education/training-transport-lodging 互指
+- **scenarios_manual.json rebuild**：126 卡，96 flow（79%），caveats 121，example 16
+
+---
 
 ## Session 摘要（2026-05-07）— 四項資料整理任務
 
