@@ -4744,5 +4744,13 @@
     "inferred": true,
     "matched": "第4點",
     "cross_parent": false
+  },
+  {
+    "from": "E-成功大學專章-012",
+    "to": "A-酬勞費-007",
+    "relation": "cites_inferred",
+    "inferred": true,
+    "matched": "第七點",
+    "cross_parent": true
   }
 ]
