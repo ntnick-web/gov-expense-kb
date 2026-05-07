@@ -114,3 +114,20 @@ jobs:
           else
             echo "No changes in build outputs; skipping commit."
           fi
+
+      - name: Upload to CF Workers KV
+        # 將重建後的核心資料推送至 Cloudflare Workers KV，讓三個版本（公開/成大/test）即時生效。
+        # 需要在 GitHub Repo Settings → Secrets → Actions 設定 CLOUDFLARE_API_TOKEN。
+        # 若未設 secret 則輸出 warning 並跳過（不阻擋 CI）。
+        if: steps.check_scripts.outputs.available == 'true'
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+        run: |
+          if [ -z "$CLOUDFLARE_API_TOKEN" ]; then
+            echo "::warning title=CF KV skip::CLOUDFLARE_API_TOKEN 未設定 — KV 上傳跳過。請至 Repo Settings → Secrets → Actions 新增該 secret。"
+            exit 0
+          fi
+          KV_ID="b06a21e042db46c38ae57ebf1225f430"
+          npx wrangler@4 kv key put --namespace-id "$KV_ID" --remote "nodes"     --path "03_index/nodes.json"               --config 06_workers/wrangler_data.toml
+          npx wrangler@4 kv key put --namespace-id "$KV_ID" --remote "meta"      --path "03_index/_meta.json"               --config 06_workers/wrangler_data.toml
+          npx wrangler@4 kv key put --namespace-id "$KV_ID" --remote "scenarios" --path "04_web/data/scenarios_manual.json"  --config 06_workers/wrangler_data.toml
