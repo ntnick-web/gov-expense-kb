@@ -2312,3 +2312,41 @@
 #lib-parent-row .chip.on {
   font-weight: 700;
 }
+
+/* ──── 手機情境卡片橫滑 Carousel (≤720px) ──── */
+@media (max-width: 720px) {
+  .sc-grid {
+    display: flex;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    -webkit-overflow-scrolling: touch;
+    gap: 10px;
+    padding: 0 16px 12px;
+    margin-left: -16px;
+    margin-right: -16px;
+    scrollbar-width: none;
+  }
+  .sc-grid::-webkit-scrollbar { display: none; }
+  .sc-grid .sc-card {
+    flex: 0 0 80vw;
+    min-width: 220px;
+    max-width: 320px;
+    scroll-snap-align: start;
+    scroll-snap-stop: always;
+  }
+  /* 單張卡片群組：回復正常排版 */
+  .sc-group[data-card-count="1"] .sc-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    overflow-x: visible;
+    margin-left: 0;
+    margin-right: 0;
+    padding: 0;
+    scroll-snap-type: none;
+  }
+  .sc-group[data-card-count="1"] .sc-grid .sc-card {
+    flex: none;
+    min-width: unset;
+    max-width: unset;
+  }
+}

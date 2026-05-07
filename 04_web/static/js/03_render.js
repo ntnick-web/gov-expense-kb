@@ -1349,7 +1349,7 @@ function _renderScenarioSectionHtml(key) {
     anchorHtml = `<div id="sc-anchor-${parent}" style="position:relative;top:-60px"></div>`;
   }
   return `${anchorHtml}
-    <section class="sc-group">
+    <section class="sc-group" data-card-count="${items.length}">
       <h3 class="sc-group-title">
         <span>${parent} · ${expense}</span>
         <span class="sc-group-count">${items.length}</span>
