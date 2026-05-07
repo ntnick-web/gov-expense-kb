@@ -122,6 +122,36 @@ async function handleUpload(request, env, headers) {
   if (!body || typeof body !== 'object') {
     return new Response(JSON.stringify({ error: 'body 須為 JSON 物件' }), { status: 400, headers });
   }
+  // 上傳前驗證：scenarios 中不得有斷鏈的 redirect_scenario
+  if (body.scenarios !== undefined) {
+    try {
+      const raw = typeof body.scenarios === 'string' ? body.scenarios : JSON.stringify(body.scenarios);
+      const parsed = JSON.parse(raw);
+      const arr = Array.isArray(parsed) ? parsed : (parsed.scenarios || []);
+      const brokenRedirects = [];
+      for (const s of arr) {
+        const flow = s.flow;
+        if (!flow) continue;
+        for (const [cid, c] of Object.entries(flow.conclusions || {})) {
+          const rid = c.redirect_scenario;
+          if (!rid) continue;
+          const tgt = arr.find(x => x.id === rid);
+          if (!tgt || !(tgt.flow && tgt.flow.start)) {
+            brokenRedirects.push(`${s.id}.conclusions[${cid}].redirect_scenario → ${rid}`);
+          }
+        }
+      }
+      if (brokenRedirects.length > 0) {
+        return new Response(
+          JSON.stringify({ error: 'scenarios 包含斷鏈 redirect_scenario，上傳拒絕', details: brokenRedirects }),
+          { status: 400, headers }
+        );
+      }
+    } catch (e) {
+      return new Response(JSON.stringify({ error: `scenarios 解析失敗: ${e.message}` }), { status: 400, headers });
+    }
+  }
+
   const allowed = ['nodes', 'scenarios', 'meta'];
   const results = {};
   for (const key of allowed) {
