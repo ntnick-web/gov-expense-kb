@@ -13,7 +13,7 @@ related: []
 source: 國家科學及技術委員會_專題研究計畫常見問答
 version: TODO
 reviewed: '2026-05-06'
-review_level: 自動初校
+review_level: llm精校
 category_group: C類：經費報銷實務運用
 summary_review_level: llm
 ---
@@ -28,9 +28,8 @@ Q129：計畫主持人可否採買隨身碟、手機或iPAD？
 
 ## 重點摘要
 
-Q129：計畫主持人可否採買隨身碟、手機或iPAD？
 
-_(自動初校,待人工潤飾)_
+計畫所需物品應依實際需要循執行機構內部審核規定核實列支；財產與物品依執行機構財物管理規定辦理。
 
 ## 相關規定
 
