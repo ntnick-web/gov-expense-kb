@@ -98,7 +98,7 @@ async function loadAllData() {
   // W4.2: 情境載入分兩層 — index(輕量 44KB)優先，detail(426KB)背景載入
   const [nodes, edges, scnIndex, aliases, neighbors, synonyms, baseline] = await Promise.all([
     nodesResp.json(),
-    fetch(_BASE + '../03_index/edges.json' + v).then(r => r.ok ? r.json() : { edges: [] }).catch(() => ({ edges: [] })),
+    fetch(_BASE + 'data/edges.json' + v).then(r => r.ok ? r.json() : { edges: [] }).catch(() => ({ edges: [] })),
     (API ? fetch(scenariosUrl, apiFetchOpts) : fetch(scenariosIndexUrl)).then(r => r.ok ? r.json() : null).catch(() => null),
     fetch(_BASE + 'data/city_aliases.json' + v).then(r => r.ok ? r.json() : { aliases: {} }).catch(() => ({ aliases: {} })),
     fetch(_BASE + 'data/country_neighbors.json' + v).then(r => r.ok ? r.json() : { neighbors: {} }).catch(() => ({ neighbors: {} })),
