@@ -1122,7 +1122,7 @@ function renderChips() {
       <span class="filterrow-label">類別</span>
       <button class="chip${!filterState.type ? ' on' : ''}" data-type="">全部 <span class="chip-count">${typeAll}</span></button>
       ${TYPES.map(t => `<button class="chip${filterState.type === t.k ? ' on' : ''}" data-type="${t.k}">${t.icon} ${t.label} <span class="chip-count">${byType[t.k]}</span></button>`).join('')}
-      <button class="chip chip-e-hidden${filterState.type === 'E' ? ' on' : ''}" data-type="E">📎 附屬資料 <span class="chip-count">${byType.E}</span></button>
+      <button class="chip chip-e-hidden${filterState.type === 'E' ? ' on' : ''}" data-type="E">📎 附屬法規及資料 <span class="chip-count">${byType.E}</span></button>
     `;
   }
 

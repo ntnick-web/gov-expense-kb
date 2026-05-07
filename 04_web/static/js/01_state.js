@@ -12,9 +12,9 @@ let INCOMING_EDGES = new Map();// id → [from1, from2, ...] 反向引用
 let SCENARIOS = [];
 
 // 母題 → 簡稱 (sidebar 用)
-const PARENTS = ['支出憑證與結報', '國內旅費', '酬勞費', '國外旅費', '國科會專章', '餐費', '採購及履約', '物品管理', '其他支出', '教育訓練', '教育部專章', '成功大學專章'];
+const PARENTS = ['支出憑證與結報', '國內旅費', '酬勞費', '國外旅費', '國科會專章', '餐費及其他支出', '採購及履約', '教育訓練', '教育部專章', '成功大學專章'];
 // 整備中母題:chip 顯示為灰色不可點按;卡片與情境全部隱藏
-let WIP_PARENTS = new Set(['國科會專章', '餐費', '採購及履約', '物品管理', '其他支出', '教育訓練', '教育部專章', '成功大學專章']);
+let WIP_PARENTS = new Set(['國科會專章', '餐費及其他支出', '採購及履約', '教育訓練', '教育部專章', '成功大學專章']);
 // 母題 → 正式法規名稱 + 顯示用簡稱 (A 類條文卡片標題前綴)
 const PARENT_LAW = {
   '國內旅費':       { full: '中央政府各機關員工國內出差旅費報支要點', short: '國內旅費要點' },
@@ -24,7 +24,7 @@ const PARENT_LAW = {
 };
 // 類別代碼 → art (色點 + label)
 const CAT_ART = { A: 'travel', B: 'rate', C: 'fn', D: 'qa', E: 'annex' };
-const CAT_LABEL = { A: '核心法規', B: '支出標準', C: '解釋函令', D: '問答集', E: '附屬資料' };
+const CAT_LABEL = { A: '核心法規', B: '支出標準', C: '解釋函令', D: '問答集', E: '附屬法規及資料' };
 
 // 把節點 title 拆成 no + 主標 ("第一條 訂定目的" → no: "第一條", title: "訂定目的")
 function splitTitle(rawTitle, id) {

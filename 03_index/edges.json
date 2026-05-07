@@ -1,125 +1,5 @@
 [
   {
-    "from": "A-其他支出-001",
-    "to": "A-其他支出-002",
-    "relation": "cites",
-    "inferred": false
-  },
-  {
-    "from": "A-其他支出-001",
-    "to": "A-其他支出-003",
-    "relation": "cites",
-    "inferred": false
-  },
-  {
-    "from": "A-其他支出-001",
-    "to": "A-其他支出-004",
-    "relation": "cites",
-    "inferred": false
-  },
-  {
-    "from": "A-其他支出-001",
-    "to": "A-其他支出-005",
-    "relation": "cites",
-    "inferred": false
-  },
-  {
-    "from": "A-其他支出-007",
-    "to": "A-其他支出-001",
-    "relation": "cites",
-    "inferred": false
-  },
-  {
-    "from": "A-其他支出-007",
-    "to": "A-其他支出-008",
-    "relation": "cites",
-    "inferred": false
-  },
-  {
-    "from": "A-其他支出-003",
-    "to": "A-其他支出-002",
-    "relation": "cites",
-    "inferred": false
-  },
-  {
-    "from": "A-其他支出-003",
-    "to": "A-其他支出-004",
-    "relation": "cites",
-    "inferred": false
-  },
-  {
-    "from": "A-其他支出-003",
-    "to": "A-其他支出-005",
-    "relation": "cites",
-    "inferred": false
-  },
-  {
-    "from": "A-其他支出-002",
-    "to": "A-其他支出-001",
-    "relation": "cites",
-    "inferred": false
-  },
-  {
-    "from": "A-其他支出-002",
-    "to": "A-其他支出-003",
-    "relation": "cites",
-    "inferred": false
-  },
-  {
-    "from": "A-其他支出-005",
-    "to": "A-其他支出-004",
-    "relation": "cites",
-    "inferred": false
-  },
-  {
-    "from": "A-其他支出-005",
-    "to": "A-其他支出-006",
-    "relation": "cites",
-    "inferred": false
-  },
-  {
-    "from": "A-其他支出-008",
-    "to": "A-其他支出-001",
-    "relation": "cites",
-    "inferred": false
-  },
-  {
-    "from": "A-其他支出-008",
-    "to": "A-其他支出-007",
-    "relation": "cites",
-    "inferred": false
-  },
-  {
-    "from": "A-其他支出-006",
-    "to": "A-其他支出-004",
-    "relation": "cites",
-    "inferred": false
-  },
-  {
-    "from": "A-其他支出-006",
-    "to": "A-其他支出-005",
-    "relation": "cites",
-    "inferred": false
-  },
-  {
-    "from": "A-其他支出-006",
-    "to": "A-其他支出-007",
-    "relation": "cites",
-    "inferred": false
-  },
-  {
-    "from": "A-其他支出-004",
-    "to": "A-其他支出-003",
-    "relation": "cites",
-    "inferred": false
-  },
-  {
-    "from": "A-其他支出-004",
-    "to": "A-其他支出-005",
-    "relation": "cites",
-    "inferred": false
-  },
-  {
     "from": "A-國內旅費-001",
     "to": "A-國內旅費-016",
     "relation": "cites",
@@ -3554,22 +3434,6 @@
     "cross_parent": false
   },
   {
-    "from": "B-教育部專章-001",
-    "to": "A-教育部專章-003",
-    "relation": "cites_inferred",
-    "inferred": true,
-    "matched": "第三條",
-    "cross_parent": false
-  },
-  {
-    "from": "B-教育部專章-001",
-    "to": "A-教育部專章-005",
-    "relation": "cites_inferred",
-    "inferred": true,
-    "matched": "第五點",
-    "cross_parent": false
-  },
-  {
     "from": "B-酬勞費-006",
     "to": "A-酬勞費-014",
     "relation": "cites_inferred",
@@ -4864,5 +4728,21 @@
     "inferred": true,
     "matched": "第 2 點",
     "cross_parent": true
+  },
+  {
+    "from": "D-餐費及其他支出-002",
+    "to": "A-餐費及其他支出-004",
+    "relation": "cites_inferred",
+    "inferred": true,
+    "matched": "第4點",
+    "cross_parent": false
+  },
+  {
+    "from": "D-餐費及其他支出-009",
+    "to": "A-餐費及其他支出-004",
+    "relation": "cites_inferred",
+    "inferred": true,
+    "matched": "第4點",
+    "cross_parent": false
   }
 ]
