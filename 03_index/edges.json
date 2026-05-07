@@ -1662,18 +1662,6 @@
     "inferred": false
   },
   {
-    "from": "C-國外旅費-019",
-    "to": "A-國外旅費-007",
-    "relation": "explains",
-    "inferred": false
-  },
-  {
-    "from": "C-國外旅費-019",
-    "to": "A-國外旅費-009",
-    "relation": "explains",
-    "inferred": false
-  },
-  {
     "from": "C-國外旅費-025",
     "to": "A-國外旅費-007",
     "relation": "explains",
@@ -1706,24 +1694,6 @@
   {
     "from": "C-國外旅費-038",
     "to": "A-國外旅費-012",
-    "relation": "explains",
-    "inferred": false
-  },
-  {
-    "from": "C-國外旅費-040",
-    "to": "A-國外旅費-015",
-    "relation": "explains",
-    "inferred": false
-  },
-  {
-    "from": "C-國外旅費-040",
-    "to": "A-國外旅費-016",
-    "relation": "explains",
-    "inferred": false
-  },
-  {
-    "from": "C-國外旅費-040",
-    "to": "A-國外旅費-017",
     "relation": "explains",
     "inferred": false
   },
@@ -2349,18 +2319,6 @@
     "from": "C-國外旅費-185",
     "to": "B-國外旅費-003",
     "relation": "cites",
-    "inferred": false
-  },
-  {
-    "from": "C-酬勞費-001",
-    "to": "A-支出憑證與結報-016",
-    "relation": "explains",
-    "inferred": false
-  },
-  {
-    "from": "C-酬勞費-001",
-    "to": "A-支出憑證與結報-017",
-    "relation": "explains",
     "inferred": false
   },
   {
@@ -3356,22 +3314,6 @@
     "cross_parent": false
   },
   {
-    "from": "C-國內旅費-247",
-    "to": "A-國內旅費-003",
-    "relation": "cites_inferred",
-    "inferred": true,
-    "matched": "第 3 點",
-    "cross_parent": false
-  },
-  {
-    "from": "C-國內旅費-255",
-    "to": "A-國內旅費-009",
-    "relation": "cites_inferred",
-    "inferred": true,
-    "matched": "第 9 點",
-    "cross_parent": false
-  },
-  {
     "from": "C-國內旅費-277",
     "to": "A-國內旅費-017",
     "relation": "cites_inferred",
@@ -3396,14 +3338,6 @@
     "cross_parent": false
   },
   {
-    "from": "C-國內旅費-289",
-    "to": "A-國內旅費-015",
-    "relation": "cites_inferred",
-    "inferred": true,
-    "matched": "第 15 點",
-    "cross_parent": false
-  },
-  {
     "from": "C-國外旅費-186",
     "to": "A-國外旅費-002",
     "relation": "cites_inferred",
@@ -3417,22 +3351,6 @@
     "relation": "cites_inferred",
     "inferred": true,
     "matched": "第1點",
-    "cross_parent": false
-  },
-  {
-    "from": "C-酬勞費-007",
-    "to": "A-酬勞費-014",
-    "relation": "cites_inferred",
-    "inferred": true,
-    "matched": "第14條",
-    "cross_parent": false
-  },
-  {
-    "from": "C-酬勞費-007",
-    "to": "A-酬勞費-015",
-    "relation": "cites_inferred",
-    "inferred": true,
-    "matched": "第15條",
     "cross_parent": false
   },
   {
@@ -3997,6 +3915,14 @@
   },
   {
     "from": "D-國科會專章-222",
+    "to": "A-國科會專章-003",
+    "relation": "cites_inferred",
+    "inferred": true,
+    "matched": "第三點",
+    "cross_parent": false
+  },
+  {
+    "from": "D-國科會專章-225",
     "to": "A-國科會專章-003",
     "relation": "cites_inferred",
     "inferred": true,

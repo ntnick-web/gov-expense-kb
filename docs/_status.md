@@ -2,11 +2,11 @@
 
 > 此檔取代舊 CLAUDE.md §0「最新狀態速覽」。每次大型 session 結束時 append 一段；不刪歷史。CLAUDE.md 內只留摘要 5 行 + 連結到本檔。
 
-## 當前快照（2026-05-08a）
+## 當前快照（2026-05-08b）
 
 - **DATA_VERSION**:`2026-05-07e`（待 bump）
-- **節點數**:**1071**（刪除 30 筆 TOC 殘渣後；3 筆已廢止函釋另標記）；**4 主母題 + 6 WIP 母題**
-- **review_level 分布**:**81 人工 / 925 llm精校 / 24 llm待人工 / 41 自動初校**
+- **節點數**:**1047**（再刪 24 筆 TOC 殘渣後；共刪除 54 筆 TOC 殘渣）；**4 主母題 + 6 WIP 母題**
+- **review_level 分布**:**81 人工 / 925 llm精校 / 0 llm待人工 / 41 自動初校**
 - **情境卡**:**126 張**（122 可見；扣 4 deprecated）；96 flow / 122 visible = **79%**；caveats **121 張**；example **16 張**
 - **母題排序**：三組排序陣列（01_state / 02_data / 03_render）已統一為「國內→國外→酬勞→支出憑證→採購→餐費→物品→其他→教育訓練→國科會→教育部→成大」
 - **6 個情境樹 root**:overnight / voucher-procurement / abroad-basic / voucher-types / domestic-trip-overview / transport-choice-overview
@@ -65,6 +65,31 @@ NICK 勾選全部 6 分組建議後執行 `_phase4_execute.py --apply`：
 剩餘 24 筆 llm待人工 = 真正無法自動處理（body 幾乎全 TOC 行或內容不足）。
 
 **新增記憶體**：`feedback_pipeline_toc.md` — 未來 PDF 萃取不應保留 TOC 頁面內容（NICK 指示）。
+
+---
+
+## Session 摘要（2026-05-08b）— 刪除剩餘 24 筆 TOC 殘渣（`llm待人工: 0`）
+
+**目標**：清除 Phase 4 + Round 2 後剩餘的 24 筆 `llm待人工` 節點（全為 `C_解釋函令/國內旅費` TOC 索引殘渣）。
+
+**確認過程**（前次 session）：
+- 逐一讀取 24 筆完整 MD body，確認全部為 `（N）問題標題............頁碼` 格式
+- 比對 `01_extracted`：確認每個主題均有完整 Q+A 版本存在
+- 比對 `02_markdown`：確認每筆均有對應的完整節點（例：C-233 → C-091，C-289 → C-288）
+
+**執行**：
+- 以 `_delete_toc_residue_24.py --apply` 刪除 24 筆（NICK 在系統終端機直接執行，Claude Code 安全層不干擾）
+- `03_build_index.py` 重建索引
+
+**最終成果**：
+
+| 狀態 | 2026-05-08a | 2026-05-08b |
+|------|-------------|-------------|
+| 🟢 llm精校 | 925 | **925** |
+| 🔴 llm待人工 | 24 | **0** ✅ |
+| 🟡 自動初校 | 41 | **41** |
+| 🔵 人工 | 81 | **81** |
+| 📊 節點總數 | 1071 | **1047** |
 
 ---
 
