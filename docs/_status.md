@@ -2,10 +2,10 @@
 
 > 此檔取代舊 CLAUDE.md §0「最新狀態速覽」。每次大型 session 結束時 append 一段；不刪歷史。CLAUDE.md 內只留摘要 5 行 + 連結到本檔。
 
-## 當前快照（2026-05-06）
+## 當前快照（2026-05-07）
 
-- **DATA_VERSION**:`2026-05-06b`(JS 檔同步加 `?v=` cache-bust,5 個 script tag + DATA_VERSION 常數同版)
-- **節點數**:**1106**(1085 顯示 + 21 WIP 隱藏);**4 主母題 + 6 WIP 母題**（國科會專章(WIP) / 餐費 / 採購及履約 / 物品管理 / 其他支出 / 教育訓練 — chip 灰色不可點，卡片全隱藏）
+- **DATA_VERSION**:`2026-05-07a`(CI 自動 bump；2026-05-07 母題重整後 rebuild)
+- **節點數**:**1126**(+20 vs 上版；788 顯示於主 4 母題;338 在 WIP 母題);**4 主母題 + 6 WIP 母題**（國科會專章 / 餐費及其他支出 / 採購及履約 / 教育訓練 / 教育部專章 / 成功大學專章）
 - **review_level 分布**:**55 人工 / 463 llm精校 / 47 llm待人工 / 39 自動初校 / 9 未標**
 - **情境卡**:**75 張**(60 個有 flow 候選中 30 已建)— 73 張可見(扣 deprecated)
 - **Decision tree**:**30 個 flow / 75 cards = 40%**(2026-05-02 #14 達標,從 7 → 17 → 30)
@@ -26,6 +26,16 @@
 - **後端事件追蹤(2026-05-02 #25)**:[06_workers/](../06_workers/) 含完整 Worker code + D1 schema + 部署 SOP;前端 `track()` helper + sendBeacon batch flush + 3 處埋點(switchView / scenario_apply / drawer_open);**`window.EVENTS_ENDPOINT = null` 預設 inert,部署後設值才啟用**
 - **CI/CD**:GitHub Actions push to main 自動 7 步(build merged scenarios → MD validate → JSON Schema validate → audit → link check → build_index → sync DATA_VERSION → commit)
 - **#2 ESM 拆檔(完整)**:[04_web/index.html](../04_web/index.html) 從 5430 行 → **260 行**;JS 拆 [`04_web/static/js/`](../04_web/static/js/) 5 module(`00_search_index.js` / `01_state.js` / `02_data.js` / `03_render.js` / `04_main.js`);全部 plain script + `?v=` cache-bust,共享 window scope(無 ES module 的 import/export 改寫,設計取捨見 [docs/_esm_split_plan.md](_esm_split_plan.md))
+
+## Session 摘要（2026-05-07）— 四項資料整理任務
+
+- **Task 1 — 國科會專章 sort_order 清除**：移除 19 個 MD 的 `sort_order` 欄位，讓排序 fallback 至 ID 末段數字，修正兩份法規（研究人力/補助計畫）交錯排列問題
+- **Task 2 — 三母題合併為「餐費及其他支出」+ 物品管理 QA 逐條拆分**：移除 `餐費` / `物品管理` / `其他支出` 三母題；新建 33 個節點（8A + 1C + 24D，含 23 張物品管理逐條問答卡）；JS 常數全面同步
+- **Task 3 — 教育部專章清理**：刪除 A-教育部專章-001/002（PDF 封面頁殘渣）；B-教育部專章-001 移入成功大學專章（E-成功大學專章-003）
+- **Task 4 — E 類別改名 + 成功大學專章歸類**：`E_附屬法規及資料/成功大學專章/` 建立 3 卡（E-001~003）；CAT_LABEL.E + chip 按鈕文字改為「附屬法規及資料」
+- **commit**：`a9af673`；**GitHub Pages CI 自動觸發**
+
+---
 
 ## 校對狀態（資料層真實情形，2026-05-06 補完）
 
