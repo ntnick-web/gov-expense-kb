@@ -216,8 +216,9 @@ wrangler deploy 06_workers/data_worker.js --config 06_workers/wrangler_data.toml
 KV_ID="b06a21e042db46c38ae57ebf1225f430"
 
 # 公開測試版（自己測試用，不公開宣傳）
+# visible_all:true → 前端 WIP_PARENTS 清空，全部母題可見；不需逐一列出 visible_parents，新增母題時不用更新此 KV
 wrangler kv key put --namespace-id "$KV_ID" --remote "license_lk_TEST_2026" \
-  '{"tenant_id":"test","visible_parents":["支出憑證與結報","國內旅費","酬勞費","國外旅費","餐費","採購及履約","物品管理","其他支出","教育訓練","教育部專章","國科會專章"],"org_specific_parents":[],"features":["flow","comparison","calc","spotlight"],"expires_at":null}' \
+  '{"tenant_id":"test","visible_all":true,"features":["flow","comparison","calc","spotlight"],"expires_at":null}' \
   --config 06_workers/wrangler_data.toml
 
 # 國立成功大學
