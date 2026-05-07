@@ -12,7 +12,7 @@ let INCOMING_EDGES = new Map();// id → [from1, from2, ...] 反向引用
 let SCENARIOS = [];
 
 // 母題 → 簡稱 (sidebar 用)
-const PARENTS = ['支出憑證與結報', '國內旅費', '酬勞費', '國外旅費', '國科會專章', '餐費', '採購及履約', '物品管理', '其他支出', '教育訓練', '教育部專章', '成功大學專章'];
+const PARENTS = ['支出憑證與結報', '國內旅費', '酬勞費', '國外旅費', '餐費', '採購及履約', '物品管理', '其他支出', '教育訓練', '國科會專章', '教育部專章', '成功大學專章'];
 // 整備中母題:chip 顯示為灰色不可點按;卡片與情境全部隱藏
 let WIP_PARENTS = new Set(['國科會專章', '餐費', '採購及履約', '物品管理', '其他支出', '教育訓練', '教育部專章', '成功大學專章']);
 // 母題 → 正式法規名稱 + 顯示用簡稱 (A 類條文卡片標題前綴)
@@ -94,6 +94,8 @@ async function loadAllData() {
       }
     }
   }
+  // test版強制解鎖：不依賴 API header，client-side 直接清空 WIP_PARENTS
+  if (typeof window !== 'undefined' && window.FORCE_UNLOCK_ALL) WIP_PARENTS = new Set();
   // 2026-05-01 (A1):auto 卡停用；整備中母題情境一併隱藏
   // W4.2: 情境載入分兩層 — index(輕量 44KB)優先，detail(426KB)背景載入
   const [nodes, edges, scnIndex, aliases, neighbors, synonyms, baseline] = await Promise.all([
