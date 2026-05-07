@@ -8,7 +8,6 @@ tags:
 - 健保補充保費
 - 酬勞費
 related: []
-sort_order: 13
 source: 全民健康保險扣取及繳納補充保險費辦法
 version: '2024-01-01'
 reviewed: '2026-04-25'
