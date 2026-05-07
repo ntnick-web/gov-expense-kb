@@ -3258,22 +3258,6 @@
     "cross_parent": false
   },
   {
-    "from": "A-國科會專章-009",
-    "to": "A-國科會專章-004",
-    "relation": "cites_inferred",
-    "inferred": true,
-    "matched": "第四點",
-    "cross_parent": false
-  },
-  {
-    "from": "A-國科會專章-023",
-    "to": "A-國科會專章-004",
-    "relation": "cites_inferred",
-    "inferred": true,
-    "matched": "第四點",
-    "cross_parent": false
-  },
-  {
     "from": "A-酬勞費-020",
     "to": "A-酬勞費-007",
     "relation": "cites_inferred",
@@ -4226,14 +4210,6 @@
     "cross_parent": false
   },
   {
-    "from": "D-國科會專章-010",
-    "to": "A-國科會專章-004",
-    "relation": "cites_inferred",
-    "inferred": true,
-    "matched": "第四點",
-    "cross_parent": false
-  },
-  {
     "from": "D-國科會專章-011",
     "to": "A-國科會專章-010",
     "relation": "cites_inferred",
@@ -4287,14 +4263,6 @@
     "relation": "cites_inferred",
     "inferred": true,
     "matched": "第一點",
-    "cross_parent": false
-  },
-  {
-    "from": "D-國科會專章-022",
-    "to": "A-國科會專章-004",
-    "relation": "cites_inferred",
-    "inferred": true,
-    "matched": "第4點",
     "cross_parent": false
   },
   {
@@ -4415,14 +4383,6 @@
     "relation": "cites_inferred",
     "inferred": true,
     "matched": "第14條",
-    "cross_parent": false
-  },
-  {
-    "from": "D-國科會專章-090",
-    "to": "A-國科會專章-004",
-    "relation": "cites_inferred",
-    "inferred": true,
-    "matched": "第四點",
     "cross_parent": false
   },
   {
@@ -4570,30 +4530,6 @@
     "cross_parent": false
   },
   {
-    "from": "D-國科會專章-148",
-    "to": "A-國科會專章-004",
-    "relation": "cites_inferred",
-    "inferred": true,
-    "matched": "第四點",
-    "cross_parent": false
-  },
-  {
-    "from": "D-國科會專章-149",
-    "to": "A-國科會專章-004",
-    "relation": "cites_inferred",
-    "inferred": true,
-    "matched": "第四點",
-    "cross_parent": false
-  },
-  {
-    "from": "D-國科會專章-166",
-    "to": "A-國科會專章-004",
-    "relation": "cites_inferred",
-    "inferred": true,
-    "matched": "第四點",
-    "cross_parent": false
-  },
-  {
     "from": "D-國科會專章-168",
     "to": "A-國科會專章-003",
     "relation": "cites_inferred",
@@ -4607,14 +4543,6 @@
     "relation": "cites_inferred",
     "inferred": true,
     "matched": "第九點",
-    "cross_parent": false
-  },
-  {
-    "from": "D-國科會專章-184",
-    "to": "A-國科會專章-004",
-    "relation": "cites_inferred",
-    "inferred": true,
-    "matched": "第 4 條",
     "cross_parent": false
   },
   {
