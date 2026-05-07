@@ -203,8 +203,6 @@ function filteredData() {
     // 已廢止預設隱藏,但有 effective_period 的歷史費率表例外保留
     if (!filterState.showObsolete && d.status === '已廢止' && !d.effectivePeriod) continue;
     if (filterState.parent && d.cat !== filterState.parent) continue;
-    // E類附屬資料：除非明確選 E chip，否則不顯示
-    if (d.id.split('-')[0] === 'E' && filterState.type !== 'E') continue;
     if (filterState.type && d.id.split('-')[0] !== filterState.type) continue;
     if (filterState.tag && !d.tags.includes(filterState.tag)) continue;
     if (filterState.expense && !nodeMatchesExpense(d, filterState.expense)) continue;
