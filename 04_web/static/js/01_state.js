@@ -5,7 +5,7 @@
 let compareList = [];
 
 /* ──────── 真實資料載入 (608 nodes / 105 scenarios from 03_index/) ──────── */
-const DATA_VERSION = '2026-05-07b';
+const DATA_VERSION = '2026-05-07c';
 let DATA = [];                 // 對外用的卡片資料 (mapped from nodes.json)
 let NODES_BY_ID = new Map();   // id → original node (含 file_path 等)
 let INCOMING_EDGES = new Map();// id → [from1, from2, ...] 反向引用
@@ -200,6 +200,8 @@ async function loadAllData() {
         sortOrder: typeof n.sort_order === 'number' ? n.sort_order : null,
         // 法規來源(A 類法規分組標頭用)
         source: n.source || '',
+        // 2026-05-07:來源法規簡稱(A 類分組鍵,優先於 source)
+        sourceLaw: n.source_law || '',
       };
     });
   // 2026-05-02 #24:建 bigram/trigram 反向索引(query → 候選 ID Set,加速 substring 搜尋)

@@ -122,11 +122,13 @@ function renderCards() {
     currentList = _sorted;   // 同步更新,使抽屜 prev/next 與畫面順序一致
 
     // 預計算各群組卡片數(A 類 key: cat|A|subKey;其他 key: cat|exp)
+    // 2026-05-07：A 類優先用 sourceLaw 分組,fallback 用 extractLawName(source)
     const _groupCounts = new Map();
     for (const d of _sorted) {
       const _tp = d.id.split('-')[0];
+      const _lawKey = d.sourceLaw || extractLawName(d.source) || '';
       const gk = _tp === 'A'
-        ? `${d.cat}|A|${d.no ? (extractLawName(d.source) || 'main') : d.id}`
+        ? `${d.cat}|A|${d.no ? (_lawKey || 'main') : d.id}`
         : `${d.cat}|${_expMap.get(d.id)}`;
       _groupCounts.set(gk, (_groupCounts.get(gk) || 0) + 1);
     }
@@ -137,7 +139,7 @@ function renderCards() {
       const _tp = d.id.split('-')[0];
       let _key;
       if (_tp === 'A') {
-        const _lawName = extractLawName(d.source);
+        const _lawName = d.sourceLaw || extractLawName(d.source) || '';
         const _subKey = d.no ? (_lawName || 'main') : d.id;
         _key = `${d.cat}|A|${_subKey}`;
         if (_key !== _lastKey) {
