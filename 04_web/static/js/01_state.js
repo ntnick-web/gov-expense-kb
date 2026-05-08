@@ -5,7 +5,7 @@
 let compareList = [];
 
 /* ──────── 真實資料載入 (608 nodes / 105 scenarios from 03_index/) ──────── */
-const DATA_VERSION = '2026-05-08a';
+const DATA_VERSION = '2026-05-09a';
 let DATA = [];                 // 對外用的卡片資料 (mapped from nodes.json)
 let NODES_BY_ID = new Map();   // id → original node (含 file_path 等)
 let INCOMING_EDGES = new Map();// id → [from1, from2, ...] 反向引用

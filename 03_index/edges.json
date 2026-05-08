@@ -594,6 +594,126 @@
     "inferred": false
   },
   {
+    "from": "A-餐費及其他支出-001",
+    "to": "A-餐費及其他支出-002",
+    "relation": "cites",
+    "inferred": false
+  },
+  {
+    "from": "A-餐費及其他支出-001",
+    "to": "A-餐費及其他支出-003",
+    "relation": "cites",
+    "inferred": false
+  },
+  {
+    "from": "A-餐費及其他支出-001",
+    "to": "A-餐費及其他支出-004",
+    "relation": "cites",
+    "inferred": false
+  },
+  {
+    "from": "A-餐費及其他支出-001",
+    "to": "A-餐費及其他支出-005",
+    "relation": "cites",
+    "inferred": false
+  },
+  {
+    "from": "A-餐費及其他支出-007",
+    "to": "A-餐費及其他支出-001",
+    "relation": "cites",
+    "inferred": false
+  },
+  {
+    "from": "A-餐費及其他支出-007",
+    "to": "A-餐費及其他支出-008",
+    "relation": "cites",
+    "inferred": false
+  },
+  {
+    "from": "A-餐費及其他支出-003",
+    "to": "A-餐費及其他支出-002",
+    "relation": "cites",
+    "inferred": false
+  },
+  {
+    "from": "A-餐費及其他支出-003",
+    "to": "A-餐費及其他支出-004",
+    "relation": "cites",
+    "inferred": false
+  },
+  {
+    "from": "A-餐費及其他支出-003",
+    "to": "A-餐費及其他支出-005",
+    "relation": "cites",
+    "inferred": false
+  },
+  {
+    "from": "A-餐費及其他支出-002",
+    "to": "A-餐費及其他支出-001",
+    "relation": "cites",
+    "inferred": false
+  },
+  {
+    "from": "A-餐費及其他支出-002",
+    "to": "A-餐費及其他支出-003",
+    "relation": "cites",
+    "inferred": false
+  },
+  {
+    "from": "A-餐費及其他支出-005",
+    "to": "A-餐費及其他支出-004",
+    "relation": "cites",
+    "inferred": false
+  },
+  {
+    "from": "A-餐費及其他支出-005",
+    "to": "A-餐費及其他支出-006",
+    "relation": "cites",
+    "inferred": false
+  },
+  {
+    "from": "A-餐費及其他支出-008",
+    "to": "A-餐費及其他支出-001",
+    "relation": "cites",
+    "inferred": false
+  },
+  {
+    "from": "A-餐費及其他支出-008",
+    "to": "A-餐費及其他支出-007",
+    "relation": "cites",
+    "inferred": false
+  },
+  {
+    "from": "A-餐費及其他支出-006",
+    "to": "A-餐費及其他支出-004",
+    "relation": "cites",
+    "inferred": false
+  },
+  {
+    "from": "A-餐費及其他支出-006",
+    "to": "A-餐費及其他支出-005",
+    "relation": "cites",
+    "inferred": false
+  },
+  {
+    "from": "A-餐費及其他支出-006",
+    "to": "A-餐費及其他支出-007",
+    "relation": "cites",
+    "inferred": false
+  },
+  {
+    "from": "A-餐費及其他支出-004",
+    "to": "A-餐費及其他支出-003",
+    "relation": "cites",
+    "inferred": false
+  },
+  {
+    "from": "A-餐費及其他支出-004",
+    "to": "A-餐費及其他支出-005",
+    "relation": "cites",
+    "inferred": false
+  },
+  {
     "from": "B-國外旅費-003",
     "to": "A-國外旅費-007",
     "relation": "cites",
@@ -3474,35 +3594,11 @@
     "cross_parent": false
   },
   {
-    "from": "D-國科會專章-002",
-    "to": "A-國科會專章-003",
-    "relation": "cites_inferred",
-    "inferred": true,
-    "matched": "第三點",
-    "cross_parent": false
-  },
-  {
     "from": "D-國科會專章-003",
     "to": "A-國科會專章-010",
     "relation": "cites_inferred",
     "inferred": true,
     "matched": "第十點",
-    "cross_parent": false
-  },
-  {
-    "from": "D-國科會專章-003",
-    "to": "A-國科會專章-003",
-    "relation": "cites_inferred",
-    "inferred": true,
-    "matched": "第三點",
-    "cross_parent": false
-  },
-  {
-    "from": "D-國科會專章-006",
-    "to": "A-國科會專章-003",
-    "relation": "cites_inferred",
-    "inferred": true,
-    "matched": "第三點",
     "cross_parent": false
   },
   {
@@ -3522,43 +3618,11 @@
     "cross_parent": false
   },
   {
-    "from": "D-國科會專章-011",
-    "to": "A-國科會專章-003",
-    "relation": "cites_inferred",
-    "inferred": true,
-    "matched": "第三點",
-    "cross_parent": false
-  },
-  {
-    "from": "D-國科會專章-017",
-    "to": "A-國科會專章-003",
-    "relation": "cites_inferred",
-    "inferred": true,
-    "matched": "第三點",
-    "cross_parent": false
-  },
-  {
     "from": "D-國科會專章-017",
     "to": "A-國科會專章-017",
     "relation": "cites_inferred",
     "inferred": true,
     "matched": "第十七點",
-    "cross_parent": false
-  },
-  {
-    "from": "D-國科會專章-018",
-    "to": "A-國科會專章-003",
-    "relation": "cites_inferred",
-    "inferred": true,
-    "matched": "第三點",
-    "cross_parent": false
-  },
-  {
-    "from": "D-國科會專章-019",
-    "to": "A-國科會專章-003",
-    "relation": "cites_inferred",
-    "inferred": true,
-    "matched": "第三點",
     "cross_parent": false
   },
   {
@@ -3578,14 +3642,6 @@
     "cross_parent": false
   },
   {
-    "from": "D-國科會專章-028",
-    "to": "A-國科會專章-003",
-    "relation": "cites_inferred",
-    "inferred": true,
-    "matched": "第三點",
-    "cross_parent": false
-  },
-  {
     "from": "D-國科會專章-029",
     "to": "A-國科會專章-002",
     "relation": "cites_inferred",
@@ -3599,38 +3655,6 @@
     "relation": "cites_inferred",
     "inferred": true,
     "matched": "第二點",
-    "cross_parent": false
-  },
-  {
-    "from": "D-國科會專章-032",
-    "to": "A-國科會專章-003",
-    "relation": "cites_inferred",
-    "inferred": true,
-    "matched": "第三點",
-    "cross_parent": false
-  },
-  {
-    "from": "D-國科會專章-033",
-    "to": "A-國科會專章-003",
-    "relation": "cites_inferred",
-    "inferred": true,
-    "matched": "第三點",
-    "cross_parent": false
-  },
-  {
-    "from": "D-國科會專章-041",
-    "to": "A-國科會專章-003",
-    "relation": "cites_inferred",
-    "inferred": true,
-    "matched": "第三點",
-    "cross_parent": false
-  },
-  {
-    "from": "D-國科會專章-043",
-    "to": "A-國科會專章-003",
-    "relation": "cites_inferred",
-    "inferred": true,
-    "matched": "第三點",
     "cross_parent": false
   },
   {
@@ -3655,22 +3679,6 @@
     "relation": "cites_inferred",
     "inferred": true,
     "matched": "第6點",
-    "cross_parent": false
-  },
-  {
-    "from": "D-國科會專章-073",
-    "to": "A-國科會專章-003",
-    "relation": "cites_inferred",
-    "inferred": true,
-    "matched": "第三點",
-    "cross_parent": false
-  },
-  {
-    "from": "D-國科會專章-074",
-    "to": "A-國科會專章-003",
-    "relation": "cites_inferred",
-    "inferred": true,
-    "matched": "第三點",
     "cross_parent": false
   },
   {
@@ -3706,14 +3714,6 @@
     "cross_parent": false
   },
   {
-    "from": "D-國科會專章-098",
-    "to": "A-國科會專章-003",
-    "relation": "cites_inferred",
-    "inferred": true,
-    "matched": "第3點",
-    "cross_parent": false
-  },
-  {
     "from": "D-國科會專章-099",
     "to": "A-國科會專章-005",
     "relation": "cites_inferred",
@@ -3738,27 +3738,11 @@
     "cross_parent": false
   },
   {
-    "from": "D-國科會專章-108",
-    "to": "A-國科會專章-003",
-    "relation": "cites_inferred",
-    "inferred": true,
-    "matched": "第三點",
-    "cross_parent": false
-  },
-  {
     "from": "D-國科會專章-111",
     "to": "A-國科會專章-002",
     "relation": "cites_inferred",
     "inferred": true,
     "matched": "第二條",
-    "cross_parent": false
-  },
-  {
-    "from": "D-國科會專章-115",
-    "to": "A-國科會專章-003",
-    "relation": "cites_inferred",
-    "inferred": true,
-    "matched": "第三點",
     "cross_parent": false
   },
   {
@@ -3770,51 +3754,11 @@
     "cross_parent": false
   },
   {
-    "from": "D-國科會專章-119",
-    "to": "A-國科會專章-003",
-    "relation": "cites_inferred",
-    "inferred": true,
-    "matched": "第三點",
-    "cross_parent": false
-  },
-  {
-    "from": "D-國科會專章-122",
-    "to": "A-國科會專章-003",
-    "relation": "cites_inferred",
-    "inferred": true,
-    "matched": "第三點",
-    "cross_parent": false
-  },
-  {
     "from": "D-國科會專章-124",
     "to": "A-國科會專章-002",
     "relation": "cites_inferred",
     "inferred": true,
     "matched": "第二點",
-    "cross_parent": false
-  },
-  {
-    "from": "D-國科會專章-127",
-    "to": "A-國科會專章-003",
-    "relation": "cites_inferred",
-    "inferred": true,
-    "matched": "第三點",
-    "cross_parent": false
-  },
-  {
-    "from": "D-國科會專章-132",
-    "to": "A-國科會專章-003",
-    "relation": "cites_inferred",
-    "inferred": true,
-    "matched": "第三點",
-    "cross_parent": false
-  },
-  {
-    "from": "D-國科會專章-138",
-    "to": "A-國科會專章-003",
-    "relation": "cites_inferred",
-    "inferred": true,
-    "matched": "第三點",
     "cross_parent": false
   },
   {
@@ -3831,14 +3775,6 @@
     "relation": "cites_inferred",
     "inferred": true,
     "matched": "第6點",
-    "cross_parent": false
-  },
-  {
-    "from": "D-國科會專章-168",
-    "to": "A-國科會專章-003",
-    "relation": "cites_inferred",
-    "inferred": true,
-    "matched": "第3點",
     "cross_parent": false
   },
   {
@@ -3911,30 +3847,6 @@
     "relation": "cites_inferred",
     "inferred": true,
     "matched": "第二點",
-    "cross_parent": false
-  },
-  {
-    "from": "D-國科會專章-222",
-    "to": "A-國科會專章-003",
-    "relation": "cites_inferred",
-    "inferred": true,
-    "matched": "第三點",
-    "cross_parent": false
-  },
-  {
-    "from": "D-國科會專章-225",
-    "to": "A-國科會專章-003",
-    "relation": "cites_inferred",
-    "inferred": true,
-    "matched": "第三點",
-    "cross_parent": false
-  },
-  {
-    "from": "D-國科會專章-228",
-    "to": "A-國科會專章-003",
-    "relation": "cites_inferred",
-    "inferred": true,
-    "matched": "第三點",
     "cross_parent": false
   },
   {
