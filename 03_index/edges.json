@@ -2790,6 +2790,12 @@
     "inferred": false
   },
   {
+    "from": "D-國科會專章-028",
+    "to": "A-國科會專章-016",
+    "relation": "answers",
+    "inferred": false
+  },
+  {
     "from": "D-支出憑證與結報-001",
     "to": "A-支出憑證與結報-004",
     "relation": "answers",
@@ -3306,22 +3312,6 @@
     "inferred": false
   },
   {
-    "from": "A-其他-001",
-    "to": "A-其他-002",
-    "relation": "cites_inferred",
-    "inferred": true,
-    "matched": "第二點",
-    "cross_parent": false
-  },
-  {
-    "from": "A-國科會專章-002",
-    "to": "A-國科會專章-005",
-    "relation": "cites_inferred",
-    "inferred": true,
-    "matched": "第五點",
-    "cross_parent": false
-  },
-  {
     "from": "A-國科會專章-015",
     "to": "A-國科會專章-005",
     "relation": "cites_inferred",
@@ -3626,38 +3616,6 @@
     "cross_parent": false
   },
   {
-    "from": "D-國科會專章-020",
-    "to": "A-國科會專章-001",
-    "relation": "cites_inferred",
-    "inferred": true,
-    "matched": "第一點",
-    "cross_parent": false
-  },
-  {
-    "from": "D-國科會專章-022",
-    "to": "A-國科會專章-001",
-    "relation": "cites_inferred",
-    "inferred": true,
-    "matched": "第1點",
-    "cross_parent": false
-  },
-  {
-    "from": "D-國科會專章-029",
-    "to": "A-國科會專章-002",
-    "relation": "cites_inferred",
-    "inferred": true,
-    "matched": "第二點",
-    "cross_parent": false
-  },
-  {
-    "from": "D-國科會專章-030",
-    "to": "A-國科會專章-002",
-    "relation": "cites_inferred",
-    "inferred": true,
-    "matched": "第二點",
-    "cross_parent": false
-  },
-  {
     "from": "D-國科會專章-055",
     "to": "A-國外旅費-009",
     "relation": "cites_inferred",
@@ -3679,14 +3637,6 @@
     "relation": "cites_inferred",
     "inferred": true,
     "matched": "第6點",
-    "cross_parent": false
-  },
-  {
-    "from": "D-國科會專章-086",
-    "to": "A-國科會專章-002",
-    "relation": "cites_inferred",
-    "inferred": true,
-    "matched": "第二點",
     "cross_parent": false
   },
   {
@@ -3738,27 +3688,11 @@
     "cross_parent": false
   },
   {
-    "from": "D-國科會專章-111",
-    "to": "A-國科會專章-002",
-    "relation": "cites_inferred",
-    "inferred": true,
-    "matched": "第二條",
-    "cross_parent": false
-  },
-  {
     "from": "D-國科會專章-117",
     "to": "A-國科會專章-006",
     "relation": "cites_inferred",
     "inferred": true,
     "matched": "第六點",
-    "cross_parent": false
-  },
-  {
-    "from": "D-國科會專章-124",
-    "to": "A-國科會專章-002",
-    "relation": "cites_inferred",
-    "inferred": true,
-    "matched": "第二點",
     "cross_parent": false
   },
   {
@@ -3802,14 +3736,6 @@
     "cross_parent": false
   },
   {
-    "from": "D-國科會專章-185",
-    "to": "A-國科會專章-002",
-    "relation": "cites_inferred",
-    "inferred": true,
-    "matched": "第二點",
-    "cross_parent": false
-  },
-  {
     "from": "D-國科會專章-198",
     "to": "A-國科會專章-005",
     "relation": "cites_inferred",
@@ -3831,22 +3757,6 @@
     "relation": "cites_inferred",
     "inferred": true,
     "matched": "第十點",
-    "cross_parent": false
-  },
-  {
-    "from": "D-國科會專章-214",
-    "to": "A-國科會專章-002",
-    "relation": "cites_inferred",
-    "inferred": true,
-    "matched": "第二點",
-    "cross_parent": false
-  },
-  {
-    "from": "D-國科會專章-220",
-    "to": "A-國科會專章-002",
-    "relation": "cites_inferred",
-    "inferred": true,
-    "matched": "第二點",
     "cross_parent": false
   },
   {
@@ -3872,14 +3782,6 @@
     "inferred": true,
     "matched": "第 15 點",
     "cross_parent": false
-  },
-  {
-    "from": "D-支出憑證與結報-029",
-    "to": "A-其他-002",
-    "relation": "cites_inferred",
-    "inferred": true,
-    "matched": "第 2 點",
-    "cross_parent": true
   },
   {
     "from": "D-餐費及其他支出-002",
