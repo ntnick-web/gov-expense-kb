@@ -1,0 +1,214 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>後台統計 — 支出法規知識庫</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --bg: #f5f5f7;
+    --surface: #ffffff;
+    --brand: #2563eb;
+    --brand-light: #dbeafe;
+    --ink: #1a1a2e;
+    --ink-2: #4b5563;
+    --ink-3: #9ca3af;
+    --radius: 12px;
+    --bar-color: #3b82f6;
+    --bar-alt: #93c5fd;
+    --green: #16a34a;
+    --red: #dc2626;
+  }
+  body { background: var(--bg); font-family: -apple-system, 'Segoe UI', sans-serif; color: var(--ink); min-height: 100vh; padding: 24px 16px; }
+  h1 { font-size: 22px; font-weight: 700; margin-bottom: 4px; }
+  .subtitle { color: var(--ink-3); font-size: 13px; margin-bottom: 24px; }
+
+  /* Token form */
+  .auth-bar { display: flex; gap: 8px; margin-bottom: 28px; max-width: 520px; }
+  .auth-bar input {
+    flex: 1; padding: 10px 14px; border: 1.5px solid #d1d5db; border-radius: 8px;
+    font-size: 14px; background: var(--surface); color: var(--ink);
+    outline: none; transition: border-color .15s;
+  }
+  .auth-bar input:focus { border-color: var(--brand); }
+  .auth-bar button {
+    padding: 10px 20px; background: var(--brand); color: #fff; border: none;
+    border-radius: 8px; font-size: 14px; font-weight: 600; cursor: pointer;
+    white-space: nowrap; transition: opacity .15s;
+  }
+  .auth-bar button:hover { opacity: .85; }
+  .auth-bar button:disabled { opacity: .5; cursor: default; }
+
+  .status-msg { font-size: 13px; margin-bottom: 20px; min-height: 20px; }
+  .status-msg.ok   { color: var(--green); }
+  .status-msg.err  { color: var(--red); }
+  .status-msg.loading { color: var(--ink-3); }
+
+  /* Grid */
+  .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(340px, 1fr)); gap: 16px; }
+  .card {
+    background: var(--surface); border-radius: var(--radius); padding: 20px;
+    box-shadow: 0 1px 4px rgba(0,0,0,.06);
+  }
+  .card-title { font-size: 14px; font-weight: 700; margin-bottom: 14px; color: var(--ink-2); text-transform: uppercase; letter-spacing: .04em; }
+  .empty { font-size: 13px; color: var(--ink-3); }
+
+  /* Bar chart */
+  .bar-row { display: flex; align-items: center; gap: 8px; margin-bottom: 8px; }
+  .bar-label { font-size: 12px; color: var(--ink-2); width: 130px; flex-shrink: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .bar-track { flex: 1; background: var(--brand-light); border-radius: 4px; height: 14px; overflow: hidden; }
+  .bar-fill { height: 100%; background: var(--bar-color); border-radius: 4px; transition: width .4s ease; }
+  .bar-count { font-size: 12px; color: var(--ink-2); min-width: 28px; text-align: right; font-variant-numeric: tabular-nums; }
+
+  /* Ranked list */
+  .rank-list { list-style: none; }
+  .rank-list li { display: flex; align-items: baseline; gap: 8px; padding: 5px 0; border-bottom: 1px solid var(--bg); font-size: 13px; }
+  .rank-list li:last-child { border-bottom: none; }
+  .rank-num { font-size: 11px; color: var(--ink-3); min-width: 18px; text-align: right; font-variant-numeric: tabular-nums; }
+  .rank-target { flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: var(--ink); }
+  .rank-count { font-size: 12px; color: var(--ink-2); font-variant-numeric: tabular-nums; white-space: nowrap; }
+
+  /* Hash note */
+  .hash-note { font-size: 11px; color: var(--ink-3); margin-bottom: 10px; padding: 6px 10px; background: var(--bg); border-radius: 6px; }
+
+  /* Refresh */
+  .toolbar { display: flex; align-items: center; gap: 12px; margin-bottom: 20px; }
+  .refresh-btn { font-size: 13px; color: var(--brand); background: none; border: none; cursor: pointer; padding: 0; text-decoration: underline; }
+  .last-fetched { font-size: 12px; color: var(--ink-3); }
+</style>
+</head>
+<body>
+<h1>後台統計</h1>
+<p class="subtitle">gov-expense-events · 近 7 天資料</p>
+
+<div class="auth-bar">
+  <input type="password" id="token-input" placeholder="輸入 STATS_TOKEN" autocomplete="off">
+  <button id="fetch-btn">查詢</button>
+</div>
+<div id="status" class="status-msg"></div>
+
+<div class="toolbar" id="toolbar" style="display:none">
+  <button class="refresh-btn" id="refresh-btn">重新整理</button>
+  <span class="last-fetched" id="last-fetched"></span>
+</div>
+
+<div class="grid" id="grid" style="display:none">
+  <div class="card" id="card-events">
+    <div class="card-title">事件分布（7 天）</div>
+    <div id="events-body"><p class="empty">載入中…</p></div>
+  </div>
+  <div class="card" id="card-scenarios">
+    <div class="card-title">熱門情境卡</div>
+    <div id="scenarios-body"><p class="empty">載入中…</p></div>
+  </div>
+  <div class="card" id="card-search">
+    <div class="card-title">熱門搜尋</div>
+    <div class="hash-note">⚠ 搜尋字串已在伺服器端 SHA-256 雜湊（隱私保護），此處僅顯示 hash 前段，無法還原原文。</div>
+    <div id="search-body"><p class="empty">載入中…</p></div>
+  </div>
+  <div class="card" id="card-drawer">
+    <div class="card-title">熱門抽屜</div>
+    <div id="drawer-body"><p class="empty">載入中…</p></div>
+  </div>
+</div>
+
+<script>
+  const ENDPOINT = 'https://gov-expense-events.ntnick72.workers.dev/api/stats';
+  const TOKEN_KEY = 'gov_stats_token';
+
+  const $tokenInput = document.getElementById('token-input');
+  const $fetchBtn   = document.getElementById('fetch-btn');
+  const $status     = document.getElementById('status');
+  const $grid       = document.getElementById('grid');
+  const $toolbar    = document.getElementById('toolbar');
+  const $refresh    = document.getElementById('refresh-btn');
+  const $lastFetch  = document.getElementById('last-fetched');
+
+  // Restore token from sessionStorage
+  const saved = sessionStorage.getItem(TOKEN_KEY);
+  if (saved) $tokenInput.value = saved;
+
+  async function loadStats() {
+    const token = $tokenInput.value.trim();
+    if (!token) { setStatus('err', '請輸入 STATS_TOKEN'); return; }
+    sessionStorage.setItem(TOKEN_KEY, token);
+    setStatus('loading', '查詢中…');
+    $fetchBtn.disabled = true;
+
+    try {
+      const res = await fetch(`${ENDPOINT}?token=${encodeURIComponent(token)}`);
+      if (res.status === 401 || res.status === 403) {
+        setStatus('err', 'Token 驗證失敗，請確認 STATS_TOKEN 是否正確');
+        $fetchBtn.disabled = false;
+        return;
+      }
+      if (!res.ok) {
+        setStatus('err', `伺服器錯誤 (HTTP ${res.status})`);
+        $fetchBtn.disabled = false;
+        return;
+      }
+      const data = await res.json();
+      render(data);
+      setStatus('ok', '資料載入成功');
+      $grid.style.display = '';
+      $toolbar.style.display = '';
+      $lastFetch.textContent = '最後更新：' + new Date().toLocaleTimeString('zh-Hant');
+    } catch (e) {
+      setStatus('err', '網路錯誤：' + (e.message || e));
+    }
+    $fetchBtn.disabled = false;
+  }
+
+  function setStatus(type, msg) {
+    $status.className = 'status-msg ' + type;
+    $status.textContent = msg;
+  }
+
+  function render(data) {
+    renderBars('events-body', (data.event_counts_7d || []).map(r => ({ label: r.type, count: r.n })));
+    renderRanked('scenarios-body', (data.top_scenarios_7d || []).map(r => ({ target: r.target, count: r.n })));
+    renderRanked('search-body', (data.top_search_7d || []).map(r => ({ target: r.qhash, count: r.n })));
+    renderRanked('drawer-body', (data.top_drawer_7d || []).map(r => ({ target: r.target, count: r.n })));
+  }
+
+  function renderBars(id, items) {
+    const el = document.getElementById(id);
+    if (!items.length) { el.innerHTML = '<p class="empty">暫無資料</p>'; return; }
+    const max = Math.max(...items.map(i => i.count));
+    el.innerHTML = items.map(item => {
+      const pct = max > 0 ? Math.max(3, Math.round(item.count / max * 100)) : 0;
+      return `<div class="bar-row">
+        <span class="bar-label" title="${esc(item.label)}">${esc(item.label)}</span>
+        <div class="bar-track"><div class="bar-fill" style="width:${pct}%"></div></div>
+        <span class="bar-count">${item.count.toLocaleString()}</span>
+      </div>`;
+    }).join('');
+  }
+
+  function renderRanked(id, items) {
+    const el = document.getElementById(id);
+    if (!items.length) { el.innerHTML = '<p class="empty">暫無資料</p>'; return; }
+    el.innerHTML = '<ul class="rank-list">' + items.map((item, i) =>
+      `<li>
+        <span class="rank-num">${i + 1}</span>
+        <span class="rank-target" title="${esc(item.target)}">${esc(item.target)}</span>
+        <span class="rank-count">${item.count.toLocaleString()} 次</span>
+      </li>`
+    ).join('') + '</ul>';
+  }
+
+  function esc(s) {
+    return String(s || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+  }
+
+  $fetchBtn.addEventListener('click', loadStats);
+  $refresh.addEventListener('click', loadStats);
+  $tokenInput.addEventListener('keydown', e => { if (e.key === 'Enter') loadStats(); });
+
+  // Auto-load if token already saved
+  if (saved) loadStats();
+</script>
+</body>
+</html>

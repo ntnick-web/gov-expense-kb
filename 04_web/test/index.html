@@ -20,9 +20,10 @@
      LICENSE_KEY 啟用 WIP 母題全開（含教育部專章、國科會專章）。
      _FETCH_BASE：讓 01_state.js / 03_render.js 的相對路徑從 04_web/ 解析，
      而非從 04_web/test/ 解析，避免 edges.json / data/ 等靜態檔路徑錯誤。 */
-  window.DATA_API_BASE = 'https://gov-expense-data.ntnick72.workers.dev';
-  window.LICENSE_KEY   = 'lk_TEST_2026';
-  window._FETCH_BASE   = new URL('../', location.href).href;
+  window.DATA_API_BASE   = 'https://gov-expense-data.ntnick72.workers.dev';
+  window.LICENSE_KEY     = 'lk_TEST_2026';
+  window._FETCH_BASE     = new URL('../', location.href).href;
+  window.EVENTS_ENDPOINT = null;  // 測試版不送追蹤事件，避免污染生產資料
 </script>
 <script>
   (function () {

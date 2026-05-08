@@ -1258,6 +1258,11 @@ document.getElementById('q').addEventListener('input', (ev) => {
     switchView('library');
     renderSidebar();
   }
+  clearTimeout(document.getElementById('q')._trackT);
+  document.getElementById('q')._trackT = setTimeout(() => {
+    const v = (filterState.query || '').trim();
+    if (v.length >= 2 && typeof track === 'function') track('search', v);
+  }, 800);
   renderChips();
   renderCards();
 });
@@ -1848,6 +1853,7 @@ function renderCalc() {
       formulaHtml = `<div class="calc-formula calc-formula-hint">💡 輸入天數即可自動算總額</div>${ntdHint}`;
     }
     $livingResult.className = 'calc-result hit' + (isFallback ? ' is-fallback' : '');
+    if (typeof track === 'function') track('rate_lookup', partial.city || partial.shortLabel, { sourceId: partial.sourceId, type: 'living' });
     $livingResult.innerHTML = `
       ${fallbackBanner}
       <div class="calc-result-label">${partial.label}</div>
@@ -1908,6 +1914,7 @@ function renderCalc() {
     const totalNum = parseInt(String(found[1]).replace(/,/g, ''), 10);
     const perDay = Number.isFinite(totalNum) && days > 0 ? (totalNum / days) : null;
     $insResult.className = 'calc-result hit';
+    if (typeof track === 'function') track('rate_lookup', activeInsKey, { days, type: 'insurance' });
     $insResult.innerHTML = `
       <div class="calc-result-label">${activeInsKey} · ${days} 天</div>
       <div class="calc-result-value">NT$ ${found[1]}</div>
