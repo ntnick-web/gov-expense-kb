@@ -1197,8 +1197,8 @@ function renderChips() {
     .filter(([t]) => !EXPENSE_LIST.includes(t))   // 已是 expense 的不重複出現
     .sort((a, b) => b[1] - a[1]).slice(0, 8);
   if (topTags.length) {
-    /* 熱門標籤:預設摺疊(除非已選中其中一個)以節省 first fold */
-    const tagExpanded = window._tagExpanded === true || !!filterState.tag;
+    /* 熱門標籤:預設展開(除非使用者主動收起) */
+    const tagExpanded = window._tagExpanded !== false || !!filterState.tag;
     if (tagExpanded) {
       $tagRow.innerHTML = `
         <span class="filterrow-label">熱門標籤</span>
@@ -2043,6 +2043,31 @@ function openFlowModal(scenario) {
             </div>` : '';
           })() : ''}
         </div>
+        ${(() => {
+          const caveats = Array.isArray(scenario.caveats) ? scenario.caveats : [];
+          return caveats.length ? `
+        <div style="margin-top:10px;padding:12px 14px;background:var(--pastel-strawberry);border:1px solid var(--ink-strawberry);border-radius:var(--radius)">
+          <div style="font-size:12px;font-weight:700;color:var(--ink-strawberry);margin-bottom:6px">⚠ 注意事項</div>
+          <ul class="scope-caveats-list">
+            ${caveats.map(cv => {
+              const text = (typeof cv === 'string') ? cv : (cv.text || '');
+              const ref = (typeof cv === 'object' && cv.legal_ref) ? cv.legal_ref : '';
+              const sev = (typeof cv === 'object' && cv.severity) ? cv.severity : 'stop';
+              return `<li class="caveat-${sev}">${escapeHtml(text)}${ref ? ` <code class="caveat-ref">[${escapeHtml(ref)}]</code>` : ''}</li>`;
+            }).join('')}
+          </ul>
+        </div>` : '';
+        })()}
+        ${(() => {
+          const atts = Array.isArray(scenario.attachments) ? scenario.attachments : [];
+          return atts.length ? `
+        <div style="margin-top:8px;padding:12px 14px;background:var(--pastel-peach);border:1px solid var(--ink-peach);border-radius:var(--radius)">
+          <div style="font-size:12px;font-weight:700;color:var(--ink-peach);margin-bottom:6px">📎 需附單據</div>
+          <ol class="scope-attachments-list">
+            ${atts.map((a, i) => `<li><span class="scope-att-num">${String(i + 1).padStart(2, '0')}</span><span>${escapeHtml(a)}</span></li>`).join('')}
+          </ol>
+        </div>` : '';
+        })()}
         <div style="margin-top:14px;display:flex;gap:8px;flex-wrap:wrap">
           ${answered.length > 0 ? `<button class="btn" data-flow-back>← 上一步</button>` : ''}
           <button class="btn" data-flow-restart>↩ 重新開始</button>

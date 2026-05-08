@@ -111,7 +111,10 @@
       <div class="pagehead">
         <h1>條文庫</h1>
         <p>核心法規 · 支出標準 · 解釋函令 · 問答集 — 點擊任一卡片查看詳細條文與相關 Q&amp;A</p>
-        <p class="pagehead-notice">ℹ 解釋函令（C 類）及問答集（D 類）依行政院主計總處等相關單位官網放置資料建置，所列內容不一定已配合最新法規修正更新，引用時請自行核對或洽主計室確認。</p>
+        <details class="pagehead-notice" style="cursor:pointer">
+          <summary style="list-style:none;display:block">ℹ 解釋函令（C 類）及問答集（D 類）— 引用請注意 ▾</summary>
+          <span style="display:block;margin-top:4px">依行政院主計總處等相關單位官網放置資料建置，所列內容不一定已配合最新法規修正更新，引用時請自行核對或洽主計室確認。</span>
+        </details>
       </div>
 
       <div id="scope-banner-slot"></div>
@@ -145,7 +148,7 @@
       <!-- 情境內關鍵字搜尋(2026-05-01 加)-->
       <div class="sc-search">
         <span aria-hidden="true">🔍</span>
-        <input type="search" id="sc-q" placeholder="情境內搜尋:標題、副標、標籤、母題、支出類別…(含同義詞)" autocomplete="off" spellcheck="false">
+        <input type="search" id="sc-q" placeholder="搜尋情境…例如:機票、自駕、計程車、住宿" autocomplete="off" spellcheck="false">
         <button class="sc-search-clear" id="sc-q-clear" hidden type="button" aria-label="清除搜尋">✕ 清除</button>
       </div>
 
