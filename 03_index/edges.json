@@ -450,6 +450,120 @@
     "inferred": false
   },
   {
+    "from": "A-農業部專章-009",
+    "to": "A-農業部專章-034",
+    "relation": "cites",
+    "inferred": false
+  },
+  {
+    "from": "A-農業部專章-021",
+    "to": "A-農業部專章-022",
+    "relation": "cites",
+    "inferred": false
+  },
+  {
+    "from": "A-農業部專章-027",
+    "to": "A-農業部專章-029",
+    "relation": "cites",
+    "inferred": false
+  },
+  {
+    "from": "A-農業部專章-029",
+    "to": "A-農業部專章-027",
+    "relation": "cites",
+    "inferred": false
+  },
+  {
+    "from": "A-農業部專章-022",
+    "to": "A-農業部專章-021",
+    "relation": "cites",
+    "inferred": false
+  },
+  {
+    "from": "A-農業部專章-028",
+    "to": "A-農業部專章-027",
+    "relation": "cites",
+    "inferred": false
+  },
+  {
+    "from": "A-農業部專章-013",
+    "to": "A-農業部專章-032",
+    "relation": "cites",
+    "inferred": false
+  },
+  {
+    "from": "A-農業部專章-019",
+    "to": "A-農業部專章-032",
+    "relation": "cites",
+    "inferred": false
+  },
+  {
+    "from": "A-農業部專章-019",
+    "to": "A-農業部專章-033",
+    "relation": "cites",
+    "inferred": false
+  },
+  {
+    "from": "A-農業部專章-012",
+    "to": "A-農業部專章-033",
+    "relation": "cites",
+    "inferred": false
+  },
+  {
+    "from": "A-農業部專章-015",
+    "to": "A-農業部專章-007",
+    "relation": "cites",
+    "inferred": false
+  },
+  {
+    "from": "A-農業部專章-032",
+    "to": "A-農業部專章-013",
+    "relation": "cites",
+    "inferred": false
+  },
+  {
+    "from": "A-農業部專章-033",
+    "to": "A-農業部專章-012",
+    "relation": "cites",
+    "inferred": false
+  },
+  {
+    "from": "A-農業部專章-035",
+    "to": "A-農業部專章-012",
+    "relation": "cites",
+    "inferred": false
+  },
+  {
+    "from": "A-農業部專章-035",
+    "to": "A-農業部專章-013",
+    "relation": "cites",
+    "inferred": false
+  },
+  {
+    "from": "A-農業部專章-035",
+    "to": "A-農業部專章-033",
+    "relation": "cites",
+    "inferred": false
+  },
+  {
+    "from": "A-農業部專章-034",
+    "to": "A-農業部專章-009",
+    "relation": "cites",
+    "inferred": false
+  },
+  {
+    "from": "A-農業部專章-034",
+    "to": "A-農業部專章-012",
+    "relation": "cites",
+    "inferred": false
+  },
+  {
+    "from": "A-農業部專章-034",
+    "to": "A-農業部專章-013",
+    "relation": "cites",
+    "inferred": false
+  },
+  {
     "from": "A-酬勞費-020",
     "to": "A-酬勞費-003",
     "relation": "cites",
@@ -3317,6 +3431,54 @@
     "relation": "cites_inferred",
     "inferred": true,
     "matched": "第五點",
+    "cross_parent": false
+  },
+  {
+    "from": "A-農業部專章-031",
+    "to": "A-農業部專章-005",
+    "relation": "cites_inferred",
+    "inferred": true,
+    "matched": "第五點",
+    "cross_parent": false
+  },
+  {
+    "from": "A-農業部專章-002",
+    "to": "A-農業部專章-015",
+    "relation": "cites_inferred",
+    "inferred": true,
+    "matched": "第十五條",
+    "cross_parent": false
+  },
+  {
+    "from": "A-農業部專章-002",
+    "to": "A-農業部專章-016",
+    "relation": "cites_inferred",
+    "inferred": true,
+    "matched": "第十六條",
+    "cross_parent": false
+  },
+  {
+    "from": "A-農業部專章-002",
+    "to": "A-農業部專章-019",
+    "relation": "cites_inferred",
+    "inferred": true,
+    "matched": "第十九條",
+    "cross_parent": false
+  },
+  {
+    "from": "A-農業部專章-015",
+    "to": "A-農業部專章-028",
+    "relation": "cites_inferred",
+    "inferred": true,
+    "matched": "第二十八條",
+    "cross_parent": false
+  },
+  {
+    "from": "A-農業部專章-004",
+    "to": "A-農業部專章-030",
+    "relation": "cites_inferred",
+    "inferred": true,
+    "matched": "第三十條",
     "cross_parent": false
   },
   {
