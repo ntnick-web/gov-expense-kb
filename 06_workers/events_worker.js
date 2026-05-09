@@ -188,7 +188,9 @@ export default {
         if (!env.STATS_TOKEN || token !== env.STATS_TOKEN)
           return new Response(JSON.stringify({ error: 'unauthorized' }), { status: 401, headers });
         const stats = await buildStats(env);
-        return new Response(JSON.stringify(stats), { status: 200, headers });
+        // stats 已有 token 保護,允許任意 origin(含 file:// admin 本機開啟)
+        const statsHeaders = { ...headers, 'Access-Control-Allow-Origin': '*' };
+        return new Response(JSON.stringify(stats), { status: 200, headers: statsHeaders });
       }
 
       return new Response(JSON.stringify({ error: 'route not found' }), { status: 404, headers });
