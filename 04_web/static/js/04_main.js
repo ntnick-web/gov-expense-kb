@@ -86,6 +86,7 @@ async function init() {
     // 2026-05-XX:landing 已封存,進站預設 scenarios(splash 期間使用者不會感受到延遲)
     switchView('scenarios');
     renderScenarios();
+    renderFaqs();
     wireScenarioSearch();
     syncMobileTabbar?.();
     track('page_view', location.pathname);

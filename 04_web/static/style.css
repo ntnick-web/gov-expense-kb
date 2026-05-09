@@ -433,15 +433,16 @@
     padding-bottom: 18px; border-bottom: 1px solid var(--line);
   }
   .filterrow {
-    display: flex; gap: 8px; flex-wrap: wrap; align-items: center;
+    display: flex; gap: 8px; flex-wrap: nowrap; overflow-x: auto;
+    align-items: center;
+    scroll-snap-type: x proximity;
+    -webkit-overflow-scrolling: touch;
+    padding-bottom: 4px;
   }
+  .filterrow > * { flex-shrink: 0; scroll-snap-align: start; }
+  .filterrow::-webkit-scrollbar { height: 4px; }
+  .filterrow::-webkit-scrollbar-thumb { background: var(--line-strong); border-radius: 2px; }
   .filterrow:empty { display: none; }
-  .filterrow-label {
-    font-size: 12px; color: var(--ink-3); font-weight: 600;
-    letter-spacing: .04em;
-    min-width: 64px;     /* 4 中文字 + 間距,讓兩排 chip 對齊起始位置 */
-    flex-shrink: 0;
-  }
   .chip {
     border: 1px solid var(--line); background: var(--surface);
     padding: 5px 11px; border-radius: 999px; font-size: 12.5px;
@@ -482,13 +483,19 @@
 
   /* 情境視圖 chip filter — 兩排:母題 + 支出類別(2026-04-29 加)*/
   .sc-filterbar {
-    display: flex; gap: 8px; flex-wrap: wrap; align-items: center;
-    margin: 0 0 10px;
+    display: flex; gap: 8px; flex-wrap: nowrap; overflow-x: auto;
+    align-items: center; margin: 0 0 10px;
+    scroll-snap-type: x proximity;
+    -webkit-overflow-scrolling: touch;
+    padding-bottom: 4px;
   }
+  .sc-filterbar > * { flex-shrink: 0; scroll-snap-align: start; }
+  .sc-filterbar::-webkit-scrollbar { height: 4px; }
+  .sc-filterbar::-webkit-scrollbar-thumb { background: var(--line-strong); border-radius: 2px; }
   .sc-filterbar-label {
     font-size: 12px; color: var(--ink-3); font-weight: 600;
     letter-spacing: .04em;
-    min-width: 64px;     /* 與 .filterrow-label 對齊,讓兩排 chip 起始位置一致 */
+    min-width: 64px;
     flex-shrink: 0;
   }
   .sc-filterbar-sub {
@@ -497,19 +504,10 @@
     border-bottom: 1px solid var(--line);
   }
   .sc-filterbar:empty { display: none; }
-  /* 行動版:支出類別 chip 改水平 scroll,避免折成 4-5 列堆疊吃首屏(2026-05-01 加,P4-28)*/
   @media (max-width: 720px) {
     .sc-filterbar {
-      flex-wrap: nowrap;
-      overflow-x: auto;
-      scroll-snap-type: x proximity;
-      -webkit-overflow-scrolling: touch;
-      padding-bottom: 4px;
       margin-bottom: 8px;
     }
-    .sc-filterbar::-webkit-scrollbar { height: 4px; }
-    .sc-filterbar::-webkit-scrollbar-thumb { background: var(--line-strong); border-radius: 2px; }
-    .sc-filterbar > * { flex-shrink: 0; scroll-snap-align: start; }
     .sc-filterbar-sub { margin-bottom: 12px; padding-bottom: 10px; }
     /* 標題 + 副標折成單行 + 縮小,留出更多卡片空間 */
     .sc-head { margin-bottom: 12px; }
@@ -1024,6 +1022,25 @@
   }
   .sc-head h1 { margin: 0 0 6px; font-size: 22px; font-weight: 600; letter-spacing: -.01em; }
   .sc-head p { margin: 0; color: var(--ink-3); font-size: 13px; }
+
+  /* ── FAQ 大家都在問：橫向捲動 chip strip ── */
+  .faq-section {
+    display: flex; gap: 8px; flex-wrap: nowrap; overflow-x: auto;
+    align-items: center; margin: 16px 0 4px;
+    scroll-snap-type: x proximity;
+    -webkit-overflow-scrolling: touch;
+    padding-bottom: 4px;
+  }
+  .faq-section > * { flex-shrink: 0; scroll-snap-align: start; }
+  .faq-section::-webkit-scrollbar { height: 4px; }
+  .faq-section::-webkit-scrollbar-thumb { background: var(--line-strong); border-radius: 2px; }
+  .faq-chip {
+    border-color: var(--brand-line, #c8bbf4) !important;
+    color: var(--brand, #7c6bc9) !important;
+  }
+  .faq-chip:hover {
+    background: color-mix(in srgb, var(--brand, #7c6bc9) 8%, var(--surface)) !important;
+  }
 
   .sc-quick {
     display: flex; align-items: center; gap: 10px; flex-wrap: wrap;

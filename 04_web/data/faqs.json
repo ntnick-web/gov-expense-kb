@@ -1,0 +1,14 @@
+[
+  { "id": "faq-001", "icon": "🚄", "short_q": "高鐵票根怎麼報？", "q": "出差搭高鐵，票根要怎麼保存？", "scenario_id": "transport-choice-overview" },
+  { "id": "faq-002", "icon": "🚗", "short_q": "自駕油錢能報嗎？", "q": "自己開車出差，油錢能報嗎？", "scenario_id": "self-drive" },
+  { "id": "faq-003", "icon": "🏨", "short_q": "飯店費用上限？", "q": "出差住飯店，費用上限多少？", "scenario_id": "overnight" },
+  { "id": "faq-004", "icon": "🚕", "short_q": "計程車要收據嗎？", "q": "搭計程車出差，要保留收據嗎？", "scenario_id": "taxi" },
+  { "id": "faq-005", "icon": "🧾", "short_q": "發票抬頭填錯了？", "q": "發票上的買受人名稱填錯，還能核銷嗎？", "scenario_id": "invoice-payee-wrong" },
+  { "id": "faq-006", "icon": "✈️", "short_q": "出國艙等有限制？", "q": "出國出差，機票艙等有限制嗎？", "scenario_id": "abroad-airfare" },
+  { "id": "faq-007", "icon": "🎤", "short_q": "外聘講師鐘點費？", "q": "請外面老師演講，鐘點費怎麼算？", "scenario_id": "lecture-internal-external" },
+  { "id": "faq-008", "icon": "🍱", "short_q": "會議便當怎麼報？", "q": "公務會議訂便當，費用怎麼核銷？", "scenario_id": "meeting-meals" },
+  { "id": "faq-009", "icon": "📦", "short_q": "小採購要走程序？", "q": "幾千元的小採購，需要走採購程序嗎？", "scenario_id": "procurement-acceptance" },
+  { "id": "faq-010", "icon": "📅", "short_q": "去年發票今年報？", "q": "去年底的費用，今年還能報銷嗎？", "scenario_id": "year-end-closing" },
+  { "id": "faq-011", "icon": "🔀", "short_q": "費用跨計畫分攤？", "q": "幾個計畫共同分攤一筆費用，可以嗎？", "scenario_id": "voucher-shared" },
+  { "id": "faq-012", "icon": "🏥", "short_q": "要扣補充保費嗎？", "q": "付鐘點費需要扣二代健保補充保費嗎？", "scenario_id": "supplement-premium-overview" }
+]

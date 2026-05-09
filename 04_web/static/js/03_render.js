@@ -1081,7 +1081,6 @@ function renderChips() {
       `<button class="chip chip-wip" disabled title="整備中，內容尚未完整">${p} <span class="chip-count">–</span></button>`
     ).join('');
     $parentRow.innerHTML = `
-      <span class="filterrow-label">母題</span>
       <button class="chip${!filterState.parent ? ' on' : ''}" data-parent="">全部 <span class="chip-count">${parentAll}</span></button>
       ${visibleParents.map(p => `<button class="chip${filterState.parent === p ? ' on' : ''}" data-parent="${p}">${p} <span class="chip-count">${byParent.get(p)}</span></button>`).join('')}
       ${wipChips}
@@ -1121,7 +1120,6 @@ function renderChips() {
       { k: 'D', label: '問答集',   icon: '💬' },
     ];
     $typeRow.innerHTML = `
-      <span class="filterrow-label">類別</span>
       <button class="chip${!filterState.type ? ' on' : ''}" data-type="">全部 <span class="chip-count">${typeAll}</span></button>
       ${TYPES.map(t => `<button class="chip${filterState.type === t.k ? ' on' : ''}" data-type="${t.k}">${t.icon} ${t.label} <span class="chip-count">${byType[t.k]}</span></button>`).join('')}
       <button class="chip${filterState.type === 'E' ? ' on' : ''}" data-type="E">📎 附屬法規及資料 <span class="chip-count">${byType.E}</span></button>
@@ -1178,7 +1176,6 @@ function renderChips() {
   }
   const hiddenCount = visibleExpenses.length - visibleSet.size;
   $expRow.innerHTML = `
-    <span class="filterrow-label">支出類別</span>
     <button class="chip${!filterState.expense ? ' on' : ''}" data-expense="">全部 <span class="chip-count">${baseline.length}</span></button>
     ${visibleExpenses.filter(e => visibleSet.has(e)).map(e =>
       `<button class="chip${filterState.expense === e ? ' on' : ''}" data-expense="${e}">${e} <span class="chip-count">${expCount[e]}</span></button>`
@@ -1201,14 +1198,12 @@ function renderChips() {
     const tagExpanded = window._tagExpanded !== false || !!filterState.tag;
     if (tagExpanded) {
       $tagRow.innerHTML = `
-        <span class="filterrow-label">熱門標籤</span>
         <button class="chip${!filterState.tag ? ' on' : ''}" data-tag="">全部</button>
         ${topTags.map(([t, c]) => `<button class="chip${filterState.tag === t ? ' on' : ''}" data-tag="${t}">${t} <span class="chip-count">${c}</span></button>`).join('')}
         <button class="chip chip-toggle-more" data-toggle-tag="collapse">收起 ▴</button>
       `;
     } else {
       $tagRow.innerHTML = `
-        <span class="filterrow-label">熱門標籤</span>
         <button class="chip chip-toggle-more" data-toggle-tag="expand">展開 ${topTags.length} 個熱門標籤 ▾</button>
       `;
     }
@@ -1271,7 +1266,7 @@ document.getElementById('q').addEventListener('input', (ev) => {
 
 
 /* ──────── scenarios view ──────── */
-const PARENT_ORDER = ['國內旅費', '國外旅費', '酬勞費', '支出憑證與結報', '採購及履約', '餐費及其他支出', '教育訓練', '國外專家', '國科會專章', '教育部專章', '成功大學專章'];
+const PARENT_ORDER = ['國內旅費', '國外旅費', '酬勞費', '支出憑證與結報', '採購及履約', '餐費及其他支出', '教育訓練', '國科會專章', '教育部專章', '成功大學專章', '農業部專章'];
 const EXPENSE_ORDER = ['交通費','住宿費','雜費','出國進修','生活費','手續費','保險費','行政費','禮品交際及雜費','收據與發票','採購結報','系統化結報','補助與分攤','差旅費結報','酬勞與會議','講座鐘點費','出席費','稿費','兼職費','健保補充保費','程序與通則','通則與其他','大陸港澳','其他'];
 // 顯示時將舊用語「通則與其他」一律呈現為「程序與通則」(資料源不動,維持向下相容)
 const EXPENSE_DISPLAY_RENAME = { '通則與其他': '程序與通則' };
@@ -1415,21 +1410,11 @@ function renderScenarioChips() {
     const p = s.parent || '其他';
     parentCount.set(p, (parentCount.get(p) || 0) + 1);
   }
-  // library-link chips：已確認上線的母題中，有條文但尚無情境的母題，點擊跳條文庫
-  const libLinkChips = PARENTS
-    .filter(p => !parentCount.has(p) && !WIP_PARENTS.has(p))
-    .map(p => {
-      const cnt = DATA.filter(d => d.cat === p).length;
-      return cnt > 0
-        ? `<button class="chip chip-lib-link" data-sc-lib-parent="${p}" title="${p}目前尚無情境卡，點擊前往條文庫查閱 ${cnt} 筆條文">📑 ${p} <span class="chip-count">${cnt}</span></button>`
-        : '';
-    }).filter(Boolean);
   const parentChips = [
     `<button class="chip${!scenarioFilterParent ? ' on' : ''}" data-sc-parent="">全部 <span class="chip-count">${queryFiltered.length}</span></button>`,
     ...PARENT_ORDER.filter(p => parentCount.has(p)).map(p =>
       `<button class="chip${scenarioFilterParent === p ? ' on' : ''}" data-sc-parent="${p}">${p} <span class="chip-count">${parentCount.get(p)}</span></button>`
     ),
-    ...libLinkChips,
   ];
   $parentBar.innerHTML = `<span class="sc-filterbar-label">母題</span>${parentChips.join('')}`;
 
@@ -1484,8 +1469,10 @@ function renderScenarioChips() {
     b.onclick = () => {
       filterState.parent = b.dataset.scLibParent;
       filterState.type = null; filterState.tag = null; filterState.expense = null; filterState.scenario = null; filterState.query = '';
+      const $q = document.getElementById('q');
+      if ($q) $q.value = '';
       switchView('library');
-      renderCards();
+      renderSidebar(); renderChips(); renderCards();
     };
   });
   $expBar.querySelectorAll('[data-sc-exp]').forEach(b => {
@@ -1498,6 +1485,29 @@ function renderScenarioChips() {
     b.onclick = () => {
       window._scExpExpanded = b.dataset.toggleScExp === 'expand';
       renderScenarioChips();
+    };
+  });
+}
+
+function renderFaqs() {
+  const $faq = document.getElementById('faq-section');
+  if (!$faq) return;
+  if (!FAQS || !FAQS.length) { $faq.hidden = true; return; }
+  $faq.hidden = false;
+  $faq.innerHTML = FAQS.map(f =>
+    `<button class="chip faq-chip" data-faq-sc="${f.scenario_id || ''}" type="button" title="${f.q}">${f.icon || ''} ${f.short_q || f.q}</button>`
+  ).join('');
+  $faq.querySelectorAll('.faq-chip').forEach(btn => {
+    btn.onclick = () => {
+      const sc = btn.dataset.faqSc;
+      if (!sc) return;
+      filterState.scenario = sc;
+      filterState.parent = null; filterState.type = null; filterState.tag = null;
+      filterState.expense = null; filterState.query = '';
+      const $q = document.getElementById('q');
+      if ($q) $q.value = '';
+      switchView('library');
+      renderSidebar(); renderChips(); renderCards();
     };
   });
 }

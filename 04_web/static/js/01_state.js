@@ -58,6 +58,7 @@ let CITY_ALIASES = {};  // 未列載城市 → 國家中文主名 (city_aliases.
 let COUNTRY_NEIGHBORS = {};  // 未列載國家 → 比照鄰國中文主名 (country_neighbors.json,2026-05-01 加)
 let SYNONYMS = [];       // [{canonical, aliases:[...]}, ...] (synonyms.json)
 let BASELINE_ATTACHMENTS = {};  // 情境共通標配憑證 (baseline_attachments.json) — 2026-05-01 加
+let FAQS = [];                  // 大家都在問 FAQ 卡 (faqs.json)
 let SYNONYM_INDEX = new Map();  // 任一詞 → 該組所有詞 (含 canonical),供 expandSynonyms 用
 // 子目錄版 (test/ ncku/) 透過 window._FETCH_BASE = new URL('../', location.href).href 設定；
 // 主版本不設定，此值為空字串，所有相對路徑行為不變。
@@ -97,7 +98,7 @@ async function loadAllData() {
   }
   // 2026-05-01 (A1):auto 卡停用；整備中母題情境一併隱藏
   // W4.2: 情境載入分兩層 — index(輕量 44KB)優先，detail(426KB)背景載入
-  const [nodes, edges, scnIndex, aliases, neighbors, synonyms, baseline] = await Promise.all([
+  const [nodes, edges, scnIndex, aliases, neighbors, synonyms, baseline, faqsData] = await Promise.all([
     nodesResp.json(),
     fetch(_BASE + 'data/edges.json' + v).then(r => r.ok ? r.json() : { edges: [] }).catch(() => ({ edges: [] })),
     (API ? fetch(scenariosUrl, apiFetchOpts) : fetch(scenariosIndexUrl)).then(r => r.ok ? r.json() : null).catch(() => null),
@@ -105,8 +106,10 @@ async function loadAllData() {
     fetch(_BASE + 'data/country_neighbors.json' + v).then(r => r.ok ? r.json() : { neighbors: {} }).catch(() => ({ neighbors: {} })),
     fetch(_BASE + 'data/synonyms.json' + v).then(r => r.ok ? r.json() : { groups: [] }).catch(() => ({ groups: [] })),
     fetch(_BASE + 'data/baseline_attachments.json' + v).then(r => r.ok ? r.json() : { groups: {} }).catch(() => ({ groups: {} })),
+    fetch(_BASE + 'data/faqs.json' + v).then(r => r.ok ? r.json() : []).catch(() => []),
   ]);
   BASELINE_ATTACHMENTS = baseline.groups || {};
+  FAQS = Array.isArray(faqsData) ? faqsData : [];
   CITY_ALIASES = aliases.aliases || {};
   COUNTRY_NEIGHBORS = neighbors.neighbors || {};
   SYNONYMS = synonyms.groups || [];
