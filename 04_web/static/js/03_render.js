@@ -1552,6 +1552,16 @@ function renderScenarios() {
     return EXPENSE_ORDER.indexOf(ea) - EXPENSE_ORDER.indexOf(eb);
   });
 
+  // 鎖定卡後置：群組內已解鎖排前、鎖定排後，兩段內部維持原序
+  if (window.UNLOCKED_SCENARIO_IDS) {
+    for (const items of groups.values()) {
+      items.sort((a, b) =>
+        (window.UNLOCKED_SCENARIO_IDS.has(a.id) ? 0 : 1) -
+        (window.UNLOCKED_SCENARIO_IDS.has(b.id) ? 0 : 1)
+      );
+    }
+  }
+
   // sc-toc 已移除(2026-04-30):功能與母題 chip 100% 重複,改用 chip 即可
 
   // 空結果
