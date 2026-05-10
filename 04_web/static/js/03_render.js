@@ -128,7 +128,7 @@ function renderCards() {
       const _tp = d.id.split('-')[0];
       const _lawKey = d.sourceLaw || extractLawName(d.source) || '';
       const gk = _tp === 'A'
-        ? `${d.cat}|A|${d.no ? (_lawKey || 'main') : d.id}`
+        ? `${d.cat}|A|${_lawKey || (d.no ? 'main' : d.id)}`
         : `${d.cat}|${_expMap.get(d.id)}`;
       _groupCounts.set(gk, (_groupCounts.get(gk) || 0) + 1);
     }
@@ -140,7 +140,7 @@ function renderCards() {
       let _key;
       if (_tp === 'A') {
         const _lawName = d.sourceLaw || extractLawName(d.source) || '';
-        const _subKey = d.no ? (_lawName || 'main') : d.id;
+        const _subKey = _lawName || (d.no ? 'main' : d.id);
         _key = `${d.cat}|A|${_subKey}`;
         if (_key !== _lastKey) {
           _lastKey = _key;
