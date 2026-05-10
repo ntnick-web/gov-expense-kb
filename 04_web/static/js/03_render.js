@@ -1342,6 +1342,14 @@ function appendScenarioChunk() {
   let html = '';
   for (let i = start; i < end; i++) html += _renderScenarioSectionHtml(_scnSortedKeys[i]);
   $list.insertAdjacentHTML('beforeend', html);
+  if (window.UNLOCKED_SCENARIO_IDS) requestAnimationFrame(() => {
+    $list.querySelectorAll('.sc-grid').forEach(grid => {
+      const unlocked = [...grid.querySelectorAll('.sc-card:not(.sc-locked)')];
+      if (!unlocked.length) return;
+      const maxH = Math.max(...unlocked.map(c => c.getBoundingClientRect().height));
+      if (maxH > 0) grid.querySelectorAll('.sc-card.sc-locked').forEach(c => { c.style.minHeight = maxH + 'px'; });
+    });
+  });
   _scnSectionsRendered = end;
   // 還有未渲染的 section → 放 sentinel
   if (_scnSectionsRendered < _scnSortedKeys.length) {
