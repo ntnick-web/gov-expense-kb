@@ -1077,7 +1077,7 @@ function renderChips() {
   }
   if ($parentRow) {
     const visibleParents = PARENTS.filter(p => !WIP_PARENTS.has(p) && byParent.has(p));
-    const wipChips = [...WIP_PARENTS].map(p =>
+    const wipChips = window.HIDE_WIP_CHIPS ? '' : [...WIP_PARENTS].map(p =>
       `<button class="chip chip-wip" disabled title="整備中，內容尚未完整">${p} <span class="chip-count">–</span></button>`
     ).join('');
     $parentRow.innerHTML = `

@@ -19,6 +19,7 @@
   /* 資料 API 端點：核心資料(nodes/scenarios)從 CF Workers 取得，而非直接讀靜態 JSON。
      本機開發時保持 null，前端自動 fallback 到靜態 JSON。 */
   window.DATA_API_BASE = 'https://gov-expense-data.ntnick72.workers.dev';
+  window.HIDE_WIP_CHIPS = true;  // 公開版：WIP 母題 chip 完全隱藏
 </script>
 <script>
   /* 公開版情境卡開放清單（50 張）。不在此 Set 內的情境以虛線框鎖定，標題可見，內容與互動停用。 */
