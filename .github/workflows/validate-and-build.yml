@@ -138,7 +138,7 @@ jobs:
             || { echo "::error::scenarios_manual.json is invalid JSON — KV upload aborted"; exit 1; }
           python -c "import json; json.load(open('03_index/_meta.json')); print('_meta.json OK')" \
             || { echo "::error::_meta.json is invalid JSON — KV upload aborted"; exit 1; }
-          KV_ID="b06a21e042db46c38ae57ebf1225f430"
+          KV_ID="${{ secrets.CF_KV_NAMESPACE_ID }}"
           npx wrangler@4 kv key put --namespace-id "$KV_ID" --remote "nodes"     --path "03_index/nodes.json"               --config 06_workers/wrangler_data.toml
           npx wrangler@4 kv key put --namespace-id "$KV_ID" --remote "meta"      --path "03_index/_meta.json"               --config 06_workers/wrangler_data.toml
           npx wrangler@4 kv key put --namespace-id "$KV_ID" --remote "scenarios" --path "04_web/data/scenarios_manual.json"  --config 06_workers/wrangler_data.toml
