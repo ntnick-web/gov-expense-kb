@@ -2622,6 +2622,12 @@
     "inferred": false
   },
   {
+    "from": "C-酬勞費-007",
+    "to": "A-酬勞費-012",
+    "relation": "explains",
+    "inferred": false
+  },
+  {
     "from": "C-酬勞費-040",
     "to": "A-酬勞費-010",
     "relation": "explains",
@@ -3492,6 +3498,66 @@
     "inferred": false
   },
   {
+    "from": "D-教育部專章-001",
+    "to": "A-教育部專章-016",
+    "relation": "answers",
+    "inferred": false
+  },
+  {
+    "from": "D-教育部專章-002",
+    "to": "A-教育部專章-018",
+    "relation": "answers",
+    "inferred": false
+  },
+  {
+    "from": "D-教育部專章-003",
+    "to": "A-教育部專章-019",
+    "relation": "answers",
+    "inferred": false
+  },
+  {
+    "from": "D-教育部專章-004",
+    "to": "A-教育部專章-019",
+    "relation": "answers",
+    "inferred": false
+  },
+  {
+    "from": "D-教育部專章-005",
+    "to": "A-教育部專章-020",
+    "relation": "answers",
+    "inferred": false
+  },
+  {
+    "from": "D-教育部專章-006",
+    "to": "A-教育部專章-022",
+    "relation": "answers",
+    "inferred": false
+  },
+  {
+    "from": "D-教育部專章-007",
+    "to": "A-教育部專章-022",
+    "relation": "answers",
+    "inferred": false
+  },
+  {
+    "from": "D-教育部專章-008",
+    "to": "A-教育部專章-024",
+    "relation": "answers",
+    "inferred": false
+  },
+  {
+    "from": "D-教育部專章-009",
+    "to": "A-教育部專章-024",
+    "relation": "answers",
+    "inferred": false
+  },
+  {
+    "from": "D-教育部專章-010",
+    "to": "A-教育部專章-025",
+    "relation": "answers",
+    "inferred": false
+  },
+  {
     "from": "A-國科會專章-015",
     "to": "A-國科會專章-005",
     "relation": "cites_inferred",
@@ -3537,6 +3603,30 @@
     "relation": "cites_inferred",
     "inferred": true,
     "matched": "第六點",
+    "cross_parent": false
+  },
+  {
+    "from": "A-教育部專章-037",
+    "to": "A-教育部專章-003",
+    "relation": "cites_inferred",
+    "inferred": true,
+    "matched": "第三條",
+    "cross_parent": false
+  },
+  {
+    "from": "A-教育部專章-039",
+    "to": "A-教育部專章-005",
+    "relation": "cites_inferred",
+    "inferred": true,
+    "matched": "第五條",
+    "cross_parent": false
+  },
+  {
+    "from": "A-教育部專章-038",
+    "to": "A-教育部專章-004",
+    "relation": "cites_inferred",
+    "inferred": true,
+    "matched": "第四條",
     "cross_parent": false
   },
   {
@@ -3812,6 +3902,14 @@
     "cross_parent": false
   },
   {
+    "from": "C-酬勞費-007",
+    "to": "A-酬勞費-015",
+    "relation": "cites_inferred",
+    "inferred": true,
+    "matched": "第十五條",
+    "cross_parent": false
+  },
+  {
     "from": "C-酬勞費-043",
     "to": "A-酬勞費-014",
     "relation": "cites_inferred",
@@ -4049,6 +4147,78 @@
     "relation": "cites_inferred",
     "inferred": true,
     "matched": "第 15 點",
+    "cross_parent": false
+  },
+  {
+    "from": "D-教育部專章-002",
+    "to": "A-教育部專章-004",
+    "relation": "cites_inferred",
+    "inferred": true,
+    "matched": "第四條",
+    "cross_parent": false
+  },
+  {
+    "from": "D-教育部專章-003",
+    "to": "A-教育部專章-005",
+    "relation": "cites_inferred",
+    "inferred": true,
+    "matched": "第五條",
+    "cross_parent": false
+  },
+  {
+    "from": "D-教育部專章-004",
+    "to": "A-教育部專章-005",
+    "relation": "cites_inferred",
+    "inferred": true,
+    "matched": "第五條",
+    "cross_parent": false
+  },
+  {
+    "from": "D-教育部專章-005",
+    "to": "A-教育部專章-006",
+    "relation": "cites_inferred",
+    "inferred": true,
+    "matched": "第六條",
+    "cross_parent": false
+  },
+  {
+    "from": "D-教育部專章-006",
+    "to": "A-教育部專章-008",
+    "relation": "cites_inferred",
+    "inferred": true,
+    "matched": "第八條",
+    "cross_parent": false
+  },
+  {
+    "from": "D-教育部專章-007",
+    "to": "A-教育部專章-008",
+    "relation": "cites_inferred",
+    "inferred": true,
+    "matched": "第八條",
+    "cross_parent": false
+  },
+  {
+    "from": "D-教育部專章-008",
+    "to": "A-教育部專章-010",
+    "relation": "cites_inferred",
+    "inferred": true,
+    "matched": "第十條",
+    "cross_parent": false
+  },
+  {
+    "from": "D-教育部專章-009",
+    "to": "A-教育部專章-010",
+    "relation": "cites_inferred",
+    "inferred": true,
+    "matched": "第十條",
+    "cross_parent": false
+  },
+  {
+    "from": "D-教育部專章-010",
+    "to": "A-教育部專章-011",
+    "relation": "cites_inferred",
+    "inferred": true,
+    "matched": "第十一條",
     "cross_parent": false
   },
   {

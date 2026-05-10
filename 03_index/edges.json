@@ -2622,6 +2622,12 @@
     "inferred": false
   },
   {
+    "from": "C-酬勞費-007",
+    "to": "A-酬勞費-012",
+    "relation": "explains",
+    "inferred": false
+  },
+  {
     "from": "C-酬勞費-040",
     "to": "A-酬勞費-010",
     "relation": "explains",
@@ -3893,6 +3899,14 @@
     "relation": "cites_inferred",
     "inferred": true,
     "matched": "第10點",
+    "cross_parent": false
+  },
+  {
+    "from": "C-酬勞費-007",
+    "to": "A-酬勞費-015",
+    "relation": "cites_inferred",
+    "inferred": true,
+    "matched": "第十五條",
     "cross_parent": false
   },
   {
