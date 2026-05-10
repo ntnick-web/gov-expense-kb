@@ -1569,6 +1569,20 @@
     box-shadow: var(--shadow-md);
     border-color: var(--brand-line);
   }
+  .sc-card.sc-locked {
+    border: 1.5px dashed var(--line);
+    background: var(--surface);
+    cursor: default;
+    pointer-events: none;
+    opacity: 0.5;
+    box-shadow: none;
+    transform: none;
+  }
+  .sc-card.sc-locked .sc-title {
+    color: var(--ink-3);
+    font-size: 13px;
+    font-weight: 500;
+  }
   .sc-card.has-flow {
     border: 2px solid var(--ink-strawberry);
     box-shadow: 0 0 0 1px var(--ink-strawberry), 2px 2px 0 oklch(from var(--ink-strawberry) l c h / .15);

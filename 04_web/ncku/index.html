@@ -26,6 +26,38 @@
   window._FETCH_BASE   = new URL('../', location.href).href;
 </script>
 <script>
+  /* NCKU 版情境卡開放清單（55 張 = 公開版 50 + 國科會 3 + 教育部 2）。 */
+  window.UNLOCKED_SCENARIO_IDS = new Set([
+    // 國內旅費（13）
+    'domestic-trip-overview','transport-choice-overview','overnight','day-trip',
+    'self-drive','necessary-distance','taxi','discount-ticket','from-home',
+    'advance-postpone','incidental','training','premium-class',
+    // 國外旅費（10）
+    'abroad-basic','abroad-airfare','abroad-living','abroad-insurance','abroad-china',
+    'return-day-living-30','exchange-rate-no-receipt','abroad-meeting',
+    'foreign-receipt-translate','abroad-incidental-receipts',
+    // 支出憑證與結報（11）
+    'voucher-types','invoice-tax-id-missing','invoice-payee-wrong',
+    'e-invoice-tax-id-missing','receipt-no-quantity','item-name-code-only',
+    'amount-correction','voucher-lost','online-tx-no-receipt','voucher-foreign',
+    'year-end-closing',
+    // 酬勞費（6）
+    'lecture-fee-overview','lecture-internal-external','attendance-fee-overview',
+    'article-fee-overview','concurrent-fee-overview','supplement-premium-overview',
+    // 採購及履約（3）
+    'procurement-amount-flow','procurement-acceptance','procurement-it-software',
+    // 餐費及其他支出（4）
+    'communication-fee-flow','official-meal-reimburse','property-listing-threshold',
+    'property-loss-compensation',
+    // 教育訓練（3）
+    'training-transport-lodging','training-subsidized-leave','training-no-duplicate-subsidy',
+    // 國科會專章 NCKU 額外（3）
+    'nsc-flexible-spending','nsc-budget-change','nsc-procurement',
+    // 教育部專章 NCKU 額外（2）
+    'moe-flexible-fund','moe-reallocation'
+  ]);
+</script>
+<script>
   (function () {
     try {
       var isMobile = window.matchMedia && window.matchMedia('(max-width: 880px)').matches;

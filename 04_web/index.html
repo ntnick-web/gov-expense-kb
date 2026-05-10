@@ -21,6 +21,34 @@
   window.DATA_API_BASE = 'https://gov-expense-data.ntnick72.workers.dev';
 </script>
 <script>
+  /* 公開版情境卡開放清單（50 張）。不在此 Set 內的情境以虛線框鎖定，標題可見，內容與互動停用。 */
+  window.UNLOCKED_SCENARIO_IDS = new Set([
+    // 國內旅費（13）
+    'domestic-trip-overview','transport-choice-overview','overnight','day-trip',
+    'self-drive','necessary-distance','taxi','discount-ticket','from-home',
+    'advance-postpone','incidental','training','premium-class',
+    // 國外旅費（10）
+    'abroad-basic','abroad-airfare','abroad-living','abroad-insurance','abroad-china',
+    'return-day-living-30','exchange-rate-no-receipt','abroad-meeting',
+    'foreign-receipt-translate','abroad-incidental-receipts',
+    // 支出憑證與結報（11）
+    'voucher-types','invoice-tax-id-missing','invoice-payee-wrong',
+    'e-invoice-tax-id-missing','receipt-no-quantity','item-name-code-only',
+    'amount-correction','voucher-lost','online-tx-no-receipt','voucher-foreign',
+    'year-end-closing',
+    // 酬勞費（6）
+    'lecture-fee-overview','lecture-internal-external','attendance-fee-overview',
+    'article-fee-overview','concurrent-fee-overview','supplement-premium-overview',
+    // 採購及履約（3）
+    'procurement-amount-flow','procurement-acceptance','procurement-it-software',
+    // 餐費及其他支出（4）
+    'communication-fee-flow','official-meal-reimburse','property-listing-threshold',
+    'property-loss-compensation',
+    // 教育訓練（3）
+    'training-transport-lodging','training-subsidized-leave','training-no-duplicate-subsidy'
+  ]);
+</script>
+<script>
   /* Pre-paint:在 body 渲染前決定預設 view,避免行動版進站瞬間 flash 過 landing。
      行動版預設 'scenarios';桌面預設 'landing'。 */
   (function () {

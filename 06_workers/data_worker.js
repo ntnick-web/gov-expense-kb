@@ -21,7 +21,7 @@
 // ─── 公開版預設 config（無 key 或 key 查無時套用）────────────
 const DEFAULT_CONFIG = {
   tenant_id: 'public',
-  visible_parents: ['支出憑證與結報', '國內旅費', '酬勞費', '國外旅費'],
+  visible_parents: ['支出憑證與結報', '國內旅費', '酬勞費', '國外旅費', '採購及履約', '餐費及其他支出', '教育訓練'],
   org_specific_parents: [],
   features: ['flow', 'comparison', 'calc', 'spotlight'],
   expires_at: null,

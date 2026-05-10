@@ -1301,6 +1301,8 @@ function _renderScenarioSectionHtml(key) {
       </h3>
       <div class="sc-grid">
         ${items.map(s => {
+          const isLocked = window.UNLOCKED_SCENARIO_IDS != null && !window.UNLOCKED_SCENARIO_IDS.has(s.id);
+          if (isLocked) return `<article class="sc-card sc-locked" data-sc="${s.id}" tabindex="-1" aria-label="鎖定情境"><h3 class="sc-title">${s.title}</h3></article>`;
           const hasFlow = s.has_flow || (s.flow && s.flow.start && s.flow.questions);
           const flowBadge = hasFlow ? '<span class="sc-flow-badge">🤔 條件問答</span>' : '';
           const isRoot = s.flow_root === true && Array.isArray(s.sub_scenarios) && s.sub_scenarios.length > 0;
