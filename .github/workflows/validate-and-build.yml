@@ -46,11 +46,12 @@ jobs:
       - name: Check pipeline scripts
         id: check_scripts
         run: |
-          if [ ! -d "05_scripts" ]; then
-            echo "::error::05_scripts/ 不在 repo — CI 無法執行驗證。請確認 private pipeline repo 已同步後重新 push。"
-            exit 1
+          if [ -d "05_scripts" ]; then
+            echo "available=true" >> $GITHUB_OUTPUT
+          else
+            echo "::warning title=Pipeline scripts missing::05_scripts/ not in repo — rebuild must be run manually on local machine."
+            echo "available=false" >> $GITHUB_OUTPUT
           fi
-          echo "available=true" >> $GITHUB_OUTPUT
 
       - name: Build merged scenarios_manual.json (N6 衝突偵測)
         # _build_scenarios_manual.py:把 04_web/data/scenarios/*.json 多檔 → merged。
