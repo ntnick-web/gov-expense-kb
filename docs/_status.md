@@ -2,11 +2,12 @@
 
 > 此檔取代舊 CLAUDE.md §0「最新狀態速覽」。每次大型 session 結束時 append 一段；不刪歷史。CLAUDE.md 內只留摘要 5 行 + 連結到本檔。
 
-## 當前快照（2026-05-08b）
+## 當前快照（2026-05-17）
 
-- **DATA_VERSION**:`2026-05-08a`（已上線）
-- **節點數**:**1047**（再刪 24 筆 TOC 殘渣後；共刪除 54 筆 TOC 殘渣）；**4 主母題 + 6 WIP 母題**
-- **review_level 分布**:**81 人工 / 925 llm精校 / 0 llm待人工 / 41 自動初校**
+- **DATA_VERSION**:`2026-05-10a`（已上線；GitHub Actions CI 自動 build + KV 上傳）
+- **節點數**:**1113**（A核心法規 187 / B支出標準 12 / C解釋函令 504 / D問答集 386 / E附屬法規 24）；685 條關聯邊；**4 主母題 + 6 WIP 母題**
+- **review_level 分布**:**81 人工 / 958 llm精校 / 74 自動初校**（已廢止 8 / 0 llm待人工）
+- **總結報告（2026-05-09 ~ 2026-05-17 補齊）**：新增農業部專章 35 卡（A-農業部專章-001~031 + 附表）、教育部補捐助章 20 卡（結報要點第一點~第十六點 + 附件二、四）、農業部 + 教育部補助計畫情境卡 8 張、FAQ chip strip、條文庫 filterbar 水平捲動、events_worker 部署 + admin dashboard、公開版／NCKU 版分級開放情境卡系統、情境庫鎖定卡置後排序、health-check CI 修復
 - **情境卡**:**126 張**（122 可見；扣 4 deprecated）；96 flow / 122 visible = **79%**；caveats **121 張**；example **16 張**
 - **母題排序**：三組排序陣列（01_state / 02_data / 03_render）已統一為「國內→國外→酬勞→支出憑證→採購→餐費→物品→其他→教育訓練→國科會→教育部→成大」
 - **6 個情境樹 root**:overnight / voucher-procurement / abroad-basic / voucher-types / domestic-trip-overview / transport-choice-overview

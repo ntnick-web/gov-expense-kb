@@ -15,19 +15,19 @@
     "自動初校": 74
   },
   "completeness": {
-    "generated_at": "2026-05-10T07:50:35",
-    "total_active": 1104,
+    "generated_at": "2026-05-13T00:04:02",
+    "total_active": 1105,
     "summary": {
       "vacant": 0,
       "vacancy_rate": 0.0
     },
     "version": {
       "vacant": 337,
-      "vacancy_rate": 0.3053
+      "vacancy_rate": 0.305
     },
     "reviewed": {
-      "vacant": 70,
-      "vacancy_rate": 0.0634
+      "vacant": 71,
+      "vacancy_rate": 0.0643
     }
   }
 }
