@@ -1,0 +1,47 @@
+name: Sync ncku report.js version
+
+# 觸發：push 到 main 且 report.js 或 allowance-data.js 有變動
+# 效果：自動把 ncku/index.html 內的 ?v= 改成 YYYY-MM-DD-{short_hash}
+#       讓瀏覽器永遠拿到最新的 JS，無需手動 bump 版本號
+on:
+  push:
+    branches: [main]
+    paths:
+      - '04_web/ncku/report.js'
+      - '04_web/static/js/allowance-data.js'
+
+permissions:
+  contents: write
+
+jobs:
+  sync-version:
+    runs-on: ubuntu-latest
+    timeout-minutes: 3
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Bump ?v= in ncku/index.html
+        run: |
+          BUILD_DATE=$(date +%Y-%m-%d)
+          HASH=$(git rev-parse --short HEAD)
+          VER="${BUILD_DATE}-${HASH}"
+          sed -i "s|report\.js?v=[^\"']*|report.js?v=${VER}|g" 04_web/ncku/index.html
+          sed -i "s|allowance-data\.js?v=[^\"']*|allowance-data.js?v=${VER}|g" 04_web/ncku/index.html
+          echo "Bumped to: ${VER}"
+          grep -n "report\.js\|allowance-data\.js" 04_web/ncku/index.html
+
+      - name: Commit if changed
+        run: |
+          if [ -n "$(git status --porcelain 04_web/ncku/index.html)" ]; then
+            git config user.name 'github-actions[bot]'
+            git config user.email 'github-actions[bot]@users.noreply.github.com'
+            git add 04_web/ncku/index.html
+            git commit -m "chore(ci): auto-bump ncku report.js ?v= [skip ci]"
+            git push || { echo "::error::git push failed"; exit 1; }
+          else
+            echo "No version change needed; skipping commit."
+          fi
