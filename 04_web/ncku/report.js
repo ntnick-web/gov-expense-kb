@@ -968,7 +968,7 @@ function generateOnePage(data, pageDays, pageIdx, totalPages, isLastPage, grandS
   <table style="margin-top:1mm;margin-bottom:1mm;">
     <colgroup><col class="col-rem-lbl" style="width:7%"><col class="col-rem-val" style="width:43%"><col class="col-rem-lbl" style="width:7%"><col class="col-rem-val" style="width:43%"></colgroup>
     <tr class="tr-remark">
-      <td class="lbl center">備　　註</td><td class="val" style="vertical-align:top;padding-top:1mm;">${data.remarks||''}</td>
+      <td class="lbl center" style="white-space:nowrap;">備　　註</td><td class="val" style="vertical-align:top;padding-top:1mm;">${data.remarks||''}</td>
       <td class="lbl center" style="white-space:nowrap;">帳　號</td>
       <td class="val">${data.bankCode?data.bankCode+'－':''}${data.bankAccount||''}</td>
     </tr>
