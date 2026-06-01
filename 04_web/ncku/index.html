@@ -223,7 +223,7 @@
             </div>
             <div class="rpt-form-group">
               <label for="grade">職等 <span class="rpt-optional">選填</span></label>
-              <input type="text" id="grade" placeholder="如：委任五等">
+              <input type="text" id="grade" placeholder="學術人員可填職稱或留空">
             </div>
           </div>
           <h3>出差資訊</h3>
@@ -251,6 +251,7 @@
             <div class="rpt-form-group">
               <label for="traveler">具領人姓名</label>
               <input type="text" id="traveler" placeholder="同出差人時可留白">
+              <p class="rpt-field-hint">通常同出差人，僅代領時才填寫不同姓名</p>
             </div>
             <div class="rpt-form-group">
               <label for="phone">聯絡電話</label>
@@ -294,6 +295,7 @@
               <label for="exchangeRate">出國前一日美元現金賣出匯率（USD→TWD）</label>
               <input type="number" id="exchangeRate" placeholder="如：31.5" step="0.01" min="1" max="100">
               <span class="error-msg" id="exchangeRateWarn" style="display:none;"></span>
+              <p class="rpt-field-hint">查詢方式：<a href="https://rate.bot.com.tw/xrt?Lang=zh-TW" target="_blank" rel="noopener" style="color:var(--brand);">台灣銀行牌告匯率</a> → 美元 → <strong>現金賣出</strong>（非即期匯率）</p>
             </div>
             <div class="rpt-form-group" style="flex:2">
               <label for="defaultCityKey">預設目的地城市（全程適用，可逐日修改）</label>
@@ -350,8 +352,14 @@
             </table>
           </div>
         </div>
+        <div id="step3ForeignHint" class="rpt-inline-warn" style="display:none;margin-bottom:12px;">
+          ⚠ 已勾選搭乘外籍航空，記得在 Step 4 填寫並檢附<strong>表03 外籍航空申請書</strong>。
+        </div>
         <div class="rpt-decl-box">
           <h3>申報聲明（二擇一）</h3>
+          <div id="declHint" class="rpt-decl-hint" style="display:none;">
+            💡 系統偵測到您有勾選外方供膳宿，請確認是否應選擇選項二「有其他來源提供膳宿」。
+          </div>
           <label class="rpt-radio-option">
             <input type="radio" name="declarationType" value="1" checked onchange="onRadioChange(this)">
             <div class="rpt-radio-text"><strong>本次出差無其他來源供膳宿</strong>；報名或註冊等費用亦不含膳宿。</div>
@@ -402,6 +410,17 @@
       <p class="rpt-footer-note">
         ⚖ 本表僅供輔助填報使用，實際核銷以成大主計室審核為準。生活費依行政院主計總處公告日支數額表（115年1月1日版）計算。
       </p>
+
+      <!-- P2-A：自訂確認 modal，取代 window.confirm() -->
+      <div id="rptConfirmOverlay" class="rpt-confirm-overlay" style="display:none">
+        <div class="rpt-confirm-box">
+          <p id="rptConfirmMsg" class="rpt-confirm-msg"></p>
+          <div class="rpt-confirm-btns">
+            <button class="btn rpt-btn-back" id="rptConfirmCancel">取消</button>
+            <button class="btn primary" id="rptConfirmOk">確定</button>
+          </div>
+        </div>
+      </div>
     </section>
   </main>
 </div>

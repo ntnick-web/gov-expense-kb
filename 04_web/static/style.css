@@ -2869,6 +2869,111 @@
   border-left: 3px solid var(--line-strong);
 }
 
+/* ── P4-A：全程套用快捷列 ── */
+.rpt-batch-bar {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+  background: var(--pastel-lavender);
+  border: 1px solid var(--brand-line);
+  border-radius: var(--radius);
+  padding: 8px 14px;
+  margin-bottom: 8px;
+  font-size: 13px;
+}
+.rpt-batch-label { color: var(--ink-lavender); font-weight: 600; }
+.rpt-batch-item {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  cursor: pointer;
+  color: var(--ink);
+  font-size: 13px;
+}
+.rpt-batch-hint { font-size: 11px; color: var(--ink-3); margin-left: auto; }
+
+/* ── M7 / P1-B：行內警告橫幅（外籍航空、申報聲明提示）── */
+.rpt-inline-warn {
+  background: var(--warn-soft);
+  border: 1.5px solid var(--warn);
+  color: var(--ink-vanilla);
+  border-radius: var(--radius);
+  padding: 10px 14px;
+  font-size: 13px;
+  margin-bottom: 10px;
+  line-height: 1.5;
+}
+.rpt-decl-hint {
+  background: var(--pastel-vanilla);
+  border: 1.5px solid var(--warn);
+  color: var(--ink-vanilla);
+  border-radius: 6px;
+  padding: 9px 12px;
+  font-size: 13px;
+  margin-bottom: 12px;
+  line-height: 1.5;
+}
+
+/* ── P2-A：自訂確認 modal ── */
+.rpt-confirm-overlay {
+  position: fixed;
+  inset: 0;
+  background: oklch(0% 0 0 / .45);
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+}
+.rpt-confirm-box {
+  background: var(--surface);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-lg);
+  padding: 28px 28px 22px;
+  max-width: 400px;
+  width: 100%;
+}
+.rpt-confirm-msg {
+  font-size: 14px;
+  color: var(--ink);
+  line-height: 1.7;
+  margin-bottom: 20px;
+}
+.rpt-confirm-btns {
+  display: flex;
+  gap: 10px;
+  justify-content: flex-end;
+}
+
+/* ── P2-B：表格黏性捲動優化 ── */
+.rpt-scroll-hint {
+  position: sticky;
+  top: 0;
+  z-index: 3;
+  background: oklch(from var(--pastel-lavender) l c h / .95);
+  color: var(--ink-lavender);
+  text-align: center;
+  padding: 5px 0;
+  font-size: 12px;
+  border-bottom: 1px solid var(--brand-line);
+}
+/* 日期欄 sticky（P2-B）*/
+.rpt-day-table td:first-child,
+.rpt-day-table th:first-child {
+  position: sticky;
+  left: 0;
+  z-index: 2;
+  background: var(--surface-2);
+}
+.rpt-day-table thead th:first-child { background: oklch(from var(--pastel-lavender) l c h); z-index: 3; }
+.rpt-living-reset-btn {
+  font-size: 12px; padding: 2px 6px; cursor: pointer;
+  border: 1px solid var(--warn); border-radius: 4px;
+  background: var(--warn-soft); color: var(--ink-vanilla);
+  white-space: nowrap;
+}
+
 /* ── 行動版響應 ── */
 @media (max-width: 880px) {
   .report-view { padding: 0 0 80px; }
@@ -2876,12 +2981,14 @@
   .rpt-page-head { padding: 16px 0 14px; }
   .rpt-page-head h1 { font-size: 18px; }
   .rpt-progress { gap: 4px; }
-  .rpt-step-label { display: none; }
-  .rpt-step { padding: 4px 8px; }
+  /* M8：行動版保留短標籤，縮小字體 */
+  .rpt-step-label { font-size: 10px; }
+  .rpt-step { padding: 4px 8px 4px 4px; }
   .rpt-form-row { flex-direction: column; gap: 10px; }
   .rpt-form-group { min-width: unset; }
   .rpt-actions { justify-content: stretch; }
   .rpt-btn-next, .rpt-btn-back { flex: 1; text-align: center; }
   .rpt-summary-box { grid-template-columns: 1fr 1fr; }
   .rpt-scroll-hint { display: block; }
+  .rpt-batch-hint { display: none; }
 }
