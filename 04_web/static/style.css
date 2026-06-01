@@ -2694,8 +2694,8 @@
   font-size: 13px; padding: 1px 4px; cursor: pointer;
   border: none; background: none;
 }
-.rpt-living-note { font-size: 10.5px; color: var(--ink-matcha); font-family: var(--font-mono); white-space: nowrap; }
-.rpt-note-cell { background: var(--ok-soft); max-width: 130px; }
+.rpt-living-note { font-size: 10px; color: var(--ink-matcha); font-family: var(--font-mono); white-space: normal; word-break: break-all; overflow-wrap: anywhere; line-height: 1.4; }
+.rpt-note-cell { background: var(--ok-soft); max-width: 130px; overflow: hidden; vertical-align: top; }
 
 /* 特殊日期標籤 */
 .rpt-date-cell { text-align: center; white-space: nowrap; }

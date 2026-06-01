@@ -944,7 +944,6 @@ td,th{border:1px solid #000;padding:0.5mm 1mm;vertical-align:middle;font-size:10
         const isLastPage = (pageIdx === totalPages - 1);
         html += generateOnePage(data, pageDays, pageIdx, totalPages, isLastPage, grandSum, dateRange, decl1, decl2);
     });
-    html += generateLayoutPanel();
     html += `\n</body>\n</html>`;
     return html;
 }
@@ -1081,7 +1080,7 @@ function generateOnePage(data, pageDays, pageIdx, totalPages, isLastPage, grandS
             const usd=getDailyRate(entry.cityKey,entry._dateStr||'');
             let txt='';if(usd&&exRate) txt=livingFeeNote(usd,exRate,entry);
             const mark=entry.livingLocked?'<span style="color:#c00;">※</span>':'';
-            return `<td style="font-size:6.5pt;color:#555;text-align:center;vertical-align:top;line-height:1.2;padding:0 0.5mm;">${txt}${mark}</td>`;
+            return `<td style="font-size:6.5pt;color:#555;text-align:center;vertical-align:top;line-height:1.3;padding:0 0.5mm;word-break:break-all;white-space:normal;overflow-wrap:break-word;">${txt}${mark}</td>`;
           }).join('')}
           <td style="font-size:6.5pt;color:#c00;vertical-align:top;text-align:right;padding:0 0.5mm;">※手動</td>
         </tr>
