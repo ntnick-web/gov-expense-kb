@@ -94,6 +94,7 @@
       <button class="topnav-tab" data-entry="scenarios"><span>🧭</span> 情境檢索</button>
       <button class="topnav-tab" data-entry="library"><span>📑</span> 條文庫</button>
       <button class="topnav-tab" data-entry="calc"><span>🧮</span> 試算表</button>
+      <button class="topnav-tab" data-entry="report"><span>📋</span> 報告表</button>
     </nav>
   </header>
   <main class="main">
@@ -174,6 +175,233 @@
       <div class="sc-filterbar" id="sc-parent-chips"></div>
       <div class="sc-filterbar sc-filterbar-sub" id="sc-expense-chips"></div>
       <div id="sc-list"></div>
+    </section>
+
+    <!-- 報告表 view（成大國科會補助出差旅費報告表）-->
+    <section id="view-report" class="report-view hidden">
+      <div class="rpt-page-head">
+        <h1>📋 國外出差旅費報告表</h1>
+        <p>成大學生適用 · 國科會計畫補助 · 生活費自動計算 · 一鍵列印</p>
+        <div class="rpt-progress">
+          <div class="rpt-step active" data-step="1"><span class="rpt-step-num">1</span><span class="rpt-step-label">基本資料</span></div>
+          <span class="rpt-step-arrow">›</span>
+          <div class="rpt-step" data-step="2"><span class="rpt-step-num">2</span><span class="rpt-step-label">每日費用</span></div>
+          <span class="rpt-step-arrow">›</span>
+          <div class="rpt-step" data-step="3"><span class="rpt-step-num">3</span><span class="rpt-step-label">確認申報</span></div>
+          <span class="rpt-step-arrow">›</span>
+          <div class="rpt-step" data-step="4"><span class="rpt-step-num">4</span><span class="rpt-step-label">列印</span></div>
+        </div>
+        <div class="rpt-toolbar">
+          <span id="save-indicator" class="save-indicator"></span>
+          <button class="rpt-btn-sm" id="btnExport">↓ 匯出備份</button>
+          <label class="rpt-btn-sm">↑ 匯入備份<input type="file" id="btnImportFile" accept=".json" style="display:none"></label>
+          <button class="rpt-btn-sm rpt-btn-danger" id="btnReset">清除重填</button>
+        </div>
+      </div>
+
+      <!-- Step 1: 基本資料 -->
+      <div class="rpt-card section-card active" id="step1">
+        <h2 class="rpt-step-title"><span class="rpt-step-badge">1</span> 基本資料</h2>
+        <div class="rpt-form-section">
+          <h3>行政資訊</h3>
+          <div class="rpt-form-row">
+            <div class="rpt-form-group">
+              <label for="accountingNumber">會計編號 <span class="rpt-optional">（選填，由主計室填寫）</span></label>
+              <input type="text" id="accountingNumber" placeholder="由主計室填寫">
+            </div>
+          </div>
+          <h3>出差人資訊</h3>
+          <div class="rpt-form-row">
+            <div class="rpt-form-group required">
+              <label for="name">姓名 <span class="rpt-required-mark">*</span></label>
+              <input type="text" id="name" placeholder="出差人姓名" autocomplete="name">
+              <span class="error-msg"></span>
+            </div>
+            <div class="rpt-form-group">
+              <label for="title">職稱 <span class="rpt-optional">選填</span></label>
+              <input type="text" id="title" placeholder="如：博士生、研究助理">
+            </div>
+            <div class="rpt-form-group">
+              <label for="grade">職等 <span class="rpt-optional">選填</span></label>
+              <input type="text" id="grade" placeholder="如：委任五等">
+            </div>
+          </div>
+          <h3>出差資訊</h3>
+          <div class="rpt-form-row">
+            <div class="rpt-form-group required" style="flex:3">
+              <label for="tripReason">出差事由 <span class="rpt-required-mark">*</span></label>
+              <input type="text" id="tripReason" placeholder="如：出席 ICML 2025 國際研討會">
+              <span class="error-msg"></span>
+            </div>
+          </div>
+          <div class="rpt-form-row">
+            <div class="rpt-form-group required">
+              <label for="startDate">出差起始日期 <span class="rpt-required-mark">*</span></label>
+              <input type="date" id="startDate">
+              <span class="error-msg"></span>
+            </div>
+            <div class="rpt-form-group required">
+              <label for="endDate">出差結束日期 <span class="rpt-required-mark">*</span></label>
+              <input type="date" id="endDate">
+              <span class="error-msg"></span>
+            </div>
+          </div>
+          <h3>出差人聯絡資訊 <span class="rpt-optional">（選填）</span></h3>
+          <div class="rpt-form-row">
+            <div class="rpt-form-group">
+              <label for="traveler">具領人姓名</label>
+              <input type="text" id="traveler" placeholder="同出差人時可留白">
+            </div>
+            <div class="rpt-form-group">
+              <label for="phone">聯絡電話</label>
+              <input type="text" id="phone" placeholder="市話或手機">
+            </div>
+          </div>
+          <h3>撥款帳戶 <span class="rpt-optional">（選填）</span></h3>
+          <div class="rpt-form-row">
+            <div class="rpt-form-group">
+              <label for="bankCode">銀行代碼</label>
+              <input type="text" id="bankCode" placeholder="三碼，如 013">
+            </div>
+            <div class="rpt-form-group" style="flex:2">
+              <label for="bankAccount">銀行帳號</label>
+              <input type="text" id="bankAccount" placeholder="完整帳號">
+            </div>
+          </div>
+          <div class="rpt-form-row">
+            <div class="rpt-form-group" style="flex:3">
+              <label for="remarks">備註 <span class="rpt-optional">選填</span></label>
+              <input type="text" id="remarks" placeholder="如有特殊說明請填寫">
+            </div>
+          </div>
+          <h3>其他</h3>
+          <div class="rpt-form-row">
+            <div class="rpt-form-group">
+              <label class="rpt-checkbox-label">
+                <input type="checkbox" id="usesForeignAirline">
+                搭乘外籍航空（非華航、長榮、虎航、星宇）
+              </label>
+              <p class="rpt-field-hint">勾選後將提示需填寫「表03 外籍航空申請書」</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="rpt-form-section rpt-calc-setup">
+          <h3>🧮 生活費自動計算設定</h3>
+          <p class="rpt-field-hint">依行政院主計總處公告日支數額表（115年版）自動計算每日生活費。</p>
+          <div class="rpt-form-row">
+            <div class="rpt-form-group">
+              <label for="exchangeRate">出國前一日美元現金賣出匯率（USD→TWD）</label>
+              <input type="number" id="exchangeRate" placeholder="如：31.5" step="0.01" min="1" max="100">
+              <span class="error-msg" id="exchangeRateWarn" style="display:none;"></span>
+            </div>
+            <div class="rpt-form-group" style="flex:2">
+              <label for="defaultCityKey">預設目的地城市（全程適用，可逐日修改）</label>
+              <div class="city-combo-wrap">
+                <input type="text" class="city-search-inp" placeholder="輸入城市名稱搜尋…" autocomplete="off"
+                  oninput="onCitySearch(this)" onfocus="onCitySearch(this)">
+                <select id="defaultCityKey" class="city-select" onchange="onCitySelectStep1(this)">
+                  <option value="">─ 請選擇城市 ─</option>
+                </select>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="rpt-actions">
+          <button class="btn primary rpt-btn-next" id="btnNext1">下一步：填寫每日費用 →</button>
+        </div>
+      </div>
+
+      <!-- Step 2: 每日費用 -->
+      <div class="rpt-card section-card" id="step2">
+        <h2 class="rpt-step-title"><span class="rpt-step-badge">2</span> 逐日費用明細</h2>
+        <p class="rpt-step-desc" id="tripSummaryText">請填寫每日的出差地點、工作記要及各項費用。</p>
+        <div id="dayTableContainer"></div>
+        <div class="rpt-actions">
+          <button class="btn rpt-btn-back" id="btnBack2">← 返回基本資料</button>
+          <button class="btn primary rpt-btn-next" id="btnNext2">下一步：確認申報 →</button>
+        </div>
+      </div>
+
+      <!-- Step 3: 確認申報 -->
+      <div class="rpt-card section-card" id="step3">
+        <h2 class="rpt-step-title"><span class="rpt-step-badge">3</span> 確認與申報聲明</h2>
+        <div class="rpt-summary-box">
+          <div class="rpt-sum-item"><span class="rpt-sum-label">旅費合計</span><span class="rpt-sum-val primary" id="sumGrand">—</span></div>
+          <div class="rpt-sum-item"><span class="rpt-sum-label">大寫金額</span><span class="rpt-sum-val" id="sumChinese">—</span></div>
+          <div class="rpt-sum-item"><span class="rpt-sum-label">出差天數</span><span class="rpt-sum-val" id="sumDays">—</span></div>
+          <div class="rpt-sum-item"><span class="rpt-sum-label">報告表頁數</span><span class="rpt-sum-val" id="sumPages">—</span></div>
+        </div>
+        <div style="margin:12px 0">
+          <button class="rpt-btn-sm" id="toggleDetailBtn" onclick="toggleLivingDetail()">▶ 展開逐日生活費計算明細</button>
+          <div id="livingDetailTable" style="display:none;margin-top:10px;overflow-x:auto;">
+            <table class="rpt-living-table">
+              <thead><tr>
+                <th>日期</th><th>城市</th><th>供宿</th><th>供餐</th>
+                <th>計算依據</th><th style="text-align:right">生活費(TWD)</th><th>備註</th>
+              </tr></thead>
+              <tbody id="livingDetailBody"></tbody>
+              <tfoot><tr>
+                <td colspan="5" style="text-align:right;font-weight:bold;">生活費小計</td>
+                <td style="text-align:right;font-weight:bold;" id="livingDetailTotal">—</td>
+                <td></td>
+              </tr></tfoot>
+            </table>
+          </div>
+        </div>
+        <div class="rpt-decl-box">
+          <h3>申報聲明（二擇一）</h3>
+          <label class="rpt-radio-option">
+            <input type="radio" name="declarationType" value="1" checked onchange="onRadioChange(this)">
+            <div class="rpt-radio-text"><strong>本次出差無其他來源供膳宿</strong>；報名或註冊等費用亦不含膳宿。</div>
+          </label>
+          <label class="rpt-radio-option">
+            <input type="radio" name="declarationType" value="2" onchange="onRadioChange(this)">
+            <div class="rpt-radio-text"><strong>本次出差有其他來源</strong>（外國政府、國際組織、報名或註冊費等）提供膳宿或現金津貼，生活費已依「國外出差旅費報支要點」第九點規定扣除。</div>
+          </label>
+        </div>
+        <div class="rpt-actions">
+          <button class="btn rpt-btn-back" id="btnBack3">← 返回逐日費用</button>
+          <button class="btn primary rpt-btn-next" id="btnNext3">下一步：準備列印 →</button>
+        </div>
+      </div>
+
+      <!-- Step 4: 列印 -->
+      <div class="rpt-card section-card" id="step4">
+        <h2 class="rpt-step-title"><span class="rpt-step-badge">4</span> 列印表單</h2>
+        <div id="foreignWarn" class="rpt-warn-banner">
+          ⚠ 本次出差搭乘外籍航空，請務必填寫並檢附 <strong>表03 外籍航空申請書</strong>。
+        </div>
+        <div class="rpt-print-cards">
+          <div class="rpt-print-card">
+            <div class="rpt-print-icon">📄</div>
+            <h3>國外差旅費報告表</h3>
+            <p>A4 直式，含簽核欄位，列印後簽章送主計室。</p>
+            <button class="btn primary" id="btnPrintForm">🖨 列印報告表</button>
+          </div>
+          <div class="rpt-print-card">
+            <div class="rpt-print-icon">☑</div>
+            <h3>文件檢核表</h3>
+            <p>國科會補助研究生出席國際會議應備文件清單。</p>
+            <button class="btn" id="btnPrintChecklist">🖨 列印檢核表</button>
+          </div>
+        </div>
+        <div class="rpt-download-list">
+          <h3>下載空白表單</h3>
+          <ul>
+            <li><a href="assets/form02.doc" download>📥 表02 差假申請單（.doc）</a></li>
+            <li><a href="assets/form03.doc" download>📥 表03 外籍航空申請書（.doc）</a></li>
+          </ul>
+        </div>
+        <div class="rpt-actions">
+          <button class="btn rpt-btn-back" id="btnBack4">← 返回確認申報</button>
+        </div>
+      </div>
+
+      <p class="rpt-footer-note">
+        ⚖ 本表僅供輔助填報使用，實際核銷以成大主計室審核為準。生活費依行政院主計總處公告日支數額表（115年1月1日版）計算。
+      </p>
     </section>
   </main>
 </div>
@@ -278,6 +506,7 @@
   <button class="mobile-tab" data-entry="scenarios" type="button"><span class="tab-emoji">🧭</span><span>情境</span></button>
   <button class="mobile-tab" data-entry="library" type="button"><span class="tab-emoji">📑</span><span>條文庫</span></button>
   <button class="mobile-tab" data-entry="calc" type="button"><span class="tab-emoji">🧮</span><span>試算</span></button>
+  <button class="mobile-tab" data-entry="report" type="button"><span class="tab-emoji">📋</span><span>報告表</span></button>
 </nav>
 
 <script defer src="https://static.cloudflareinsights.com/beacon.min.js"
@@ -288,6 +517,9 @@
 <script src="../static/js/02_data.js?v=2026-05-10a"></script>
 <script src="../static/js/03_render.js?v=2026-05-10a"></script>
 <script src="../static/js/04_main.js?v=2026-05-10a"></script>
+<!-- 報告表模組（成大國科會版）-->
+<script src="../static/js/allowance-data.js?v=2026-06-01"></script>
+<script src="report.js?v=2026-06-01"></script>
 
 </body>
 </html>

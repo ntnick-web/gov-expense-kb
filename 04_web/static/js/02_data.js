@@ -27,6 +27,7 @@ function switchView(v) {
   document.getElementById('view-library').classList.toggle('hidden', v !== 'library');
   document.getElementById('view-scenarios').classList.toggle('active', v === 'scenarios');
   document.getElementById('view-calc').classList.toggle('active', v === 'calc');
+  document.getElementById('view-report')?.classList.toggle('hidden', v !== 'report');
   // landing 時隱藏 topbar 搜尋(避免跟 hero 視覺打架)
   const topbar = document.querySelector('.topbar');
   if (topbar) topbar.style.display = (v === 'landing') ? 'none' : '';
