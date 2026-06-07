@@ -66,9 +66,11 @@ function paginateEntries(entries) {
 }
 function calcLivingFee(usdRate,exchangeRate,{hasLodging,hasBreakfast,hasLunch,hasDinner}) {
     if(!usdRate||!exchangeRate)return 0;
-    const base=hasLodging?0.30:1.00;
-    const mealDeduction=(hasBreakfast?0.04:0)+(hasLunch?0.08:0)+(hasDinner?0.08:0);
-    return Math.ceil(usdRate*exchangeRate*Math.max(0,base-mealDeduction));
+    const basePct=hasLodging?30:100;
+    const mealPct=(hasBreakfast?4:0)+(hasLunch?8:0)+(hasDinner?8:0);
+    const finalPct=Math.max(0,basePct-mealPct);
+    const raw=Math.round(usdRate*exchangeRate*finalPct/100*1e4)/1e4;
+    return Math.ceil(raw);
 }
 function livingFeeNote(usdRate,exchangeRate,{hasLodging,hasBreakfast,hasLunch,hasDinner}) {
     if(!usdRate||!exchangeRate)return '';
