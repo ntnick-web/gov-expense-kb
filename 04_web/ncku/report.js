@@ -367,7 +367,9 @@ function buildDayTable(){
 
         infoFields.forEach(f=>{
             // L1：workNote 改用 placeholder，不預填「如事由」
-            const val=entry[f.key]||'';
+            // location 空白時自動帶入城市名稱
+            const cityName=cityKey&&CITY_RATES[cityKey]?CITY_RATES[cityKey].name:'';
+            const val=entry[f.key]||(f.key==='location'?cityName:'');
             const ph=f.key==='workNote'?'如事由':f.label;
             html+=`<td><input type="${f.type}" data-field="${f.key}" value="${val}"
               placeholder="${ph}" oninput="onExpenseInput(this)"></td>`;
@@ -455,7 +457,13 @@ function onCitySelectStep1(sel){
 }
 function onCitySelectChange(sel){
     const wrap=sel.closest('.city-combo-wrap');
+    const row=sel.closest('.day-row');
     if(wrap){const searchInp=wrap.querySelector('.city-search-inp');if(searchInp){const city=CITY_RATES[sel.value];searchInp.value=city?city.name:'';}}
+    // 城市變動時同步更新起訖地點
+    if(row&&CITY_RATES[sel.value]){
+        const locInp=row.querySelector('[data-field="location"]');
+        if(locInp)locInp.value=CITY_RATES[sel.value].name;
+    }
     onLivingChange(sel);
 }
 function toggleAirplane(btn){
