@@ -70,7 +70,7 @@ function calcLivingFee(usdRate,exchangeRate,{hasLodging,hasBreakfast,hasLunch,ha
     const mealPct=(hasBreakfast?4:0)+(hasLunch?8:0)+(hasDinner?8:0);
     const finalPct=Math.max(0,basePct-mealPct);
     const raw=Math.round(usdRate*exchangeRate*finalPct/100*1e4)/1e4;
-    return Math.ceil(raw);
+    return Math.round(raw);
 }
 function livingFeeNote(usdRate,exchangeRate,{hasLodging,hasBreakfast,hasLunch,hasDinner}) {
     if(!usdRate||!exchangeRate)return '';
@@ -168,7 +168,7 @@ function rebuildEntries(startDate,endDate){
         const d=new Date(dateStr);
         const base=i<old.length?Object.assign({},old[i]):defaultEntry();
         base.month=String(d.getMonth()+1);base.day=String(d.getDate());base._dateStr=dateStr;
-        if(!base.cityKey)base.cityKey=formData.defaultCityKey||'';
+        base.cityKey=formData.defaultCityKey||base.cityKey||'';
         if(i===lastIdx){base.specialDay='return';base.hasLodging=true;}
         return base;
     });
