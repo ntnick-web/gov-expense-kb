@@ -143,7 +143,6 @@ function exportFormData(){
         setTimeout(()=>{btn.textContent=orig;btn.disabled=false;},2000);}
 }
 
-// M9：匯入後恢復上次所在步驟
 function importFormData(file){
     if(!file)return;
     const reader=new FileReader();
@@ -154,7 +153,7 @@ function importFormData(file){
             formData=Object.assign({},formData,data);
             saveToStorage();
             restoreStep1Fields();
-            showStep(data.lastStep||1);
+            showStep(1);  // 匯入後回 Step 1，讓使用者點「下一步」重建表格
             alert(`已成功匯入「${data.name||'未命名'}」的旅費草稿。`);
         }catch(err){alert('匯入失敗：請選擇由本系統匯出的 JSON 檔。');}
     };
@@ -961,7 +960,7 @@ document.addEventListener('DOMContentLoaded',function(){
     if(!document.getElementById('view-report'))return;
     loadFromStorage();
     restoreStep1Fields();
-    showStep(formData.lastStep||1);
+    showStep(1);  // 頁面載入永遠從 Step 1 開始（避免 buildDayTable 未呼叫造成空白）
 
     document.getElementById('btnNext1')?.addEventListener('click',()=>{if(!validateStep1())return;buildDayTable();showStep(2);});
     document.getElementById('btnNext2')?.addEventListener('click',()=>{buildSummary();showStep(3);});
